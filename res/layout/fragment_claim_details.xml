@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/light_background_opentenure"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/light_background_opentenure"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/EditCommunityRecorderName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/community_recorder_name"
+            android:inputType="textPersonName" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/EditPersonName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/person_name"
+            android:inputType="textPersonName" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/EditPassword"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/password"
+            android:inputType="textPassword" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/EditPostalAddress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/postal_address"
+            android:inputType="textPostalAddress" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/EditEmailAddress"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/email_address"
+            android:inputType="textEmailAddress" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/EditClaimDate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/claim_date"
+            android:inputType="date" >
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <EditText
+            android:id="@+id/editClaimNotes"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/claim_notes"
+            android:inputType="textMultiLine" >
+        </EditText>
+    </LinearLayout>
+
+</LinearLayout>

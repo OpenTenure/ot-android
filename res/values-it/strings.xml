@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Open Tenure</string>
+    <string name="preload">Immagine di apertura</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_search">Cerca</string>
+    <string name="action_new">Aggiungi</string>
+    <string name="action_camera">Foto</string>
+    <string name="action_map">Mappa</string>
+    <string name="action_save">Salva</string>
+    <string name="action_center">Centra</string>
+    <string name="action_submit">Invia</string>
+    <string name="action_new_picture">Aggiungi immagine</string>
+    <string name="action_new_attachment">Aggiungi documento</string>
+    <string name="title_news">Notizie</string>
+    <string name="title_map">Mappa</string>
+    <string name="title_local_claims">Richieste locali</string>
+    <string name="title_submitted_claims">Richieste inoltrate</string>
+    <string name="title_challenged_claims">Richieste con opposizioni</string>
+    <string name="title_claim_details">Dettagli della richiesta</string>
+    <string name="title_claim_documents">Documenti della richiesta</string>
+    <string name="title_claim_photos">Immagini della richiesta</string>
+    <string name="title_claim_map">Mappa della richiesta</string>
+    <string name="title_section">Sezione</string>
+    <string name="title_item">Elemento</string>
+    <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>
+    <string name="title_activity_file_chooser">Scegli un file</string>
+    <string name="choose_file">Scegli un file</string>
+    <string name="person_name">Nome della Persona</string>
+    <string name="community_recorder_name">Community recorder</string>
+    <string name="postal_address">Indirizzo</string>
+    <string name="email_address">Indirizzo Email</string>
+    <string name="claim_date">Data della richiesta</string>
+    <string name="claim_notes">Annotazioni</string>
+    <string name="password">Password</string>
+    <string name="message_saved">Richiesta salvata</string>
+    <string name="message_submitted">Richiesta inviata</string>
+    <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
+    <string name="message_press_again_to_exit">Premi nuovamente il tasto indietro per uscire</string>
+    <string name="check_location_service">Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+    
+</resources>
