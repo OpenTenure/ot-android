@@ -27,14 +27,9 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.math.BigDecimal;
 import java.util.Locale;
 
 import android.app.ActivityManager;
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -51,31 +46,24 @@ public class OpenTenure extends FragmentActivity {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
-	private static final long LOCATION_LISTENER_INTERVAL_FAST = 5*1000;
-	private static final long LOCATION_LISTENER_INTERVAL_SLOW = 30*1000;
-	private long locationListenerInterval = LOCATION_LISTENER_INTERVAL_FAST;
-
 	private long lastPress;
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		OpenTenureApplication.getInstance().getDatabase().sync();
-		locationListenerInterval = LOCATION_LISTENER_INTERVAL_SLOW;
 	};
 	
 	@Override
 	public void onPause() {
 		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
-		locationListenerInterval = LOCATION_LISTENER_INTERVAL_SLOW;
 	};
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
-		locationListenerInterval = LOCATION_LISTENER_INTERVAL_FAST;
 	};
 	
 	@Override
@@ -112,7 +100,6 @@ public class OpenTenure extends FragmentActivity {
 
 		Log.d(this.getClass().getName(),
 				"DB version is: " + OpenTenureApplication.getInstance().getDatabase().getConfiguration("DBVERSION"));
-		addLocationListener();
 	}
 
 	@Override
@@ -120,44 +107,6 @@ public class OpenTenure extends FragmentActivity {
 
 		getMenuInflater().inflate(R.menu.open_tenure, menu);
 		return true;
-	}
-
-	private void addLocationListener() {
-
-		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-		LocationListener locationListener = new LocationListener() {
-			
-			public void onLocationChanged(Location location) {
-				int result = OpenTenureApplication.getInstance().getDatabase().updateCurrentLocation(new BigDecimal(location.getLongitude()), new BigDecimal(location.getLatitude()));
-				Toast.makeText(getBaseContext(),
-						"onLocation - lon: " + location.getLongitude() + ", lat: " + location.getLatitude() + ", updated: " + result, Toast.LENGTH_SHORT)
-						.show();
-			}
-
-			public void onStatusChanged(String provider, int status,
-					Bundle extras) {
-				Toast.makeText(getBaseContext(),
-						"onStatusChanged", Toast.LENGTH_SHORT)
-						.show();
-			}
-
-			public void onProviderEnabled(String provider) {
-				Toast.makeText(getBaseContext(),
-						"onProviderEnabled", Toast.LENGTH_SHORT)
-						.show();
-			}
-
-			public void onProviderDisabled(String provider) {
-				Toast.makeText(getBaseContext(),
-						"onProviderDisabled", Toast.LENGTH_SHORT)
-						.show();
-			}
-		};
-		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, locationListenerInterval, 0, locationListener);
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, locationListenerInterval, 0, locationListener);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {

@@ -112,11 +112,11 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				(int) event.getY());
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Long press");
-		dialog.setMessage("At lon: " + pix.getLongitude() + ", lat: "
+		dialog.setTitle(R.string.message_add_marker);
+		dialog.setMessage("Lon: " + pix.getLongitude() + ", lat: "
 				+ pix.getLatitude());
 
-		dialog.setPositiveButton("Add a marker here?", new OnClickListener() {
+		dialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -124,7 +124,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				mapView.getOverlays().clear();
 				mapView.invalidate();
 				OverlayItem item = new OverlayItem("ID:" + markers.size(),
-						"TITLE:" + markers.size(), pix);
+						", TITLE:" + markers.size(), pix);
 				addItem(item);
 
 				boundary.clearPath();
@@ -140,6 +140,13 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				mapView.invalidate();
 			}
 		});
+		dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		
 		dialog.show();
 		return true;
 	};
@@ -149,9 +156,9 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 			final OverlayItem item, final MapView mapView) {
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-		dialog.setTitle("Single tap on: " + item.getTitle());
-		dialog.setMessage(item.getSnippet());
-		dialog.setNegativeButton("Remove?", new OnClickListener() {
+		dialog.setTitle(R.string.message_remove_marker);
+		dialog.setMessage(item.getTitle() + ", " + item.getSnippet());
+		dialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 
@@ -172,6 +179,12 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				mapView.getOverlays().add(boundary);
 				mapView.getOverlays().add(getReference());
 				mapView.invalidate();
+			}
+		});
+		dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
 			}
 		});
 		dialog.show();

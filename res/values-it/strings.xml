@@ -38,6 +38,10 @@
     <string name="message_submitted">Richiesta inviata</string>
     <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
     <string name="message_press_again_to_exit">Premi nuovamente il tasto indietro per uscire</string>
-    <string name="check_location_service">Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+    <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+    <string name="confirm">Si</string>
+    <string name="cancel">Annulla</string>
+    <string name="message_add_marker">Aggiungere una posizione?</string>
+    <string name="message_remove_marker">Rimuovere la posizione?</string>
     
 </resources>

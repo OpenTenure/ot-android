@@ -36,7 +36,9 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.PathOverlay;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -51,6 +53,7 @@ public class ClaimMapFragment extends Fragment {
 	
 		MapView mapView;
 		private boolean saved = false;
+		LocationHelper lh;
 
 
 		public ClaimMapFragment() {
@@ -62,6 +65,24 @@ public class ClaimMapFragment extends Fragment {
 
 			super.onCreateOptionsMenu(menu, inflater);
 		}
+		
+		@Override
+		public void onResume(){
+			super.onResume();
+			lh.hurryUp();
+		};
+
+		@Override
+		public void onPause() {
+			super.onPause();
+			lh.slowDown();
+		};
+
+		@Override
+		public void onStop() {
+			super.onStop();
+			lh.stop();
+		};
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,6 +117,8 @@ public class ClaimMapFragment extends Fragment {
 			mapView.getOverlays().add(boundaryMarkers);
 			mapView.invalidate();
 			
+			lh = new LocationHelper((LocationManager)mapView.getContext().getSystemService(Context.LOCATION_SERVICE));
+			lh.start();
 			return mapView;
 		}
 		

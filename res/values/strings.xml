@@ -38,7 +38,11 @@
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
     <string name="message_press_again_to_exit">Press back button again to exit</string>
-    <string name="check_location_service">Check that location service is enabled in your settings</string>
-        
+    <string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
+    <string name="confirm">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="message_add_marker">Add marker here?</string>
+    <string name="message_remove_marker">Remove marker?</string>
+    
     
 </resources>

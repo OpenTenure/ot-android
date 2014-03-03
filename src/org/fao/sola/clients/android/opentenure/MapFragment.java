@@ -32,7 +32,9 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import android.content.Context;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -45,6 +47,8 @@ import android.widget.Toast;
 
 public class MapFragment extends Fragment {
 		MapView mapView;
+		LocationHelper lh;
+
 		public MapFragment() {
 		}
 
@@ -68,8 +72,28 @@ public class MapFragment extends Fragment {
 			mapView.getController().setZoom(17);
 			mapView.getController().setCenter(new GeoPoint(41.825508, 12.603604));
 //			mapView.setUseDataConnection(false);
+			lh = new LocationHelper((LocationManager)mapView.getContext().getSystemService(Context.LOCATION_SERVICE));
+			lh.start();
 			return mapView;
 		}
+
+		@Override
+		public void onResume(){
+			super.onResume();
+			lh.hurryUp();
+		};
+
+		@Override
+		public void onPause() {
+			super.onPause();
+			lh.slowDown();
+		};
+
+		@Override
+		public void onStop() {
+			super.onStop();
+			lh.stop();
+		};
 
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {
