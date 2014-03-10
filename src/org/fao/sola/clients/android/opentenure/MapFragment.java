@@ -81,19 +81,19 @@ public class MapFragment extends Fragment {
 		public void onResume(){
 			super.onResume();
 			lh.hurryUp();
-		};
+		}
 
 		@Override
 		public void onPause() {
 			super.onPause();
 			lh.slowDown();
-		};
+		}
 
 		@Override
 		public void onStop() {
 			super.onStop();
 			lh.stop();
-		};
+		}
 
 		@Override
 		public boolean onOptionsItemSelected(MenuItem item) {

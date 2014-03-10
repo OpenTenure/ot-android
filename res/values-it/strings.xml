@@ -43,5 +43,15 @@
     <string name="cancel">Annulla</string>
     <string name="message_add_marker">Aggiungere una posizione?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
+    <string name="draggable_marker">Segnalino mobile</string>
+    <string name="sticky_marker">Segnalino fisso</string>
+    <string name="map_provider_google_normal">Google Maps</string>
+    <string name="map_provider_google_satellite">Google Earth</string>
+    <string name="map_provider_google_hybrid">Google Hybrid</string>
+    <string name="map_provider_google_terrain">Google Terrain</string>
+    <string name="map_provider_osm_mapnik">Open Street Map MapNik</string>
+    <string name="map_provider_osm_mapquest">Open Street Map MapQuest</string>
+    <string name="map_provider_local_tiles">Dati locali</string>
+    <string name="map_provider_geoserver">GeoServer</string>
     
 </resources>

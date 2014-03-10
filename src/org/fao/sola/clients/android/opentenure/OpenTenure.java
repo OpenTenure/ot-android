@@ -122,7 +122,7 @@ public class OpenTenure extends FragmentActivity {
 			case 0:
 				return new NewsFragment();
 			case 1:
-				return new MapFragment();
+				return new MainMapFragment();
 			case 2:
 				return new LocalClaimsFragment();
 			case 3:

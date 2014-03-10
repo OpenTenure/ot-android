@@ -42,11 +42,24 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Point;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
+	private static final int MAX_TOUCH_OFFSET_TOLERANCE = 40;
 	protected Context context;
 	protected PathOverlay boundary;
 	protected List<OverlayItem> markers;
+	private OverlayItem inDrag = null;
+	private ImageView dragImage = null;
+	private int dragImageWidth = 0;
+	private int dragImageHeight = 0;
+	private int xTouchOffset = 0;
+	private int yTouchOffset = 0;
 
 	public TappableItemizedOverlay(final Context context,
 			final PathOverlay boundary, final List<OverlayItem> markers) {
@@ -63,10 +76,16 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				return false;
 			}
 		});
-
 		this.context = context;
 		this.boundary = boundary;
 		this.markers = markers;
+	}
+	
+	public void setDragImage(ImageView dragImage){
+		this.dragImage = dragImage;
+		dragImageWidth = dragImage.getDrawable().getIntrinsicWidth();
+		dragImageHeight = dragImage.getDrawable().getIntrinsicHeight();
+		Log.d(this.getClass().getName(), "Drag image size: " +  dragImageWidth + ", " + dragImageHeight);
 	}
 
 	public static void addPoints(PathOverlay boundary, List<GeoPoint> points) {
@@ -81,7 +100,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 			boundary.addPoint(geoPoint);
 
 		}
-		// Close boundary by adding again the first point
+		// Closing boundary by adding again the first point
 		boundary.addPoint(points.get(0));
 
 	}
@@ -129,7 +148,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 
 				boundary.clearPath();
 
-				for (int i = 0 ; i < size();i++) {
+				for (int i = 0; i < size(); i++) {
 					boundary.addPoint(getItem(i).getPoint());
 
 				}
@@ -146,7 +165,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 			public void onClick(DialogInterface dialog, int which) {
 			}
 		});
-		
+
 		dialog.show();
 		return true;
 	};
@@ -157,7 +176,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 
 		AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 		dialog.setTitle(R.string.message_remove_marker);
-		dialog.setMessage(item.getTitle() + ", " + item.getSnippet());
+		dialog.setMessage(item.getTitle() + ", " + item.getSnippet() + " at " + item.getPoint().getLongitude() + ", " + item.getPoint().getLatitude());
 		dialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
@@ -167,7 +186,7 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 				removeItem(item);
 				boundary.clearPath();
 
-				for (int i = 0 ; i < size() ; i++) {
+				for (int i = 0; i < size(); i++) {
 
 					boundary.addPoint(getItem(i).getPoint());
 
@@ -189,5 +208,85 @@ public class TappableItemizedOverlay extends ItemizedIconOverlay<OverlayItem> {
 		});
 		dialog.show();
 		return true;
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event, MapView mapView) {
+		final int action = event.getAction();
+		final int x = (int) event.getX();
+		final int y = (int) event.getY();
+		boolean result = false;
+
+		if (action == MotionEvent.ACTION_DOWN) {
+
+			for (OverlayItem item : markers) {
+
+				Log.d(this.getClass().getName(), "Touched ...");
+
+				Point t = mapView.getProjection().fromMapPixels(x, y, null);
+				Point p = mapView.getProjection().toMapPixels(item.getPoint(), null);
+
+				if ( Math.abs(t.x - p.x) < MAX_TOUCH_OFFSET_TOLERANCE
+						&& Math.abs( t.y - p.y) < MAX_TOUCH_OFFSET_TOLERANCE) {
+
+					Log.d(this.getClass().getName(), "Picking up item: " + item.getTitle() + ", " + item.getSnippet() + " at " + p.x + ", " + p.y + " by touching at " + t.x + ", " + t.y);
+					result = true;
+					inDrag = item;
+
+					mapView.getOverlays().clear();
+					mapView.invalidate();
+					removeItem(item);
+					boundary.clearPath();
+					mapView.getOverlays().add(getReference());
+					mapView.invalidate();
+
+					xTouchOffset = t.x - p.x;
+					yTouchOffset = t.y - p.y;
+
+					dragImage.setVisibility(View.VISIBLE);
+					setDragImagePosition(t.x - xTouchOffset, t.y - yTouchOffset);
+
+					Log.d(this.getClass().getName(), "Touch offset is " + xTouchOffset + ", "+ yTouchOffset);
+					break;
+				}
+			}
+		} else if (action == MotionEvent.ACTION_MOVE && inDrag != null) {
+			Log.d(this.getClass().getName(), "... Moving to " + x + ", " + y);
+			setDragImagePosition(x - xTouchOffset, y - yTouchOffset);
+			result = true;
+		} else if (action == MotionEvent.ACTION_UP && inDrag != null) {
+			dragImage.setVisibility(View.GONE);
+
+			Log.d(this.getClass().getName(), "Released at " + x + ", "+ y);
+			GeoPoint pt = (GeoPoint) mapView.getProjection().fromPixels(x - xTouchOffset + dragImageWidth/2, y - yTouchOffset);
+			OverlayItem toDrop = new OverlayItem(inDrag.getTitle(),
+					inDrag.getSnippet(), pt);
+
+			mapView.getOverlays().clear();
+			mapView.invalidate();
+			addItem(toDrop);
+
+			for (int i = 0; i < size(); i++) {
+				boundary.addPoint(getItem(i).getPoint());
+			}
+			boundary.addPoint(getItem(0).getPoint());
+
+			mapView.getOverlays().add(boundary);
+			mapView.getOverlays().add(getReference());
+			mapView.invalidate();
+
+			inDrag = null;
+			result = true;
+		}
+
+		return (result || super.onTouchEvent(event, mapView));
+	}
+
+	private void setDragImagePosition(int x, int y) {
+		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) dragImage
+				.getLayoutParams();
+
+		lp.setMargins(x, y, 0, 0);
+		dragImage.setLayoutParams(lp);
 	}
 }

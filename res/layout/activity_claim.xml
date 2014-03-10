@@ -18,4 +18,11 @@
         android:layout_below="@+id/tabs"
         tools:context=".ClaimActivity" />
 
+  <ImageView android:id="@+id/drag_marker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/draggable_marker"
+    android:src="@drawable/crosshair"
+    android:visibility="gone"
+  /> 
 </RelativeLayout>

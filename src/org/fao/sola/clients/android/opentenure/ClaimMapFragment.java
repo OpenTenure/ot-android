@@ -47,104 +47,112 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class ClaimMapFragment extends Fragment {
-	
-		MapView mapView;
-		private boolean saved = false;
-		LocationHelper lh;
 
+	MapView mapView;
+	private boolean saved = false;
+	LocationHelper lh;
 
-		public ClaimMapFragment() {
-		}
-
-		@Override
-		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-			inflater.inflate(R.menu.claim_map, menu);
-
-			super.onCreateOptionsMenu(menu, inflater);
-		}
-		
-		@Override
-		public void onResume(){
-			super.onResume();
-			lh.hurryUp();
-		};
-
-		@Override
-		public void onPause() {
-			super.onPause();
-			lh.slowDown();
-		};
-
-		@Override
-		public void onStop() {
-			super.onStop();
-			lh.stop();
-		};
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			setHasOptionsMenu(true);
-
-			mapView = new MapView(getActivity(), 256);
-			mapView.setClickable(true);
-			mapView.setTileSource(TileSourceFactory.MAPNIK);
-			mapView.setBuiltInZoomControls(true);
-			mapView.setMultiTouchControls(true);
-			mapView.getController().setZoom(17);
-			mapView.getController().setCenter(new GeoPoint(41.882506, 12.488317));
-//			mapView.setUseDataConnection(false);
-			
-			List<GeoPoint> boundaryPoints = new ArrayList<GeoPoint>();
-			boundaryPoints.add(new GeoPoint(41.882267, 12.486804));
-			boundaryPoints.add(new GeoPoint(41.881380, 12.488102));
-			boundaryPoints.add(new GeoPoint(41.882778, 12.489889));
-			boundaryPoints.add(new GeoPoint(41.883657, 12.488564));
-			
-			
-			PathOverlay boundary = new PathOverlay(Color.RED, getActivity());
-			TappableItemizedOverlay.addPoints(boundary, boundaryPoints);
-
-			mapView.getOverlays().add(boundary);
-			
-			List<OverlayItem> markers = TappableItemizedOverlay.getMarkers(boundaryPoints);
-
-			TappableItemizedOverlay boundaryMarkers = new TappableItemizedOverlay(
-					getActivity(), boundary, markers);
-			mapView.getOverlays().add(boundaryMarkers);
-			mapView.invalidate();
-			
-			lh = new LocationHelper((LocationManager)mapView.getContext().getSystemService(Context.LOCATION_SERVICE));
-			lh.start();
-			return mapView;
-		}
-		
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			// handle item selection
-			Toast toast;
-			switch (item.getItemId()) {
-			case R.id.action_save:
-				saved = true;
-				toast = Toast.makeText(mapView.getContext(), R.string.message_saved, Toast.LENGTH_SHORT);
-				toast.show();
-				return true;
-			case R.id.action_submit:
-				if(saved){
-					toast = Toast.makeText(mapView.getContext(), R.string.message_submitted, Toast.LENGTH_SHORT);
-					toast.show();
-				}else{
-					toast = Toast.makeText(mapView.getContext(), R.string.message_save_before_submit, Toast.LENGTH_SHORT);
-					toast.show();
-				}
-				return true;
-
-			default:
-				return super.onOptionsItemSelected(item);
-			}
-		}
-
+	public ClaimMapFragment() {
 	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.claim_map, menu);
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		lh.hurryUp();
+	};
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		lh.slowDown();
+	};
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		lh.stop();
+	};
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+
+		mapView = new MapView(getActivity(), 256);
+		mapView.setClickable(true);
+		mapView.setTileSource(TileSourceFactory.MAPNIK);
+		mapView.setBuiltInZoomControls(true);
+		mapView.setMultiTouchControls(true);
+		mapView.getController().setZoom(17);
+		mapView.getController().setCenter(new GeoPoint(41.882506, 12.488317));
+		// mapView.setUseDataConnection(false);
+
+		List<GeoPoint> boundaryPoints = new ArrayList<GeoPoint>();
+		boundaryPoints.add(new GeoPoint(41.882267, 12.486804));
+		boundaryPoints.add(new GeoPoint(41.881380, 12.488102));
+		boundaryPoints.add(new GeoPoint(41.882778, 12.489889));
+		boundaryPoints.add(new GeoPoint(41.883657, 12.488564));
+
+		PathOverlay boundary = new PathOverlay(Color.RED, getActivity());
+		TappableItemizedOverlay.addPoints(boundary, boundaryPoints);
+
+		mapView.getOverlays().add(boundary);
+
+		List<OverlayItem> markers = TappableItemizedOverlay
+				.getMarkers(boundaryPoints);
+
+		TappableItemizedOverlay boundaryMarkers = new TappableItemizedOverlay(
+				getActivity(), boundary, markers);
+		boundaryMarkers.setDragImage((ImageView) getActivity().findViewById(
+				R.id.drag_marker));
+		mapView.getOverlays().add(boundaryMarkers);
+		mapView.invalidate();
+
+		lh = new LocationHelper((LocationManager) mapView.getContext()
+				.getSystemService(Context.LOCATION_SERVICE));
+		lh.start();
+		return mapView;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		Toast toast;
+		switch (item.getItemId()) {
+		case R.id.action_save:
+			saved = true;
+			toast = Toast.makeText(mapView.getContext(),
+					R.string.message_saved, Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.action_submit:
+			if (saved) {
+				toast = Toast.makeText(mapView.getContext(),
+						R.string.message_submitted, Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				toast = Toast
+						.makeText(mapView.getContext(),
+								R.string.message_save_before_submit,
+								Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+}
