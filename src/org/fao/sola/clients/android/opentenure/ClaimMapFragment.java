@@ -27,37 +27,42 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.OverlayItem;
-import org.osmdroid.views.overlay.PathOverlay;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 
 public class ClaimMapFragment extends Fragment {
 
-	MapView mapView;
-	private boolean saved = false;
-	LocationHelper lh;
+	private static final int MAP_LABEL_FONT_SIZE = 16;
+	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
+	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
 
-	public ClaimMapFragment() {
-	}
+	private View mapView;
+	private MapLabel label;
+	private GoogleMap map;
+	private Property property;
+	private boolean saved = false;
+	private LocationHelper lh;
+	private TileOverlay tiles = null;
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -70,59 +75,96 @@ public class ClaimMapFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		lh.hurryUp();
-	};
+	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		lh.slowDown();
-	};
+	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		lh.stop();
-	};
+	}
+
+	@Override
+	public void onStart() {
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.claim_map_fragment)).getMap();
+		super.onStart();
+
+	}
+
+	@Override
+	public void onDestroyView() {
+		lh.stop();
+		Fragment map = getFragmentManager().findFragmentById(
+				R.id.claim_map_fragment);
+		Fragment label = getFragmentManager().findFragmentById(
+				R.id.claim_map_provider_label);
+		try {
+			if (map.isResumed()) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(map);
+				ft.commit();
+			}
+			if (label.isResumed()) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(label);
+				ft.commit();
+			}
+		} catch (Exception e) {
+		}
+		super.onDestroyView();
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
+		super.onCreateView(inflater, container, savedInstanceState);
+		mapView = inflater.inflate(R.layout.fragment_claim_map, container,
+				false);
 		setHasOptionsMenu(true);
+		label = (MapLabel) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.claim_map_provider_label);
+		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity()
+				.getResources().getString(R.string.map_provider_google_normal));
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		mapView = new MapView(getActivity(), 256);
-		mapView.setClickable(true);
-		mapView.setTileSource(TileSourceFactory.MAPNIK);
-		mapView.setBuiltInZoomControls(true);
-		mapView.setMultiTouchControls(true);
-		mapView.getController().setZoom(17);
-		mapView.getController().setCenter(new GeoPoint(41.882506, 12.488317));
-		// mapView.setUseDataConnection(false);
+		property = new Property(mapView.getContext(), map);
 
-		List<GeoPoint> boundaryPoints = new ArrayList<GeoPoint>();
-		boundaryPoints.add(new GeoPoint(41.882267, 12.486804));
-		boundaryPoints.add(new GeoPoint(41.881380, 12.488102));
-		boundaryPoints.add(new GeoPoint(41.882778, 12.489889));
-		boundaryPoints.add(new GeoPoint(41.883657, 12.488564));
+		property.addVertex(map.addMarker(new MarkerOptions()
+				.position(new LatLng(41.882267, 12.486804)).title("0")
+				.draggable(true)));
+		property.addVertex(map.addMarker(new MarkerOptions()
+				.position(new LatLng(41.881380, 12.488102)).title("1")
+				.draggable(true)));
+		property.addVertex(map.addMarker(new MarkerOptions()
+				.position(new LatLng(41.882778, 12.489889)).title("2")
+				.draggable(true)));
+		property.addVertex(map.addMarker(new MarkerOptions()
+				.position(new LatLng(41.883657, 12.488564)).title("3")
+				.draggable(true)));
 
-		PathOverlay boundary = new PathOverlay(Color.RED, getActivity());
-		TappableItemizedOverlay.addPoints(boundary, boundaryPoints);
+		property.drawBoundary();
 
-		mapView.getOverlays().add(boundary);
+		MapsInitializer.initialize(this.getActivity());
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.882506,
+				12.488317), 17));
+		map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
 
-		List<OverlayItem> markers = TappableItemizedOverlay
-				.getMarkers(boundaryPoints);
-
-		TappableItemizedOverlay boundaryMarkers = new TappableItemizedOverlay(
-				getActivity(), boundary, markers);
-		boundaryMarkers.setDragImage((ImageView) getActivity().findViewById(
-				R.id.drag_marker));
-		mapView.getOverlays().add(boundaryMarkers);
-		mapView.invalidate();
-
-		lh = new LocationHelper((LocationManager) mapView.getContext()
-				.getSystemService(Context.LOCATION_SERVICE));
+		lh = new LocationHelper((LocationManager) getActivity()
+				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
+
 		return mapView;
+
 	}
 
 	@Override
@@ -130,6 +172,100 @@ public class ClaimMapFragment extends Fragment {
 		// handle item selection
 		Toast toast;
 		switch (item.getItemId()) {
+		case R.id.action_settings:
+			return true;
+		case R.id.map_provider_google_normal:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_normal));
+			return true;
+		case R.id.map_provider_google_satellite:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_satellite));
+			return true;
+		case R.id.map_provider_google_hybrid:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_hybrid));
+			return true;
+		case R.id.map_provider_google_terrain:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_terrain));
+			return true;
+		case R.id.map_provider_osm_mapnik:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
+					OSM_MAPNIK_BASE_URL);
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+					mapNikTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
+			property.drawBoundary();
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_osm_mapnik));
+			return true;
+		case R.id.map_provider_osm_mapquest:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
+					256, OSM_MAPQUEST_BASE_URL);
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+					mapQuestTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
+			property.drawBoundary();
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_osm_mapquest));
+			return true;
+		case R.id.map_provider_local_tiles:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+					new LocalMapTileProvider()).zIndex(
+					CUSTOM_TILE_PROVIDER_Z_INDEX));
+			property.drawBoundary();
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_local_tiles));
+			return true;
+		case R.id.map_provider_geoserver:
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+					new GeoserverMapTileProvider(256, 256)).zIndex(
+					CUSTOM_TILE_PROVIDER_Z_INDEX));
+			property.drawBoundary();
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_geoserver));
+			Toast.makeText(getActivity().getBaseContext(), "Not implemented",
+					Toast.LENGTH_SHORT).show();
+			return true;
 		case R.id.action_save:
 			saved = true;
 			toast = Toast.makeText(mapView.getContext(),

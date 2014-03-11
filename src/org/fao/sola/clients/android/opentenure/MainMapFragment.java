@@ -27,9 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
@@ -49,65 +46,75 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.android.gms.maps.model.UrlTileProvider;
 
 public class MainMapFragment extends SupportMapFragment {
-	
+
 	private static final int MAP_LABEL_FONT_SIZE = 16;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
-	
+
 	private View mapView;
 	private MapLabel label;
 	private GoogleMap map;
 	private LocationHelper lh;
+	private TileOverlay tiles = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		mapView = inflater.inflate(R.layout.main_map, container,
-				false);
+		mapView = inflater.inflate(R.layout.main_map, container, false);
 		setHasOptionsMenu(true);
-		label = (MapLabel) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_provider_label);
-		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity().getResources().getString(R.string.map_provider_google_normal));
-		map = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_fragment)).getMap();
-        MapsInitializer.initialize(this.getActivity());
-		lh = new LocationHelper((LocationManager)getActivity().getBaseContext().getSystemService(Context.LOCATION_SERVICE));
+		label = (MapLabel) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.main_map_provider_label);
+		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity()
+				.getResources().getString(R.string.map_provider_google_normal));
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.main_map_fragment)).getMap();
+		MapsInitializer.initialize(this.getActivity());
+		lh = new LocationHelper((LocationManager) getActivity()
+				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
 		return mapView;
 	}
 
-    @Override
-    public void onStart() {
-		map = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_fragment)).getMap();
-        super.onStart();
+	@Override
+	public void onStart() {
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
+				.findFragmentById(R.id.main_map_fragment)).getMap();
+		super.onStart();
 
-    }
-    
-    @Override
+	}
+
+	@Override
 	public void onDestroyView() {
-		   Fragment map = (getFragmentManager().findFragmentById(R.id.main_map_fragment));   
-		   Fragment label = (getFragmentManager().findFragmentById(R.id.main_map_provider_label));
-		   try {
-			   if(map.isResumed()){
-				   FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-				   ft.remove(map);
-				   ft.commit();
-			   }
-			   if(label.isResumed()){
-				   FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-				   ft.remove(label);
-				   ft.commit();
-			   }
+		lh.stop();
+		Fragment map = getFragmentManager().findFragmentById(
+				R.id.main_map_fragment);
+		Fragment label = getFragmentManager().findFragmentById(
+				R.id.main_map_provider_label);
+		try {
+			if (map.isResumed()) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(map);
+				ft.commit();
+			}
+			if (label.isResumed()) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(label);
+				ft.commit();
+			}
 		} catch (Exception e) {
 		}
-		   super.onDestroyView(); 
-		}
-	
+		super.onDestroyView();
+	}
+
 	@Override
-	public void onResume(){
+	public void onResume() {
 		super.onResume();
 		lh.hurryUp();
 	}
@@ -138,70 +145,110 @@ public class MainMapFragment extends SupportMapFragment {
 		case R.id.action_settings:
 			return true;
 		case R.id.map_provider_google_normal:
-			map.clear();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
 			map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_google_normal));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_normal));
 			return true;
 		case R.id.map_provider_google_satellite:
-			map.clear();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
 			map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_google_satellite));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_satellite));
 			return true;
 		case R.id.map_provider_google_hybrid:
-			map.clear();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
 			map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_google_hybrid));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_hybrid));
 			return true;
 		case R.id.map_provider_google_terrain:
-			map.clear();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
 			map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_google_terrain));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_google_terrain));
 			return true;
 		case R.id.map_provider_osm_mapnik:
-			map.clear();
-			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256, OSM_MAPNIK_BASE_URL);
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
+					OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			map.addTileOverlay(new TileOverlayOptions().tileProvider(mapNikTileProvider));
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_osm_mapnik));
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(mapNikTileProvider));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_osm_mapnik));
 			return true;
 		case R.id.map_provider_osm_mapquest:
-			map.clear();
-			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256, 256, OSM_MAPQUEST_BASE_URL);
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
+					256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			map.addTileOverlay(new TileOverlayOptions().tileProvider(mapQuestTileProvider));
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_osm_mapquest));
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(mapQuestTileProvider));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_osm_mapquest));
 			return true;
 		case R.id.map_provider_local_tiles:
-			map.clear();
-		    map.setMapType(GoogleMap.MAP_TYPE_NONE);
-		    map.addTileOverlay(new TileOverlayOptions().tileProvider(new LocalMapTileProvider()));
-		    label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_local_tiles));
-			Toast.makeText(getActivity().getBaseContext(),
-					"Not implemented", Toast.LENGTH_SHORT)
-					.show();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(new LocalMapTileProvider()));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_local_tiles));
 			return true;
 		case R.id.map_provider_geoserver:
-			map.clear();
-		    map.setMapType(GoogleMap.MAP_TYPE_NONE);
-		    map.addTileOverlay(new TileOverlayOptions().tileProvider(new GeoserverMapTileProvider(256,256)));
-		    label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_geoserver));
-			Toast.makeText(getActivity().getBaseContext(),
-					"Not implemented", Toast.LENGTH_SHORT)
-					.show();
+			if (tiles != null) {
+				tiles.remove();
+				tiles = null;
+			}
+			map.setMapType(GoogleMap.MAP_TYPE_NONE);
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(new GeoserverMapTileProvider(256, 256)));
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+					.getString(R.string.map_provider_geoserver));
+			Toast.makeText(getActivity().getBaseContext(), "Not implemented",
+					Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_center:
-			Location location = OpenTenureApplication.getInstance().getDatabase().getCurrentLocation();
+			Location location = OpenTenureApplication.getInstance()
+					.getDatabase().getCurrentLocation();
 
-			if(location != null && location.getLatitude() != 0.0 && location.getLongitude() != 0){
-				Toast.makeText(getActivity().getBaseContext(),
-						"onOptionsItemSelected - lon: " + location.getLongitude() + ", lat: " + location.getLatitude(), Toast.LENGTH_SHORT)
+			if (location != null && location.getLatitude() != 0.0
+					&& location.getLongitude() != 0.0) {
+				Toast.makeText(
+						getActivity().getBaseContext(),
+						"onOptionsItemSelected - lon: "
+								+ location.getLongitude() + ", lat: "
+								+ location.getLatitude(), Toast.LENGTH_SHORT)
 						.show();
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12));
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+						location.getLatitude(), location.getLongitude()), 12));
 
 				map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
 
-			}else{
+			} else {
 				Toast.makeText(getActivity().getBaseContext(),
 						R.string.check_location_service, Toast.LENGTH_LONG)
 						.show();
@@ -209,25 +256,6 @@ public class MainMapFragment extends SupportMapFragment {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
-	public class OsmTileProvider extends UrlTileProvider {
-
-		private String baseUrl;
-
-		public OsmTileProvider(int width, int height, String url) {
-		    super(width, height);
-		    this.baseUrl = url;
-		}
-
-		@Override
-		public URL getTileUrl(int x, int y, int zoom) {
-		    try {
-		        return new URL(baseUrl.replace("{z}", ""+zoom).replace("{x}",""+x).replace("{y}",""+y));
-		    } catch (MalformedURLException e) {
-		        e.printStackTrace();
-		    }
-		    return null;
 		}
 	}
 }

@@ -33,6 +33,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 
 public class LocationHelper {
 
@@ -44,17 +45,21 @@ public class LocationHelper {
 	LocationListener gpsLL = new LocationListener() {
 		
 		public void onLocationChanged(Location location) {
+			Log.d(this.getClass().getName(), "onLocationChanged");
 			OpenTenureApplication.getInstance().getDatabase().updateCurrentLocation(new BigDecimal(location.getLongitude()), new BigDecimal(location.getLatitude()));
 		}
 
 		public void onStatusChanged(String provider, int status,
 				Bundle extras) {
+			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
 
 		public void onProviderEnabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderEnabled");
 		}
 
 		public void onProviderDisabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderDisabled");
 		}
 	};
 	
@@ -65,17 +70,21 @@ public class LocationHelper {
 	LocationListener networkLL = new LocationListener() {
 		
 		public void onLocationChanged(Location location) {
+			Log.d(this.getClass().getName(), "onLocationChanged");
 			OpenTenureApplication.getInstance().getDatabase().updateCurrentLocation(new BigDecimal(location.getLongitude()), new BigDecimal(location.getLatitude()));
 		}
 
 		public void onStatusChanged(String provider, int status,
 				Bundle extras) {
+			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
 
 		public void onProviderEnabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderEnabled");
 		}
 
 		public void onProviderDisabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderDisabled");
 		}
 	};
 	

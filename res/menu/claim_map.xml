@@ -7,5 +7,28 @@
           android:icon="@android:drawable/ic_menu_send"
           android:title="@string/action_submit"
           android:showAsAction="ifRoom" />    
-    
+    <item android:id="@+id/map_provider_google_normal"
+          android:title="@string/map_provider_google_normal"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_google_hybrid"
+          android:title="@string/map_provider_google_hybrid"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_google_satellite"
+          android:title="@string/map_provider_google_satellite"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_google_terrain"
+          android:title="@string/map_provider_google_terrain"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_osm_mapnik"
+          android:title="@string/map_provider_osm_mapnik"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_osm_mapquest"
+          android:title="@string/map_provider_osm_mapquest"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_local_tiles"
+          android:title="@string/map_provider_local_tiles"
+          android:showAsAction="never" />
+    <item android:id="@+id/map_provider_geoserver"
+          android:title="@string/map_provider_geoserver"
+          android:showAsAction="never" />
 </menu>
