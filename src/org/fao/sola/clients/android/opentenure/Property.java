@@ -34,7 +34,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.util.Log;
+import android.graphics.Color;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -120,19 +120,18 @@ public class Property {
 		this.map.setOnMarkerDragListener(new OnMarkerDragListener() {
 			@Override
 			public void onMarkerDrag(Marker mark) {
-				Log.d(this.getClass().getName(),"onMarkerDrag");
+				drawBoundary();
 				
 			}
 
 			@Override
 			public void onMarkerDragEnd(Marker mark) {
-				Log.d(this.getClass().getName(),"onMarkerDragEnd");
+				// TODO Restore default icon				
 				drawBoundary();
 			}
 
 			@Override
 			public void onMarkerDragStart(Marker mark) {
-				Log.d(this.getClass().getName(),"onMarkerDragStart");
 				// TODO Change icon to the one for dragging				
 			}
 			
@@ -203,6 +202,7 @@ public class Property {
 		}
 		polylineOptions.add(vertices.get(0).getPosition()); // Needed in order to close the polyline
 		polylineOptions.zIndex(BOUNDARY_Z_INDEX);
+		polylineOptions.color(Color.RED);
 		polyline = map.addPolyline(polylineOptions);
 	}
 }

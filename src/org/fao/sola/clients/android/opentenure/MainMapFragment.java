@@ -224,11 +224,9 @@ public class MainMapFragment extends SupportMapFragment {
 			}
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions()
-					.tileProvider(new GeoserverMapTileProvider(256, 256)));
+					.tileProvider(new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola/wms?", "sola:nz_orthophoto")));
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
-			Toast.makeText(getActivity().getBaseContext(), "Not implemented",
-					Toast.LENGTH_SHORT).show();
 			return true;
 		case R.id.action_center:
 			Location location = OpenTenureApplication.getInstance()

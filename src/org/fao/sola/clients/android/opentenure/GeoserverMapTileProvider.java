@@ -36,8 +36,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.UrlTileProvider;
 
 public class GeoserverMapTileProvider extends UrlTileProvider{
-
-	// Web Mercator n/w corner of the map.
+	// Web Mercator upper left corner of the world map.
 	private static final double[] TILE_ORIGIN = {-20037508.34789244, 20037508.34789244};
 	//array indexes for that data
 	private static final int ORIG_X = 0; 
@@ -52,41 +51,38 @@ public class GeoserverMapTileProvider extends UrlTileProvider{
 	protected static final int MAXX = 2;
 	protected static final int MAXY = 3;
 
-    String baseURL = "mytileserver.com";
-    String version = "1.3.0";
-    String request = "GetMap";
-    String format = "image/png";
-    String srs = "EPSG:900913";
-    String service = "WMS";
-    String width = "256";
-    String height = "256";
-    String styles = "";
-    String layers = "wtx:road_hazards";
+    private static final String version = "1.1.0";
+    private static final String request = "GetMap";
+    private static final String format = "image/png";
+    private static final String srs = "EPSG:900913";
+    private static final String service = "WMS";
+    private static final String styles = "";
 
-    final String URL_STRING = baseURL + 
-            "&LAYERS=" + layers + 
-            "&VERSION=" + version + 
-            "&SERVICE=" + service + 
-            "&REQUEST=" + request + 
-            "&TRANSPARENT=TRUE&STYLES=" + styles + 
-            "&FORMAT=" + format + 
-            "&SRS=" + srs + 
-            "&BBOX=%f,%f,%f,%f" + 
-            "&WIDTH=" + width + 
-            "&HEIGHT=" + height;
+    final String URL_STRING;
     
-    public GeoserverMapTileProvider(int width, int height) {
+    public GeoserverMapTileProvider(int width, int height, String baseURL, String layer) {
 	    super(width, height);
-	    // TODO Auto-generated constructor stub
+	    URL_STRING = baseURL + 
+	            "layers=" + layer + 
+	            "&version=" + version + 
+	            "&service=" + service + 
+	            "&request=" + request + 
+	            "&transparent=true&styles=" + styles + 
+	            "&format=" + format + 
+	            "&srs=" + srs + 
+	            "&bbox=%f,%f,%f,%f" + 
+	            "&width=" + Integer.toString(width) + 
+	            "&height=" + Integer.toString(height);
 	}
 
     @Override
     public synchronized URL getTileUrl(int x, int y, int zoom) {
         try {       
+            Log.d("TileRequest", "x = " + x + ", y = " + y + ", zoom = " + zoom);
 
             double[] bbox = getBoundingBox(x, y, zoom);
 
-            String s = String.format(Locale.getDefault(), URL_STRING, bbox[MINX], 
+            String s = String.format(Locale.US, URL_STRING, bbox[MINX], 
                     bbox[MINY], bbox[MAXX], bbox[MAXY]);
 
             Log.d("GeoServerTileURL", s);
