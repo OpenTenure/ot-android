@@ -258,7 +258,7 @@ public class ClaimMapFragment extends Fragment {
 			}
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola/wms?", "sola:nz_orthophoto")).zIndex(
+					new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola", "sola:nz_orthophoto")).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
 			property.drawBoundary();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()

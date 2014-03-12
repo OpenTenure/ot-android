@@ -224,7 +224,7 @@ public class MainMapFragment extends SupportMapFragment {
 			}
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions()
-					.tileProvider(new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola/wms?", "sola:nz_orthophoto")));
+					.tileProvider(new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola", "sola:nz_orthophoto")));
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			return true;

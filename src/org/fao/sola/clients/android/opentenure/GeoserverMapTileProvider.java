@@ -63,7 +63,7 @@ public class GeoserverMapTileProvider extends UrlTileProvider{
     public GeoserverMapTileProvider(int width, int height, String baseURL, String layer) {
 	    super(width, height);
 	    URL_STRING = baseURL + 
-	            "layers=" + layer + 
+	            "/wms?layers=" + layer + 
 	            "&version=" + version + 
 	            "&service=" + service + 
 	            "&request=" + request + 

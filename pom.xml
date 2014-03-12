@@ -11,33 +11,23 @@
 	<name>OpenTenure</name>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 			<version>19</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.ipaulpro</groupId>
 			<artifactId>afilechooser</artifactId>
 			<version>1.0.0</version>
 			<type>apklib</type>
 		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-android</artifactId>
-			<version>1.7.6</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android-support-v4</artifactId>
 			<version>19.0.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>maps</artifactId>
@@ -47,15 +37,9 @@
 		<dependency>
 			<groupId>com.google.android.gms</groupId>
 			<artifactId>google-play-services</artifactId>
-			<version>15</version>
-			<scope>provided</scope>
+			<version>4.2.42</version>
+			<type>apklib</type>
 		</dependency>
-		<dependency>
-			<groupId>org.osmdroid</groupId>
-			<artifactId>osmdroid-android</artifactId>
-			<version>4.1</version>
-		</dependency>
-
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
