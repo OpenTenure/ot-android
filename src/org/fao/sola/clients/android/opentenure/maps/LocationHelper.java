@@ -25,9 +25,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
 
 import java.math.BigDecimal;
+
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -114,7 +118,7 @@ public class LocationHelper {
 		locationManager.requestLocationUpdates(
 				LocationManager.NETWORK_PROVIDER, LOCATION_LISTENER_INTERVAL_SLOW, 0, networkLL);
 	}
-	public Location getCurrentLocation(){
+	public LatLng getCurrentLocation(){
 		return OpenTenureApplication.getInstance().getDatabase().getCurrentLocation();
 	}
 

@@ -25,7 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.model;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,13 +39,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.h2.tools.RunScript;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.content.Context;
-import android.location.Location;
 import android.util.Log;
 
 public class Database {
@@ -62,7 +61,7 @@ public class Database {
 
 	private String url;
 
-	Database(Context context) {
+	public Database(Context context) {
 		this.context = context;
 		DB_PATH = context.getFilesDir().getPath() + "/";
 
@@ -171,7 +170,6 @@ public class Database {
 			return true;
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (is != null) {
@@ -211,73 +209,9 @@ public class Database {
 		}
 	}
 
-	public Map<String, String> loadConfiguration() {
+	public LatLng getCurrentLocation() {
 
-		Map<String, String> cfg = new HashMap<String, String>();
-
-		Connection localConnection = null;
-		try {
-
-			localConnection = DriverManager.getConnection(url);
-			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG");
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				cfg.put(rs.getString(1), rs.getString(2));
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return cfg;
-	}
-
-	public String getConfiguration(String key) {
-
-		String value = null;
-		Connection localConnection = null;
-
-		try {
-
-			localConnection = DriverManager.getConnection(url);
-			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
-			statement.setString(1, key);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				value = rs.getString(1);
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return value;
-	}
-
-	public Location getCurrentLocation() {
-
-		Location currentLocation = null;
+		LatLng currentLocation = null;
 
 		Connection localConnection = null;
 
@@ -288,9 +222,8 @@ public class Database {
 					.prepareStatement("SELECT LOC.LOCATION_LAT, LOC.LOCATION_LON FROM LOCATION LOC WHERE LOC.LOCATION_ID='CURRENT'");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				currentLocation = new Location("database");
-				currentLocation.setLatitude(rs.getBigDecimal(1).doubleValue());
-				currentLocation.setLongitude(rs.getBigDecimal(2).doubleValue());
+				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
+						rs.getBigDecimal(2).doubleValue());
 			}
 			rs.close();
 			statement.close();
@@ -310,20 +243,22 @@ public class Database {
 		return currentLocation;
 	}
 
-	public int addConfiguration(String key, String value) {
-		return update("INSERT INTO CONFIGURATION(NAME, VALUE) VALUES ('" + key
-				+ "','" + value + "')");
-	}
-
-	public int updateConfiguration(String key, String value) {
-		return update("UPDATE CONFIGURATION CFG SET CFG.VALUE='" + value
-				+ "' WHERE CFG.NAME='" + key + "'");
-	}
-
 	public int updateCurrentLocation(BigDecimal lon, BigDecimal lat) {
 		return update("UPDATE LOCATION LOC SET LOC.LOCATION_LAT="
 				+ lat.toString() + ", LOC.LOCATION_LON=" + lon.toString()
 				+ " WHERE LOC.LOCATION_ID='CURRENT'");
+	}
+	
+	public Connection getConnection(){
+
+		try {
+
+			return DriverManager.getConnection(url);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public int update(String command) {

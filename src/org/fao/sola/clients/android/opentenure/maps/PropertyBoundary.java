@@ -25,10 +25,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import org.fao.sola.clients.android.opentenure.R;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -40,13 +43,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class Property {
+public class PropertyBoundary {
 
 	private static final float BOUNDARY_Z_INDEX = 2.0f;
 	private List<Marker> vertices = new ArrayList<Marker>();
@@ -54,10 +58,9 @@ public class Property {
 	
 	private GoogleMap map;
 
-	Property(final Context context, final GoogleMap map) {
+	public PropertyBoundary(final Context context, final GoogleMap map) {
 		
 		this.map = map;
-
 		this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
 			
 			@Override
@@ -72,9 +75,7 @@ public class Property {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						Marker marker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(pix.latitude,pix.longitude)).title(vertices.size()+"")
-						.draggable(true));
+						Marker marker = createMarker(pix);
 
 						insertVertex(marker);
 						drawBoundary();
@@ -120,26 +121,39 @@ public class Property {
 		this.map.setOnMarkerDragListener(new OnMarkerDragListener() {
 			@Override
 			public void onMarkerDrag(Marker mark) {
+				mark.setTitle(mark.getId() + String.format(Locale.getDefault(), " - lat: %+.6f, long: %+.6f", mark.getPosition().latitude, mark.getPosition().longitude));
+				mark.showInfoWindow();
 				drawBoundary();
 				
 			}
 
 			@Override
 			public void onMarkerDragEnd(Marker mark) {
-				// TODO Restore default icon				
+				mark.hideInfoWindow();
+				mark.setRotation(0.0f);
+				mark.setTitle(mark.getId());
 				drawBoundary();
 			}
 
 			@Override
 			public void onMarkerDragStart(Marker mark) {
-				// TODO Change icon to the one for dragging				
+				mark.setRotation(20.0f);
+				mark.setTitle(mark.getId() + String.format(Locale.getDefault(), " - lat: %+.6f, long: %+.6f", mark.getPosition().latitude, mark.getPosition().longitude));
+				mark.showInfoWindow();
+				drawBoundary();
 			}
 			
 		});
 	
 	}
 
-	public void insertVertex(Marker newVertex) {
+	public void insertVertex(LatLng newVertex) {
+		
+		insertVertex(createMarker(newVertex));
+		
+	}
+
+	private void insertVertex(Marker newVertex) {
 
 		double minDistance = Double.MAX_VALUE;
 		int insertIndex = 0;
@@ -182,10 +196,22 @@ public class Property {
 		vertices.add(insertIndex, newVertex);
 	}
 
-	public void addVertex(Marker vertex) {
+	private void addVertex(Marker vertex) {
 
 		vertices.add(vertex);
 
+	}
+
+	public void addVertex(LatLng vertex) {
+
+		vertices.add(createMarker(vertex));
+
+	}
+	
+	private Marker createMarker(LatLng vertex){
+		return map.addMarker(new MarkerOptions()
+		.position(vertex).title(vertices.size()+"")
+		.draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.ot_marker)));
 	}
 
 	public void drawBoundary(){

@@ -25,10 +25,12 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
+
+import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.R;
 
 import android.content.Context;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -229,20 +231,17 @@ public class MainMapFragment extends SupportMapFragment {
 					.getString(R.string.map_provider_geoserver));
 			return true;
 		case R.id.action_center:
-			Location location = OpenTenureApplication.getInstance()
-					.getDatabase().getCurrentLocation();
+			LatLng location = lh.getCurrentLocation();
 
-			if (location != null && location.getLatitude() != 0.0
-					&& location.getLongitude() != 0.0) {
+			if (location != null && location.latitude != 0.0
+					&& location.longitude != 0.0) {
 				Toast.makeText(
 						getActivity().getBaseContext(),
-						"onOptionsItemSelected - lon: "
-								+ location.getLongitude() + ", lat: "
-								+ location.getLatitude(), Toast.LENGTH_SHORT)
+						"onOptionsItemSelected - "
+								+ location, Toast.LENGTH_SHORT)
 						.show();
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-						location.getLatitude(), location.getLongitude()), 12));
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
 
 				map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
 

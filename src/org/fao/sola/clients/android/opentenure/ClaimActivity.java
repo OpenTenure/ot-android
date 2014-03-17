@@ -29,6 +29,8 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;

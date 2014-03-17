@@ -29,6 +29,8 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Map;
 
+import org.fao.sola.clients.android.opentenure.model.Database;
+
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -59,13 +61,6 @@ public class OpenTenureApplication extends Application {
 			return false;
 		}
 
-		public Map<String,String> getConfiguration(boolean forceReload) {
-			if(cfg == null || forceReload){
-				cfg = getDatabase().loadConfiguration();
-			}
-			return cfg;
-		}
-		
 	    @Override
 	    public void onCreate() {
 	      super.onCreate();  

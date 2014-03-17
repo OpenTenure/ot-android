@@ -25,7 +25,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
+
+import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.R;
 
 import android.content.Context;
 import android.location.LocationManager;
@@ -45,7 +48,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
@@ -59,7 +61,7 @@ public class ClaimMapFragment extends Fragment {
 	private View mapView;
 	private MapLabel label;
 	private GoogleMap map;
-	private Property property;
+	private PropertyBoundary propertyBoundary;
 	private boolean saved = false;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
@@ -137,22 +139,14 @@ public class ClaimMapFragment extends Fragment {
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		property = new Property(mapView.getContext(), map);
+		propertyBoundary = new PropertyBoundary(mapView.getContext(), map);
 
-		property.addVertex(map.addMarker(new MarkerOptions()
-				.position(new LatLng(41.882267, 12.486804)).title("0")
-				.draggable(true)));
-		property.addVertex(map.addMarker(new MarkerOptions()
-				.position(new LatLng(41.881380, 12.488102)).title("1")
-				.draggable(true)));
-		property.addVertex(map.addMarker(new MarkerOptions()
-				.position(new LatLng(41.882778, 12.489889)).title("2")
-				.draggable(true)));
-		property.addVertex(map.addMarker(new MarkerOptions()
-				.position(new LatLng(41.883657, 12.488564)).title("3")
-				.draggable(true)));
+		propertyBoundary.addVertex(new LatLng(41.882267, 12.486804));
+		propertyBoundary.addVertex(new LatLng(41.881380, 12.488102));
+		propertyBoundary.addVertex(new LatLng(41.882778, 12.489889));
+		propertyBoundary.addVertex(new LatLng(41.883657, 12.488564));
 
-		property.drawBoundary();
+		propertyBoundary.drawBoundary();
 
 		MapsInitializer.initialize(this.getActivity());
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.882506,
@@ -220,7 +214,7 @@ public class ClaimMapFragment extends Fragment {
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			property.drawBoundary();
+			propertyBoundary.drawBoundary();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapnik));
 			return true;
@@ -234,7 +228,7 @@ public class ClaimMapFragment extends Fragment {
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			property.drawBoundary();
+			propertyBoundary.drawBoundary();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapquest));
 			return true;
@@ -247,7 +241,7 @@ public class ClaimMapFragment extends Fragment {
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
-			property.drawBoundary();
+			propertyBoundary.drawBoundary();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_local_tiles));
 			return true;
@@ -260,7 +254,7 @@ public class ClaimMapFragment extends Fragment {
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola", "sola:nz_orthophoto")).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
-			property.drawBoundary();
+			propertyBoundary.drawBoundary();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			return true;
@@ -283,7 +277,47 @@ public class ClaimMapFragment extends Fragment {
 				toast.show();
 			}
 			return true;
+		case R.id.action_center:
+			LatLng currentLocation = lh.getCurrentLocation();
 
+			if (currentLocation != null && currentLocation.latitude != 0.0
+					&& currentLocation.longitude != 0.0) {
+				Toast.makeText(
+						getActivity().getBaseContext(),
+						"onOptionsItemSelected - "
+								+ currentLocation, Toast.LENGTH_SHORT)
+						.show();
+
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12));
+
+				map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
+
+			} else {
+				Toast.makeText(getActivity().getBaseContext(),
+						R.string.check_location_service, Toast.LENGTH_LONG)
+						.show();
+			}
+			return true;
+		case R.id.action_new:
+			LatLng newLocation = lh.getCurrentLocation();
+
+			if (newLocation != null && newLocation.latitude != 0.0
+					&& newLocation.longitude != 0.0) {
+				Toast.makeText(
+						getActivity().getBaseContext(),
+						"onOptionsItemSelected - "
+								+ newLocation, Toast.LENGTH_SHORT)
+						.show();
+
+				propertyBoundary.insertVertex(newLocation);
+				propertyBoundary.drawBoundary();
+
+			} else {
+				Toast.makeText(getActivity().getBaseContext(),
+						R.string.check_location_service, Toast.LENGTH_LONG)
+						.show();
+			}
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

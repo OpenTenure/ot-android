@@ -29,6 +29,9 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
+
 import android.app.ActivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -99,7 +102,7 @@ public class OpenTenure extends FragmentActivity {
 		tabs.setViewPager(mViewPager);
 
 		Log.d(this.getClass().getName(),
-				"DB version is: " + OpenTenureApplication.getInstance().getDatabase().getConfiguration("DBVERSION"));
+				"DB version is: " + Configuration.getConfiguration("DBVERSION"));
 	}
 
 	@Override
