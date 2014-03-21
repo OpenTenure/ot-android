@@ -1,0 +1,19 @@
+<resources>
+
+    <string name="title_activity_login_activity_test">Log in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_log_in_register"><b>Log in</b> or register</string>
+    <string name="action_sign_in_short">Log in</string>
+    <string name="action_forgot_password">Recover lost password</string>
+    <string name="login_progress_signing_in">Loggin in&#8230;</string>
+    <string name="error_invalid_username">This username is too short</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_generic_login">An error has occurred during login </string>
+    <string name="error_generic_conection">An error has occurred during connection</string>
+    <string name="error_field_required">This field is required</string>
+
+</resources>

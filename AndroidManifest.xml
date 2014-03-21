@@ -59,6 +59,14 @@
             android:label="@string/title_activity_file_chooser" >
         </activity>
         <activity
+            android:name="org.fao.sola.clients.android.opentenure.LoginActivity"
+            android:label="@string/title_activity_login_activity_test"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+            <intent-filter>
+            </intent-filter>
+        </activity>
+        <activity
             android:name="com.ipaulpro.afilechooser.FileChooserActivity"
             android:enabled="@bool/use_activity"
             android:exported="true"
