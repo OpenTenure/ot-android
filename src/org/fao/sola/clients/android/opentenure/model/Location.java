@@ -27,24 +27,47 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-public class Configuration {
+import com.google.android.gms.maps.model.LatLng;
 
-	public String getConfigurationId() {
-		return configurationId;
+public class Location {
+
+	@Override
+	public String toString() {
+		return "Location [locationId=" + locationId + ", name=" + name
+				+ ", lat=" + lat + ", lon=" + lon + "]";
 	}
 
-	public void setConfigurationId(String configurationId) {
-		this.configurationId = configurationId;
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLon() {
+		return lon;
+	}
+
+	public void setLon(double lon) {
+		this.lon = lon;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
 	}
 
 	public String getName() {
@@ -55,38 +78,32 @@ public class Configuration {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	String configurationId;
+	String locationId;
 	String name;
-	String value;
+	double lat;
+	double lon;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Configuration() {
-		this.configurationId = UUID.randomUUID().toString();
+	public Location() {
+		this.locationId = UUID.randomUUID().toString();
 	}
 
-	public static int createConfiguration(Configuration cfg) {
+	public static int createLocation(Location loc) {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, cfg.getConfigurationId());
-			statement.setString(2, cfg.getName());
-			statement.setString(3, cfg.getValue());
+					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
+			statement.setString(1, loc.getLocationId());
+			statement.setString(2, loc.getName());
+			statement.setBigDecimal(3, new BigDecimal(loc.getLat()));
+			statement.setBigDecimal(4, new BigDecimal(loc.getLon()));
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -107,17 +124,18 @@ public class Configuration {
 
 	public int create() {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
 			localConnection = db.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
+			statement.setString(1, getLocationId());
 			statement.setString(2, getName());
-			statement.setString(3, getValue());
+			statement.setBigDecimal(3, new BigDecimal(getLat()));
+			statement.setBigDecimal(4, new BigDecimal(getLon()));
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -136,18 +154,18 @@ public class Configuration {
 		return result;
 	}
 
-	public static int deleteConfiguration(Configuration cfg) {
+	public static int deleteLocation(Location loc) {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, cfg.getConfigurationId());
+					.prepareStatement("DELETE FROM LOCATION WHERE LOCATION_ID=?");
+			statement.setString(1, loc.getLocationId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -168,15 +186,16 @@ public class Configuration {
 
 	public int delete() {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
-			localConnection = db.getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("DELETE FROM LOCATION WHERE LOCATION_ID=?");
+			statement.setString(1, getLocationId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -195,20 +214,21 @@ public class Configuration {
 		return result;
 	}
 
-	public static int updateConfiguration(Configuration cfg) {
+	public static int updateLocation(Location loc) {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
-			statement.setString(1, cfg.getName());
-			statement.setString(2, cfg.getValue());
-			statement.setString(3, cfg.getConfigurationId());
+					.prepareStatement("UPDATE LOCATION SET NAME=?, LAT=?, LON=? WHERE LOCATION_ID=?");
+			statement.setString(1, loc.getName());
+			statement.setBigDecimal(2, new BigDecimal(loc.getLat()));
+			statement.setBigDecimal(3, new BigDecimal(loc.getLon()));
+			statement.setString(4, loc.getLocationId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -229,17 +249,18 @@ public class Configuration {
 
 	public int update() {
 
-		int result = 0;
 		Connection localConnection = null;
+		int result = 0;
 
 		try {
 
 			localConnection = db.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
+					.prepareStatement("UPDATE LOCATION SET NAME=?, LAT=?, LON=? WHERE LOCATION_ID=?");
 			statement.setString(1, getName());
-			statement.setString(2, getValue());
-			statement.setString(3, getConfigurationId());
+			statement.setBigDecimal(2, new BigDecimal(getLat()));
+			statement.setBigDecimal(3, new BigDecimal(getLon()));
+			statement.setString(4, getLocationId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -258,9 +279,9 @@ public class Configuration {
 		return result;
 	}
 
-	public static String getConfigurationValue(String name) {
+	public static Location getLocation(String name) {
 
-		String val = null;
+		Location loc = null;
 		Connection localConnection = null;
 
 		try {
@@ -268,11 +289,15 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CFG.CONFIGURATION_ID, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
+					.prepareStatement("SELECT LOC.LOCATION_ID, LOC.LAT, LOC.LON FROM LOCATION LOC WHERE LOC.NAME=?");
 			statement.setString(1, name);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				val = rs.getString(2);
+				loc = new Location();
+				loc.setLocationId(rs.getString(1));
+				loc.setName(name);
+				loc.setLat(rs.getBigDecimal(2).doubleValue());
+				loc.setLon(rs.getBigDecimal(3).doubleValue());
 			}
 			rs.close();
 			statement.close();
@@ -289,59 +314,24 @@ public class Configuration {
 				}
 			}
 		}
-		return val;
+		return loc;
 	}
 
-	public static Map<String, String> getConfigurationValues() {
+	public static LatLng getCurrentLocation() {
 
-		Map<String, String> cfg = new HashMap<String, String>();
+		LatLng currentLocation = null;
 
-		Connection localConnection = null;
-		try {
-
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
-			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG");
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				cfg.put(rs.getString(1), rs.getString(2));
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return cfg;
-	}
-
-	public static Configuration getConfiguration(String configurationId) {
-
-		Configuration cfg = null;
 		Connection localConnection = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.CONFIGURATION_ID=?");
-			statement.setString(1, configurationId);
+					.prepareStatement("SELECT LOC.LAT, LOC.LON FROM LOCATION LOC WHERE LOC.NAME='CURRENT'");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				cfg = new Configuration();
-				cfg.setConfigurationId(configurationId);
-				cfg.setName(rs.getString(1));
-				cfg.setValue(rs.getString(2));
+				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
+						rs.getBigDecimal(2).doubleValue());
 			}
 			rs.close();
 			statement.close();
@@ -358,7 +348,7 @@ public class Configuration {
 				}
 			}
 		}
-		return cfg;
+		return currentLocation;
 	}
 
 }

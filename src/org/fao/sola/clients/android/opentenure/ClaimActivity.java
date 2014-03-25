@@ -30,7 +30,11 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 
+import com.astuetz.PagerSlidingTabStrip;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -39,8 +43,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
-public class ClaimActivity extends FragmentActivity {
+public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 
+	public static final String CLAIM_ID_KEY = "claimId";
+	public static final String MODE_KEY = "mode";
+	public static final String CREATE_CLAIM_ID = "create";
+	public static final String MODE_RO = "RO";
+	public static final String MODE_RW = "RW";
+	private String claimId;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
@@ -77,6 +87,7 @@ public class ClaimActivity extends FragmentActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
+		claimId = getIntent().getExtras().getString(CLAIM_ID_KEY).equalsIgnoreCase(CREATE_CLAIM_ID)?null:getIntent().getExtras().getString(CLAIM_ID_KEY);
 	}
 
 	@Override
@@ -102,15 +113,13 @@ public class ClaimActivity extends FragmentActivity {
 				return new ClaimMapFragment();
 			case 2:
 				return new ClaimDocumentsFragment();
-			case 3:
-				return new ClaimPhotosFragment();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 4;
+			return 3;
 		}
 
 		@Override
@@ -123,10 +132,19 @@ public class ClaimActivity extends FragmentActivity {
 				return getString(R.string.title_claim_map).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_claim_documents).toUpperCase(l);
-			case 3:
-				return getString(R.string.title_claim_photos).toUpperCase(l);
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
+		
+	}
+
+	@Override
+	public String getClaimId() {
+		return claimId;
 	}
 }

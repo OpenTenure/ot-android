@@ -29,26 +29,34 @@ package org.fao.sola.clients.android.opentenure;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import android.view.GestureDetector;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View.OnTouchListener;
+import android.widget.TextView;
 
 public class LocalClaimsFragment extends SeparatedListFragment implements
 		OnTouchListener {
 
 	private AlphabetListAdapter adapter = new AlphabetListAdapter();
-	private GestureDetector mGestureDetector;
+	private Map<String,String> claimIds = new HashMap<String,String>();
+	private double x;
+	private double y;
+	private static final double TAP_THRESHOLD_DISTANCE = 10.0;
 
 	public LocalClaimsFragment() {
 	}
@@ -67,13 +75,24 @@ public class LocalClaimsFragment extends SeparatedListFragment implements
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			intent.putExtra("action", "create");
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ClaimActivity.CREATE_CLAIM_ID);
+			intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
 			startActivity(intent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+			default:
+				populateList();
+				updateList();
+		}
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -83,14 +102,12 @@ public class LocalClaimsFragment extends SeparatedListFragment implements
 				false);
 		setHasOptionsMenu(true);
 
-		mGestureDetector = new GestureDetector(rootView.getContext(),
-				new SideIndexGestureListener());
-
 		List<String> localClaims = populateList();
 		Collections.sort(localClaims);
 
 		List<AlphabetListAdapter.Row> rows = getRows(localClaims);
 		adapter.setRows(rows);
+		adapter.setItemOnOnTouchListener(this);
 		setListAdapter(adapter);
 
 		updateList();
@@ -99,63 +116,40 @@ public class LocalClaimsFragment extends SeparatedListFragment implements
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
-		if (mGestureDetector.onTouchEvent(event)) {
-			return true;
-		} else {
+		if (event.getAction() == MotionEvent.ACTION_UP) {
+
+			double distance = Math.sqrt(Math.pow(event.getX() - x, 2.0)
+					+ Math.pow(event.getY() - y, 2.0));
+			if (distance < TAP_THRESHOLD_DISTANCE) {
+				Intent intent = new Intent(rootView.getContext(),
+						ClaimActivity.class);
+				intent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimIds.get(((TextView)v).getText().toString()));
+				intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
+				startActivity(intent);
+				return true;
+			} else {
+				return false;
+			}
+		}
+		if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			Log.d(this.getClass().getName(),"Down");
+			x = event.getX();
+			y = event.getY();
 			return false;
 		}
+		return false;
 	}
 
 	protected List<String> populateList() {
-		List<String> claims = new ArrayList<String>();
-		claims.add("Awwww\nClaim 1");
-		claims.add("Axxxx\nClaim 1");
-		claims.add("Ayyyy\nClaim 1");
-		claims.add("Azzzz\nClaim 1");
-		claims.add("Bwwww\nClaim 1");
-		claims.add("Bxxxx\nClaim 1");
-		claims.add("Byyyy\nClaim 1");
-		claims.add("Bzzzz\nClaim 1");
-		claims.add("Lwwww\nClaim 1");
-		claims.add("Lxxxx\nClaim 1");
-		claims.add("Lyyyy\nClaim 1");
-		claims.add("Lzzzz\nClaim 1");
-		claims.add("Fwwww\nClaim 1");
-		claims.add("Fxxxx\nClaim 1");
-		claims.add("Fyyyy\nClaim 1");
-		claims.add("Fzzzz\nClaim 1");
-		claims.add("Gwwww\nClaim 1");
-		claims.add("Gxxxx\nClaim 1");
-		claims.add("Gyyyy\nClaim 1");
-		claims.add("Gzzzz\nClaim 1");
-		claims.add("0wwww\nClaim 1");
-		claims.add("0xxxx\nClaim 1");
-		claims.add("0yyyy\nClaim 1");
-		claims.add("0zzzz\nClaim 1");
-		claims.add("Hwwww\nClaim 1");
-		claims.add("Hxxxx\nClaim 1");
-		claims.add("Hyyyy\nClaim 1");
-		claims.add("Hzzzz\nClaim 1");
-		claims.add("Nwwww\nClaim 1");
-		claims.add("Nxxxx\nClaim 1");
-		claims.add("Nyyyy\nClaim 1");
-		claims.add("Nzzzz\nClaim 1");
-		claims.add("Swwww\nClaim 1");
-		claims.add("Sxxxx\nClaim 1");
-		claims.add("Syyyy\nClaim 1");
-		claims.add("Szzzz\nClaim 1");
-		claims.add("Jwwww\nClaim 1");
-		claims.add("Jxxxx\nClaim 1");
-		claims.add("Jyyyy\nClaim 1");
-		claims.add("Jzzzz\nClaim 1");
-		claims.add("Qwwww\nClaim 1");
-		claims.add("Qxxxx\nClaim 1");
-		claims.add("Qyyyy\nClaim 1");
-		claims.add("Qzzzz\nClaim 1");
-		claims.add("Kwwww\nClaim 1");
-		claims.add("Kxxxx\nClaim 1");
-		claims.add("Kyyyy\nClaim 1");
-		claims.add("Kzzzz\nClaim 1");
-		return claims;
+		List<Claim> claims = Claim.getAllClaims();
+		List<String> claimsList = new ArrayList<String>();
+		claimIds = new HashMap<String,String>();
+		
+		for(Claim claim : claims){
+			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName();
+			claimsList.add(slogan);
+			claimIds.put(slogan, claim.getClaimId());
+		}
+		return claimsList;
 	}
 }

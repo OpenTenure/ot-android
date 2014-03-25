@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_claim_details"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/light_background_opentenure"
@@ -9,40 +10,58 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
         android:layout_weight="1"
         android:background="@color/light_background_opentenure"
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/EditCommunityRecorderName"
+            android:id="@+id/claim_name_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
-            android:hint="@string/community_recorder_name"
-            android:inputType="textPersonName" >
+            android:hint="@string/claim_name"
+            android:inputType="text" >
         </EditText>
 
         <EditText
-            android:id="@+id/EditPersonName"
+            android:id="@+id/first_name_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
-            android:hint="@string/person_name"
-            android:inputType="textPersonName" >
+            android:hint="@string/first_name"
+            android:inputType="text" >
         </EditText>
 
         <EditText
-            android:id="@+id/EditPassword"
+            android:id="@+id/last_name_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
-            android:hint="@string/password"
-            android:inputType="textPassword" >
+            android:hint="@string/last_name"
+            android:inputType="text" >
         </EditText>
 
         <EditText
-            android:id="@+id/EditPostalAddress"
+            android:id="@+id/date_of_birth_input_field"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/date_of_birth"
+            android:inputType="date" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/place_of_birth_input_field"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_background_opentenure"
+            android:hint="@string/place_of_birth"
+            android:inputType="text" >
+        </EditText>
+
+        <EditText
+            android:id="@+id/postal_address_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
@@ -51,7 +70,7 @@
         </EditText>
 
         <EditText
-            android:id="@+id/EditEmailAddress"
+            android:id="@+id/email_address_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
@@ -60,30 +79,23 @@
         </EditText>
 
         <EditText
-            android:id="@+id/EditClaimDate"
+            android:id="@+id/mobile_phone_number_input_field"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
-            android:hint="@string/claim_date"
-            android:inputType="date" >
+            android:hint="@string/mobile_phone_number"
+            android:inputType="phone" >
         </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/light_background_opentenure"
-        android:layout_weight="1"
-        android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/editClaimNotes"
+            android:id="@+id/contact_phone_number_input_field"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:background="@color/light_background_opentenure"
-            android:hint="@string/claim_notes"
-            android:inputType="textMultiLine" >
+            android:hint="@string/contact_phone_number"
+            android:inputType="phone" >
         </EditText>
-    </LinearLayout>
+        </LinearLayout>
+
 
 </LinearLayout>

@@ -28,10 +28,13 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -43,7 +46,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,32 +55,44 @@ import com.google.android.gms.maps.model.PolylineOptions;
 public class PropertyBoundary {
 
 	private static final float BOUNDARY_Z_INDEX = 2.0f;
-	private List<Marker> vertices = new ArrayList<Marker>();
+	private List<Vertex> vertices = new ArrayList<Vertex>();
+	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
+	private String claimId;
+
 	private Polyline polyline = null;
-	
 	private GoogleMap map;
 
-	public PropertyBoundary(final Context context, final GoogleMap map) {
-		
+	public PropertyBoundary(final Context context, final GoogleMap map, final String claimId) {
+		this.claimId = claimId;
 		this.map = map;
+		vertices = Vertex.getVertices(claimId);
+		
+		for(Vertex vertex : vertices){
+			Marker mark = createMarker(vertex.getMapPosition());
+			verticesMap.put(mark.getId(), vertex);
+		}
+
 		this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
 			
 			@Override
-			public void onMapLongClick(final LatLng pix) {
+			public void onMapLongClick(final LatLng position) {
 				AlertDialog.Builder dialog = new AlertDialog.Builder(context);
 				dialog.setTitle(R.string.message_add_marker);
-				dialog.setMessage("Lon: " + pix.longitude + ", lat: "
-						+ pix.latitude);
+				dialog.setMessage("Lon: " + position.longitude + ", lat: "
+						+ position.latitude);
 
 				dialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						Marker marker = createMarker(pix);
-
-						insertVertex(marker);
+						Marker mark = createMarker(position);
+						Vertex vert = new Vertex(position);
+						vert.setClaimId(claimId);
+						verticesMap.put(mark.getId(), vert);
+						insertVertex(vert);
 						drawBoundary();
+						updateClaimBoundary(claimId);
 					}
 				});
 				dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -103,9 +117,11 @@ public class PropertyBoundary {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
+						String id = mark.getId();
+						verticesMap.remove(id);
 						mark.remove();
-						vertices.remove(mark);
 						drawBoundary();
+						updateClaimBoundary(claimId);
 					}
 				});
 				dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -123,6 +139,7 @@ public class PropertyBoundary {
 			public void onMarkerDrag(Marker mark) {
 				mark.setTitle(mark.getId() + String.format(Locale.getDefault(), " - lat: %+.6f, long: %+.6f", mark.getPosition().latitude, mark.getPosition().longitude));
 				mark.showInfoWindow();
+				verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
 				drawBoundary();
 				
 			}
@@ -130,16 +147,17 @@ public class PropertyBoundary {
 			@Override
 			public void onMarkerDragEnd(Marker mark) {
 				mark.hideInfoWindow();
-				mark.setRotation(0.0f);
 				mark.setTitle(mark.getId());
+				verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
+				updateClaimBoundary(claimId);
 				drawBoundary();
 			}
 
 			@Override
 			public void onMarkerDragStart(Marker mark) {
-				mark.setRotation(20.0f);
 				mark.setTitle(mark.getId() + String.format(Locale.getDefault(), " - lat: %+.6f, long: %+.6f", mark.getPosition().latitude, mark.getPosition().longitude));
 				mark.showInfoWindow();
+				verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
 				drawBoundary();
 			}
 			
@@ -147,13 +165,56 @@ public class PropertyBoundary {
 	
 	}
 
-	public void insertVertex(LatLng newVertex) {
+	public LatLng getCenter(){
 		
-		insertVertex(createMarker(newVertex));
+		if(vertices.size()<=0){
+			return Vertex.INVALID_POSITION;
+		}
+		double minLat = Double.MAX_VALUE, minLon = Double.MAX_VALUE;
+		double maxLat = Double.MIN_VALUE, maxLon = Double.MIN_VALUE;
+
+		for (Vertex vertex : vertices){
+			if(vertex.getMapPosition().latitude > maxLat){
+				maxLat = vertex.getMapPosition().latitude;
+			}
+			if(vertex.getMapPosition().latitude < minLat){
+				minLat = vertex.getMapPosition().latitude;
+			}
+			if(vertex.getMapPosition().longitude > maxLon){
+				maxLon = vertex.getMapPosition().longitude;
+			}
+			if(vertex.getMapPosition().longitude < minLon){
+				minLon = vertex.getMapPosition().longitude;
+			}
+		}
+		
+		return new LatLng(minLat +((maxLat-minLat)/2),minLon +((maxLon-minLon)/2));
+	}
+
+	public void updateClaimBoundary(String claimId){
+
+		Vertex.deleteVertices(claimId);
+
+		for(int i = 0 ; i < vertices.size() ; i++){
+			Vertex vertex = vertices.get(i);
+			vertex.setSequenceNumber(i);
+			Vertex.createVertex(vertex);
+		}
 		
 	}
 
-	private void insertVertex(Marker newVertex) {
+	public void insertVertexFromGPS(LatLng position) {
+		Marker mark = createMarker(position);
+		Vertex vert = new Vertex(position);
+		vert.setClaimId(claimId);
+		verticesMap.put(mark.getId(), vert);
+		insertVertex(vert);
+		drawBoundary();
+		updateClaimBoundary(claimId);
+
+	}
+
+	private void insertVertex(Vertex newVertex) {
 
 		double minDistance = Double.MAX_VALUE;
 		int insertIndex = 0;
@@ -165,8 +226,8 @@ public class PropertyBoundary {
 
 		for (int i = 0; i < vertices.size(); i++) {
 
-			Marker from = vertices.get(i);
-			Marker to = null;
+			Vertex from = vertices.get(i);
+			Vertex to = null;
 
 			if (i == vertices.size() - 1) {
 				to = vertices.get(0);
@@ -175,17 +236,17 @@ public class PropertyBoundary {
 			}
 
 			double currDistance = Math.sqrt(Math.pow(
-					from.getPosition().latitude
-							- newVertex.getPosition().latitude, 2.0)
+					from.getMapPosition().latitude
+							- newVertex.getMapPosition().latitude, 2.0)
 					+ Math.pow(
-							from.getPosition().longitude
-									- newVertex.getPosition().longitude, 2.0))
+							from.getMapPosition().longitude
+									- newVertex.getMapPosition().longitude, 2.0))
 					+ Math.sqrt(Math.pow(
-							newVertex.getPosition().latitude
-									- to.getPosition().latitude, 2.0)
+							newVertex.getMapPosition().latitude
+									- to.getMapPosition().latitude, 2.0)
 							+ Math.pow(
-									newVertex.getPosition().longitude
-											- to.getPosition().longitude, 2.0));
+									newVertex.getMapPosition().longitude
+											- to.getMapPosition().longitude, 2.0));
 
 			if (currDistance < minDistance) {
 				minDistance = currDistance;
@@ -196,22 +257,15 @@ public class PropertyBoundary {
 		vertices.add(insertIndex, newVertex);
 	}
 
-	private void addVertex(Marker vertex) {
+	private void addVertex(Vertex vertex) {
 
 		vertices.add(vertex);
-
 	}
 
-	public void addVertex(LatLng vertex) {
-
-		vertices.add(createMarker(vertex));
-
-	}
-	
-	private Marker createMarker(LatLng vertex){
+	private Marker createMarker(LatLng position){
 		return map.addMarker(new MarkerOptions()
-		.position(vertex).title(vertices.size()+"")
-		.draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.ot_marker)));
+		.position(position).title(vertices.size()+"")
+		.draggable(true));
 	}
 
 	public void drawBoundary(){
@@ -224,9 +278,9 @@ public class PropertyBoundary {
 		}
 		PolylineOptions polylineOptions = new PolylineOptions();
 		for (int i = 0 ; i < vertices.size() ; i++) {
-			polylineOptions.add(vertices.get(i).getPosition());
+			polylineOptions.add(vertices.get(i).getMapPosition());
 		}
-		polylineOptions.add(vertices.get(0).getPosition()); // Needed in order to close the polyline
+		polylineOptions.add(vertices.get(0).getMapPosition()); // Needed in order to close the polyline
 		polylineOptions.zIndex(BOUNDARY_Z_INDEX);
 		polylineOptions.color(Color.RED);
 		polyline = map.addPolyline(polylineOptions);

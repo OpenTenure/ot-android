@@ -27,10 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
-import java.math.BigDecimal;
-
-import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-
 import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
@@ -50,7 +46,10 @@ public class LocationHelper {
 		
 		public void onLocationChanged(Location location) {
 			Log.d(this.getClass().getName(), "onLocationChanged");
-			OpenTenureApplication.getInstance().getDatabase().updateCurrentLocation(new BigDecimal(location.getLongitude()), new BigDecimal(location.getLatitude()));
+			org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
+			loc.setLat(location.getLatitude());
+			loc.setLon(location.getLongitude());
+			loc.update();
 		}
 
 		public void onStatusChanged(String provider, int status,
@@ -75,7 +74,10 @@ public class LocationHelper {
 		
 		public void onLocationChanged(Location location) {
 			Log.d(this.getClass().getName(), "onLocationChanged");
-			OpenTenureApplication.getInstance().getDatabase().updateCurrentLocation(new BigDecimal(location.getLongitude()), new BigDecimal(location.getLatitude()));
+			org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
+			loc.setLat(location.getLatitude());
+			loc.setLon(location.getLongitude());
+			loc.update();
 		}
 
 		public void onStatusChanged(String provider, int status,
@@ -119,7 +121,8 @@ public class LocationHelper {
 				LocationManager.NETWORK_PROVIDER, LOCATION_LISTENER_INTERVAL_SLOW, 0, networkLL);
 	}
 	public LatLng getCurrentLocation(){
-		return OpenTenureApplication.getInstance().getDatabase().getCurrentLocation();
+		org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
+		return new LatLng(loc.getLat(), loc.getLon());
 	}
 
 }

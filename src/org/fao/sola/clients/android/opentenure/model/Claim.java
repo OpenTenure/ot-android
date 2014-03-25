@@ -31,21 +31,41 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Claim {
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<Metadata> getMetadata() {
+		return metadata;
+	}
+	public void setMetadata(List<Metadata> metadata) {
+		this.metadata = metadata;
+	}
+
 	Database db = OpenTenureApplication.getInstance().getDatabase();
+
+	public Claim(){
+		this.claimId = UUID.randomUUID().toString();
+	}
 
 	@Override
 	public String toString() {
-		return "Claim [claimId=" + claimId + ", dateCreated=" + dateCreated
-				+ ", person=" + person + ", boundary=" + boundary
+		return "Claim [claimId=" + claimId
+				+ ", uploaded=" + uploaded.toString()
+				+ ", name=" + name
+				+ ", person=" + person
+				+ ", vertices=" + Arrays.toString(vertices.toArray())
+				+ ", metadata=" + Arrays.toString(metadata.toArray())
 				+ ", challengedClaim=" + challengedClaim
 				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())+ "]";
@@ -56,23 +76,17 @@ public class Claim {
 	public void setClaimId(String claimId) {
 		this.claimId = claimId;
 	}
-	public java.sql.Timestamp getDateCreated() {
-		return dateCreated;
-	}
-	public void setDateCreated(java.sql.Timestamp dateCreated) {
-		this.dateCreated = dateCreated;
-	}
 	public Person getPerson() {
 		return person;
 	}
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	public Boundary getBoundary() {
-		return boundary;
+	public List<Vertex> getVertices() {
+		return vertices;
 	}
-	public void setBoundary(Boundary boundary) {
-		this.boundary = boundary;
+	public void setVertices(List<Vertex> vertices) {
+		this.vertices = vertices;
 	}
 	public Claim getChallengedClaim() {
 		return challengedClaim;
@@ -86,41 +100,155 @@ public class Claim {
 	public void setChallengingClaims(List<Claim> challengingClaims) {
 		this.challengingClaims = challengingClaims;
 	}
-	public List<Document> getAttachments() {
+	public List<Attachment> getAttachments() {
 		return attachments;
 	}
-	public void setAttachments(List<Document> attachments) {
+	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
 	
-	public static int update(Claim claim){
-		Person.updatePerson(claim.getPerson());
-		Boundary.updateBoundary(claim.getBoundary());
-		return OpenTenureApplication.getInstance().getDatabase().update("UPDATE CLAIM SET DATE_CREATED='"
-				+ new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(claim.getDateCreated())
-				+ "', PERSON_ID='"
-				+ claim.getPerson().getPersonId()
-				+ "', BOUNDARY_ID='"
-				+ claim.getBoundary().getBoundaryId()
-				+ "', CHALLENGED_CLAIM_ID='"
-				+ claim.getChallengedClaim()
-				+ "' WHERE CLAIM_ID='"
-				+ claim.getClaimId() + "'");
+	public static int createClaim(Claim claim){
+		int result = 0;
+
+		Connection localConnection = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			PreparedStatement statement = localConnection
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, UPLOADED, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
+			statement.setString(1, claim.getClaimId());
+			statement.setBoolean(2, claim.getUploaded());
+			statement.setString(3, claim.getName());
+			statement.setString(4, claim.getPerson().getPersonId());
+			if(claim.getChallengedClaim() != null){
+				statement.setString(5, claim.getChallengedClaim().getClaimId());
+			}else{
+				statement.setString(5, null);
+			}
+				
+			result = statement.executeUpdate();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public int create(){
+		int result = 0;
+
+		Connection localConnection = null;
+		try {
+
+			localConnection = db.getConnection();
+			PreparedStatement statement = localConnection
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, UPLOADED, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
+			statement.setString(1, getClaimId());
+			statement.setBoolean(2, getUploaded());
+			statement.setString(3, getName());
+			statement.setString(4, getPerson().getPersonId());
+			if(getChallengedClaim() != null){
+				statement.setString(5, getChallengedClaim().getClaimId());
+			}else{
+				statement.setString(5, null);
+			}
+				
+			result = statement.executeUpdate();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int updateClaim(Claim claim){
+		int result = 0;
+
+		Connection localConnection = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			PreparedStatement statement = localConnection
+					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=? CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+			statement.setBoolean(1, claim.getUploaded());
+			statement.setString(2, claim.getName());
+			statement.setString(3, claim.getPerson().getPersonId());
+			if(claim.getChallengedClaim() != null){
+				statement.setString(4, claim.getChallengedClaim().getClaimId());
+			}else{
+				statement.setString(4, null);
+			}
+			statement.setString(5, claim.getClaimId());
+				
+			result = statement.executeUpdate();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
 	}
 
 	public int update(){
-		person.update();
-		boundary.update();
-		return OpenTenureApplication.getInstance().getDatabase().update("UPDATE CLAIM SET DATE_CREATED='"
-				+ new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(getDateCreated())
-				+ "', PERSON_ID='"
-				+ getPerson().getPersonId()
-				+ "', BOUNDARY_ID='"
-				+ getBoundary().getBoundaryId()
-				+ "', CHALLENGED_CLAIM_ID='"
-				+ getChallengedClaim()
-				+ "' WHERE CLAIM_ID='"
-				+ getClaimId() + "'");
+		int result = 0;
+
+		Connection localConnection = null;
+		try {
+
+			localConnection = db.getConnection();
+			PreparedStatement statement = localConnection
+					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=? CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+			statement.setBoolean(1, getUploaded());
+			statement.setString(2, getName());
+			statement.setString(3, getPerson().getPersonId());
+			if(getChallengedClaim() != null){
+				statement.setString(4, getChallengedClaim().getClaimId());
+			}else{
+				statement.setString(4, null);
+			}
+			statement.setString(5, getClaimId());
+				
+			result = statement.executeUpdate();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
 	}
 
 	public static Claim getClaim(String claimId){
@@ -131,16 +259,19 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT DATE_CREATED, PERSON_ID, BOUNDARY_ID, CHALLENGED_CLAIM_ID FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT UPLOADED, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				claim = new Claim();
 				claim.setClaimId(claimId);
-				claim.setDateCreated(rs.getTimestamp(1));
-				claim.setPerson(Person.getPerson(rs.getString(2)));
-				claim.setBoundary(Boundary.getBoundary(rs.getString(3)));
+				claim.setUploaded(rs.getBoolean(1));
+				claim.setName(rs.getString(2));
+				claim.setPerson(Person.getPerson(rs.getString(3)));
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(4)));
+				claim.setVertices(Vertex.getVertices(claimId));
+				claim.setAttachments(Attachment.getAttachments(claimId));
+				claim.setMetadata(Metadata.getClaimMetadata(claimId));
 			}
 			rs.close();
 			statement.close();
@@ -159,64 +290,30 @@ public class Claim {
 		return claim;
 	}
 
-	public List<Document> getAttachments(String claimId) {
-
-		List<Document> documents = null;
-
-		Connection localConnection = null;
-		try {
-
-			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT DOCUMENT_ID, FILE_NAME, MD5SUM, PATH FROM DOCUMENT DOC WHERE DOC.CLAIM_ID=?");
-			statement.setString(1, claimId);
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				documents = new ArrayList<Document>();
-				Document document = new Document();
-				document.setDocumentId(rs.getString(1));
-				document.setClaimId(claimId);
-				document.setFileName(rs.getString(2));
-				document.setMD5Sum(rs.getString(3));
-				document.setPath(rs.getString(4));
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return documents;
-	}
-
 	public List<Claim> getChallengingClaims(String claimId) {
 
-		List<Claim> challengingClaims = null;
+		List<Claim> challengingClaims = new ArrayList<Claim>();
 
 		Connection localConnection = null;
 		try {
 
 			localConnection = db.getConnection();
 			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, DATE_CREATED, PERSON_ID, BOUNDARY_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
+					.prepareStatement("SELECT CLAIM_ID, UPLOADED, NAME, PERSON_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
 			statement.setString(1, claimId);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				challengingClaims = new ArrayList<Claim>();
-				Claim claim = new Claim();
-				claim.setClaimId(rs.getString(1));
-				claim.setDateCreated(rs.getTimestamp(2));
-				claim.setPerson(Person.getPerson(rs.getString(3)));
-				claim.setBoundary(Boundary.getBoundary(rs.getString(4)));
-				claim.setChallengedClaim(this);
+				String challengingClaimId = rs.getString(1);
+				Claim challengingClaim = new Claim();
+				challengingClaim.setClaimId(challengingClaimId);
+				challengingClaim.setUploaded(rs.getBoolean(2));
+				challengingClaim.setName(rs.getString(3));
+				challengingClaim.setPerson(Person.getPerson(rs.getString(4)));
+				challengingClaim.setChallengedClaim(this);
+				challengingClaim.setVertices(Vertex.getVertices(challengingClaimId));
+				challengingClaim.setAttachments(Attachment.getAttachments(challengingClaimId));
+				challengingClaim.setMetadata(Metadata.getClaimMetadata(challengingClaimId));
+				challengingClaims.add(challengingClaim);
 			}
 			rs.close();
 			statement.close();
@@ -235,12 +332,62 @@ public class Claim {
 		return challengingClaims;
 	}
 
+	public static List<Claim> getAllClaims() {
+
+		List<Claim> claims = new ArrayList<Claim>();
+
+		Connection localConnection = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			PreparedStatement statement = localConnection
+					.prepareStatement("SELECT CLAIM_ID, UPLOADED, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM");
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				Claim claim = new Claim();
+				claim.setClaimId(claimId);
+				claim.setUploaded(rs.getBoolean(2));
+				claim.setName(rs.getString(3));
+				claim.setPerson(Person.getPerson(rs.getString(4)));
+				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
+				claim.setVertices(Vertex.getVertices(claimId));
+				claim.setAttachments(Attachment.getAttachments(claimId));
+				claim.setMetadata(Metadata.getClaimMetadata(claimId));
+				claims.add(claim);
+			}
+			rs.close();
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return claims;
+	}
+
+	public Boolean getUploaded() {
+		return uploaded;
+	}
+	public void setUploaded(Boolean uploaded) {
+		this.uploaded = uploaded;
+	}
+
 	String claimId;
-	java.sql.Timestamp dateCreated;
+	Boolean uploaded = Boolean.valueOf(false);
+	String name;
 	Person person;
-	Boundary boundary;
 	Claim challengedClaim;
+	List<Vertex> vertices;
+	List<Metadata> metadata;
 	List<Claim> challengingClaims;
-	List<Document> attachments;
+	List<Attachment> attachments;
 
 }

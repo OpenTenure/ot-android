@@ -27,9 +27,12 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -65,6 +68,21 @@ public class ClaimMapFragment extends Fragment {
 	private boolean saved = false;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
+	private ClaimDispatcher claimActivity;
+	
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+        	claimActivity = (ClaimDispatcher) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ClaimDispatcher");
+        }
+    }
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -139,28 +157,29 @@ public class ClaimMapFragment extends Fragment {
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		propertyBoundary = new PropertyBoundary(mapView.getContext(), map);
-
-		propertyBoundary.addVertex(new LatLng(41.882267, 12.486804));
-		propertyBoundary.addVertex(new LatLng(41.881380, 12.488102));
-		propertyBoundary.addVertex(new LatLng(41.882778, 12.489889));
-		propertyBoundary.addVertex(new LatLng(41.883657, 12.488564));
-
+		propertyBoundary = new PropertyBoundary(mapView.getContext(), map, claimActivity.getClaimId());
+		
 		propertyBoundary.drawBoundary();
-
-		MapsInitializer.initialize(this.getActivity());
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.882506,
-				12.488317), 17));
-		map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
 
 		lh = new LocationHelper((LocationManager) getActivity()
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
 
+		MapsInitializer.initialize(this.getActivity());
+
+		LatLng center = propertyBoundary.getCenter();
+		if(center.equals(Vertex.INVALID_POSITION)){
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(lh.getCurrentLocation(), 17));
+		}else{
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(propertyBoundary.getCenter(), 17));
+		}
+		
+		map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
+
 		return mapView;
 
 	}
-
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
@@ -309,7 +328,7 @@ public class ClaimMapFragment extends Fragment {
 								+ newLocation, Toast.LENGTH_SHORT)
 						.show();
 
-				propertyBoundary.insertVertex(newLocation);
+				propertyBoundary.insertVertexFromGPS(newLocation);
 				propertyBoundary.drawBoundary();
 
 			} else {
@@ -322,5 +341,4 @@ public class ClaimMapFragment extends Fragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 }

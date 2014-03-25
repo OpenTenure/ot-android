@@ -32,17 +32,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.h2.tools.RunScript;
-
-import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
 import android.util.Log;
@@ -209,46 +205,6 @@ public class Database {
 		}
 	}
 
-	public LatLng getCurrentLocation() {
-
-		LatLng currentLocation = null;
-
-		Connection localConnection = null;
-
-		try {
-
-			localConnection = DriverManager.getConnection(url);
-			PreparedStatement statement = localConnection
-					.prepareStatement("SELECT LOC.LOCATION_LAT, LOC.LOCATION_LON FROM LOCATION LOC WHERE LOC.LOCATION_ID='CURRENT'");
-			ResultSet rs = statement.executeQuery();
-			while (rs.next()) {
-				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
-						rs.getBigDecimal(2).doubleValue());
-			}
-			rs.close();
-			statement.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return currentLocation;
-	}
-
-	public int updateCurrentLocation(BigDecimal lon, BigDecimal lat) {
-		return update("UPDATE LOCATION LOC SET LOC.LOCATION_LAT="
-				+ lat.toString() + ", LOC.LOCATION_LON=" + lon.toString()
-				+ " WHERE LOC.LOCATION_ID='CURRENT'");
-	}
-	
 	public Connection getConnection(){
 
 		try {

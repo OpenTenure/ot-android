@@ -27,6 +27,17 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
+
+import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,60 +46,184 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Toast;
 
 public class ClaimDetailsFragment extends Fragment {
 
 	View rootView;
 	private boolean saved = false;
-	
-	public ClaimDetailsFragment() {
+	private ClaimDispatcher claimActivity;
+	final Calendar localCalendar = Calendar.getInstance();
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			claimActivity = (ClaimDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ClaimDispatcher");
 		}
-
-		@Override
-		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-			inflater.inflate(R.menu.claim_details, menu);
-
-			super.onCreateOptionsMenu(menu, inflater);
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			rootView = inflater.inflate(R.layout.fragment_claim_details, container,
-					false);
-			setHasOptionsMenu(true);
-			InputMethodManager imm = (InputMethodManager)rootView.getContext().getSystemService(
-				      Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
-
-			return rootView;
-		}
-		@Override
-		public boolean onOptionsItemSelected(MenuItem item) {
-			// handle item selection
-			Toast toast;
-			switch (item.getItemId()) {
-			case R.id.action_save:
-				saved = true;
-				toast = Toast.makeText(rootView.getContext(), R.string.message_saved, Toast.LENGTH_SHORT);
-				toast.show();
-				return true;
-			case R.id.action_submit:
-				if(saved){
-					toast = Toast.makeText(rootView.getContext(), R.string.message_submitted, Toast.LENGTH_SHORT);
-					toast.show();
-				}else{
-					toast = Toast.makeText(rootView.getContext(), R.string.message_save_before_submit, Toast.LENGTH_SHORT);
-					toast.show();
-				}
-				return true;
-
-			default:
-				return super.onOptionsItemSelected(item);
-			}
-		}
-
 	}
+
+	public ClaimDetailsFragment() {
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.claim_details, menu);
+
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
+				false);
+		setHasOptionsMenu(true);
+		InputMethodManager imm = (InputMethodManager) rootView.getContext()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
+		EditText dateOfBirth = (EditText) rootView.findViewById(
+				R.id.date_of_birth_input_field);
+
+		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear,
+					int dayOfMonth) {
+				localCalendar.set(Calendar.YEAR, year);
+				localCalendar.set(Calendar.MONTH, monthOfYear);
+				localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				updateLabel();
+			}
+
+		};
+
+		dateOfBirth.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new DatePickerDialog(rootView.getContext(), date, localCalendar
+						.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
+						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
+			}
+		});
+		
+		if(claimActivity.getClaimId()!=null){
+			load(claimActivity.getClaimId());
+		}
+
+		return rootView;
+	}
+	
+	private void load(String claimId){
+		Claim claim = Claim.getClaim(claimId);
+		((EditText) rootView.findViewById(
+				R.id.first_name_input_field)).setText(claim.getPerson().getFirstName());
+		((EditText) rootView.findViewById(
+				R.id.last_name_input_field)).setText(claim.getPerson().getLastName());
+		((EditText) rootView.findViewById(
+				R.id.date_of_birth_input_field)).setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(claim.getPerson().getDateOfBirth()));
+		((EditText) rootView.findViewById(
+				R.id.place_of_birth_input_field)).setText(claim.getPerson().getPlaceOfBirth());
+		((EditText) rootView.findViewById(
+				R.id.postal_address_input_field)).setText(claim.getPerson().getPostalAddress());
+		((EditText) rootView.findViewById(
+				R.id.email_address_input_field)).setText(claim.getPerson().getEmailAddress());
+		((EditText) rootView.findViewById(
+				R.id.mobile_phone_number_input_field)).setText(claim.getPerson().getMobilePhoneNumber());
+		((EditText) rootView.findViewById(
+				R.id.contact_phone_number_input_field)).setText(claim.getPerson().getContactPhoneNumber());
+		((EditText) rootView.findViewById(
+				R.id.claim_name_input_field)).setText(claim.getName());
+	}
+
+	private void updateLabel() {
+
+		EditText dateOfBirth = (EditText) getView().findViewById(
+				R.id.date_of_birth_input_field);
+		String myFormat = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		Toast toast;
+		switch (item.getItemId()) {
+		case R.id.action_save:
+			Person person = new Person();
+			person.setFirstName(((EditText) rootView.findViewById(
+					R.id.first_name_input_field)).getText().toString());
+			person.setLastName(((EditText) rootView.findViewById(
+					R.id.last_name_input_field)).getText().toString());
+			java.util.Date dob;
+			try {
+				dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.parse(((EditText) rootView.findViewById(
+								R.id.date_of_birth_input_field)).getText()
+								.toString());
+			} catch (ParseException e) {
+				e.printStackTrace();
+				dob = new java.util.Date();
+			}
+			person.setDateOfBirth(new Date(dob.getTime()));
+			person.setPlaceOfBirth(((EditText) rootView.findViewById(
+					R.id.place_of_birth_input_field)).getText().toString());
+			person.setPostalAddress(((EditText) rootView.findViewById(
+					R.id.postal_address_input_field)).getText().toString());
+			person.setEmailAddress(((EditText) rootView.findViewById(
+					R.id.email_address_input_field)).getText().toString());
+			person.setMobilePhoneNumber(((EditText) rootView.findViewById(
+					R.id.mobile_phone_number_input_field)).getText().toString());
+			person.setContactPhoneNumber(((EditText) rootView.findViewById(
+					R.id.contact_phone_number_input_field)).getText()
+					.toString());
+			person.create();
+
+			Claim claim = new Claim();
+			claim.setPerson(person);
+			claim.setName(((EditText) rootView.findViewById(
+					R.id.claim_name_input_field)).getText().toString());
+			claim.create();
+
+			claimActivity.setClaimId(claim.getClaimId());
+
+			saved = true;
+			toast = Toast.makeText(rootView.getContext(),
+					R.string.message_saved, Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
+		case R.id.action_submit:
+			if (saved) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_submitted, Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				toast = Toast
+						.makeText(rootView.getContext(),
+								R.string.message_save_before_submit,
+								Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			return true;
+
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+}
