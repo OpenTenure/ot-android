@@ -118,8 +118,7 @@ public class PropertyBoundary {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 
-						String id = mark.getId();
-						verticesMap.remove(id);
+						vertices.remove(verticesMap.remove(mark.getId()));
 						mark.remove();
 						drawBoundary();
 						updateClaimBoundary(claimActivity.getClaimId());
@@ -212,7 +211,6 @@ public class PropertyBoundary {
 		insertVertex(vert);
 		drawBoundary();
 		updateClaimBoundary(claimActivity.getClaimId());
-
 	}
 
 	private void insertVertex(Vertex newVertex) {
@@ -283,6 +281,7 @@ public class PropertyBoundary {
 		}
 		polylineOptions.add(vertices.get(0).getMapPosition()); // Needed in order to close the polyline
 		polylineOptions.zIndex(BOUNDARY_Z_INDEX);
+		polylineOptions.width(5);
 		polylineOptions.color(Color.RED);
 		polyline = map.addPolyline(polylineOptions);
 	}
