@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
@@ -57,15 +58,15 @@ public class PropertyBoundary {
 	private static final float BOUNDARY_Z_INDEX = 2.0f;
 	private List<Vertex> vertices = new ArrayList<Vertex>();
 	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
-	private String claimId;
+	private ClaimDispatcher claimActivity;
 
 	private Polyline polyline = null;
 	private GoogleMap map;
 
-	public PropertyBoundary(final Context context, final GoogleMap map, final String claimId) {
-		this.claimId = claimId;
+	public PropertyBoundary(final Context context, final GoogleMap map, final ClaimDispatcher claimActivity) {
+		this.claimActivity = claimActivity;
 		this.map = map;
-		vertices = Vertex.getVertices(claimId);
+		vertices = Vertex.getVertices(claimActivity.getClaimId());
 		
 		for(Vertex vertex : vertices){
 			Marker mark = createMarker(vertex.getMapPosition());
@@ -88,11 +89,11 @@ public class PropertyBoundary {
 
 						Marker mark = createMarker(position);
 						Vertex vert = new Vertex(position);
-						vert.setClaimId(claimId);
+						vert.setClaimId(claimActivity.getClaimId());
 						verticesMap.put(mark.getId(), vert);
 						insertVertex(vert);
 						drawBoundary();
-						updateClaimBoundary(claimId);
+						updateClaimBoundary(claimActivity.getClaimId());
 					}
 				});
 				dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -121,7 +122,7 @@ public class PropertyBoundary {
 						verticesMap.remove(id);
 						mark.remove();
 						drawBoundary();
-						updateClaimBoundary(claimId);
+						updateClaimBoundary(claimActivity.getClaimId());
 					}
 				});
 				dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -149,7 +150,7 @@ public class PropertyBoundary {
 				mark.hideInfoWindow();
 				mark.setTitle(mark.getId());
 				verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
-				updateClaimBoundary(claimId);
+				updateClaimBoundary(claimActivity.getClaimId());
 				drawBoundary();
 			}
 
@@ -206,11 +207,11 @@ public class PropertyBoundary {
 	public void insertVertexFromGPS(LatLng position) {
 		Marker mark = createMarker(position);
 		Vertex vert = new Vertex(position);
-		vert.setClaimId(claimId);
+		vert.setClaimId(claimActivity.getClaimId());
 		verticesMap.put(mark.getId(), vert);
 		insertVertex(vert);
 		drawBoundary();
-		updateClaimBoundary(claimId);
+		updateClaimBoundary(claimActivity.getClaimId());
 
 	}
 

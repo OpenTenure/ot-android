@@ -171,7 +171,7 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 					attachment.setClaimId(claimActivity.getClaimId());
 					attachment.setDescription(snapshotDescription.getText().toString());
 					attachment.setFileName(uri.getLastPathSegment());
-					attachment.setFileType("image");
+					attachment.setFileType(fileType);
 					attachment.setMimeType(mimeType);
 					attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
 							rootView.getContext(), uri)));
@@ -216,7 +216,7 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 						attachment.setClaimId(claimActivity.getClaimId());
 						attachment.setDescription(fileDescription.getText().toString());
 						attachment.setFileName(uri.getLastPathSegment());
-						attachment.setFileType(fileType);
+						attachment.setFileType("document");
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
 								rootView.getContext(), uri)));
@@ -344,13 +344,8 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 				String attachmentId = attachmentIds.get(((TextView)v).getText().toString());
 				Attachment att = Attachment.getAttachment(attachmentId);
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				if (uri == null) {
-					String localUri = "file://"
-							+ att.getPath();
-					uri = Uri.parse(localUri);
-					mimeType = att.getMimeType();
-				}
-				intent.setDataAndType(uri, mimeType);
+				intent.setDataAndType(Uri.parse("file://"
+						+ att.getPath()), att.getMimeType());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 				startActivity(intent);

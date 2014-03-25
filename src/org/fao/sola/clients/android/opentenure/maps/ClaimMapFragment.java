@@ -157,7 +157,7 @@ public class ClaimMapFragment extends Fragment {
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		propertyBoundary = new PropertyBoundary(mapView.getContext(), map, claimActivity.getClaimId());
+		propertyBoundary = new PropertyBoundary(mapView.getContext(), map, claimActivity);
 		
 		propertyBoundary.drawBoundary();
 
