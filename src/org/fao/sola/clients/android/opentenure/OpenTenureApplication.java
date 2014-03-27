@@ -27,8 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.Map;
-
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -48,22 +46,13 @@ public class OpenTenureApplication extends Application {
 
 	    private static OpenTenureApplication sInstance;
 	    private Database database;
-	    private static Context context;
 	    
 	    private static boolean loggedin ;
 	    private static String username;
 		
-
-
 		private static AndroidHttpClient mHttpClient;
-		private static CookieStore coockieStore;
+		private static CookieStore cookieStore;
 		private static HttpContext http_context;
-		
-		
-		
-
-	    Map<String,String> cfg;
-
 
 	    public static OpenTenureApplication getInstance() {
 	      return sInstance;
@@ -87,12 +76,11 @@ public class OpenTenureApplication extends Application {
 	      super.onCreate();  
 	      sInstance = this;
 	      sInstance.initializeInstance();
-	      context = getApplicationContext();
 	    }
 
 	    protected void initializeInstance() {
-	        // do all your initialization here
-	    	database = new Database(getApplicationContext());
+	        // try to open the DB without an encryption password
+	    	database = new Database(getApplicationContext(),"");
 	    }
 	    
 	    public static HttpContext getHttp_context() {
@@ -106,17 +94,17 @@ public class OpenTenureApplication extends Application {
 
 
 		public static CookieStore getCoockieStore() {
-			if( coockieStore != null)
-				return coockieStore;
+			if( cookieStore != null)
+				return cookieStore;
 			else{			
-				coockieStore = new BasicCookieStore();
-				return coockieStore;
+				cookieStore = new BasicCookieStore();
+				return cookieStore;
 			}
 				
 		}
 
 		public static void setCoockieStore(CookieStore coockieStore) {
-			OpenTenureApplication.coockieStore = coockieStore;
+			OpenTenureApplication.cookieStore = coockieStore;
 		}
 
 		public static boolean isLoggedin() {
@@ -164,13 +152,11 @@ public class OpenTenureApplication extends Application {
 				mHttpClient = AndroidHttpClient.newInstance("Android");
 		        http_context = new BasicHttpContext(); 				
 		         
-			    coockieStore = new BasicCookieStore();
-			    http_context.setAttribute(ClientContext.COOKIE_STORE, coockieStore);
+			    cookieStore = new BasicCookieStore();
+			    http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 				System.out.println("Finito di preparare il client");
 				
 			} catch (Throwable e) {
-				// TODO: handle exception
-				System.out.println("Eccolo" + e.getMessage());
 				e.printStackTrace();				
 				
 			}

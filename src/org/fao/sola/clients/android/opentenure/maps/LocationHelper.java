@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import android.location.Location;
@@ -37,23 +39,27 @@ import android.util.Log;
 
 public class LocationHelper {
 
-	private static final long LOCATION_LISTENER_INTERVAL_FAST = 5*1000;
-	private static final long LOCATION_LISTENER_INTERVAL_SLOW = 5*60*1000;
+	private static final long LOCATION_LISTENER_INTERVAL_FAST = 5 * 1000;
+	private static final long LOCATION_LISTENER_INTERVAL_SLOW = 5 * 60 * 1000;
+	private static final double HOME_LATITUDE = 41.8825;
+	private static final double HOME_LONGITUDE = 12.4882;
 
 	LocationManager locationManager;
 
 	LocationListener gpsLL = new LocationListener() {
-		
+
 		public void onLocationChanged(Location location) {
 			Log.d(this.getClass().getName(), "onLocationChanged");
-			org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
-			loc.setLat(location.getLatitude());
-			loc.setLon(location.getLongitude());
-			loc.update();
+			if (OpenTenureApplication.getInstance().getDatabase().isOpen()) {
+				org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
+						.getLocation("CURRENT");
+				loc.setLat(location.getLatitude());
+				loc.setLon(location.getLongitude());
+				loc.update();
+			}
 		}
 
-		public void onStatusChanged(String provider, int status,
-				Bundle extras) {
+		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
 
@@ -65,23 +71,23 @@ public class LocationHelper {
 			Log.d(this.getClass().getName(), "onProviderDisabled");
 		}
 	};
-	
-	LocationHelper (LocationManager locationManager){
-		this.locationManager=locationManager;
+
+	LocationHelper(LocationManager locationManager) {
+		this.locationManager = locationManager;
 	}
 
 	LocationListener networkLL = new LocationListener() {
-		
+
 		public void onLocationChanged(Location location) {
 			Log.d(this.getClass().getName(), "onLocationChanged");
-			org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
+			org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
+					.getLocation("CURRENT");
 			loc.setLat(location.getLatitude());
 			loc.setLon(location.getLongitude());
 			loc.update();
 		}
 
-		public void onStatusChanged(String provider, int status,
-				Bundle extras) {
+		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
 
@@ -93,36 +99,48 @@ public class LocationHelper {
 			Log.d(this.getClass().getName(), "onProviderDisabled");
 		}
 	};
-	
-	public void start(){
+
+	public void start() {
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_FAST, 0, gpsLL);
 		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, LOCATION_LISTENER_INTERVAL_FAST, 0, gpsLL);
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, LOCATION_LISTENER_INTERVAL_FAST, 0, networkLL);
+				LocationManager.NETWORK_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_FAST, 0, networkLL);
 	}
-	public void stop(){
+
+	public void stop() {
 		locationManager.removeUpdates(gpsLL);
 		locationManager.removeUpdates(networkLL);
 	}
-	public void hurryUp(){
+
+	public void hurryUp() {
 		locationManager.removeUpdates(gpsLL);
 		locationManager.removeUpdates(networkLL);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_FAST, 0, gpsLL);
 		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, LOCATION_LISTENER_INTERVAL_FAST, 0, gpsLL);
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, LOCATION_LISTENER_INTERVAL_FAST, 0, networkLL);
+				LocationManager.NETWORK_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_FAST, 0, networkLL);
 	}
-	public void slowDown(){
+
+	public void slowDown() {
 		locationManager.removeUpdates(gpsLL);
 		locationManager.removeUpdates(networkLL);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_SLOW, 0, gpsLL);
 		locationManager.requestLocationUpdates(
-				LocationManager.GPS_PROVIDER, LOCATION_LISTENER_INTERVAL_SLOW, 0, gpsLL);
-		locationManager.requestLocationUpdates(
-				LocationManager.NETWORK_PROVIDER, LOCATION_LISTENER_INTERVAL_SLOW, 0, networkLL);
+				LocationManager.NETWORK_PROVIDER,
+				LOCATION_LISTENER_INTERVAL_SLOW, 0, networkLL);
 	}
-	public LatLng getCurrentLocation(){
-		org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location.getLocation("CURRENT");
-		return new LatLng(loc.getLat(), loc.getLon());
+
+	public LatLng getCurrentLocation() {
+		org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
+				.getLocation("CURRENT");
+		if (loc != null) {
+			return new LatLng(loc.getLat(), loc.getLon());
+		} else {
+			return new LatLng(HOME_LATITUDE, HOME_LONGITUDE);
+		}
 	}
 
 }

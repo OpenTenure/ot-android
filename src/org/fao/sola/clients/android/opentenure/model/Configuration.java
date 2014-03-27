@@ -74,27 +74,31 @@ public class Configuration {
 	}
 
 	public static int createConfiguration(Configuration cfg) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
 			statement.setString(1, cfg.getConfigurationId());
 			statement.setString(2, cfg.getName());
 			statement.setString(3, cfg.getValue());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -106,26 +110,31 @@ public class Configuration {
 	}
 
 	public int create() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
 			statement.setString(1, getConfigurationId());
 			statement.setString(2, getName());
 			statement.setString(3, getValue());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -137,25 +146,30 @@ public class Configuration {
 	}
 
 	public static int deleteConfiguration(Configuration cfg) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
 			statement.setString(1, cfg.getConfigurationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -167,24 +181,28 @@ public class Configuration {
 	}
 
 	public int delete() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
 			statement.setString(1, getConfigurationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -196,27 +214,31 @@ public class Configuration {
 	}
 
 	public static int updateConfiguration(Configuration cfg) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
 			statement.setString(1, cfg.getName());
 			statement.setString(2, cfg.getValue());
 			statement.setString(3, cfg.getConfigurationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -228,26 +250,30 @@ public class Configuration {
 	}
 
 	public int update() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
 			statement.setString(1, getName());
 			statement.setString(2, getValue());
 			statement.setString(3, getConfigurationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -259,29 +285,39 @@ public class Configuration {
 	}
 
 	public static String getConfigurationValue(String name) {
-
 		String val = null;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT CFG.CONFIGURATION_ID, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
 			statement.setString(1, name);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				val = rs.getString(2);
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -293,27 +329,38 @@ public class Configuration {
 	}
 
 	public static Map<String, String> getConfigurationValues() {
-
 		Map<String, String> cfg = new HashMap<String, String>();
-
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG");
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				cfg.put(rs.getString(1), rs.getString(2));
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -325,32 +372,42 @@ public class Configuration {
 	}
 
 	public static Configuration getConfiguration(String configurationId) {
-
 		Configuration cfg = null;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.CONFIGURATION_ID=?");
 			statement.setString(1, configurationId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				cfg = new Configuration();
 				cfg.setConfigurationId(configurationId);
 				cfg.setName(rs.getString(1));
 				cfg.setValue(rs.getString(2));
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();

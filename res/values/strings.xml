@@ -13,6 +13,7 @@
     <string name="action_submit">Submit</string>
     <string name="action_new_picture">New picture</string>
     <string name="action_new_attachment">New document</string>
+    <string name="action_lock_db">Configure data encryption</string>
     <string name="title_news">News</string>
     <string name="title_map">Map</string>
     <string name="title_local_claims">Local claims</string>
@@ -26,6 +27,7 @@
     <string name="title_item">Item</string>
     <string name="title_activity_claim">Open Tenure: New claim</string>
     <string name="title_activity_file_chooser">Choose a file</string>
+    <string name="title_lock_db">Encrypt local data</string>
     <string name="choose_file">Choose a file</string>
     <string name="person_name">Person Name</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -44,7 +46,8 @@
     <string name="message_saved">The claim has been saved</string>
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
-    <string name="message_press_again_to_exit">Press back button again to exit</string>
+    <string name="title_exit_dialog">Exit</string>
+    <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
     <string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="confirm">Yes</string>
@@ -52,6 +55,15 @@
     <string name="new_snapshot">New snapshot</string>
     <string name="new_file">New file</string>
     <string name="add_description">Description?</string>
+    <string name="message_db_locked">Data is password protected</string>
+    <string name="message_db_password">Password to access data?</string>
+    <string name="message_cant_open_db">Unable to access data</string>
+    <string name="message_check_upgrade_db">Checking db upgrade</string>
+    <string name="message_old_db_password">Current password?</string>
+    <string name="message_new_db_password">New password?</string>
+    <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>
+    <string name="message_encryption_failed">Unable to encrypt local data</string>
+    <string name="message_confirm_new_db_password">Confirm new password</string>
     <string name="message_add_marker">Add marker here?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="draggable_marker">Draggable marker</string>

@@ -35,6 +35,9 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import com.astuetz.PagerSlidingTabStrip;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -51,37 +54,40 @@ public class OpenTenure extends FragmentActivity {
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
-	private long lastPress;
 
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		OpenTenureApplication.getInstance().getDatabase().sync();
-	};
-	
-	@Override
 	public void onPause() {
-		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
+		super.onPause();
 	};
 	
 	@Override
-	public void onResume() {
-		super.onResume();
-		OpenTenureApplication.getInstance().getDatabase().open();
+	public void onDestroy() {
+		OpenTenureApplication.getInstance().getDatabase().close();
+		super.onDestroy();
 	};
 	
 	@Override
 	public void onBackPressed() {
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastPress > 4000) {
-			Toast.makeText(getBaseContext(),
-					R.string.message_press_again_to_exit, Toast.LENGTH_LONG)
-					.show();
-			lastPress = currentTime;
-		} else {
-			super.onBackPressed();
-		}
+		AlertDialog.Builder exitDialog = new AlertDialog.Builder(this);
+		exitDialog.setTitle(R.string.title_exit_dialog);
+		exitDialog.setMessage(getResources().getString(R.string.message_exit_dialog));
+
+		exitDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				OpenTenureApplication.getInstance().getDatabase().close();
+				OpenTenure.super.onBackPressed();
+			}
+		});
+		exitDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		exitDialog.show();
 	}
 
 	@Override
@@ -102,6 +108,18 @@ public class OpenTenure extends FragmentActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
+		
+		OpenTenureApplication.getInstance().getDatabase().unlock(this);
+		
+		if(OpenTenureApplication.getInstance().getDatabase().isOpen()){
+			// Check for pending upgrades
+			if(OpenTenureApplication.getInstance().getDatabase().getUpgradePath().size() > 0){
+				Toast.makeText(this,
+						R.string.message_check_upgrade_db, Toast.LENGTH_LONG)
+						.show();
+				OpenTenureApplication.getInstance().getDatabase().performUpgrade();
+			}
+		}
 
 		Log.d(this.getClass().getName(),
 				"DB version is: " + Configuration.getConfigurationValue("DBVERSION"));

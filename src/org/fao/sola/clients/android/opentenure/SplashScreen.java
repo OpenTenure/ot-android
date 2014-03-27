@@ -39,18 +39,10 @@ public class SplashScreen extends Activity {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.activity_splash);
- 
-        /**
-         * Showing splashscreen while making network calls to download necessary
-         * data before launching the app Will use AsyncTask to make http call
-         */
         new PrefetchData().execute();
  
     }
  
-    /**
-     * Async Task to make http call
-     */
     private class PrefetchData extends AsyncTask<Void, Void, Void> {
  
         @Override
@@ -65,7 +57,6 @@ public class SplashScreen extends Activity {
             	OpenTenureApplication.getInstance().getDatabase();
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
             return null;

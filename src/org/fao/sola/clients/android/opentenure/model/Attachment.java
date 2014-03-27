@@ -94,15 +94,26 @@ public class Attachment {
 		this.path = path;
 	}
 
+	public static int markAsUploaded(Attachment attachment){
+		attachment.setUploaded(true);
+		return attachment.update();
+	}
+
+	public int markAsUploaded(){
+		setUploaded(true);
+		return update();
+	}
+
 	public static int createAttachment(Attachment attachment) {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?)");
 			statement.setString(1, attachment.getAttachmentId());
 			statement.setBoolean(2, attachment.getUploaded());
@@ -115,12 +126,17 @@ public class Attachment {
 			statement.setString(9, attachment.getPath());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -135,11 +151,12 @@ public class Attachment {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getAttachmentId());
 			statement.setBoolean(2, getUploaded());
@@ -152,12 +169,17 @@ public class Attachment {
 			statement.setString(9, getPath());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -172,11 +194,12 @@ public class Attachment {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
 			statement.setBoolean(1, attachment.getUploaded());
 			statement.setString(2, attachment.getClaimId());
@@ -189,12 +212,17 @@ public class Attachment {
 			statement.setString(9, attachment.getAttachmentId());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -209,11 +237,12 @@ public class Attachment {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
 			statement.setBoolean(1, getUploaded());
 			statement.setString(2, getClaimId());
@@ -226,12 +255,17 @@ public class Attachment {
 			statement.setString(9, getAttachmentId());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -246,21 +280,27 @@ public class Attachment {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE ATTACHMENT WHERE ATTACHMENT_ID=?");
 			statement.setString(1, attachment.getAttachmentId());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -275,21 +315,27 @@ public class Attachment {
 
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE ATTACHMENT WHERE ATTACHMENT_ID=?");
 			statement.setString(1, getAttachmentId());
 			
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -303,15 +349,17 @@ public class Attachment {
 	public static Attachment getAttachment(String attachmentId) {
 
 		Attachment attachment = null;
-
+		ResultSet rs = null;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
 			statement.setString(1, attachmentId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				attachment = new Attachment();
 				attachment.setAttachmentId(attachmentId);
@@ -324,13 +372,23 @@ public class Attachment {
 				attachment.setMD5Sum(rs.getString(7));
 				attachment.setPath(rs.getString(8));
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -344,15 +402,16 @@ public class Attachment {
 	public static List<Attachment> getAttachments(String claimId) {
 
 		List<Attachment> attachments = new ArrayList<Attachment>();
-
+		ResultSet rs = null;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT ATTACHMENT_ID, UPLOADED, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT ATT WHERE ATT.CLAIM_ID=?");
 			statement.setString(1, claimId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				Attachment attachment = new Attachment();
 				attachment.setAttachmentId(rs.getString(1));
@@ -366,13 +425,23 @@ public class Attachment {
 				attachment.setPath(rs.getString(8));
 				attachments.add(attachment);
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();

@@ -13,6 +13,7 @@
     <string name="action_submit">Invia</string>
     <string name="action_new_picture">Aggiungi immagine</string>
     <string name="action_new_attachment">Aggiungi documento</string>
+    <string name="action_lock_db">Configura la cifratura dei dati</string>
     <string name="title_news">Notizie</string>
     <string name="title_map">Mappa</string>
     <string name="title_local_claims">Richieste locali</string>
@@ -26,6 +27,7 @@
     <string name="title_item">Elemento</string>
     <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
+    <string name="title_lock_db">Cifratura dei dati locali</string>
     <string name="choose_file">Scegli un file</string>
     <string name="person_name">Nome della Persona</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -44,7 +46,8 @@
     <string name="message_saved">Richiesta salvata</string>
     <string name="message_submitted">Richiesta inviata</string>
     <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
-    <string name="message_press_again_to_exit">Premi nuovamente il tasto indietro per uscire</string>
+    <string name="title_exit_dialog">Uscita</string>
+    <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
     <string name="confirm">Si</string>
@@ -52,6 +55,15 @@
     <string name="new_snapshot">Nuova immagine</string>
     <string name="new_file">Nuovo file</string>
     <string name="add_description">Descrizione?</string>
+    <string name="message_db_locked">Dati protetti da password</string>
+    <string name="message_db_password">Password per accedere ai dati?</string>
+    <string name="message_cant_open_db">Impossibile accedere ai dati</string>
+    <string name="message_check_upgrade_db">Verifica aggiornamento dati</string>
+    <string name="message_old_db_password">Password attuale?</string>
+    <string name="message_new_db_password">Nuova password?</string>
+    <string name="message_confirm_new_db_password">Conferma la nuova password</string>
+    <string name="message_password_dont_match">Nuova password non confermata. Riprovare</string>
+    <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
     <string name="message_add_marker">Aggiungere una posizione?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="draggable_marker">Segnalino mobile</string>

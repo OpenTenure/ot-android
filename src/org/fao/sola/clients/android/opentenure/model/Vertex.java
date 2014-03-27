@@ -98,15 +98,26 @@ public class Vertex {
 	public void setMapPosition(LatLng mapPosition) {
 		this.mapPosition = mapPosition;
 	}
-	public static int createVertex(Vertex vertex) {
 
+	public static int markAsUploaded(Vertex vertex){
+		vertex.setUploaded(true);
+		return Vertex.updateVertex(vertex);
+	}
+
+	public int markAsUploaded(){
+		setUploaded(true);
+		return update();
+	}
+
+	public static int createVertex(Vertex vertex) {
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO VERTEX(VERTEX_ID, UPLOADED, CLAIM_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON) VALUES(?,?,?,?,?,?,?,?)");
 			statement.setString(1, vertex.getVertexId());
 			statement.setBoolean(2, vertex.getUploaded());
@@ -117,12 +128,17 @@ public class Vertex {
 			statement.setBigDecimal(7, new BigDecimal(vertex.getMapPosition().latitude));
 			statement.setBigDecimal(8, new BigDecimal(vertex.getMapPosition().longitude));
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -134,14 +150,14 @@ public class Vertex {
 	}
 
 	public int create() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null; 
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO VERTEX(VERTEX_ID, UPLOADED, CLAIM_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON) VALUES(?,?,?,?,?,?,?,?)");
 			statement.setString(1, getVertexId());
 			statement.setBoolean(2, getUploaded());
@@ -152,12 +168,17 @@ public class Vertex {
 			statement.setBigDecimal(7, new BigDecimal(getMapPosition().latitude));
 			statement.setBigDecimal(8, new BigDecimal(getMapPosition().longitude));
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -169,23 +190,27 @@ public class Vertex {
 	}
 
 	public static int deleteVertex(Vertex vertex) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
-
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE FROM VERTEX WHERE VERTEX_ID=?");
 			statement.setString(1, vertex.getVertexId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -197,23 +222,27 @@ public class Vertex {
 	}
 
 	public static int deleteVertices(String claimId) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
-
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE FROM VERTEX WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -225,23 +254,27 @@ public class Vertex {
 	}
 
 	public int delete() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
-
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE FROM VERTEX WHERE VERTEX_ID=?");
 			statement.setString(1, getVertexId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -253,14 +286,14 @@ public class Vertex {
 	}
 
 	public static int updateVertex(Vertex vertex) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE VERTEX SET UPLOADED=?, CLAIM_ID=?, SEQUENCE_NUMBER=?, GPS_LAT=?, GPS_LON=?, MAP_LAT=?, MAP_LON=? WHERE VERTEX_ID=?");
 			statement.setBoolean(1, vertex.getUploaded());
 			statement.setString(2, vertex.getClaimId());
@@ -271,12 +304,17 @@ public class Vertex {
 			statement.setBigDecimal(7, new BigDecimal(vertex.getMapPosition().longitude));
 			statement.setString(8, vertex.getVertexId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -290,11 +328,12 @@ public class Vertex {
 	public int update() {
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE VERTEX SET UPLOADED=?, CLAIM_ID=?, SEQUENCE_NUMBER=?, GPS_LAT=?, GPS_LON=?, MAP_LAT=?, MAP_LON=? WHERE VERTEX_ID=?");
 			statement.setBoolean(1, getUploaded());
 			statement.setString(2, getClaimId());
@@ -305,12 +344,17 @@ public class Vertex {
 			statement.setBigDecimal(7, new BigDecimal(getMapPosition().longitude));
 			statement.setString(8, getVertexId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -322,17 +366,18 @@ public class Vertex {
 	}
 
 	public static Vertex getVertex(String vertexId) {
-
 		Vertex vertex = null;
-
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT UPLOADED, CLAIM_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM VERTEX VERT WHERE VERT.VERTEX_ID=?");
 			statement.setString(1, vertexId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				vertex = new Vertex();
 				vertex.setVertexId(vertexId);
@@ -342,13 +387,23 @@ public class Vertex {
 				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(4).doubleValue(),rs.getBigDecimal(5).doubleValue()));
 				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6).doubleValue(),rs.getBigDecimal(7).doubleValue()));
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -360,17 +415,18 @@ public class Vertex {
 	}
 
 	public static List<Vertex> getVertices(String claimId) {
-
 		List<Vertex> vertices = new ArrayList<Vertex>();
-
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT VERTEX_ID, UPLOADED, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM VERTEX VERT WHERE VERT.CLAIM_ID=? ORDER BY SEQUENCE_NUMBER");
 			statement.setString(1, claimId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				Vertex vertex = new Vertex();
 				vertex.setVertexId(rs.getString(1));
@@ -381,13 +437,23 @@ public class Vertex {
 				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6).doubleValue(),rs.getBigDecimal(7).doubleValue()));
 				vertices.add(vertex);
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();

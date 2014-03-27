@@ -117,15 +117,25 @@ public class Person {
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
-	public static int createPerson(Person person) {
+	public static int markAsUploaded(Person person){
+		person.setUploaded(true);
+		return Person.updatePerson(person);
+	}
 
+	public int markAsUploaded(){
+		setUploaded(true);
+		return update();
+	}
+
+	public static int createPerson(Person person) {
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
 				statement.setString(1, person.getPersonId());
 				statement.setBoolean(2, person.getUploaded());
@@ -138,12 +148,17 @@ public class Person {
 				statement.setString(9, person.getMobilePhoneNumber());
 				statement.setString(10, person.getContactPhoneNumber());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -155,14 +170,14 @@ public class Person {
 	}
 
 	public int create() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 				localConnection = db.getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
 				statement.setString(1, getPersonId());
 				statement.setBoolean(2, getUploaded());
@@ -175,12 +190,17 @@ public class Person {
 				statement.setString(9, getMobilePhoneNumber());
 				statement.setString(10, getContactPhoneNumber());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -192,23 +212,28 @@ public class Person {
 	}
 
 	public static int deletePerson(Person person) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
 				statement.setString(1, person.getPersonId());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -220,23 +245,27 @@ public class Person {
 	}
 
 	public int delete() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
-
 				localConnection = db.getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
 				statement.setString(1, getPersonId());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -248,14 +277,13 @@ public class Person {
 	}
 
 	public static int updatePerson(Person person) {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
-
 				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
 				statement.setBoolean(1, person.getUploaded());
 				statement.setString(2, person.getFirstName());
@@ -268,12 +296,17 @@ public class Person {
 				statement.setString(9, person.getContactPhoneNumber());
 				statement.setString(10, person.getPersonId());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -285,14 +318,14 @@ public class Person {
 	}
 
 	public int update() {
-
 		int result = 0;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 				localConnection = db.getConnection();
-				PreparedStatement statement = localConnection
+				statement = localConnection
 						.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
 				statement.setBoolean(1, getUploaded());
 				statement.setString(2, getFirstName());
@@ -305,12 +338,17 @@ public class Person {
 				statement.setString(9, getContactPhoneNumber());
 				statement.setString(10, getPersonId());
 				result = statement.executeUpdate();
-				statement.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			} finally {
+				if (statement != null) {
+					try {
+						statement.close();
+					} catch (SQLException e) {
+					}
+				}
 				if (localConnection != null) {
 					try {
 						localConnection.close();
@@ -322,17 +360,18 @@ public class Person {
 	}
 
 	public static Person getPerson(String personId) {
-
 		Person person = null;
-
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS,POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER FROM PERSON PER WHERE PER.PERSON_ID=?");
 			statement.setString(1, personId);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				person = new Person();
 				person.setPersonId(personId);
@@ -345,13 +384,23 @@ public class Person {
 				person.setMobilePhoneNumber(rs.getString(7));
 				person.setContactPhoneNumber(rs.getString(8));
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();

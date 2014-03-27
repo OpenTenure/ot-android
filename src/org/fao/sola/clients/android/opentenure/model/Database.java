@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,11 +38,19 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.R;
 import org.h2.tools.RunScript;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.EditText;
 
 public class Database {
 
@@ -55,69 +64,138 @@ public class Database {
 
 	private String DB_FILE_NAME;
 
-	private String url;
+	private String password;
 
-	public Database(Context context) {
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Database(Context context, String password) {
 		this.context = context;
-		DB_PATH = context.getFilesDir().getPath() + "/";
+		this.password = password;
+		DB_PATH = context.getFilesDir().getPath();
 
 		DB_NAME = "opentenure";
 
 		DB_FILE_NAME = "opentenure.h2.db";
+	}
 
-		url = "jdbc:h2:" + DB_PATH + DB_NAME + ";FILE_LOCK=FS" + ";USER=sa"
-				+ ";IFEXISTS=TRUE" + ";PAGE_SIZE=1024" + ";CACHE_SIZE=8192";
-		try {
-			if (init()) {
-				open();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+	private String getUrl() {
+		String url = "jdbc:h2:" + DB_PATH + "/" + DB_NAME + ";FILE_LOCK=FS"
+				+ ";USER=sa" + ";IFEXISTS=TRUE" + ";PAGE_SIZE=1024"
+				+ ";CACHE_SIZE=8192";
+		if (password != null && !password.equals("")) {
+			// We are using 'opentenure' as user password. The blank after the
+			// file encryption password is required by H2: DON'T REMOVE IT
+			url += ";PASSWORD=" + password + " opentenure;CIPHER=AES";
+		} else {
+			url += ";PASSWORD=opentenure";
 		}
+		return url;
 
 	}
 
-	private boolean init() throws IOException {
-		if (!checkDataBase()) {
-			copyDataBase();
-			executeScript("createvalues.sql");
+	private boolean init() {
+		if (!databaseExists()) {
+			return createDataBase();
+		}
+		return false;
+	}
+
+	public boolean performUpgrade() {
+		List<String> upgradePath = getUpgradePath();
+		for (String script : upgradePath) {
+			if (!executeScript(script)) {
+				return false;
+			}
 		}
 		return true;
 	}
 
-	public void open() {
-		if (isOpen()) {
-			return;
-		}
-		try {
-			Log.d(this.getClass().getName(), "opening db ...");
-			Class.forName("org.h2.Driver");
-			connection = DriverManager.getConnection(url);
-			Log.d(this.getClass().getName(), "... opened");
+	public void unlock(Context context) {
+		// Create it, if it doesn't exist
+		init();
+		// Try to open it
+		open();
+		if (!isOpen()) {
+			// We failed so we ask for a password
+			AlertDialog.Builder dbPasswordDialog = new AlertDialog.Builder(
+					context);
+			dbPasswordDialog.setTitle(R.string.message_db_locked);
+			final EditText dbPasswordInput = new EditText(context);
+			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+			dbPasswordDialog.setView(dbPasswordInput);
+			dbPasswordDialog.setMessage(context.getResources().getString(
+					R.string.message_db_password));
 
-			open = true;
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			dbPasswordDialog.setPositiveButton(R.string.confirm,
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							setPassword(dbPasswordInput.getText().toString());
+							open();
+						}
+					});
+			dbPasswordDialog.setNegativeButton(R.string.cancel,
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+			dbPasswordDialog.show();
+		}
+	}
+
+	public void open() {
+		if (!isOpen()) {
+			try {
+				Log.d(this.getClass().getName(), "opening db ...");
+				Class.forName("org.h2.Driver");
+				connection = DriverManager.getConnection(getUrl());
+				open = true;
+				Log.d(this.getClass().getName(), "... opened");
+			} catch (ClassNotFoundException e) {
+			} catch (SQLException e) {
+			}
 		}
 	}
 
 	public void close() {
-		if (!isOpen()) {
-			return;
+		if (isOpen()) {
+			try {
+				password = "";
+				Log.d(this.getClass().getName(), "closing db ...");
+				connection.close();
+				open = false;
+				Log.d(this.getClass().getName(), "... closed");
+			} catch (SQLException e) {
+			}
 		}
+	}
+
+	public void changeEncryption(String oldPassword, String newPassword) {
+		sync();
+		close();
 		try {
-			Log.d(this.getClass().getName(), "closing db ...");
-			connection.close();
-			Log.d(this.getClass().getName(), "... closed");
+			if (oldPassword != null && !oldPassword.equals("")) {
+				org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+						"AES", oldPassword.toCharArray(),
+						newPassword.toCharArray(), true);
+			} else {
+				org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+						"AES", null, newPassword.toCharArray(), true);
+			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		open = false;
+		this.password = newPassword;
+		open();
 	}
 
 	public void sync() {
@@ -134,23 +212,23 @@ public class Database {
 		return open;
 	}
 
-	private boolean checkDataBase() {
-
-		open();
-		if (isOpen()) {
-			close();
+	private boolean databaseExists() {
+		File db = null;
+		String dbFile = DB_PATH + "/" + DB_FILE_NAME;
+		db = new File(dbFile);
+		if (db.exists()) {
 			return true;
 		}
 		return false;
 	}
 
-	private boolean copyDataBase() {
+	private boolean createDataBase() {
 
 		InputStream is = null;
 		OutputStream os = null;
 		try {
 			is = context.getAssets().open(DB_FILE_NAME);
-			String outFileName = DB_PATH + DB_FILE_NAME;
+			String outFileName = DB_PATH + "/" + DB_FILE_NAME;
 
 			os = new FileOutputStream(outFileName);
 
@@ -184,32 +262,11 @@ public class Database {
 		return false;
 	}
 
-	public void exec(String command) {
-		Connection localConnection = null;
-		try {
-
-			localConnection = DriverManager.getConnection(url);
-			Statement statement = localConnection.createStatement();
-			statement.execute(command);
-			statement.close();
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-	}
-
-	public Connection getConnection(){
+	public Connection getConnection() {
 
 		try {
 
-			return DriverManager.getConnection(url);
+			return DriverManager.getConnection(getUrl());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -217,25 +274,22 @@ public class Database {
 		return null;
 	}
 
-	public int update(String command) {
-		int result = 0;
+	public void exec(String command) {
 		Connection localConnection = null;
-
+		Statement statement = null;
 		try {
-
-			localConnection = DriverManager.getConnection(url);
-
-			Statement statement = localConnection.createStatement();
-			result = statement.executeUpdate(command);
-			statement.close();
-
-			localConnection.commit();
-		} catch (SQLException e) {
-			e.printStackTrace();
-
+			localConnection = DriverManager.getConnection(getUrl());
+			statement = localConnection.createStatement();
+			statement.execute(command);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -243,29 +297,34 @@ public class Database {
 				}
 			}
 		}
-		return result;
-
 	}
 
-	public void executeScript(String script) {
+	public boolean executeScript(String script) {
 		Connection localConnection = null;
+		ResultSet rs = null;
 
 		try {
 
-			localConnection = DriverManager.getConnection(url);
+			localConnection = DriverManager.getConnection(getUrl());
 			Log.d(this.getClass().getName(), "Executing script <" + script
 					+ ">");
 			InputStream scriptStream = context.getAssets().open(script);
 
-			ResultSet rs = RunScript.execute(localConnection,
-					new InputStreamReader(scriptStream));
-			rs.close();
+			rs = RunScript.execute(localConnection, new InputStreamReader(
+					scriptStream));
 		} catch (SQLException e) {
 			e.printStackTrace();
-
+			return false;
 		} catch (Exception exception) {
 			exception.printStackTrace();
+			return false;
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -273,6 +332,44 @@ public class Database {
 				}
 			}
 		}
+		return true;
+	}
+
+	public List<String> getUpgradePath() {
+		Connection localConnection = null;
+		ResultSet rs = null;
+		List<String> upgradePath = new ArrayList<String>();
+
+		try {
+
+			localConnection = DriverManager.getConnection(getUrl());
+			InputStream scriptStream = context.getAssets().open(
+					"upgradepath.sql");
+
+			rs = RunScript.execute(localConnection, new InputStreamReader(
+					scriptStream));
+			while (rs != null && rs.next()) {
+				upgradePath.add(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return upgradePath;
 	}
 
 }

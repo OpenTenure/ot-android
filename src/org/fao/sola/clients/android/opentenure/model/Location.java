@@ -90,28 +90,32 @@ public class Location {
 	}
 
 	public static int createLocation(Location loc) {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
 			statement.setString(1, loc.getLocationId());
 			statement.setString(2, loc.getName());
 			statement.setBigDecimal(3, new BigDecimal(loc.getLat()));
 			statement.setBigDecimal(4, new BigDecimal(loc.getLon()));
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -123,27 +127,31 @@ public class Location {
 	}
 
 	public int create() {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
 			statement.setString(1, getLocationId());
 			statement.setString(2, getName());
 			statement.setBigDecimal(3, new BigDecimal(getLat()));
 			statement.setBigDecimal(4, new BigDecimal(getLon()));
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -155,25 +163,30 @@ public class Location {
 	}
 
 	public static int deleteLocation(Location loc) {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE FROM LOCATION WHERE LOCATION_ID=?");
 			statement.setString(1, loc.getLocationId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -185,25 +198,29 @@ public class Location {
 	}
 
 	public int delete() {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("DELETE FROM LOCATION WHERE LOCATION_ID=?");
 			statement.setString(1, getLocationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -215,28 +232,32 @@ public class Location {
 	}
 
 	public static int updateLocation(Location loc) {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE LOCATION SET NAME=?, LAT=?, LON=? WHERE LOCATION_ID=?");
 			statement.setString(1, loc.getName());
 			statement.setBigDecimal(2, new BigDecimal(loc.getLat()));
 			statement.setBigDecimal(3, new BigDecimal(loc.getLon()));
 			statement.setString(4, loc.getLocationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -248,27 +269,31 @@ public class Location {
 	}
 
 	public int update() {
-
-		Connection localConnection = null;
 		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = db.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("UPDATE LOCATION SET NAME=?, LAT=?, LON=? WHERE LOCATION_ID=?");
 			statement.setString(1, getName());
 			statement.setBigDecimal(2, new BigDecimal(getLat()));
 			statement.setBigDecimal(3, new BigDecimal(getLon()));
 			statement.setString(4, getLocationId());
 			result = statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -280,18 +305,19 @@ public class Location {
 	}
 
 	public static Location getLocation(String name) {
-
 		Location loc = null;
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT LOC.LOCATION_ID, LOC.LAT, LOC.LON FROM LOCATION LOC WHERE LOC.NAME=?");
 			statement.setString(1, name);
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				loc = new Location();
 				loc.setLocationId(rs.getString(1));
@@ -299,14 +325,23 @@ public class Location {
 				loc.setLat(rs.getBigDecimal(2).doubleValue());
 				loc.setLon(rs.getBigDecimal(3).doubleValue());
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -318,29 +353,38 @@ public class Location {
 	}
 
 	public static LatLng getCurrentLocation() {
-
 		LatLng currentLocation = null;
-
 		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			PreparedStatement statement = localConnection
+			statement = localConnection
 					.prepareStatement("SELECT LOC.LAT, LOC.LON FROM LOCATION LOC WHERE LOC.NAME='CURRENT'");
-			ResultSet rs = statement.executeQuery();
+			rs = statement.executeQuery();
 			while (rs.next()) {
 				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
 						rs.getBigDecimal(2).doubleValue());
 			}
-			rs.close();
-			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
