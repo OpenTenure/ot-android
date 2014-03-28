@@ -44,13 +44,17 @@
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
     <string name="message_saved">Richiesta salvata</string>
+    <string name="message_unable_to_save">Impossibile salvare la richiesta. Controllare i dati e riprovare</string>
     <string name="message_submitted">Richiesta inviata</string>
     <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
+    <string name="message_save_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
-    <string name="confirm">Si</string>
+    <string name="yes">Si</string>
+    <string name="no">No</string>
+    <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
     <string name="new_snapshot">Nuova immagine</string>
     <string name="new_file">Nuovo file</string>
@@ -68,6 +72,7 @@
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
+    <string name="claimant_picture">Immagine del richiedente</string>
     <string name="map_provider_google_normal">Google Maps</string>
     <string name="map_provider_google_satellite">Google Earth</string>
     <string name="map_provider_google_hybrid">Google Hybrid</string>

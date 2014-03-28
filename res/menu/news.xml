@@ -4,7 +4,7 @@
           android:title="@string/action_search"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_lock"
-          android:icon="@android:drawable/ic_lock_lock"
+          android:icon="@drawable/ic_menu_login"
           android:title="@string/action_lock_db"
           android:showAsAction="ifRoom" />
 </menu>

@@ -44,13 +44,17 @@
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
     <string name="message_saved">The claim has been saved</string>
+    <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
+    <string name="message_save_before_adding_content">The claim must be saved before adding content</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
     <string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
-    <string name="confirm">Yes</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="new_snapshot">New snapshot</string>
     <string name="new_file">New file</string>
@@ -68,6 +72,7 @@
     <string name="message_remove_marker">Remove marker?</string>
     <string name="draggable_marker">Draggable marker</string>
     <string name="sticky_marker">Sticky marker</string>
+    <string name="claimant_picture">Claimant picture</string>
     <string name="map_provider_google_normal">Google Maps</string>
     <string name="map_provider_google_satellite">Google Earth</string>
     <string name="map_provider_google_hybrid">Google Hybrid</string>

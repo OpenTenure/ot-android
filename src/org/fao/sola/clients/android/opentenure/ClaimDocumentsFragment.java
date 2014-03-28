@@ -44,7 +44,6 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.InputType;
 import android.util.Log;
@@ -110,25 +109,12 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 	}
 
 	private File getOutputMediaFile(int type) {
-		// To be safe, you should check that the SDCard is mounted
-		// using Environment.getExternalStorageState() before doing this.
+		// To check that the sdcard is mounted use Environment.getExternalStorageState()
 		String fileName;
-		File mediaStorageDir = new File(
-				Environment
-						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-				"opentenure");
-		// This location works best if you want the created images to be shared
-		// between applications and persist after your app has been uninstalled.
 
-		// Create the storage directory if it does not exist
-		if (!mediaStorageDir.exists()) {
-			if (!mediaStorageDir.mkdirs()) {
-				Log.e("opentenure", "failed to create directory");
-				return null;
-			}
-		}
+		File mediaStorageDir = OpenTenureApplication.getInstance().getMediaStorageDir();
 
-		// Create a media file name
+		// Create a file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
 				Locale.getDefault()).format(new Date());
 		if (type == MEDIA_TYPE_IMAGE) {
@@ -177,6 +163,8 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 							rootView.getContext(), uri)));
 					attachment.setPath(uri.getPath());
 					attachment.create();
+					populateList();
+					updateList();
 				}
 			});
 			snapshotDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -222,6 +210,8 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 								rootView.getContext(), uri)));
 						attachment.setPath(uri.getPath());
 						attachment.create();
+						populateList();
+						updateList();
 					}
 				});
 				fileDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -235,8 +225,6 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 			}
 			break;
 		}
-		populateList();
-		updateList();
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 

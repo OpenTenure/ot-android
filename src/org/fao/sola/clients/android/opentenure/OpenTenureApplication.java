@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
+
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -36,16 +38,21 @@ import org.fao.sola.clients.android.opentenure.model.Database;
 
 
 
+
+
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.os.Environment;
+import android.util.Log;
 
 public class OpenTenureApplication extends Application {
 
 	    private static OpenTenureApplication sInstance;
 	    private Database database;
+	    private File mediaStorageDir;
 	    
 	    private static boolean loggedin ;
 	    private static String username;
@@ -60,6 +67,10 @@ public class OpenTenureApplication extends Application {
 
 	    public Database getDatabase(){
 	        return database;
+	    }
+	    
+	    public File getMediaStorageDir(){
+	        return mediaStorageDir;
 	    }
 	    
 		public boolean isOnline() {
@@ -79,8 +90,20 @@ public class OpenTenureApplication extends Application {
 	    }
 
 	    protected void initializeInstance() {
-	        // try to open the DB without an encryption password
+	        // Start without a DB encryption password
 	    	database = new Database(getApplicationContext(),"");
+
+	    	mediaStorageDir = new File(
+					Environment
+							.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+					"opentenure");
+
+			if (!mediaStorageDir.exists()) {
+				if (!mediaStorageDir.mkdirs()) {
+					Log.e("opentenure", "failed to create directory");
+				}
+			}
+
 	    }
 	    
 	    public static HttpContext getHttp_context() {

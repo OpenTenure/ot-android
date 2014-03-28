@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -85,7 +86,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		claimId = getIntent().getExtras().getString(CLAIM_ID_KEY).equalsIgnoreCase(CREATE_CLAIM_ID)?null:getIntent().getExtras().getString(CLAIM_ID_KEY);
+		setClaimId(getIntent().getExtras().getString(CLAIM_ID_KEY).equalsIgnoreCase(CREATE_CLAIM_ID)?null:getIntent().getExtras().getString(CLAIM_ID_KEY));
 	}
 
 	@Override
@@ -138,7 +139,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	@Override
 	public void setClaimId(String claimId) {
 		this.claimId = claimId;
-		
+		if(claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
+			Claim claim = Claim.getClaim(claimId);
+			setTitle(getResources().getString(R.string.app_name)+": "+claim.getName());
+		}
 	}
 
 	@Override

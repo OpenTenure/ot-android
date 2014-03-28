@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,7 +40,13 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -51,6 +58,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class ClaimDetailsFragment extends Fragment {
@@ -59,6 +67,9 @@ public class ClaimDetailsFragment extends Fragment {
 	private boolean saved = false;
 	private ClaimDispatcher claimActivity;
 	final Calendar localCalendar = Calendar.getInstance();
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+	File claimantPictureFile;
+	ImageView claimantImageView;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -94,8 +105,8 @@ public class ClaimDetailsFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-		EditText dateOfBirth = (EditText) rootView.findViewById(
-				R.id.date_of_birth_input_field);
+		EditText dateOfBirth = (EditText) rootView
+				.findViewById(R.id.date_of_birth_input_field);
 
 		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -119,34 +130,112 @@ public class ClaimDetailsFragment extends Fragment {
 						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
 			}
 		});
-		
-		if(claimActivity.getClaimId()!=null){
+
+		claimantImageView = (ImageView) rootView
+				.findViewById(R.id.claimant_picture);
+		claimantImageView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if(claimantPictureFile != null){
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				intent.putExtra(MediaStore.EXTRA_OUTPUT,
+						Uri.fromFile(claimantPictureFile));
+				startActivityForResult(intent,
+						CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+				}else{
+					Toast toast = Toast.makeText(rootView.getContext(),
+							R.string.message_save_before_adding_content, Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
+			}
+		});
+		if (claimActivity.getClaimId() != null) {
 			load(claimActivity.getClaimId());
 		}
 
 		return rootView;
 	}
-	
-	private void load(String claimId){
+
+	private void load(String claimId) {
 		Claim claim = Claim.getClaim(claimId);
-		((EditText) rootView.findViewById(
-				R.id.first_name_input_field)).setText(claim.getPerson().getFirstName());
-		((EditText) rootView.findViewById(
-				R.id.last_name_input_field)).setText(claim.getPerson().getLastName());
-		((EditText) rootView.findViewById(
-				R.id.date_of_birth_input_field)).setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(claim.getPerson().getDateOfBirth()));
-		((EditText) rootView.findViewById(
-				R.id.place_of_birth_input_field)).setText(claim.getPerson().getPlaceOfBirth());
-		((EditText) rootView.findViewById(
-				R.id.postal_address_input_field)).setText(claim.getPerson().getPostalAddress());
-		((EditText) rootView.findViewById(
-				R.id.email_address_input_field)).setText(claim.getPerson().getEmailAddress());
-		((EditText) rootView.findViewById(
-				R.id.mobile_phone_number_input_field)).setText(claim.getPerson().getMobilePhoneNumber());
-		((EditText) rootView.findViewById(
-				R.id.contact_phone_number_input_field)).setText(claim.getPerson().getContactPhoneNumber());
-		((EditText) rootView.findViewById(
-				R.id.claim_name_input_field)).setText(claim.getName());
+		((EditText) rootView.findViewById(R.id.first_name_input_field))
+				.setText(claim.getPerson().getFirstName());
+		((EditText) rootView.findViewById(R.id.last_name_input_field))
+				.setText(claim.getPerson().getLastName());
+		((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
+				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.format(claim.getPerson().getDateOfBirth()));
+		((EditText) rootView.findViewById(R.id.place_of_birth_input_field))
+				.setText(claim.getPerson().getPlaceOfBirth());
+		((EditText) rootView.findViewById(R.id.postal_address_input_field))
+				.setText(claim.getPerson().getPostalAddress());
+		((EditText) rootView.findViewById(R.id.email_address_input_field))
+				.setText(claim.getPerson().getEmailAddress());
+		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
+				.setText(claim.getPerson().getMobilePhoneNumber());
+		((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field))
+				.setText(claim.getPerson().getContactPhoneNumber());
+		((EditText) rootView.findViewById(R.id.claim_name_input_field))
+				.setText(claim.getName());
+		setClaimantPictureFile(claim.getPerson().getPersonId());
+		try {
+			claimantImageView.setImageBitmap(getClaimantBitmap());
+		} catch (Exception e) {
+			claimantImageView.setImageDrawable(getResources().getDrawable(
+					R.drawable.ic_contact_picture));
+		}
+	}
+
+	private Bitmap getClaimantBitmap() {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+		Bitmap bitmap = BitmapFactory.decodeFile(claimantPictureFile.getPath(),
+				options);
+
+		int height = bitmap.getHeight();
+		int width = bitmap.getWidth();
+		int startOffset = 0;
+
+		Bitmap croppedBitmap = null;
+
+		if (height > width) {
+			// Portrait
+			startOffset = (height - width) / 2;
+			croppedBitmap = Bitmap.createBitmap(bitmap, 0, startOffset, width,
+					width);
+		} else {
+			// Landscape
+			startOffset = (width - height) / 2;
+			croppedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
+					height);
+		}
+		getResources().getConfiguration();
+		if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+			return Bitmap.createScaledBitmap(croppedBitmap,
+					256, 256,
+					false);
+		}else{
+			return Bitmap.createScaledBitmap(croppedBitmap,
+					128, 128,
+					false);
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+			try {
+				claimantImageView.setImageBitmap(getClaimantBitmap());
+			} catch (Exception e) {
+				claimantImageView.setImageDrawable(getResources().getDrawable(
+						R.drawable.ic_contact_picture));
+			}
+		}
 	}
 
 	private void updateLabel() {
@@ -158,6 +247,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
+	
+	private void setClaimantPictureFile(String personId){
+		claimantPictureFile = new File(OpenTenureApplication.getInstance()
+				.getMediaStorageDir().getPath()
+				+ File.separator + personId + ".jpg");
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -166,46 +261,59 @@ public class ClaimDetailsFragment extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.action_save:
 			Person person = new Person();
-			person.setFirstName(((EditText) rootView.findViewById(
-					R.id.first_name_input_field)).getText().toString());
-			person.setLastName(((EditText) rootView.findViewById(
-					R.id.last_name_input_field)).getText().toString());
+			person.setFirstName(((EditText) rootView
+					.findViewById(R.id.first_name_input_field)).getText()
+					.toString());
+			person.setLastName(((EditText) rootView
+					.findViewById(R.id.last_name_input_field)).getText()
+					.toString());
 			java.util.Date dob;
 			try {
 				dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-						.parse(((EditText) rootView.findViewById(
-								R.id.date_of_birth_input_field)).getText()
-								.toString());
+						.parse(((EditText) rootView
+								.findViewById(R.id.date_of_birth_input_field))
+								.getText().toString());
 			} catch (ParseException e) {
 				e.printStackTrace();
 				dob = new java.util.Date();
 			}
 			person.setDateOfBirth(new Date(dob.getTime()));
-			person.setPlaceOfBirth(((EditText) rootView.findViewById(
-					R.id.place_of_birth_input_field)).getText().toString());
-			person.setPostalAddress(((EditText) rootView.findViewById(
-					R.id.postal_address_input_field)).getText().toString());
-			person.setEmailAddress(((EditText) rootView.findViewById(
-					R.id.email_address_input_field)).getText().toString());
-			person.setMobilePhoneNumber(((EditText) rootView.findViewById(
-					R.id.mobile_phone_number_input_field)).getText().toString());
-			person.setContactPhoneNumber(((EditText) rootView.findViewById(
-					R.id.contact_phone_number_input_field)).getText()
+			person.setPlaceOfBirth(((EditText) rootView
+					.findViewById(R.id.place_of_birth_input_field)).getText()
 					.toString());
+			person.setPostalAddress(((EditText) rootView
+					.findViewById(R.id.postal_address_input_field)).getText()
+					.toString());
+			person.setEmailAddress(((EditText) rootView
+					.findViewById(R.id.email_address_input_field)).getText()
+					.toString());
+			person.setMobilePhoneNumber(((EditText) rootView
+					.findViewById(R.id.mobile_phone_number_input_field))
+					.getText().toString());
+			person.setContactPhoneNumber(((EditText) rootView
+					.findViewById(R.id.contact_phone_number_input_field))
+					.getText().toString());
 			person.create();
 
 			Claim claim = new Claim();
 			claim.setPerson(person);
-			claim.setName(((EditText) rootView.findViewById(
-					R.id.claim_name_input_field)).getText().toString());
-			claim.create();
+			claim.setName(((EditText) rootView
+					.findViewById(R.id.claim_name_input_field)).getText()
+					.toString());
+			if(claim.create() == 1){
+				claimActivity.setClaimId(claim.getClaimId());
+				setClaimantPictureFile(person.getPersonId());
 
-			claimActivity.setClaimId(claim.getClaimId());
+				saved = true;
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_saved, Toast.LENGTH_SHORT);
+				toast.show();
+			}else{
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_unable_to_save, Toast.LENGTH_SHORT);
+				toast.show();
+			}
 
-			saved = true;
-			toast = Toast.makeText(rootView.getContext(),
-					R.string.message_saved, Toast.LENGTH_SHORT);
-			toast.show();
 			return true;
 		case R.id.action_submit:
 			if (saved) {

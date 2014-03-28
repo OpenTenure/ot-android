@@ -125,7 +125,7 @@ public class NewsFragment extends SeparatedListFragment implements
 				AlertDialog.Builder oldPasswordDialog = new AlertDialog.Builder(rootView.getContext());
 				oldPasswordDialog.setTitle(R.string.title_lock_db);
 				final EditText oldPasswordInput = new EditText(rootView.getContext());
-				oldPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+				oldPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 				oldPasswordDialog.setView(oldPasswordInput);
 				oldPasswordDialog.setMessage(getResources().getString(R.string.message_old_db_password));
 
@@ -136,7 +136,7 @@ public class NewsFragment extends SeparatedListFragment implements
 						AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(rootView.getContext());
 						newPasswordDialog.setTitle(R.string.title_lock_db);
 						final EditText newPasswordInput = new EditText(rootView.getContext());
-						newPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+						newPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 						newPasswordDialog.setView(newPasswordInput);
 						newPasswordDialog.setMessage(getResources().getString(R.string.message_new_db_password));
 
@@ -147,7 +147,7 @@ public class NewsFragment extends SeparatedListFragment implements
 								AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(rootView.getContext());
 								confirmNewPasswordDialog.setTitle(R.string.title_lock_db);
 								final EditText confirmNewPasswordInput = new EditText(rootView.getContext());
-								confirmNewPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+								confirmNewPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 								confirmNewPasswordDialog.setView(confirmNewPasswordInput);
 								confirmNewPasswordDialog.setMessage(getResources().getString(R.string.message_confirm_new_db_password));
 
