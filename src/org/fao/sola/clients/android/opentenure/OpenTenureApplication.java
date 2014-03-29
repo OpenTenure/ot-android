@@ -36,6 +36,8 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.model.Database;
 
+import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+
 
 
 
@@ -53,6 +55,7 @@ public class OpenTenureApplication extends Application {
 	    private static OpenTenureApplication sInstance;
 	    private Database database;
 	    private File mediaStorageDir;
+	    private static Context context;
 	    
 	    private static boolean loggedin ;
 	    private static String username;
@@ -87,6 +90,17 @@ public class OpenTenureApplication extends Application {
 	      super.onCreate();  
 	      sInstance = this;
 	      sInstance.initializeInstance();
+	      context = getApplicationContext();
+	      
+	      
+	      if(FileSystemUtilities.createClaimsFolder())
+	    	  System.out.println("File system well inzialized");
+	      else {
+	    	  
+	    	  System.out.println("File system not writeble");
+	    	  
+	    	  //*******THROW EXCEPTION HERE************//
+	      }
 	    }
 
 	    protected void initializeInstance() {
@@ -145,7 +159,14 @@ public class OpenTenureApplication extends Application {
 		public static void setUsername(String username) {
 			OpenTenureApplication.username = username;
 		}
+		
+		public static Context getContext() {
+			return context;
+		}
 
+		public static void setContext(Context context) {
+			OpenTenureApplication.context = context;
+		}
 
 		
 		/*
@@ -177,7 +198,7 @@ public class OpenTenureApplication extends Application {
 		         
 			    cookieStore = new BasicCookieStore();
 			    http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-				System.out.println("Finito di preparare il client");
+				System.out.println("Inizialized HTTP Client");
 				
 			} catch (Throwable e) {
 				e.printStackTrace();				
