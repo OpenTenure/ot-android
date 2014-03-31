@@ -27,7 +27,16 @@
  */
 package com.fao.sola.clients.android.opentenure.filesystem;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -42,12 +51,9 @@ public class FileSystemUtilities {
 	private static String _CLAIMS_FOLDER = "claims";
 	private static String _CLAIM_PREFIX = "claim_";
 	private static String _CLAIM_METADATA = "metadata";
-	private static String _SIGNED_CLAIM = "signed_claim";
-	private static String _TENURE_IMAGERY = "tenure_imagery";
+	private static String _ATTACHMENT_FOLDER = "attachment_folder";	
 	private static String _CLAIMANT_IMAGERY = "claimant_imagery";
-	private static String _OWNERS = "owners";
-	private static String _OWNERS_ID = "owners//id";
-	private static String _OWNERS_PHOTOGRAPHIES = "owners//photograpies";
+
 
 
 	public static boolean createClaimsFolder(){
@@ -95,26 +101,22 @@ public class FileSystemUtilities {
 
 			claimFolder = new File(claimsFolder,_CLAIM_PREFIX+claimID);
 
-			new File(claimFolder, _CLAIM_METADATA).mkdir();
-			new File(claimFolder, _SIGNED_CLAIM).mkdir();
-			new File(claimFolder, _TENURE_IMAGERY).mkdir();
-			new File(claimFolder, _OWNERS_ID).mkdir();
-			new File(claimFolder, _OWNERS_PHOTOGRAPHIES).mkdir();
+			new File(claimFolder, _CLAIM_METADATA).mkdir();			
 			new File(claimFolder, _CLAIMANT_IMAGERY).mkdir();
+			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 			
 			System.out.println("Claim File System created " + claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
-			System.out.println("Error creating the file system of the claim");
+			System.out.println("Error creating the file system of the claim!!!");
 			return false ;
 		}
 
-		return(new File(claimFolder,_CLAIM_METADATA).exists() && 
-				new File(claimFolder,_SIGNED_CLAIM).exists() &&  
-				new File(claimFolder,_TENURE_IMAGERY).exists() && 
-				new File(claimFolder,_OWNERS_ID).exists() &&
-				new File(claimFolder,_OWNERS_PHOTOGRAPHIES).exists() &&
-				new File(claimFolder,_CLAIMANT_IMAGERY).exists()
+		return( new File(claimFolder,_CLAIM_METADATA).exists() && 
+				
+				new File(claimFolder,_CLAIMANT_IMAGERY).exists() &&
+				
+				new File(claimFolder,_ATTACHMENT_FOLDER).exists()
 				);		
 	}
 
@@ -141,23 +143,51 @@ public class FileSystemUtilities {
 
 	public static File getMetadataFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _CLAIM_METADATA);
+	}	
+	
+	public static File getAttachmentFolder(String claimID){		
+		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);
 	}
 
-	public static File getSignedClaim(String claimID){		
-		return new File(getClaimFolder(claimID), _SIGNED_CLAIM);
+	
+	
+public static File copyFileInAttachFolder(String claimID,File source){
+	
+	File dest = null;
+	
+	try {
+		
+		dest = new File(getAttachmentFolder(claimID),source.getName());
+		
+		System.out.println(dest.getAbsolutePath());
+		byte[] buffer = new byte[1024];
+		
+		FileInputStream reader = new FileInputStream(source);
+		FileOutputStream writer = new FileOutputStream(dest);
+		
+		BufferedInputStream br= new BufferedInputStream(reader);
+		BufferedOutputStream bw = new BufferedOutputStream(writer);		
+		
+		int k; while( ( k = br.read(buffer) ) != -1 ) {
+			writer.write(buffer); 
+			}
+		
+		writer.close(); 
+		reader.close();
+		
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return dest;
+}
 
-	public static File getTenureImageryFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _TENURE_IMAGERY);
-	}
 
-	public static File getOwnersIDFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _OWNERS_ID);
-	}
-
-	public static File getOwnersPhotograpiesFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _OWNERS_PHOTOGRAPHIES);
-	}
 
 
 
