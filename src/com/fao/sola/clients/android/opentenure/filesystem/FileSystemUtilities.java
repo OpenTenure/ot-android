@@ -44,6 +44,7 @@ public class FileSystemUtilities {
 	private static String _CLAIM_METADATA = "metadata";
 	private static String _SIGNED_CLAIM = "signed_claim";
 	private static String _TENURE_IMAGERY = "tenure_imagery";
+	private static String _CLAIMANT_IMAGERY = "claimant_imagery";
 	private static String _OWNERS = "owners";
 	private static String _OWNERS_ID = "owners//id";
 	private static String _OWNERS_PHOTOGRAPHIES = "owners//photograpies";
@@ -59,6 +60,7 @@ public class FileSystemUtilities {
 				File appFolder = context.getExternalFilesDir(null);				
 				new File(appFolder, _CLAIMS_FOLDER).mkdir();				
 				File claimsFolder = new File(appFolder.getAbsoluteFile()+File.separator+_CLAIMS_FOLDER);
+				System.out.println("************************************************************************************************************************************************"+claimsFolder.getAbsolutePath());
 
 				if(claimsFolder.exists() && claimsFolder.isDirectory())
 					return true;
@@ -98,6 +100,9 @@ public class FileSystemUtilities {
 			new File(claimFolder, _TENURE_IMAGERY).mkdir();
 			new File(claimFolder, _OWNERS_ID).mkdir();
 			new File(claimFolder, _OWNERS_PHOTOGRAPHIES).mkdir();
+			new File(claimFolder, _CLAIMANT_IMAGERY).mkdir();
+			
+			System.out.println("Claim File System created " + claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
 			System.out.println("Error creating the file system of the claim");
@@ -108,10 +113,18 @@ public class FileSystemUtilities {
 				new File(claimFolder,_SIGNED_CLAIM).exists() &&  
 				new File(claimFolder,_TENURE_IMAGERY).exists() && 
 				new File(claimFolder,_OWNERS_ID).exists() &&
-				new File(claimFolder,_OWNERS_PHOTOGRAPHIES).exists()
+				new File(claimFolder,_OWNERS_PHOTOGRAPHIES).exists() &&
+				new File(claimFolder,_CLAIMANT_IMAGERY).exists()
 				);		
 	}
 
+	
+	
+	
+	public static File getClaimantImageryFolder(String claimID){		
+		return new File(getClaimFolder(claimID), _CLAIMANT_IMAGERY);		
+		
+	}
 
 	public static File getClaimsFolder(){
 
@@ -122,34 +135,27 @@ public class FileSystemUtilities {
 	}
 
 
-	public static File getClaimFolder(String claimID){
-		getClaimsFolder();
-		return new File(getClaimsFolder(), _CLAIM_PREFIX + claimID);		
-
+	public static File getClaimFolder(String claimID){		
+		return new File(getClaimsFolder(), _CLAIM_PREFIX + claimID);
 	}
 
-	public static File getMetadataFolder(String claimID){
-		getClaimsFolder();
+	public static File getMetadataFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _CLAIM_METADATA);
 	}
 
-	public static File getSignedClaim(String claimID){
-		getClaimsFolder();
+	public static File getSignedClaim(String claimID){		
 		return new File(getClaimFolder(claimID), _SIGNED_CLAIM);
 	}
 
-	public static File getTenureImageryFolder(String claimID){
-		getClaimsFolder();
+	public static File getTenureImageryFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _TENURE_IMAGERY);
 	}
 
-	public static File getOwnersIDFolder(String claimID){
-		getClaimsFolder();
+	public static File getOwnersIDFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _OWNERS_ID);
 	}
 
-	public static File getOwnersPhotograpiesFolder(String claimID){
-		getClaimsFolder();
+	public static File getOwnersPhotograpiesFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _OWNERS_PHOTOGRAPHIES);
 	}
 

@@ -37,6 +37,8 @@ import java.util.Locale;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -180,7 +182,7 @@ public class ClaimDetailsFragment extends Fragment {
 				.setText(claim.getPerson().getContactPhoneNumber());
 		((EditText) rootView.findViewById(R.id.claim_name_input_field))
 				.setText(claim.getName());
-		setClaimantPictureFile(claim.getPerson().getPersonId());
+		setClaimantPictureFile(claim.getClaimId(),claim.getPerson().getPersonId());
 		try {
 			claimantImageView.setImageBitmap(getClaimantBitmap());
 		} catch (Exception e) {
@@ -248,10 +250,13 @@ public class ClaimDetailsFragment extends Fragment {
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
 	
-	private void setClaimantPictureFile(String personId){
-		claimantPictureFile = new File(OpenTenureApplication.getInstance()
-				.getMediaStorageDir().getPath()
-				+ File.separator + personId + ".jpg");
+	private void setClaimantPictureFile(String claimID,String personId){
+		
+		claimantPictureFile = new File(FileSystemUtilities.getClaimantImageryFolder(claimID), personId + ".jpg");
+		
+//		claimantPictureFile = new File(OpenTenureApplication.getInstance()
+//				.getMediaStorageDir().getPath()
+//				+ File.separator + personId + ".jpg");
 	}
 
 	@Override
@@ -302,7 +307,10 @@ public class ClaimDetailsFragment extends Fragment {
 					.toString());
 			if(claim.create() == 1){
 				claimActivity.setClaimId(claim.getClaimId());
-				setClaimantPictureFile(person.getPersonId());
+				
+				FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
+				
+				setClaimantPictureFile(claim.getClaimId(),person.getPersonId());
 
 				saved = true;
 				toast = Toast.makeText(rootView.getContext(),
