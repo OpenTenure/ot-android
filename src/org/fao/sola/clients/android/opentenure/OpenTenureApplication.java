@@ -78,14 +78,8 @@ public class OpenTenureApplication extends Application {
 	      context = getApplicationContext();
 	      
 	      
-	      if(FileSystemUtilities.createClaimsFolder())
-	    	  System.out.println("File system well inzialized");
-	      else {
-	    	  
-	    	  System.out.println("File system not writeble");
-	    	  
-	    	  //*******THROW EXCEPTION HERE************//
-	      }
+	      FileSystemUtilities.createClaimsFolder();
+		  FileSystemUtilities.createClaimantsFolder();
 	    }
 
 	    protected void initializeInstance() {

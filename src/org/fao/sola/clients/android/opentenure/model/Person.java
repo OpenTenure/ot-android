@@ -166,6 +166,7 @@ public class Person {
 			statement.setString(9, person.getMobilePhoneNumber());
 			statement.setString(10, person.getContactPhoneNumber());
 			result = statement.executeUpdate();
+			FileSystemUtilities.createClaimantFolder(person.getPersonId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -208,6 +209,7 @@ public class Person {
 			statement.setString(9, getMobilePhoneNumber());
 			statement.setString(10, getContactPhoneNumber());
 			result = statement.executeUpdate();
+			FileSystemUtilities.createClaimantFolder(getPersonId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -242,6 +244,7 @@ public class Person {
 					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
 			statement.setString(1, person.getPersonId());
 			result = statement.executeUpdate();
+			FileSystemUtilities.removeClaimantFolder(person.getPersonId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -274,6 +277,7 @@ public class Person {
 					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
 			statement.setString(1, getPersonId());
 			result = statement.executeUpdate();
+			FileSystemUtilities.removeClaimantFolder(getPersonId());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {

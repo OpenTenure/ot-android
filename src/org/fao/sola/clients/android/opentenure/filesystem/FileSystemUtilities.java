@@ -135,6 +135,70 @@ public class FileSystemUtilities {
 	}
 
 	
+	public static boolean createClaimantFolder(String personId){
+
+		try {
+			new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).mkdir();
+
+		} catch (Exception e) {
+			System.out.println("Error creating the file system of the claim!!!");
+			return false ;
+		}
+
+		return new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).exists();		
+	}
+
+    public static void delete(File file)
+        	throws IOException{
+     
+        	if(file.isDirectory()){
+     
+        		//directory is empty, then delete it
+        		if(file.list().length==0){
+     
+        		   file.delete();
+        		   System.out.println("Directory is deleted : " 
+                                                     + file.getAbsolutePath());
+     
+        		}else{
+     
+        		   //list all the directory contents
+            	   String files[] = file.list();
+     
+            	   for (String temp : files) {
+            	      //construct the file structure
+            	      File fileDelete = new File(file, temp);
+     
+            	      //recursive delete
+            	     delete(fileDelete);
+            	   }
+     
+            	   //check the directory again, if empty then delete it
+            	   if(file.list().length==0){
+               	     file.delete();
+            	     System.out.println("Directory is deleted : " 
+                                                      + file.getAbsolutePath());
+            	   }
+        		}
+     
+        	}else{
+        		//if file, then delete it
+        		file.delete();
+        		System.out.println("File is deleted : " + file.getAbsolutePath());
+        	}
+        }
+    
+    public static boolean removeClaimantFolder(String personId){
+
+    	try {
+    		delete(new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId));		
+		} catch (Exception e) {
+			return false;
+		}
+		return true;		
+	}
+
+	
 	public static File getClaimsFolder(){
 
 		Context context = OpenTenureApplication.getContext();	
