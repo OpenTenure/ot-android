@@ -57,9 +57,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import com.ipaulpro.afilechooser.utils.FileUtils;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.MD5;

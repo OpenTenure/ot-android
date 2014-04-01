@@ -36,8 +36,8 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 
-import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -25,9 +25,10 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package com.fao.sola.clients.android.opentenure.filesystem;
+package org.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -186,13 +187,14 @@ public static File copyFileInAttachFolder(String claimID,File source){
 		FileOutputStream writer = new FileOutputStream(dest);
 		
 		BufferedInputStream br= new BufferedInputStream(reader);
+		BufferedOutputStream bw= new BufferedOutputStream(writer);
 		
 		while( (br.read(buffer) ) != -1 ) {
-			writer.write(buffer); 
+			bw.write(buffer); 
 			}
 		
-		writer.close(); 
-		reader.close();
+		br.close(); 
+		bw.close();
 		
 	} catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block
