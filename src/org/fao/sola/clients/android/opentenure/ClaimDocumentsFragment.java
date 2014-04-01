@@ -57,6 +57,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import com.ipaulpro.afilechooser.utils.FileUtils;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
@@ -105,7 +106,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 		// To check that the sdcard is mounted use Environment.getExternalStorageState()
 		String fileName;
 
-		File mediaStorageDir = OpenTenureApplication.getInstance().getMediaStorageDir();
+		File mediaStorageDir = FileSystemUtilities.getAttachmentFolder(claimActivity.getClaimId());
 
 		// Create a file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
@@ -146,15 +147,20 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
+					
+					File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(), FileUtils.getFile(
+							rootView.getContext(), uri));
+					
+					System.out.println("***********************************************copiato****************************************************************************************");
+					
 					Attachment attachment = new Attachment();
 					attachment.setClaimId(claimActivity.getClaimId());
 					attachment.setDescription(snapshotDescription.getText().toString());
-					attachment.setFileName(uri.getLastPathSegment());
+					attachment.setFileName(copy.getName());
 					attachment.setFileType(fileType);
 					attachment.setMimeType(mimeType);
-					attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
-							rootView.getContext(), uri)));
-					attachment.setPath(uri.getPath());
+					attachment.setMD5Sum(MD5.calculateMD5(copy));
+					attachment.setPath(copy.getAbsolutePath());
 					attachment.create();
 					update();
 				}
@@ -192,15 +198,18 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						
+						File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(), FileUtils.getFile(
+								rootView.getContext(), uri));	
+						
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
 						attachment.setDescription(fileDescription.getText().toString());
-						attachment.setFileName(uri.getLastPathSegment());
+						attachment.setFileName(copy.getName());
 						attachment.setFileType("document");
 						attachment.setMimeType(mimeType);
-						attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
-								rootView.getContext(), uri)));
-						attachment.setPath(uri.getPath());
+						attachment.setMD5Sum(MD5.calculateMD5(copy));
+						attachment.setPath(copy.getAbsolutePath());
 						attachment.create();
 						update();
 					}

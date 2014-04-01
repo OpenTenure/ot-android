@@ -178,7 +178,6 @@ public class ClaimDetailsFragment extends Fragment {
 		((EditText) rootView.findViewById(R.id.claim_name_input_field))
 				.setText(claim.getName());
 		claimantPictureFile = Person.getPersonPictureFile(claim.getPerson().getPersonId());
-
 		try {
 			if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
 				claimantImageView.setImageBitmap(Person.getPersonPicture(rootView.getContext(), claimantPictureFile, 128));

@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.net.ConnectException;
+
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -81,13 +81,14 @@ public class CommunityServerAPI {
 
 			System.out.println("Ottenuta la response");
 			System.out.println("Status line" + response.getStatusLine());
+			
 
 			if (response.getStatusLine().getStatusCode()==(HttpStatus.SC_OK)) {
 
 				String json = CommunityServerAPIUtilities.Slurp(response
 						.getEntity().getContent(), 1024);
 
-				/* parsing the response */
+				/* parsing the response in a Login object*/
 				Gson gson = new Gson();
 				Login login = gson.fromJson(json, Login.class);
 
