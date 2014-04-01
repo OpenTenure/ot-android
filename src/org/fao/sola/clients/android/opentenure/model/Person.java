@@ -37,6 +37,8 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 
+import com.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -439,8 +441,7 @@ public class Person {
 	}
 
 	public static File getPersonPictureFile(String personId) {
-		return new File(OpenTenureApplication.getInstance()
-				.getMediaStorageDir().getPath()
+		return new File(FileSystemUtilities.getClaimantFolder(personId)
 				+ File.separator + personId + ".jpg");
 	}
 

@@ -28,20 +28,14 @@
 package com.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
@@ -49,10 +43,11 @@ public class FileSystemUtilities {
 
 
 	private static String _CLAIMS_FOLDER = "claims";
+	private static String _CLAIMANTS_FOLDER = "claimants";
 	private static String _CLAIM_PREFIX = "claim_";
+	private static String _CLAIMANT_PREFIX = "claimant_";
 	private static String _CLAIM_METADATA = "metadata";
 	private static String _ATTACHMENT_FOLDER = "attachment_folder";	
-	private static String _CLAIMANT_IMAGERY = "claimant_imagery";
 
 
 
@@ -66,7 +61,6 @@ public class FileSystemUtilities {
 				File appFolder = context.getExternalFilesDir(null);				
 				new File(appFolder, _CLAIMS_FOLDER).mkdir();				
 				File claimsFolder = new File(appFolder.getAbsoluteFile()+File.separator+_CLAIMS_FOLDER);
-				System.out.println("************************************************************************************************************************************************"+claimsFolder.getAbsolutePath());
 
 				if(claimsFolder.exists() && claimsFolder.isDirectory())
 					return true;
@@ -74,13 +68,36 @@ public class FileSystemUtilities {
 					return false;
 
 			} catch (Exception e) {					
-				System.err.println("Error creating Claims folder" + e.getMessage());
 				return false;
 			}			
 		}
 		else {
+			return false;			
+		}		
 
-			System.out.println("External Storage not Writable");
+	}
+
+	public static boolean createClaimantsFolder(){
+
+		
+		if(isExternalStorageWritable()){		
+
+			try {
+				Context context = OpenTenureApplication.getContext();	
+				File appFolder = context.getExternalFilesDir(null);				
+				new File(appFolder, _CLAIMANTS_FOLDER).mkdir();				
+				File claimantsFolder = new File(appFolder.getAbsoluteFile()+File.separator+_CLAIMANTS_FOLDER);
+
+				if(claimantsFolder.exists() && claimantsFolder.isDirectory())
+					return true;
+				else
+					return false;
+
+			} catch (Exception e) {					
+				return false;
+			}			
+		}
+		else {
 			return false;			
 		}		
 
@@ -101,8 +118,7 @@ public class FileSystemUtilities {
 
 			claimFolder = new File(claimsFolder,_CLAIM_PREFIX+claimID);
 
-			new File(claimFolder, _CLAIM_METADATA).mkdir();			
-			new File(claimFolder, _CLAIMANT_IMAGERY).mkdir();
+			new File(claimFolder, _CLAIM_METADATA).mkdir();		
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 			
 			System.out.println("Claim File System created " + claimFolder.getAbsolutePath());
@@ -114,20 +130,11 @@ public class FileSystemUtilities {
 
 		return( new File(claimFolder,_CLAIM_METADATA).exists() && 
 				
-				new File(claimFolder,_CLAIMANT_IMAGERY).exists() &&
-				
 				new File(claimFolder,_ATTACHMENT_FOLDER).exists()
 				);		
 	}
 
 	
-	
-	
-	public static File getClaimantImageryFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _CLAIMANT_IMAGERY);		
-		
-	}
-
 	public static File getClaimsFolder(){
 
 		Context context = OpenTenureApplication.getContext();	
@@ -136,9 +143,22 @@ public class FileSystemUtilities {
 
 	}
 
+	public static File getClaimantsFolder(){
+
+		Context context = OpenTenureApplication.getContext();	
+		File appFolder = context.getExternalFilesDir(null);				
+		return new File(appFolder, _CLAIMANTS_FOLDER);
+
+	}
+
 
 	public static File getClaimFolder(String claimID){		
 		return new File(getClaimsFolder(), _CLAIM_PREFIX + claimID);
+	}
+
+
+	public static File getClaimantFolder(String personId){		
+		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId);
 	}
 
 	public static File getMetadataFolder(String claimID){		
@@ -166,9 +186,8 @@ public static File copyFileInAttachFolder(String claimID,File source){
 		FileOutputStream writer = new FileOutputStream(dest);
 		
 		BufferedInputStream br= new BufferedInputStream(reader);
-		BufferedOutputStream bw = new BufferedOutputStream(writer);		
 		
-		int k; while( ( k = br.read(buffer) ) != -1 ) {
+		while( (br.read(buffer) ) != -1 ) {
 			writer.write(buffer); 
 			}
 		
