@@ -29,34 +29,27 @@ package org.fao.sola.clients.android.opentenure;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
 
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View.OnTouchListener;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
-public class LocalClaimsFragment extends SeparatedListFragment implements
-		OnTouchListener {
+public class LocalClaimsFragment extends ListFragment {
 
-	private AlphabetListAdapter adapter = new AlphabetListAdapter();
-	private Map<String,String> claimIds = new HashMap<String,String>();
-	private double x;
-	private double y;
-	private static final double TAP_THRESHOLD_DISTANCE = 10.0;
+	private View rootView;
+	private static final int CLAIM_RESULT = 100;
 
 	public LocalClaimsFragment() {
 	}
@@ -77,7 +70,7 @@ public class LocalClaimsFragment extends SeparatedListFragment implements
 					ClaimActivity.class);
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ClaimActivity.CREATE_CLAIM_ID);
 			intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
-			startActivity(intent);
+			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -88,68 +81,45 @@ public class LocalClaimsFragment extends SeparatedListFragment implements
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 			default:
-				populateList();
-				updateList();
+				update();
 		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		reset();
 		rootView = inflater.inflate(R.layout.local_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
 
-		List<String> localClaims = populateList();
-		Collections.sort(localClaims);
-
-		List<AlphabetListAdapter.Row> rows = getRows(localClaims);
-		adapter.setRows(rows);
-		adapter.setItemOnOnTouchListener(this);
-		setListAdapter(adapter);
-
-		updateList();
+		update();
+		    
 		return rootView;
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-
-			double distance = Math.sqrt(Math.pow(event.getX() - x, 2.0)
-					+ Math.pow(event.getY() - y, 2.0));
-			if (distance < TAP_THRESHOLD_DISTANCE) {
-				Intent intent = new Intent(rootView.getContext(),
-						ClaimActivity.class);
-				intent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimIds.get(((TextView)v).getText().toString()));
-				intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
-				startActivity(intent);
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.d(this.getClass().getName(),"Down");
-			x = event.getX();
-			y = event.getY();
-			return false;
-		}
-		return false;
-	}
-
-	protected List<String> populateList() {
+	  @Override
+	  public void onListItemClick(ListView l, View v, int position, long id) {
+			Intent intent = new Intent(rootView.getContext(),
+					ClaimActivity.class);
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
+			intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
+			startActivityForResult(intent, CLAIM_RESULT);
+	  }
+	  
+	protected void update() {
 		List<Claim> claims = Claim.getAllClaims();
-		List<String> claimsList = new ArrayList<String>();
-		claimIds = new HashMap<String,String>();
+		List<String> ids = new ArrayList<String>();
+		List<String> slogans = new ArrayList<String>();
 		
 		for(Claim claim : claims){
 			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName();
-			claimsList.add(slogan);
-			claimIds.put(slogan, claim.getClaimId());
+			slogans.add(slogan);
+			ids.add(claim.getClaimId());
 		}
-		return claimsList;
+		ArrayAdapter<String> adapter = new LocalClaimsListAdapter(rootView.getContext(), slogans.toArray(new String[slogans.size()]), ids.toArray(new String[ids.size()]));
+	    setListAdapter(adapter);
+	    adapter.notifyDataSetChanged();
+
 	}
 }

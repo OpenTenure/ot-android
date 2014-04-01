@@ -30,12 +30,9 @@ package org.fao.sola.clients.android.opentenure;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,17 +42,18 @@ import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.ListFragment;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnTouchListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,22 +63,17 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.MD5;
 
-public class ClaimDocumentsFragment extends SeparatedListFragment implements
-		OnTouchListener {
+public class ClaimDocumentsFragment extends ListFragment {
 
 	private boolean saved = false;
 	private static final int REQUEST_CHOOSER = 1234;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
-	private AlphabetListAdapter adapter = new AlphabetListAdapter();
-	private double x;
-	private double y;
-	private static final double TAP_THRESHOLD_DISTANCE = 10.0;
 	private Uri uri;
 	private String fileType;
 	private String mimeType;
-	private Map<String,String> attachmentIds = new HashMap<String,String>();
+	private View rootView;
 
 	private ClaimDispatcher claimActivity;
 
@@ -163,8 +156,7 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 							rootView.getContext(), uri)));
 					attachment.setPath(uri.getPath());
 					attachment.create();
-					populateList();
-					updateList();
+					update();
 				}
 			});
 			snapshotDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -210,8 +202,7 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 								rootView.getContext(), uri)));
 						attachment.setPath(uri.getPath());
 						attachment.create();
-						populateList();
-						updateList();
+						update();
 					}
 				});
 				fileDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
@@ -305,56 +296,31 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		reset();
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
 		setHasOptionsMenu(true);
 
-		List<String> documents = populateList();
-		Collections.sort(documents);
-
-		List<AlphabetListAdapter.Row> rows = getRows(documents);
-		adapter.setRows(rows);
-		adapter.setItemOnOnTouchListener(this);
-		setListAdapter(adapter);
-
-		updateList();
+		update();
 		return rootView;
 	}
 
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_UP) {
+	  @Override
+	  public void onListItemClick(ListView l, View v, int position, long id) {
+			String attachmentId = ((TextView)v.findViewById(R.id.attachment_id)).getText().toString();
+			Attachment att = Attachment.getAttachment(attachmentId);
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.parse("file://"
+					+ att.getPath()), att.getMimeType());
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			double distance = Math.sqrt(Math.pow(event.getX() - x, 2.0)
-					+ Math.pow(event.getY() - y, 2.0));
-			if (distance < TAP_THRESHOLD_DISTANCE) {
-				String attachmentId = attachmentIds.get(((TextView)v).getText().toString());
-				Attachment att = Attachment.getAttachment(attachmentId);
-				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://"
-						+ att.getPath()), att.getMimeType());
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+	  }
 
-				startActivity(intent);
-				return true;
-			} else {
-				return false;
-			}
-		}
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			x = event.getX();
-			y = event.getY();
-			return false;
-		}
-		return false;
-	}
-
-	protected List<String> populateList() {
+	protected void update() {
 		String claimId = claimActivity.getClaimId();
 		List<Attachment> attachments;
-		List<String> attachmentList = new ArrayList<String>();
-		attachmentIds = new HashMap<String,String>();
+		List<String> ids = new ArrayList<String>();
+		List<String> slogans = new ArrayList<String>();
 
 		if (claimId != null) {
 			Claim claim = Claim.getClaim(claimId);
@@ -363,10 +329,14 @@ public class ClaimDocumentsFragment extends SeparatedListFragment implements
 				String slogan = attachment.getDescription() + ", Type: "
 						+ attachment.getFileType() + " - "
 						+ attachment.getMimeType();
-				attachmentList.add(slogan);
-				attachmentIds.put(slogan, attachment.getAttachmentId());
+				slogans.add(slogan);
+				ids.add(attachment.getAttachmentId());
 			}
 		}
-		return attachmentList;
+		ArrayAdapter<String> adapter = new ClaimAttachmentsListAdapter(
+				rootView.getContext(), slogans, ids);
+		setListAdapter(adapter);
+		adapter.notifyDataSetChanged();
+
 	}
 }

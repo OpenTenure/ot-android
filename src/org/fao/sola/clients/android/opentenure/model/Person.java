@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,11 +35,16 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class Person {
-	
+
 	Database db = OpenTenureApplication.getInstance().getDatabase();
-	
+
 	public java.sql.Date getDateOfBirth() {
 		return dateOfBirth;
 	}
@@ -55,74 +61,83 @@ public class Person {
 		this.placeOfBirth = placeOfBirth;
 	}
 
-	public Person(){
+	public Person() {
 		this.personId = UUID.randomUUID().toString();
 	}
 
 	@Override
 	public String toString() {
-		return "Person ["
-				+ "personId=" + personId
-				+ ", firstName=" + firstName
-				+ ", uploaded=" + uploaded
-				+ ", lastName=" + lastName
-				+ ", dateOfBirth=" + dateOfBirth
-				+ ", placeOfBirth=" + placeOfBirth
-				+ ", emailAddress=" + emailAddress
-				+ ", postalAddress=" + postalAddress
-				+ ", mobilePhoneNumber=" + mobilePhoneNumber
-				+ ", contactPhoneNumber=" + contactPhoneNumber
-				+ "]";
+		return "Person [" + "personId=" + personId + ", firstName=" + firstName
+				+ ", uploaded=" + uploaded + ", lastName=" + lastName
+				+ ", dateOfBirth=" + dateOfBirth + ", placeOfBirth="
+				+ placeOfBirth + ", emailAddress=" + emailAddress
+				+ ", postalAddress=" + postalAddress + ", mobilePhoneNumber="
+				+ mobilePhoneNumber + ", contactPhoneNumber="
+				+ contactPhoneNumber + "]";
 	}
+
 	public String getPersonId() {
 		return personId;
 	}
+
 	public void setPersonId(String personId) {
 		this.personId = personId;
 	}
+
 	public String getFirstName() {
 		return firstName;
 	}
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
 	public String getLastName() {
 		return lastName;
 	}
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	public String getEmailAddress() {
 		return emailAddress;
 	}
+
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
+
 	public String getPostalAddress() {
 		return postalAddress;
 	}
+
 	public void setPostalAddress(String postalAddress) {
 		this.postalAddress = postalAddress;
 	}
+
 	public String getContactPhoneNumber() {
 		return contactPhoneNumber;
 	}
+
 	public void setContactPhoneNumber(String contactPhoneNumber) {
 		this.contactPhoneNumber = contactPhoneNumber;
 	}
+
 	public String getMobilePhoneNumber() {
 		return mobilePhoneNumber;
 	}
+
 	public void setMobilePhoneNumber(String mobilePhoneNumber) {
 		this.mobilePhoneNumber = mobilePhoneNumber;
 	}
 
-	public static int markAsUploaded(Person person){
+	public static int markAsUploaded(Person person) {
 		person.setUploaded(true);
 		return Person.updatePerson(person);
 	}
 
-	public int markAsUploaded(){
+	public int markAsUploaded() {
 		setUploaded(true);
 		return update();
 	}
@@ -134,38 +149,39 @@ public class Person {
 
 		try {
 
-				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				statement = localConnection
-						.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
-				statement.setString(1, person.getPersonId());
-				statement.setBoolean(2, person.getUploaded());
-				statement.setString(3, person.getFirstName());
-				statement.setString(4, person.getLastName());
-				statement.setDate(5, person.getDateOfBirth());
-				statement.setString(6, person.getPlaceOfBirth());
-				statement.setString(7, person.getEmailAddress());
-				statement.setString(8, person.getPostalAddress());
-				statement.setString(9, person.getMobilePhoneNumber());
-				statement.setString(10, person.getContactPhoneNumber());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
+			statement.setString(1, person.getPersonId());
+			statement.setBoolean(2, person.getUploaded());
+			statement.setString(3, person.getFirstName());
+			statement.setString(4, person.getLastName());
+			statement.setDate(5, person.getDateOfBirth());
+			statement.setString(6, person.getPlaceOfBirth());
+			statement.setString(7, person.getEmailAddress());
+			statement.setString(8, person.getPostalAddress());
+			statement.setString(9, person.getMobilePhoneNumber());
+			statement.setString(10, person.getContactPhoneNumber());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -176,38 +192,38 @@ public class Person {
 
 		try {
 
-				localConnection = db.getConnection();
-				statement = localConnection
-						.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
-				statement.setString(1, getPersonId());
-				statement.setBoolean(2, getUploaded());
-				statement.setString(3, getFirstName());
-				statement.setString(4, getLastName());
-				statement.setDate(5, getDateOfBirth());
-				statement.setString(6, getPlaceOfBirth());
-				statement.setString(7, getEmailAddress());
-				statement.setString(8, getPostalAddress());
-				statement.setString(9, getMobilePhoneNumber());
-				statement.setString(10, getContactPhoneNumber());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?)");
+			statement.setString(1, getPersonId());
+			statement.setBoolean(2, getUploaded());
+			statement.setString(3, getFirstName());
+			statement.setString(4, getLastName());
+			statement.setDate(5, getDateOfBirth());
+			statement.setString(6, getPlaceOfBirth());
+			statement.setString(7, getEmailAddress());
+			statement.setString(8, getPostalAddress());
+			statement.setString(9, getMobilePhoneNumber());
+			statement.setString(10, getContactPhoneNumber());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -218,29 +234,30 @@ public class Person {
 
 		try {
 
-				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				statement = localConnection
-						.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
-				statement.setString(1, person.getPersonId());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
+			statement.setString(1, person.getPersonId());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -250,29 +267,29 @@ public class Person {
 		PreparedStatement statement = null;
 
 		try {
-				localConnection = db.getConnection();
-				statement = localConnection
-						.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
-				statement.setString(1, getPersonId());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
+			statement.setString(1, getPersonId());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -282,38 +299,39 @@ public class Person {
 		PreparedStatement statement = null;
 
 		try {
-				localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-				statement = localConnection
-						.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
-				statement.setBoolean(1, person.getUploaded());
-				statement.setString(2, person.getFirstName());
-				statement.setString(3, person.getLastName());
-				statement.setDate(4, person.getDateOfBirth());
-				statement.setString(5, person.getPlaceOfBirth());
-				statement.setString(6, person.getEmailAddress());
-				statement.setString(7, person.getPostalAddress());
-				statement.setString(8, person.getMobilePhoneNumber());
-				statement.setString(9, person.getContactPhoneNumber());
-				statement.setString(10, person.getPersonId());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
+			statement.setBoolean(1, person.getUploaded());
+			statement.setString(2, person.getFirstName());
+			statement.setString(3, person.getLastName());
+			statement.setDate(4, person.getDateOfBirth());
+			statement.setString(5, person.getPlaceOfBirth());
+			statement.setString(6, person.getEmailAddress());
+			statement.setString(7, person.getPostalAddress());
+			statement.setString(8, person.getMobilePhoneNumber());
+			statement.setString(9, person.getContactPhoneNumber());
+			statement.setString(10, person.getPersonId());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -324,38 +342,38 @@ public class Person {
 
 		try {
 
-				localConnection = db.getConnection();
-				statement = localConnection
-						.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
-				statement.setBoolean(1, getUploaded());
-				statement.setString(2, getFirstName());
-				statement.setString(3, getLastName());
-				statement.setDate(4, getDateOfBirth());
-				statement.setString(5, getPlaceOfBirth());
-				statement.setString(6, getEmailAddress());
-				statement.setString(7, getPostalAddress());
-				statement.setString(8, getMobilePhoneNumber());
-				statement.setString(9, getContactPhoneNumber());
-				statement.setString(10, getPersonId());
-				result = statement.executeUpdate();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			} finally {
-				if (statement != null) {
-					try {
-						statement.close();
-					} catch (SQLException e) {
-					}
-				}
-				if (localConnection != null) {
-					try {
-						localConnection.close();
-					} catch (SQLException e) {
-					}
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=? WHERE PERSON_ID=?");
+			statement.setBoolean(1, getUploaded());
+			statement.setString(2, getFirstName());
+			statement.setString(3, getLastName());
+			statement.setDate(4, getDateOfBirth());
+			statement.setString(5, getPlaceOfBirth());
+			statement.setString(6, getEmailAddress());
+			statement.setString(7, getPostalAddress());
+			statement.setString(8, getMobilePhoneNumber());
+			statement.setString(9, getContactPhoneNumber());
+			statement.setString(10, getPersonId());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
 				}
 			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		return result;
 	}
 
@@ -367,7 +385,8 @@ public class Person {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS,POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER FROM PERSON PER WHERE PER.PERSON_ID=?");
 			statement.setString(1, personId);
@@ -417,6 +436,42 @@ public class Person {
 
 	public void setUploaded(Boolean uploaded) {
 		this.uploaded = uploaded;
+	}
+
+	public static File getPersonPictureFile(String personId) {
+		return new File(OpenTenureApplication.getInstance()
+				.getMediaStorageDir().getPath()
+				+ File.separator + personId + ".jpg");
+	}
+
+	public static Bitmap getPersonPicture(Context context, File personPictureFile, int size) {
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+		Bitmap bitmap = BitmapFactory.decodeFile(personPictureFile.getPath(),
+					options);
+		if(bitmap ==  null){
+			bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_contact_picture);
+		}
+
+		int height = bitmap.getHeight();
+		int width = bitmap.getWidth();
+		int startOffset = 0;
+
+		Bitmap croppedBitmap = null;
+
+		if (height > width) {
+			// Portrait
+			startOffset = (height - width) / 2;
+			croppedBitmap = Bitmap.createBitmap(bitmap, 0, startOffset, width,
+					width);
+		} else {
+			// Landscape
+			startOffset = (width - height) / 2;
+			croppedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
+					height);
+		}
+		return Bitmap.createScaledBitmap(croppedBitmap, size, size, false);
 	}
 
 	String personId;

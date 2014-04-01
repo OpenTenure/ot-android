@@ -6,6 +6,7 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_search">Cerca</string>
     <string name="action_new">Aggiungi</string>
+    <string name="action_remove_attachment">Rimuovi allegato</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
     <string name="action_save">Salva</string>
@@ -43,6 +44,7 @@
     <string name="mobile_phone_number">Telefono mobile</string>
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
+    <string name="attachment_removed">Allegato rimosso</string>
     <string name="message_saved">Richiesta salvata</string>
     <string name="message_unable_to_save">Impossibile salvare la richiesta. Controllare i dati e riprovare</string>
     <string name="message_submitted">Richiesta inviata</string>
@@ -70,6 +72,7 @@
     <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
     <string name="message_add_marker">Aggiungere una posizione?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
+    <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
     <string name="claimant_picture">Immagine del richiedente</string>

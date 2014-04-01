@@ -7,14 +7,6 @@
           android:icon="@android:drawable/ic_menu_compass"
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />    
-    <item android:id="@+id/action_save"
-          android:icon="@android:drawable/ic_menu_save"
-          android:title="@string/action_save"
-          android:showAsAction="ifRoom" />    
-    <item android:id="@+id/action_submit"
-          android:icon="@android:drawable/ic_menu_send"
-          android:title="@string/action_submit"
-          android:showAsAction="ifRoom" />    
     <item android:id="@+id/map_provider_google_normal"
           android:title="@string/map_provider_google_normal"
           android:showAsAction="never" />

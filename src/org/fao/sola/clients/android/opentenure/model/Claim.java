@@ -254,7 +254,7 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=? CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
 			statement.setBoolean(1, claim.getUploaded());
 			statement.setString(2, claim.getName());
 			statement.setString(3, claim.getPerson().getPersonId());
@@ -296,7 +296,7 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=? CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
 			statement.setBoolean(1, getUploaded());
 			statement.setString(2, getName());
 			statement.setString(3, getPerson().getPersonId());

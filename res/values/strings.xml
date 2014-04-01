@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_new">New</string>
+    <string name="action_remove_attachment">Remove attachment</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_save">Save</string>
@@ -43,6 +44,7 @@
     <string name="mobile_phone_number">Mobile phone number</string>
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
+    <string name="attachment_removed">The attachment has been removed</string>
     <string name="message_saved">The claim has been saved</string>
     <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>
@@ -70,6 +72,7 @@
     <string name="message_confirm_new_db_password">Confirm new password</string>
     <string name="message_add_marker">Add marker here?</string>
     <string name="message_remove_marker">Remove marker?</string>
+    <string name="message_remove_attachment">Remove attachment?</string>
     <string name="draggable_marker">Draggable marker</string>
     <string name="sticky_marker">Sticky marker</string>
     <string name="claimant_picture">Claimant picture</string>
