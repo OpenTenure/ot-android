@@ -28,7 +28,6 @@
 package org.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -178,8 +177,9 @@ public static File copyFileInAttachFolder(String claimID,File source){
 	
 	try {
 		
-		dest = new File(getAttachmentFolder(claimID),source.getName());
-		
+		dest = new File(getAttachmentFolder(claimID),source.getName());		
+		dest.createNewFile();
+				
 		System.out.println(dest.getAbsolutePath());
 		byte[] buffer = new byte[1024];
 		
@@ -187,14 +187,14 @@ public static File copyFileInAttachFolder(String claimID,File source){
 		FileOutputStream writer = new FileOutputStream(dest);
 		
 		BufferedInputStream br= new BufferedInputStream(reader);
-		BufferedOutputStream bw= new BufferedOutputStream(writer);
+		
 		
 		while( (br.read(buffer) ) != -1 ) {
-			bw.write(buffer); 
+			writer.write(buffer); 
 			}
 		
-		br.close(); 
-		bw.close();
+		reader.close(); 
+		writer.close();
 		
 	} catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block

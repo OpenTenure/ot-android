@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -258,6 +259,9 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
 		if(claim.create() == 1){
+			
+			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
+			
 			claimActivity.setClaimId(claim.getClaimId());
 			claimantPictureFile = Person.getPersonPictureFile(claim.getPerson().getPersonId());
 		}

@@ -136,6 +136,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Log.d(this.getClass().getName(),
 					"Captured image: "
 							+ FileUtils.getPath(rootView.getContext(), uri));
+			
+			
 			AlertDialog.Builder snapshotDialog = new AlertDialog.Builder(rootView.getContext());
 			snapshotDialog.setTitle(R.string.new_snapshot);
 			final EditText snapshotDescription = new EditText(rootView.getContext());
@@ -148,19 +150,16 @@ public class ClaimDocumentsFragment extends ListFragment {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					
-					File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(), FileUtils.getFile(
-							rootView.getContext(), uri));
-					
-					System.out.println("***********************************************copiato****************************************************************************************");
-					
 					Attachment attachment = new Attachment();
 					attachment.setClaimId(claimActivity.getClaimId());
 					attachment.setDescription(snapshotDescription.getText().toString());
-					attachment.setFileName(copy.getName());
+					attachment.setFileName(FileUtils.getFile(
+							rootView.getContext(), uri).getName());
 					attachment.setFileType(fileType);
 					attachment.setMimeType(mimeType);
-					attachment.setMD5Sum(MD5.calculateMD5(copy));
-					attachment.setPath(copy.getAbsolutePath());
+					attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
+							rootView.getContext(), uri)));
+					attachment.setPath(FileUtils.getPath(rootView.getContext(), uri));
 					attachment.create();
 					update();
 				}
@@ -183,6 +182,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				Log.d(this.getClass().getName(),
 						"Selected file: "
 								+ FileUtils.getPath(rootView.getContext(), uri));
+				
 
 				fileType = "document";
 				mimeType = FileUtils.getMimeType(rootView.getContext(), uri);
@@ -201,7 +201,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 						
 						File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(), FileUtils.getFile(
 								rootView.getContext(), uri));	
-						
+												
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
 						attachment.setDescription(fileDescription.getText().toString());
