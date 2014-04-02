@@ -135,15 +135,16 @@ public class ClaimDetailsFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				if(claimantPictureFile != null){
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				intent.putExtra(MediaStore.EXTRA_OUTPUT,
-						Uri.fromFile(claimantPictureFile));
-				startActivityForResult(intent,
-						CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-				}else{
+				if (claimantPictureFile != null) {
+					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					intent.putExtra(MediaStore.EXTRA_OUTPUT,
+							Uri.fromFile(claimantPictureFile));
+					startActivityForResult(intent,
+							CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+				} else {
 					Toast toast = Toast.makeText(rootView.getContext(),
-							R.string.message_save_before_adding_content, Toast.LENGTH_SHORT);
+							R.string.message_save_before_adding_content,
+							Toast.LENGTH_SHORT);
 					toast.show();
 				}
 
@@ -178,31 +179,34 @@ public class ClaimDetailsFragment extends Fragment {
 				.setText(claim.getPerson().getContactPhoneNumber());
 		((EditText) rootView.findViewById(R.id.claim_name_input_field))
 				.setText(claim.getName());
-		claimantPictureFile = Person.getPersonPictureFile(claim.getPerson().getPersonId());
+		claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
+				.getPersonId());
 		try {
-			if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-				claimantImageView.setImageBitmap(Person.getPersonPicture(rootView.getContext(), claimantPictureFile, 128));
-			}else{
-				claimantImageView.setImageBitmap(Person.getPersonPicture(rootView.getContext(), claimantPictureFile, 128));
+			if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+				claimantImageView.setImageBitmap(Person.getPersonPicture(
+						rootView.getContext(), claimantPictureFile, 128));
+			} else {
+				claimantImageView.setImageBitmap(Person.getPersonPicture(
+						rootView.getContext(), claimantPictureFile, 128));
 			}
 		} catch (Exception e) {
 			claimantImageView.setImageDrawable(getResources().getDrawable(
 					R.drawable.ic_contact_picture));
 		}
 	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-			try {
-				if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-					claimantImageView.setImageBitmap(Person.getPersonPicture(rootView.getContext(), claimantPictureFile, 128));
-				}else{
-					claimantImageView.setImageBitmap(Person.getPersonPicture(rootView.getContext(), claimantPictureFile, 128));
+			if (resultCode == Activity.RESULT_OK) {
+				try {
+					claimantImageView.setImageBitmap(Person.getPersonPicture(
+							rootView.getContext(), claimantPictureFile, 128));
+				} catch (Exception e) {
+					claimantImageView.setImageDrawable(getResources()
+							.getDrawable(R.drawable.ic_contact_picture));
 				}
-			} catch (Exception e) {
-				claimantImageView.setImageDrawable(getResources().getDrawable(
-						R.drawable.ic_contact_picture));
 			}
 		}
 	}
@@ -216,15 +220,14 @@ public class ClaimDetailsFragment extends Fragment {
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
-	
-	public void saveClaim(){
+
+	public void saveClaim() {
 		Person person = new Person();
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
 				.toString());
 		person.setLastName(((EditText) rootView
-				.findViewById(R.id.last_name_input_field)).getText()
-				.toString());
+				.findViewById(R.id.last_name_input_field)).getText().toString());
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -246,11 +249,11 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.email_address_input_field)).getText()
 				.toString());
 		person.setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field))
-				.getText().toString());
+				.findViewById(R.id.mobile_phone_number_input_field)).getText()
+				.toString());
 		person.setContactPhoneNumber(((EditText) rootView
-				.findViewById(R.id.contact_phone_number_input_field))
-				.getText().toString());
+				.findViewById(R.id.contact_phone_number_input_field)).getText()
+				.toString());
 		person.create();
 
 		Claim claim = new Claim();
@@ -258,28 +261,29 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
-		if(claim.create() == 1){
-			
+		if (claim.create() == 1) {
+
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
-			
+
 			claimActivity.setClaimId(claim.getClaimId());
-			claimantPictureFile = Person.getPersonPictureFile(claim.getPerson().getPersonId());
+			claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
+					.getPersonId());
 		}
 	}
-	
-	public void updateClaim(){
+
+	public void updateClaim() {
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
 		claim.update();
-		claim.getPerson().setFirstName(((EditText) rootView
-				.findViewById(R.id.first_name_input_field)).getText()
-				.toString());
-		claim.getPerson().setLastName(((EditText) rootView
-				.findViewById(R.id.last_name_input_field)).getText()
-				.toString());
+		claim.getPerson().setFirstName(
+				((EditText) rootView.findViewById(R.id.first_name_input_field))
+						.getText().toString());
+		claim.getPerson().setLastName(
+				((EditText) rootView.findViewById(R.id.last_name_input_field))
+						.getText().toString());
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -291,24 +295,29 @@ public class ClaimDetailsFragment extends Fragment {
 			dob = new java.util.Date();
 		}
 		claim.getPerson().setDateOfBirth(new Date(dob.getTime()));
-		claim.getPerson().setPlaceOfBirth(((EditText) rootView
-				.findViewById(R.id.place_of_birth_input_field)).getText()
-				.toString());
-		claim.getPerson().setPostalAddress(((EditText) rootView
-				.findViewById(R.id.postal_address_input_field)).getText()
-				.toString());
-		claim.getPerson().setEmailAddress(((EditText) rootView
-				.findViewById(R.id.email_address_input_field)).getText()
-				.toString());
-		claim.getPerson().setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field))
-				.getText().toString());
-		claim.getPerson().setContactPhoneNumber(((EditText) rootView
-				.findViewById(R.id.contact_phone_number_input_field))
-				.getText().toString());
+		claim.getPerson().setPlaceOfBirth(
+				((EditText) rootView
+						.findViewById(R.id.place_of_birth_input_field))
+						.getText().toString());
+		claim.getPerson().setPostalAddress(
+				((EditText) rootView
+						.findViewById(R.id.postal_address_input_field))
+						.getText().toString());
+		claim.getPerson().setEmailAddress(
+				((EditText) rootView
+						.findViewById(R.id.email_address_input_field))
+						.getText().toString());
+		claim.getPerson().setMobilePhoneNumber(
+				((EditText) rootView
+						.findViewById(R.id.mobile_phone_number_input_field))
+						.getText().toString());
+		claim.getPerson().setContactPhoneNumber(
+				((EditText) rootView
+						.findViewById(R.id.contact_phone_number_input_field))
+						.getText().toString());
 		claim.getPerson().update();
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
@@ -316,26 +325,30 @@ public class ClaimDetailsFragment extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.action_save:
 
-			if(claimActivity.getClaimId() == null){
+			if (claimActivity.getClaimId() == null) {
 				saveClaim();
-				if(claimActivity.getClaimId() != null){
+				if (claimActivity.getClaimId() != null) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
-				}else{
-					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_unable_to_save, Toast.LENGTH_SHORT);
+				} else {
+					toast = Toast
+							.makeText(rootView.getContext(),
+									R.string.message_unable_to_save,
+									Toast.LENGTH_SHORT);
 					toast.show();
 				}
-			}else{
+			} else {
 				updateClaim();
-				if(claimActivity.getClaimId() != null){
+				if (claimActivity.getClaimId() != null) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
-				}else{
-					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_unable_to_save, Toast.LENGTH_SHORT);
+				} else {
+					toast = Toast
+							.makeText(rootView.getContext(),
+									R.string.message_unable_to_save,
+									Toast.LENGTH_SHORT);
 					toast.show();
 				}
 			}

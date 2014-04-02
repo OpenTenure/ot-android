@@ -71,6 +71,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
+	public static final String URI_KEY = "__URI__";
+	public static final String FILE_TYPE_KEY = "__FILE_TYPE__";
+	public static final String MIME_TYPE_KEY = "__MIME_TYPE__";
 	private Uri uri;
 	private String fileType;
 	private String mimeType;
@@ -103,10 +106,12 @@ public class ClaimDocumentsFragment extends ListFragment {
 	}
 
 	private File getOutputMediaFile(int type) {
-		// To check that the sdcard is mounted use Environment.getExternalStorageState()
+		// To check that the sdcard is mounted use
+		// Environment.getExternalStorageState()
 		String fileName;
 
-		File mediaStorageDir = FileSystemUtilities.getAttachmentFolder(claimActivity.getClaimId());
+		File mediaStorageDir = FileSystemUtilities
+				.getAttachmentFolder(claimActivity.getClaimId());
 
 		// Create a file name
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
@@ -132,47 +137,57 @@ public class ClaimDocumentsFragment extends ListFragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
+			if (resultCode == Activity.RESULT_OK) {
+				Log.d(this.getClass().getName(),
+						"Captured image: "
+								+ FileUtils.getPath(rootView.getContext(), uri));
 
-			Log.d(this.getClass().getName(),
-					"Captured image: "
-							+ FileUtils.getPath(rootView.getContext(), uri));
-			
-			
-			AlertDialog.Builder snapshotDialog = new AlertDialog.Builder(rootView.getContext());
-			snapshotDialog.setTitle(R.string.new_snapshot);
-			final EditText snapshotDescription = new EditText(rootView.getContext());
-			snapshotDescription.setInputType(InputType.TYPE_CLASS_TEXT);
-			snapshotDialog.setView(snapshotDescription);
-			snapshotDialog.setMessage(getResources().getString(R.string.add_description));
+				AlertDialog.Builder snapshotDialog = new AlertDialog.Builder(
+						rootView.getContext());
+				snapshotDialog.setTitle(R.string.new_snapshot);
+				final EditText snapshotDescription = new EditText(
+						rootView.getContext());
+				snapshotDescription.setInputType(InputType.TYPE_CLASS_TEXT);
+				snapshotDialog.setView(snapshotDescription);
+				snapshotDialog.setMessage(getResources().getString(
+						R.string.add_description));
 
-			snapshotDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+				snapshotDialog.setPositiveButton(R.string.confirm,
+						new OnClickListener() {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					
-					Attachment attachment = new Attachment();
-					attachment.setClaimId(claimActivity.getClaimId());
-					attachment.setDescription(snapshotDescription.getText().toString());
-					attachment.setFileName(FileUtils.getFile(
-							rootView.getContext(), uri).getName());
-					attachment.setFileType(fileType);
-					attachment.setMimeType(mimeType);
-					attachment.setMD5Sum(MD5.calculateMD5(FileUtils.getFile(
-							rootView.getContext(), uri)));
-					attachment.setPath(FileUtils.getPath(rootView.getContext(), uri));
-					attachment.create();
-					update();
-				}
-			});
-			snapshotDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			});
+								Attachment attachment = new Attachment();
+								attachment.setClaimId(claimActivity
+										.getClaimId());
+								attachment.setDescription(snapshotDescription
+										.getText().toString());
+								attachment.setFileName(FileUtils.getFile(
+										rootView.getContext(), uri).getName());
+								attachment.setFileType(fileType);
+								attachment.setMimeType(mimeType);
+								attachment.setMD5Sum(MD5.calculateMD5(FileUtils
+										.getFile(rootView.getContext(), uri)));
+								attachment.setPath(FileUtils.getPath(
+										rootView.getContext(), uri));
+								attachment.create();
+								update();
+							}
+						});
+				snapshotDialog.setNegativeButton(R.string.cancel,
+						new OnClickListener() {
 
-			snapshotDialog.show();
-			
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
+
+				snapshotDialog.show();
+			}
+
 			break;
 		case REQUEST_CHOOSER:
 			if (resultCode == com.ipaulpro.afilechooser.FileChooserActivity.RESULT_OK) {
@@ -182,44 +197,55 @@ public class ClaimDocumentsFragment extends ListFragment {
 				Log.d(this.getClass().getName(),
 						"Selected file: "
 								+ FileUtils.getPath(rootView.getContext(), uri));
-				
 
 				fileType = "document";
 				mimeType = FileUtils.getMimeType(rootView.getContext(), uri);
 
-				AlertDialog.Builder fileDialog = new AlertDialog.Builder(rootView.getContext());
+				AlertDialog.Builder fileDialog = new AlertDialog.Builder(
+						rootView.getContext());
 				fileDialog.setTitle(R.string.new_file);
-				final EditText fileDescription = new EditText(rootView.getContext());
+				final EditText fileDescription = new EditText(
+						rootView.getContext());
 				fileDescription.setInputType(InputType.TYPE_CLASS_TEXT);
 				fileDialog.setView(fileDescription);
-				fileDialog.setMessage(getResources().getString(R.string.add_description));
+				fileDialog.setMessage(getResources().getString(
+						R.string.add_description));
 
-				fileDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+				fileDialog.setPositiveButton(R.string.confirm,
+						new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						
-						File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(), FileUtils.getFile(
-								rootView.getContext(), uri));	
-												
-						Attachment attachment = new Attachment();
-						attachment.setClaimId(claimActivity.getClaimId());
-						attachment.setDescription(fileDescription.getText().toString());
-						attachment.setFileName(copy.getName());
-						attachment.setFileType("document");
-						attachment.setMimeType(mimeType);
-						attachment.setMD5Sum(MD5.calculateMD5(copy));
-						attachment.setPath(copy.getAbsolutePath());
-						attachment.create();
-						update();
-					}
-				});
-				fileDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
+								File copy = FileSystemUtilities
+										.copyFileInAttachFolder(claimActivity
+												.getClaimId(), FileUtils
+												.getFile(rootView.getContext(),
+														uri));
+
+								Attachment attachment = new Attachment();
+								attachment.setClaimId(claimActivity
+										.getClaimId());
+								attachment.setDescription(fileDescription
+										.getText().toString());
+								attachment.setFileName(copy.getName());
+								attachment.setFileType("document");
+								attachment.setMimeType(mimeType);
+								attachment.setMD5Sum(MD5.calculateMD5(copy));
+								attachment.setPath(copy.getAbsolutePath());
+								attachment.create();
+								update();
+							}
+						});
+				fileDialog.setNegativeButton(R.string.cancel,
+						new OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
 
 				fileDialog.show();
 			}
@@ -308,22 +334,39 @@ public class ClaimDocumentsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
 		setHasOptionsMenu(true);
+		if (savedInstanceState != null) {
+			String savedUri = savedInstanceState.getString(URI_KEY);
+			if (savedUri != null)
+				uri = Uri.parse(savedUri);
+			fileType = savedInstanceState.getString(FILE_TYPE_KEY);
+			mimeType = savedInstanceState.getString(MIME_TYPE_KEY);
+		}
 
 		update();
 		return rootView;
 	}
 
-	  @Override
-	  public void onListItemClick(ListView l, View v, int position, long id) {
-			String attachmentId = ((TextView)v.findViewById(R.id.attachment_id)).getText().toString();
-			Attachment att = Attachment.getAttachment(attachmentId);
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse("file://"
-					+ att.getPath()), att.getMimeType());
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		if (uri != null)
+			outState.putString(URI_KEY, uri.toString());
+		outState.putString(FILE_TYPE_KEY, fileType);
+		outState.putString(MIME_TYPE_KEY, mimeType);
+		super.onSaveInstanceState(outState);
+	};
 
-			startActivity(intent);
-	  }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
+				.getText().toString();
+		Attachment att = Attachment.getAttachment(attachmentId);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setDataAndType(Uri.parse("file://" + att.getPath()),
+				att.getMimeType());
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+		startActivity(intent);
+	}
 
 	protected void update() {
 		String claimId = claimActivity.getClaimId();
