@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.Zip;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -356,6 +357,10 @@ public class ClaimDetailsFragment extends Fragment {
 			return true;
 		case R.id.action_submit:
 			if (claimActivity.getClaimId() != null) {
+								
+				
+				Zip.createClaimJson(claimActivity.getClaimId());				
+				
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_submitted, Toast.LENGTH_SHORT);
 				toast.show();
