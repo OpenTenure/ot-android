@@ -128,13 +128,13 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_claim_details).toUpperCase(l);
+				return getString(R.string.title_claimant_details).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_claim_map).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_claim_documents).toUpperCase(l);				
 			case 3:
-				return getString(R.string.title_claim_additional).toUpperCase(l);
+				return getString(R.string.title_claim_details).toUpperCase(l);
 			}
 			return null;
 		}

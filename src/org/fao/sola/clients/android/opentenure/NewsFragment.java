@@ -28,7 +28,6 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -37,25 +36,23 @@ import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnTouchListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class NewsFragment extends SeparatedListFragment implements
-		OnTouchListener {
-	private double x;
-	private double y;
-	private static final double TAP_THRESHOLD_DISTANCE = 10.0;
-	private AlphabetListAdapter adapter = new AlphabetListAdapter();
+public class NewsFragment extends ListFragment {
+	private View rootView;
+
 
 	public NewsFragment() {
 	}
@@ -70,52 +67,12 @@ public class NewsFragment extends SeparatedListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		reset();
 		rootView = inflater.inflate(R.layout.fragment_news, container,
 				false);
 		setHasOptionsMenu(true);
-
-		List<String> documents = populateList();
-		Collections.sort(documents);
-
-		List<AlphabetListAdapter.Row> rows = getRows(documents);
-		adapter.setRows(rows);
-		adapter.setItemOnOnTouchListener(this);
-		setListAdapter(adapter);
-
-		updateList();
+		update();
 		return rootView;
 	}
-
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		if (event.getAction() == MotionEvent.ACTION_UP) {
-			Log.d(this.getClass().getName(), "Action up");
-
-			double distance = Math.sqrt(Math.pow(event.getX() - x, 2.0)
-					+ Math.pow(event.getY() - y, 2.0));
-			if (distance < TAP_THRESHOLD_DISTANCE) {
-				Intent intent = new Intent(Intent.ACTION_VIEW,
-						Uri.parse("http://www.flossola.org/home"));
-				startActivity(intent);
-				Log.d(this.getClass().getName(), "Moved by " + distance
-						+ " while tapping");
-				return true;
-			} else {
-				Log.d(this.getClass().getName(), "Moved by " + distance
-						+ " while tapping. That's too much.");
-				return false;
-			}
-		}
-		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.d(this.getClass().getName(), "Action down");
-			x = event.getX();
-			y = event.getY();
-			return false;
-		}
-		return false;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -214,22 +171,24 @@ public class NewsFragment extends SeparatedListFragment implements
 
 	}
 
-	protected List<String> populateList() {
+	  @Override
+	  public void onListItemClick(ListView l, View v, int position, long id) {
+			Intent intent = new Intent(Intent.ACTION_VIEW,
+					Uri.parse(((TextView)v.findViewById(R.id.url)).getText().toString()));
+			startActivity(intent);
+	  }
+	  
+	protected void update() {
 		List<String> news = new ArrayList<String>();
-		news.add("New version available\nA new version of the Open Tenure mobile client has been released for enhanced operation.");
-		news.add("Service outage\nOpen Tenure service might be down next week due to planned maintenance.");
 		news.add("Community web site\nVisit the Open Tenure Community web site and tell us what you think about the new look and feel.");
-		news.add("News 1\nLorem ipsum dolor sit amet.");
-		news.add("News 2\nLorem ipsum dolor sit amet.");
-		news.add("News 3\nLorem ipsum dolor sit amet.");
-		news.add("News 4\nLorem ipsum dolor sit amet.");
-		news.add("News 5\nLorem ipsum dolor sit amet.");
-		news.add("News 6\nLorem ipsum dolor sit amet.");
-		news.add("News 7\nLorem ipsum dolor sit amet.");
-		news.add("News 8\nLorem ipsum dolor sit amet.");
-		news.add("News 9\nLorem ipsum dolor sit amet.");
-		news.add("News 10\nLorem ipsum dolor sit amet.");
-		news.add("News 11\nLorem ipsum dolor sit amet.");
-		return news;
+		news.add("FLOSS SOLA news\nLook at the latest news on FLOSS SOLA web site.");
+		news.add("Outage\nOpen Tenure service might be down next week due to planned maintenance.");
+		List<String> urls = new ArrayList<String>();
+		urls.add("http://192.168.137.1:8080/sola/opentenure/index.xhtml");
+		urls.add("http://www.flossola.org/home");
+		urls.add("http://www.flossola.org/home");
+		ArrayAdapter<String> adapter = new NewsListAdapter(rootView.getContext(), news.toArray(new String[news.size()]), urls.toArray(new String[urls.size()]));
+	    setListAdapter(adapter);
+	    adapter.notifyDataSetChanged();
 	}
 }
