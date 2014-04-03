@@ -33,8 +33,10 @@ import java.util.List;
 
 
 
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
+
 
 
 
@@ -110,6 +112,14 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 
 
 		case R.id.action_new_metadata:
+			if (claimActivity.getClaimId() == null) {
+				Toast toast = Toast
+						.makeText(rootView.getContext(),
+								R.string.message_create_before_edit,
+								Toast.LENGTH_SHORT);
+				toast.show();
+				return true;
+			}
 
 			final View mView;
 

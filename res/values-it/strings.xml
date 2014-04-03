@@ -22,8 +22,8 @@
     <string name="title_local_claims">Richieste locali</string>
     <string name="title_submitted_claims">Richieste inoltrate</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
-    <string name="title_claim_details">Dettagli della richiesta</string>
-    <string name="title_claim_additional">Dettagli addizionali</string>
+    <string name="title_claimant_details">Dettagli del richiedente</string>
+    <string name="title_claim_details">Informazioni aggiuntive</string>
     <string name="title_claim_documents">Documenti della richiesta</string>
     <string name="title_claim_photos">Immagini della richiesta</string>
     <string name="title_claim_map">Mappa della richiesta</string>
@@ -63,7 +63,7 @@
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
     <string name="new_snapshot">Nuova immagine</string>
-    <string name="new_metadata">Nuovo metadata</string>
+    <string name="new_metadata">Nuova informazione</string>
     <string name="new_file">Nuovo file</string>
     <string name="add_description">Descrizione?</string>
     <string name="add_key">Nome?</string>
