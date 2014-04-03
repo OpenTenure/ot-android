@@ -226,7 +226,7 @@ public class Zip {
 		
 		
 	} catch (Exception e) {
-		System.out.println("Error occured" + e.getMessage());
+		System.out.println("Error occured here" + e.getMessage());
 	}
 	 
 		return false;
