@@ -7,12 +7,14 @@
     <string name="action_search">Cerca</string>
     <string name="action_new">Aggiungi</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
+    <string name="action_remove_metadata">Rimouvi informazione</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
     <string name="action_save">Salva</string>
     <string name="action_center">Centra</string>
     <string name="action_submit">Invia</string>
     <string name="action_new_picture">Aggiungi immagine</string>
+    <string name="action_new_metadata">Aggiungi informazione</string>
     <string name="action_new_attachment">Aggiungi documento</string>
     <string name="action_lock_db">Configura la cifratura dei dati</string>
     <string name="title_news">Notizie</string>
@@ -21,6 +23,7 @@
     <string name="title_submitted_claims">Richieste inoltrate</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
     <string name="title_claim_details">Dettagli della richiesta</string>
+    <string name="title_claim_additional">Dettagli addizionali</string>
     <string name="title_claim_documents">Documenti della richiesta</string>
     <string name="title_claim_photos">Immagini della richiesta</string>
     <string name="title_claim_map">Mappa della richiesta</string>
@@ -45,6 +48,7 @@
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
     <string name="attachment_removed">Allegato rimosso</string>
+    <string name="metadata_removed">Informazione rimossa</string>
     <string name="message_saved">Richiesta salvata</string>
     <string name="message_unable_to_save">Impossibile salvare la richiesta. Controllare i dati e riprovare</string>
     <string name="message_submitted">Richiesta inviata</string>
@@ -59,8 +63,11 @@
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
     <string name="new_snapshot">Nuova immagine</string>
+    <string name="new_metadata">Nuovo metadata</string>
     <string name="new_file">Nuovo file</string>
     <string name="add_description">Descrizione?</string>
+    <string name="add_key">Nome?</string>
+    <string name="add_value">Valore?</string>
     <string name="message_db_locked">Dati protetti da password</string>
     <string name="message_db_password">Password per accedere ai dati?</string>
     <string name="message_cant_open_db">Impossibile accedere ai dati</string>
@@ -73,6 +80,7 @@
     <string name="message_add_marker">Aggiungere una posizione?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
+    <string name="message_remove_metadata">Rimuovere l\'informazione?</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
     <string name="claimant_picture">Immagine del richiedente</string>

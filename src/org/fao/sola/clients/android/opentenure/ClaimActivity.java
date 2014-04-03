@@ -112,13 +112,15 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 				return new ClaimMapFragment();
 			case 2:
 				return new ClaimDocumentsFragment();
+			case 3:
+				return new ClaimAdditionalDataFragments();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 3;
+			return 4;
 		}
 
 		@Override
@@ -130,7 +132,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 			case 1:
 				return getString(R.string.title_claim_map).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_claim_documents).toUpperCase(l);
+				return getString(R.string.title_claim_documents).toUpperCase(l);				
+			case 3:
+				return getString(R.string.title_claim_additional).toUpperCase(l);
 			}
 			return null;
 		}
