@@ -55,16 +55,13 @@
             android:label="@string/title_activity_claim" >
         </activity>
         <activity
-            android:name="org.fao.sola.clients.android.opentenure.FileChooserActivity"
-            android:label="@string/title_activity_file_chooser" >
+            android:name="org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity"
+            android:theme="@style/Theme.Opentenure"
+            android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="org.fao.sola.clients.android.opentenure.LoginActivity"
-            android:label="@string/title_activity_login_activity_test"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-            <intent-filter>
-            </intent-filter>
+            android:name="org.fao.sola.clients.android.opentenure.FileChooserActivity"
+            android:label="@string/title_activity_file_chooser" >
         </activity>
         <activity
             android:name="com.ipaulpro.afilechooser.FileChooserActivity"

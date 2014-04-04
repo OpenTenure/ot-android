@@ -29,6 +29,7 @@
     <string name="title_claim_map">Claim map</string>
     <string name="title_section">Section</string>
     <string name="title_item">Item</string>
+    <string name="title_activity_settings">Settings</string>
     <string name="title_activity_claim">Open Tenure: New claim</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>
@@ -50,6 +51,7 @@
     <string name="attachment_removed">The attachment has been removed</string>
     <string name="metadata_removed">Information removed</string>
     <string name="message_saved">The claim has been saved</string>
+    <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
@@ -92,5 +94,13 @@
     <string name="map_provider_osm_mapquest">Open Street Map MapQuest</string>
     <string name="map_provider_local_tiles">Local data</string>
     <string name="map_provider_geoserver">GeoServer</string>
-    
+    <string name="cs_url_pref_title">Community Server URL</string>
+    <string name="cs_url_pref_summary">The web address of the OpenTenure Community Server</string>
+    <string name="cs_url_pref_dialog_title">Enter the URL of your OpenTenure Community Server</string>
+    <string name="geoserver_url_pref_title">GeoServer URL</string>
+    <string name="geoserver_url_pref_summary">Base URL of your private GeoServer web map provider instance</string>
+    <string name="geoserver_url_pref_dialog_title">Enter the URL of your GeoServer</string>
+    <string name="geoserver_layer_pref_title">GeoServer layer</string>
+    <string name="geoserver_layer_pref_summary">WMS layer to be retrieved from GeoServer (ask your administrator)</string>
+    <string name="geoserver_layer_pref_dialog_title">Enter the name of the WMS layer</string>
 </resources>

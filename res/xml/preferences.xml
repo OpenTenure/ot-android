@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="cs_url_pref"
+        android:title="@string/cs_url_pref_title"
+        android:summary="@string/cs_url_pref_summary"
+        android:dialogTitle="@string/cs_url_pref_dialog_title" />
+    <EditTextPreference
+        android:key="geoserver_url_pref"
+        android:title="@string/geoserver_url_pref_title"
+        android:summary="@string/geoserver_url_pref_summary"
+        android:dialogTitle="@string/geoserver_url_pref_dialog_title" />
+    <EditTextPreference
+        android:key="geoserver_layer_pref"
+        android:title="@string/geoserver_layer_pref_title"
+        android:summary="@string/geoserver_layer_pref_summary"
+        android:dialogTitle="@string/geoserver_layer_pref_dialog_title" />
+</PreferenceScreen>

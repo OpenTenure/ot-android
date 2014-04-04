@@ -28,11 +28,14 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -225,8 +228,16 @@ public class MainMapFragment extends SupportMapFragment {
 				tiles = null;
 			}
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions()
-					.tileProvider(new GeoserverMapTileProvider(256, 256, "http://demo.flossola.org/geoserver/sola", "sola:nz_orthophoto")));
+			SharedPreferences OpenTenurePreferences = PreferenceManager
+					.getDefaultSharedPreferences(mapView.getContext());
+			String geoServerUrl = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF, "xxxxxxx");
+			String geoServerLayer = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "xxxxxxx");
+			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			new GeoserverMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
+//			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+//					new GeoserverMapTileProvider(256, 256, "http://192.168.56.1:8085/geoserver/nz", "nz:orthophoto")));
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			return true;

@@ -38,6 +38,7 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -46,6 +47,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class OpenTenure extends FragmentActivity {
@@ -131,8 +133,20 @@ public class OpenTenure extends FragmentActivity {
 		getMenuInflater().inflate(R.menu.open_tenure, menu);
 		return true;
 	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent intent = new Intent();
+	        intent.setClass(OpenTenure.this, OpenTenurePreferencesActivity.class);
+	        startActivityForResult(intent, 0); 
+	        return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+	 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
