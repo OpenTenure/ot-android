@@ -276,11 +276,9 @@ public class ClaimMapFragment extends Fragment {
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
 			String geoServerUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF, "xxxxxxx");
+					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF, "http://192.168.56.1:8085/geoserver/nz");
 			String geoServerLayer = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "xxxxxxx");
-//			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-//			new GeoserverMapTileProvider(256, 256, "http://192.168.56.1:8085/geoserver/nz", "nz:orthophoto")));
+					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "nz:orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 			new GeoserverMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
 			propertyBoundary.drawBoundary();

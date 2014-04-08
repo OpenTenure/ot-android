@@ -242,7 +242,7 @@ public class NewsFragment extends ListFragment {
 		} catch (Exception e) {
 			Toast.makeText(
 					rootView.getContext(),
-					R.string.message_invalid_url
+					getResources().getString(R.string.message_invalid_url)
 							+ ": "
 							+ ((TextView) v.findViewById(R.id.url)).getText()
 									.toString(), Toast.LENGTH_SHORT).show();
@@ -258,11 +258,8 @@ public class NewsFragment extends ListFragment {
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(rootView.getContext());
 
-		// String csUrl =
-		// OpenTenurePreferences.getString(OpenTenurePreferencesActivity.CS_URL_PREF,
-		// "http://ot.flossola.org/sola/opentenure/index.xhtml");
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "xxxxxxx");
+				OpenTenurePreferencesActivity.CS_URL_PREF, "http://ot.flossola.org/sola/opentenure/index.xhtml");
 		urls.add(csUrl);
 		urls.add("http://www.flossola.org/home");
 		urls.add("http://www.flossola.org/home");
