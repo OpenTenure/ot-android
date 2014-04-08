@@ -75,11 +75,12 @@ public class OpenTenureApplication extends Application {
 	      super.onCreate();  
 	      sInstance = this;
 	      sInstance.initializeInstance();
-	      context = getApplicationContext();
-	      
+	      context = getApplicationContext();	      
 	      
 	      FileSystemUtilities.createClaimsFolder();
 		  FileSystemUtilities.createClaimantsFolder();
+		  FileSystemUtilities.createOpenTenureFolder();
+		  		  
 	    }
 
 	    protected void initializeInstance() {

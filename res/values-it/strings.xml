@@ -17,6 +17,7 @@
     <string name="action_new_metadata">Aggiungi informazione</string>
     <string name="action_new_attachment">Aggiungi documento</string>
     <string name="action_lock_db">Configura la cifratura dei dati</string>
+    <string name="action_export">Export</string>
     <string name="title_news">Notizie</string>
     <string name="title_map">Mappa</string>
     <string name="title_local_claims">Richieste locali</string>
@@ -27,6 +28,7 @@
     <string name="title_claim_documents">Documenti della richiesta</string>
     <string name="title_claim_photos">Immagini della richiesta</string>
     <string name="title_claim_map">Mappa della richiesta</string>
+    <string name="title_export">Esportando il Claim come file compresso</string>
     <string name="title_section">Sezione</string>
     <string name="title_item">Elemento</string>
     <string name="title_activity_settings">Impostazioni</string>
@@ -56,6 +58,7 @@
     <string name="message_submitted">Richiesta inviata</string>
     <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
     <string name="message_save_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
+    <string name="message_export">Esportando</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>

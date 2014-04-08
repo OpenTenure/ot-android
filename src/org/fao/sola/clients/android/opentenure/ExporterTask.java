@@ -25,45 +25,66 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.filesystem;
+package org.fao.sola.clients.android.opentenure;
 
-import com.google.android.gms.maps.model.LatLng;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 
-public class Vertex {
 
-	String vertexId;
-	int sequenceNumber;
-	LatLng GPSPosition;
-	LatLng mapPosition;
-	
-	
-	
-	public String getVertexId() {
-		return vertexId;
-	}
-	public void setVertexId(String vertexId) {
-		this.vertexId = vertexId;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;	
+
+
+public class ExporterTask extends AsyncTask<String, Void, Boolean >{
+
+
+	protected ProgressDialog progressDialog;
+	private Context mContext;
+
+	public ExporterTask(Context context){
+		super();
+		mContext = context;
+
 	}
 
-	public int getSequenceNumber() {
-		return sequenceNumber;
+	@Override
+	protected void onPreExecute()
+	{
+		super.onPreExecute();	
+
+		progressDialog = ProgressDialog.show(mContext,mContext.getString(R.string.title_export),
+				mContext.getString(R.string.message_export),
+				true, false);
 	}
-	public void setSequenceNumber(int sequenceNumber) {
-		this.sequenceNumber = sequenceNumber;
+
+	@Override
+	protected Boolean doInBackground(String... params) {
+
+
+		try {				
+			JsonUtilities.createClaimJson((String) params[1]);				
+			FileSystemUtilities.deleteCompressedClaim((String) params[1]);
+
+			ZipUtilities.AddFilesWithAESEncryption((String)params[0],(String) params[1]);
+
+			progressDialog.dismiss();
+
+			return true;				
+		} catch (Exception e) {
+			System.out.println("And error has occured creating the compressed claim ");
+			return false;
+		}
+
 	}
-	public LatLng getGPSPosition() {
-		return GPSPosition;
-	}
-	public void setGPSPosition(LatLng gPSPosition) {
-		GPSPosition = gPSPosition;
-	}
-	public LatLng getMapPosition() {
-		return mapPosition;
-	}
-	public void setMapPosition(LatLng mapPosition) {
-		this.mapPosition = mapPosition;
-	}
-	
-	
-	
+
+
+
+
 }
+
+
+
+

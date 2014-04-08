@@ -25,87 +25,66 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.filesystem;
+package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
-import java.util.List;
-
-
-
-
-public class Claim {
-	
-	String id;
-	
-	String name;
-	
-	String challenged_id_claim;
-	
-	List<Vertex> verteces;
-	
-	List<Attachment> attachments;
-	
-	List<XMetadata> metadata;
-	
-	Person person;
+public class Attachment {
 	
 	
+	String attachmentId;	
+	String claimId;
+	String description;
+	String fileName;
+	String fileType;
+	String mimeType;
+	String MD5Sum;
 
-	public String getId() {
-		return id;
+	
+	
+	
+	
+	public String getAttachmentId() {
+		return attachmentId;
+	}
+	public void setAttachmentId(String attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+	public String getClaimId() {
+		return claimId;
+	}
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getFileName() {
+		return fileName;
+	}
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	public String getFileType() {
+		return fileType;
+	}
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+	public String getMimeType() {
+		return mimeType;
+	}
+	public void setMimeType(String mimeType) {
+		this.mimeType = mimeType;
+	}
+	public String getMD5Sum() {
+		return MD5Sum;
+	}
+	public void setMD5Sum(String mD5Sum) {
+		MD5Sum = mD5Sum;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getChallenged_id_claim() {
-		return challenged_id_claim;
-	}
-
-	public void setChallenged_id_claim(String challenged_id_claim) {
-		this.challenged_id_claim = challenged_id_claim;
-	}
-
-	public org.fao.sola.clients.android.opentenure.filesystem.Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(
-			org.fao.sola.clients.android.opentenure.filesystem.Person person) {
-		this.person = person;
-	}
-
-	public List<Vertex> getVerteces() {
-		return verteces;
-	}
-
-	public void setVerteces(List<Vertex> verteces) {
-		this.verteces = verteces;
-	}
-
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
-
-	public List<XMetadata> getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(List<XMetadata> metadata) {
-		this.metadata = metadata;
-	}	
 	
 
 }

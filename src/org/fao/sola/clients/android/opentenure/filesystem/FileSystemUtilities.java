@@ -47,13 +47,21 @@ public class FileSystemUtilities {
 	private static String _CLAIM_PREFIX = "claim_";
 	private static String _CLAIMANT_PREFIX = "claimant_";
 	private static String _CLAIM_METADATA = "metadata";
-	private static String _ATTACHMENT_FOLDER = "attachment_folder";	
+	private static String _ATTACHMENT_FOLDER = "attachment_folder";
+	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
+	
 
 
+
+	/**
+	 * 
+	 * Create the folder that contains all the cliams under the application file system
+	 * 
+	 * */
 
 	public static boolean createClaimsFolder(){
 
-		
+
 		if(isExternalStorageWritable()){		
 
 			try {
@@ -77,9 +85,40 @@ public class FileSystemUtilities {
 
 	}
 
+
+
+	/**
+	 * 
+	 * Create the OpenTenure folder under the the public file system 
+	 * Here will be exported the compressed claim
+	 * 
+	 * **/
+
+	public static boolean createOpenTenureFolder(){
+
+
+		if(isExternalStorageWritable()){
+
+			File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);			
+			File ot = new File(path.getParentFile(),_OPEN_TENURE_FOLDER);		
+
+			if (ot.mkdir() && ot.isDirectory()){
+
+				System.out.println("Created Open Tenure Folder");
+				return true;
+			}		
+			return false;					
+		}
+
+		else return false;
+
+	}
+
+
+
 	public static boolean createClaimantsFolder(){
 
-		
+
 		if(isExternalStorageWritable()){		
 
 			try {
@@ -120,7 +159,7 @@ public class FileSystemUtilities {
 
 			new File(claimFolder, _CLAIM_METADATA).mkdir();		
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
-			
+
 			System.out.println("Claim File System created " + claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
@@ -129,12 +168,12 @@ public class FileSystemUtilities {
 		}
 
 		return( new File(claimFolder,_CLAIM_METADATA).exists() && 
-				
+
 				new File(claimFolder,_ATTACHMENT_FOLDER).exists()
 				);		
 	}
 
-	
+
 	public static boolean createClaimantFolder(String personId){
 
 		try {
@@ -148,57 +187,65 @@ public class FileSystemUtilities {
 		return new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).exists();		
 	}
 
-    public static void delete(File file)
-        	throws IOException{
-     
-        	if(file.isDirectory()){
-     
-        		//directory is empty, then delete it
-        		if(file.list().length==0){
-     
-        		   file.delete();
-        		   System.out.println("Directory is deleted : " 
-                                                     + file.getAbsolutePath());
-     
-        		}else{
-     
-        		   //list all the directory contents
-            	   String files[] = file.list();
-     
-            	   for (String temp : files) {
-            	      //construct the file structure
-            	      File fileDelete = new File(file, temp);
-     
-            	      //recursive delete
-            	     delete(fileDelete);
-            	   }
-     
-            	   //check the directory again, if empty then delete it
-            	   if(file.list().length==0){
-               	     file.delete();
-            	     System.out.println("Directory is deleted : " 
-                                                      + file.getAbsolutePath());
-            	   }
-        		}
-     
-        	}else{
-        		//if file, then delete it
-        		file.delete();
-        		System.out.println("File is deleted : " + file.getAbsolutePath());
-        	}
-        }
-    
-    public static boolean removeClaimantFolder(String personId){
+	public static void delete(File file)
+			throws IOException{
 
-    	try {
-    		delete(new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId));		
+		if(file.isDirectory()){
+
+			//directory is empty, then delete it
+			if(file.list().length==0){
+
+				file.delete();
+				System.out.println("Directory is deleted : " 
+						+ file.getAbsolutePath());
+
+			}else{
+
+				//list all the directory contents
+				String files[] = file.list();
+
+				for (String temp : files) {
+					//construct the file structure
+					File fileDelete = new File(file, temp);
+
+					//recursive delete
+					delete(fileDelete);
+				}
+
+				//check the directory again, if empty then delete it
+				if(file.list().length==0){
+					file.delete();
+					System.out.println("Directory is deleted : " 
+							+ file.getAbsolutePath());
+				}
+			}
+
+		}else{
+			//if file, then delete it
+			file.delete();
+			System.out.println("File is deleted : " + file.getAbsolutePath());
+		}
+	}
+	
+	
+	public static void deleteCompressedClaim(String claimID)
+			throws IOException{
+		
+		File oldZip = new File(FileSystemUtilities.getOpentenureFolder().getAbsolutePath()+File.separator+"Claim_"+claimID+".zip");		
+		delete(oldZip);		
+	}
+
+	public static boolean removeClaimantFolder(String personId){
+
+		try {
+			delete(new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId));		
 		} catch (Exception e) {
 			return false;
 		}
 		return true;		
 	}
 
-	
+
 	public static File getClaimsFolder(){
 
 		Context context = OpenTenureApplication.getContext();	
@@ -228,52 +275,54 @@ public class FileSystemUtilities {
 	public static File getMetadataFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _CLAIM_METADATA);
 	}	
-	
+
 	public static File getAttachmentFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);
 	}
+	
+	public static File getOpentenureFolder(){		
+		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);		
+		return new File(path.getParentFile(),_OPEN_TENURE_FOLDER);
+	}
 
-	
-	
-public static File copyFileInAttachFolder(String claimID,File source){
-	
-	File dest = null;
-	
-	try {
-		
-		dest = new File(getAttachmentFolder(claimID),source.getName());		
-		dest.createNewFile();
-				
-		System.out.println(dest.getAbsolutePath());
-		byte[] buffer = new byte[1024];
-		
-		FileInputStream reader = new FileInputStream(source);
-		FileOutputStream writer = new FileOutputStream(dest);
-		
-		BufferedInputStream br= new BufferedInputStream(reader);
-		
-		
-		while( (br.read(buffer) ) != -1 ) {
-			writer.write(buffer); 
+
+
+	public static File copyFileInAttachFolder(String claimID,File source){
+
+		File dest = null;
+
+		try {
+
+			dest = new File(getAttachmentFolder(claimID),source.getName());		
+			dest.createNewFile();
+
+			System.out.println(dest.getAbsolutePath());
+			byte[] buffer = new byte[1024];
+
+			FileInputStream reader = new FileInputStream(source);
+			FileOutputStream writer = new FileOutputStream(dest);
+
+			BufferedInputStream br= new BufferedInputStream(reader);
+
+
+			while( (br.read(buffer) ) != -1 ) {
+				writer.write(buffer); 
 			}
-		
-		reader.close(); 
-		writer.close();
-		
-	} catch (FileNotFoundException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+
+			reader.close(); 
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return dest;
 	}
-	catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	
-	return dest;
-}
-
-
-
 
 
 

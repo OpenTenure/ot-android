@@ -25,7 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.filesystem;
+package org.fao.sola.clients.android.opentenure.filesystem.json;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -44,6 +44,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Person;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Vertex;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.XMetadata;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
@@ -56,31 +60,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 
-public class Zip {
+public class JsonUtilities {
 	
 	
  public static boolean createClaimJson(String claimID){
 	 
 	System.out.println("Calling data2json");
 	 
-	 String json = data2Json(claimID);
-	 
-	 writeTofile(claimID,json);
-	 
-	 
+	 String json = data2Json(claimID);	 
+	 writeJsonTofile(claimID,json);
 	 return true;
  }
  
  
  
- 
- 
  private static String data2Json(String claimId){
 	 
-
+	 org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim();
 	 
-	 org.fao.sola.clients.android.opentenure.filesystem.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.Claim();
-	 Claim claim = Claim.getClaim(claimId);	 
+	 Claim claim = Claim.getClaim(claimId); 
 	 
 	 
 	 if(claim != null){
@@ -124,12 +122,12 @@ public class Zip {
 		}
 		 
 		 
-		 List<org.fao.sola.clients.android.opentenure.filesystem.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.Attachment>();
+		 List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 		 
 		 for (Iterator iterator = claim.getAttachments().iterator(); iterator.hasNext();) {
 			Attachment attachment = (Attachment) iterator.next();
 			
-			org.fao.sola.clients.android.opentenure.filesystem.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.Attachment();
+			org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
 			
 			attach.setAttachmentId(attachment.getAttachmentId());
 			attach.setDescription(attachment.getDescription());
@@ -186,7 +184,7 @@ public class Zip {
  
  
  
- private static boolean writeTofile(String claimID, String json){
+ private static boolean writeJsonTofile(String claimID, String json){
 	 
 	 
 	 try {
@@ -198,7 +196,7 @@ public class Zip {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		
 		
-		File jFile = new File(FileSystemUtilities.getMetadataFolder(claimID),"metadata.txt");
+		File jFile = new File(FileSystemUtilities.getMetadataFolder(claimID),"metadata.json");
 		
 		
 		if(jFile.exists())
@@ -222,8 +220,7 @@ public class Zip {
 		writer.flush();
 		writer.close();
 		br.close();
-		
-		
+				
 		
 	} catch (Exception e) {
 		System.out.println("Error occured here" + e.getMessage());
@@ -232,11 +229,5 @@ public class Zip {
 		return false;
 		 
  }
-	
-	
-	
-	
-	
-	
 
 }

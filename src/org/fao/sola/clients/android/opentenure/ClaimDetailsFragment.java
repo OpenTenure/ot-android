@@ -34,14 +34,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.Zip;
+import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -70,6 +76,7 @@ public class ClaimDetailsFragment extends Fragment {
 	File claimantPictureFile;
 	ImageView claimantImageView;
 
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -84,8 +91,8 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	public ClaimDetailsFragment() {
-	}
+
+	public ClaimDetailsFragment() {}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -161,25 +168,25 @@ public class ClaimDetailsFragment extends Fragment {
 	private void load(String claimId) {
 		Claim claim = Claim.getClaim(claimId);
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
-				.setText(claim.getPerson().getFirstName());
+		.setText(claim.getPerson().getFirstName());
 		((EditText) rootView.findViewById(R.id.last_name_input_field))
-				.setText(claim.getPerson().getLastName());
+		.setText(claim.getPerson().getLastName());
 		((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
-				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-						.format(claim.getPerson().getDateOfBirth()));
+		.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+		.format(claim.getPerson().getDateOfBirth()));
 		((EditText) rootView.findViewById(R.id.place_of_birth_input_field))
-				.setText(claim.getPerson().getPlaceOfBirth());
+		.setText(claim.getPerson().getPlaceOfBirth());
 		((EditText) rootView.findViewById(R.id.postal_address_input_field))
-				.setText(claim.getPerson().getPostalAddress());
+		.setText(claim.getPerson().getPostalAddress());
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
-				.setText(claim.getPerson().getEmailAddress());
+		.setText(claim.getPerson().getEmailAddress());
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
-				.setText(claim.getPerson().getMobilePhoneNumber());
+		.setText(claim.getPerson().getMobilePhoneNumber());
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(claim.getPerson().getContactPhoneNumber());
 		((EditText) rootView.findViewById(R.id.claim_name_input_field))
-				.setText(claim.getName());
+		.setText(claim.getName());
 		claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
 				.getPersonId());
 		try {
@@ -232,9 +239,9 @@ public class ClaimDetailsFragment extends Fragment {
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_birth_input_field))
-							.getText().toString());
+			.parse(((EditText) rootView
+					.findViewById(R.id.date_of_birth_input_field))
+					.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = new java.util.Date();
@@ -281,16 +288,16 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.update();
 		claim.getPerson().setFirstName(
 				((EditText) rootView.findViewById(R.id.first_name_input_field))
-						.getText().toString());
+				.getText().toString());
 		claim.getPerson().setLastName(
 				((EditText) rootView.findViewById(R.id.last_name_input_field))
-						.getText().toString());
+				.getText().toString());
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_birth_input_field))
-							.getText().toString());
+			.parse(((EditText) rootView
+					.findViewById(R.id.date_of_birth_input_field))
+					.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = new java.util.Date();
@@ -357,10 +364,10 @@ public class ClaimDetailsFragment extends Fragment {
 			return true;
 		case R.id.action_submit:
 			if (claimActivity.getClaimId() != null) {
-								
-				
-				Zip.createClaimJson(claimActivity.getClaimId());				
-				
+
+
+				JsonUtilities.createClaimJson(claimActivity.getClaimId());
+
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_submitted, Toast.LENGTH_SHORT);
 				toast.show();
@@ -372,6 +379,60 @@ public class ClaimDetailsFragment extends Fragment {
 				toast.show();
 			}
 			return true;
+
+		case R.id.action_export:
+
+
+			if (claimActivity.getClaimId() != null) {
+
+				AlertDialog.Builder metadataDialog = new AlertDialog.
+						Builder(rootView.getContext());
+
+				metadataDialog.setTitle(R.string.password);
+				
+				final EditText input = new EditText(rootView.
+						getContext());
+				metadataDialog.setView(input);
+
+				metadataDialog.setPositiveButton(R.string.confirm,
+						new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						String password = input.getText().toString();
+						dialog.dismiss();
+
+						new ExporterTask(rootView.getContext()).execute(password,
+								claimActivity.getClaimId());
+
+						return;
+
+					}
+				});
+
+				metadataDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}
+				});
+
+				metadataDialog.show();
+
+
+
+			}else {
+				toast = Toast
+						.makeText(rootView.getContext(),
+								R.string.message_save_before_submit,
+								Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			return true;
+
+
+
 
 		default:
 			return super.onOptionsItemSelected(item);

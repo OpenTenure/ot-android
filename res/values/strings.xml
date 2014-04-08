@@ -17,6 +17,7 @@
     <string name="action_new_metadata">Add information</string>
     <string name="action_new_attachment">New document</string>
     <string name="action_lock_db">Configure data encryption</string>
+    <string name="action_export">Export</string>
     <string name="title_news">News</string>
     <string name="title_map">Map</string>
     <string name="title_local_claims">Local claims</string>
@@ -27,6 +28,7 @@
     <string name="title_claim_documents">Claim documents</string>
     <string name="title_claim_photos">Claim photos</string>
     <string name="title_claim_map">Claim map</string>
+    <string name="title_export">Exporting Claim as compressed file</string>
     <string name="title_section">Section</string>
     <string name="title_item">Item</string>
     <string name="title_activity_settings">Settings</string>
@@ -56,6 +58,7 @@
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
     <string name="message_save_before_adding_content">The claim must be saved before adding content</string>
+    <string name="message_export">Exporting</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>

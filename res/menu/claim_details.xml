@@ -6,6 +6,10 @@
     <item android:id="@+id/action_submit"
           android:icon="@android:drawable/ic_menu_send"
           android:title="@string/action_submit"
+          android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_export"
+          android:icon="@android:drawable/ic_menu_upload"
+          android:title="@string/action_export"
           android:showAsAction="ifRoom" />    
     
 </menu>
