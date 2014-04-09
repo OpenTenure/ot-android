@@ -54,6 +54,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -410,6 +412,11 @@ public class ClaimDetailsFragment extends Fragment {
 				
 				final EditText input = new EditText(rootView.
 						getContext());
+				
+				input.
+					setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				input.
+					setTransformationMethod(PasswordTransformationMethod.getInstance());
 				metadataDialog.setView(input);
 
 				metadataDialog.setPositiveButton(R.string.confirm,
