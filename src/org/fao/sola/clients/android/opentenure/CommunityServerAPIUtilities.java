@@ -35,11 +35,11 @@ import java.io.UnsupportedEncodingException;
 
 public class CommunityServerAPIUtilities {
 	
-	public static final String HTTP_LOGIN= "http://10.0.2.2:8080/cs/ws/auth/login?name=%s&pass=%s";
-	public static final String HTTPS_LOGIN= "http://10.0.2.2:8181/cs/ws/auth/login?name=%s&pass=%s";
+	public static final String HTTP_LOGIN= "http://ot.flossola.org/ws/auth/login?name=%s&pass=%s";
+	public static final String HTTPS_LOGIN= "https://ot.flossola.org/ws/auth/login?name=%s&pass=%s";
 	
-	public static final String HTTPS_LOGOUT= "http://10.0.2.2:8181/cs/ws/auth/logout";
-	public static final String HTTP_LOGOUT= "http://10.0.2.2:8080/cs/ws/auth/logout";
+	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/auth/logout";
+	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/auth/logout";
 	
 	
 	

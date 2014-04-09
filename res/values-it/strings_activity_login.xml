@@ -9,11 +9,11 @@
     <string name="action_sign_in_short">Log in</string>
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">Loggin in&#8230;</string>
-    <string name="error_invalid_username">This username is too short</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_generic_login">An error has occurred during login </string>
-    <string name="error_generic_conection">An error has occurred during connection</string>
-    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_username">Username troppo corto</string>
+    <string name="error_invalid_password">Password troppo corta</string>
+    <string name="error_incorrect_password">La password non é corretta </string>
+    <string name="error_generic_login">Un errore é avvenuto durate la procedura di Log in </string>
+    <string name="error_generic_conection">Errore di connessione</string>
+    <string name="error_field_required">Questo campo é richiesto</string>
 
 </resources>
