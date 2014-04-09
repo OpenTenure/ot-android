@@ -40,6 +40,9 @@
     <string name="community_recorder_name">Community recorder</string>
     <string name="postal_address">Indirizzo</string>
     <string name="email_address">Indirizzo Email</string>
+    <string name="gender_masculine">Maschio</string>
+    <string name="gender_feminine">Femmina</string>
+    <string name="gender">Genere</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>
     <string name="claim_notes">Annotazioni</string>

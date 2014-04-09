@@ -101,6 +101,7 @@ public class JsonUtilities {
 		 person.setMobile_phone_number(claim.getPerson().getMobilePhoneNumber());
 		 person.setPlace_of_birth(claim.getPerson().getPlaceOfBirth());
 		 person.setPostal_address(claim.getPerson().getPostalAddress());
+		 person.setGender(claim.getPerson().getGender());
 		 
 		 tempClaim.setPerson(person);
 		 

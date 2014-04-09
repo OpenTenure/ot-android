@@ -62,9 +62,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class ClaimDetailsFragment extends Fragment {
@@ -180,6 +182,10 @@ public class ClaimDetailsFragment extends Fragment {
 		.setText(claim.getPerson().getPostalAddress());
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
 		.setText(claim.getPerson().getEmailAddress());
+		((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
+		.setChecked((claim.getPerson().getGender().equals("F")));
+		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
+		.setChecked((claim.getPerson().getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
 		.setText(claim.getPerson().getMobilePhoneNumber());
 		((EditText) rootView
@@ -262,6 +268,12 @@ public class ClaimDetailsFragment extends Fragment {
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_feminine_input_field)).isChecked())
+			person.setGender("F");
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_masculine_input_field)).isChecked())
+			person.setGender("M");
 		person.create();
 
 		Claim claim = new Claim();
@@ -322,7 +334,13 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.getPerson().setContactPhoneNumber(
 				((EditText) rootView
 						.findViewById(R.id.contact_phone_number_input_field))
-						.getText().toString());
+						.getText().toString());		
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_feminine_input_field)).isChecked())
+			claim.getPerson().setGender("F");
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_masculine_input_field)).isChecked())
+			claim.getPerson().setGender("M");
 		claim.getPerson().update();
 	}
 
