@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.CommunityServerAPIUtilities.Login
 import com.google.gson.Gson;
 
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 
 public class CommunityServerAPI {
 
@@ -79,8 +80,8 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
-			System.out.println("Ottenuta la response");
-			System.out.println("Status line" + response.getStatusLine());
+			
+			Log.d("CommunityServerAPI","Login Status line " + response.getStatusLine());
 			
 
 			if (response.getStatusLine().getStatusCode()==(HttpStatus.SC_OK)) {
@@ -94,36 +95,37 @@ public class CommunityServerAPI {
 
 				switch (login.getStatus()) {
 
-				case 200:
-					System.out.println("LA login response e' 200");
+				case 200:					
 					OpenTenureApplication.setCoockieStore(CS);
-
+					Log.d("CommunityServerAPI","Login status : 200");
 					return 200;
 
-				case 401:
-					System.out.println("LA login response e' 401");
+				case 401:					
+					Log.d("CommunityServerAPI","Login status : 401");
 					return 401;
 
-				default:
-					System.out.println("Un errore di diverso genere");
+				default:					
+					Log.d("CommunityServerAPI","Login status : default");
 					return 0;
 				}
 			}
-
-			else
+			else{
+				Log.d("CommunityServerAPI","Login status NOT OK : "+response.getStatusLine().getStatusCode());
 				return 404;
+				
+			}
 		}
 
 		catch(ConnectTimeoutException ct){
 
-			System.out.println("Connection exception :" + ct.getMessage() );
+			Log.d("CommunityServerAPI", ct.getMessage() );
 			ct.printStackTrace();			
 			return 80;
 
 		}
 		catch (Throwable ex) {
 
-			System.out.println("ok, qui succede qualcosa di poco edulcorante"
+			Log.d("CommunityServerAPI","An error has occurred during Login "
 					+ ex.getMessage());
 			ex.printStackTrace();
 			return 0;
@@ -159,8 +161,8 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
-			System.out.println("Ottenuta la response");
-			System.out.println("Status line" + response.getStatusLine());
+			
+			Log.d("CommunityServerAPI", response.getStatusLine().toString());
 
 			if (response.getStatusLine().getStatusCode()==(HttpStatus.SC_OK)) {
 
@@ -174,31 +176,31 @@ public class CommunityServerAPI {
 				switch (login.getStatus()) {
 
 				case 200:
-					System.out.println("LA logout response e' 200");
+					
 					OpenTenureApplication.setCoockieStore(CS);
 
 					return 200;
 
 				case 401:
-					System.out.println("LA logout response e' 401");
+					
 					return 401;
 
 				default:
-					System.out.println("Un errore di diverso genere");
+					
 					return 0;
 				}
 			}
 			else return 0;
 		}catch(ConnectTimeoutException ct){
 
-			System.out.println("Connection exception :" + ct.getMessage() );
+			Log.d("CommunityServerAPI","Login ConnectTimeoutException" + ct.getMessage() );
 			ct.printStackTrace();			
 			return 80;
 
 		}
 		catch (Throwable ex) {
 
-			System.out.println("ok, qui succede qualcosa di poco edulcorante"
+			Log.d("CommunityServerAPI","Logout Exception "
 					+ ex.getMessage());
 			ex.printStackTrace();
 			return 0;

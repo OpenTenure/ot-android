@@ -36,6 +36,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;	
+import android.util.Log;
 
 
 public class ExporterTask extends AsyncTask<String, Void, Boolean >{
@@ -74,7 +75,7 @@ public class ExporterTask extends AsyncTask<String, Void, Boolean >{
 
 			return true;				
 		} catch (Exception e) {
-			System.out.println("And error has occured creating the compressed claim ");
+			Log.d("ExporterTask","And error has occured creating the compressed claim ");
 			return false;
 		}
 

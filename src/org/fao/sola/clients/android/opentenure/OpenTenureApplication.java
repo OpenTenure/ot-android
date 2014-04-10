@@ -39,6 +39,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 
 public class OpenTenureApplication extends Application {
 
@@ -167,10 +168,10 @@ public class OpenTenureApplication extends Application {
 		         
 			    cookieStore = new BasicCookieStore();
 			    http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-				System.out.println("Inizialized HTTP Client");
+			    Log.d("OpenTEnureApplication","Inizialized HTTP Client");
 				
 			} catch (Throwable e) {
-				e.printStackTrace();				
+				e.printStackTrace();			
 				
 			}
 			return mHttpClient;

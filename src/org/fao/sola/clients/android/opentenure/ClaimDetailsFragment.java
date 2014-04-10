@@ -383,18 +383,19 @@ public class ClaimDetailsFragment extends Fragment {
 
 			return true;
 		case R.id.action_submit:
-			if (claimActivity.getClaimId() != null) {
-
-
-				JsonUtilities.createClaimJson(claimActivity.getClaimId());
+			if (claimActivity.getClaimId() != null) {				
 				
 				
+				
+				/*Check if the user is logged in, in negative case open the login dialog*/
 				if(!OpenTenureApplication.isLoggedin()){
 		    		
 		        	Context context = getActivity().getApplicationContext();
 		        	Intent intent = new Intent( context, LoginActivity.class );            	            	 
 		        	startActivity(intent);
 				}
+				
+				JsonUtilities.createClaimJson(claimActivity.getClaimId());
 
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_submitted, Toast.LENGTH_SHORT);

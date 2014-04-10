@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -210,7 +211,7 @@ public class LoginActivity extends Activity {
 				
 			} catch (Throwable ex) {
 				
-				System.out.println("ok, qui succede qualcosa di poco edulcorante:" + ex.getMessage());
+				Log.d("LoginActivity","Ok, An error has occurred during login:" + ex.getMessage());
 				ex.printStackTrace();
 				return 0;
 			}
