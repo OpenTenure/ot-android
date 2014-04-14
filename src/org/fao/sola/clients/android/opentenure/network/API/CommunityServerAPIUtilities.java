@@ -25,7 +25,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network.API;
 
 import java.io.IOException;
 import java.io.InputStream;

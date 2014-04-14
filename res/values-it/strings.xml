@@ -6,6 +6,8 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_search">Cerca</string>
     <string name="action_new">Aggiungi</string>
+    <string name="action_login">Log In</string>
+    <string name="action_logout">Log Out</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
     <string name="action_remove_metadata">Rimouvi informazione</string>
     <string name="action_camera">Foto</string>

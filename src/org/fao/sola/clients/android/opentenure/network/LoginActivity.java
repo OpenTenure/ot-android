@@ -1,8 +1,14 @@
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network;
 
 
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.R.id;
+import org.fao.sola.clients.android.opentenure.R.layout;
+import org.fao.sola.clients.android.opentenure.R.menu;
+import org.fao.sola.clients.android.opentenure.R.string;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -11,6 +17,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -226,6 +233,10 @@ public class LoginActivity extends Activity {
 			case 200:
 				OpenTenureApplication.setLoggedin(true);
 				OpenTenureApplication.setUsername(mUsername);
+				
+				FragmentActivity fa = (FragmentActivity) OpenTenureApplication.getActivity();
+				fa.invalidateOptionsMenu();
+				
 				finish();
 				
 				break;

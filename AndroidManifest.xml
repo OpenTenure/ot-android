@@ -60,7 +60,7 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name="org.fao.sola.clients.android.opentenure.LoginActivity"            
+            android:name="org.fao.sola.clients.android.opentenure.network.LoginActivity"            
             android:theme="@android:style/Theme.Holo.Light.Dialog"
             >
         </activity>

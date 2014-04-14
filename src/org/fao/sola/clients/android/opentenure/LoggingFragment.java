@@ -35,6 +35,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;

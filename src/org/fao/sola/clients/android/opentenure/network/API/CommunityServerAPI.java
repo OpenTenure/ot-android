@@ -25,9 +25,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network.API;
 
 
+
+import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -37,7 +39,8 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.fao.sola.clients.android.opentenure.CommunityServerAPIUtilities.Login;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities.Login;
 
 import com.google.gson.Gson;
 
@@ -148,8 +151,10 @@ public class CommunityServerAPI {
 
 
 		try {
+			
+			
 
-			HttpGet request = new HttpGet(CommunityServerAPIUtilities.HTTP_LOGOUT);
+			HttpGet request = new HttpGet(CommunityServerAPIUtilities.HTTPS_LOGOUT);
 
 			/*Preparing to store coockies*/
 			CookieStore CS = OpenTenureApplication.getCoockieStore();
@@ -193,10 +198,17 @@ public class CommunityServerAPI {
 			else return 0;
 		}catch(ConnectTimeoutException ct){
 
-			Log.d("CommunityServerAPI","Login ConnectTimeoutException" + ct.getMessage() );
+			Log.d("CommunityServerAPI","Logout ConnectTimeoutException" + ct.getMessage() );
 			ct.printStackTrace();			
 			return 80;
 
+		}
+		
+		catch (UnknownHostException uhe) {
+			
+			Log.d("CommunityServerAPI","Logout UnknownHostException" + uhe.getMessage() );
+			uhe.printStackTrace();			
+			return 1;
 		}
 		catch (Throwable ex) {
 
