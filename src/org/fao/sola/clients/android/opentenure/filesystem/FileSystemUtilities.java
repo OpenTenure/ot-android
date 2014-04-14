@@ -47,8 +47,7 @@ public class FileSystemUtilities {
 	private static String _CLAIMANTS_FOLDER = "claimants";
 	private static String _CLAIM_PREFIX = "claim_";
 	private static String _CLAIMANT_PREFIX = "claimant_";
-	private static String _CLAIM_METADATA = "metadata";
-	private static String _ATTACHMENT_FOLDER = "attachment_folder";
+	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
 	
 
@@ -157,8 +156,7 @@ public class FileSystemUtilities {
 			new File(claimsFolder,_CLAIM_PREFIX+claimID).mkdir();
 
 			claimFolder = new File(claimsFolder,_CLAIM_PREFIX+claimID);
-
-			new File(claimFolder, _CLAIM_METADATA).mkdir();		
+					
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 
 			Log.d("FileSystemUtilities","Claim File System created " + claimFolder.getAbsolutePath());
@@ -168,9 +166,8 @@ public class FileSystemUtilities {
 			return false ;
 		}
 
-		return( new File(claimFolder,_CLAIM_METADATA).exists() && 
-
-				new File(claimFolder,_ATTACHMENT_FOLDER).exists()
+		return( new File(claimFolder,_ATTACHMENT_FOLDER).
+				exists()
 				);		
 	}
 
@@ -273,9 +270,6 @@ public class FileSystemUtilities {
 		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId);
 	}
 
-	public static File getMetadataFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _CLAIM_METADATA);
-	}	
 
 	public static File getAttachmentFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);

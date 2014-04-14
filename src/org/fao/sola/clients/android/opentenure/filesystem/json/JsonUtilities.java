@@ -194,7 +194,7 @@ public class JsonUtilities {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		
 		
-		File jFile = new File(FileSystemUtilities.getMetadataFolder(claimID),"metadata.json");
+		File jFile = new File(FileSystemUtilities.getClaimFolder(claimID),"claim.json");
 		
 		
 		if(jFile.exists())
