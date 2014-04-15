@@ -130,6 +130,7 @@ public class JsonUtilities {
 			attach.setFileType(attachment.getFileType());
 			attach.setMD5Sum(attachment.getMD5Sum());
 			attach.setMimeType(attachment.getMimeType());
+			attach.setStatus(attachment.getStatus());
 			
 			attachments.add(attach);
 		}
