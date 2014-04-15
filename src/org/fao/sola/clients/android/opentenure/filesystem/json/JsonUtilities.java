@@ -48,13 +48,10 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
 
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 
 public class JsonUtilities {
 	
@@ -84,6 +81,7 @@ public class JsonUtilities {
 		 tempClaim.setName(claim.getName());
 		 tempClaim.setChallenged_id_claim(claim.getChallengedClaim()!=null?claim.getChallengedClaim().getClaimId():null);
 		 tempClaim.setId(claimId);
+		 tempClaim.setStatus(claim.getStatus());
 		 
 		 Person person = new Person();
 		 

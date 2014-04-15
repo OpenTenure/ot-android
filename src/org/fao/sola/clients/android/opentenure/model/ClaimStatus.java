@@ -25,97 +25,14 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.filesystem.json.model;
+package org.fao.sola.clients.android.opentenure.model;
 
-import java.util.List;
-
-
-
-
-public class Claim {
+public class ClaimStatus {
 	
-	String id;
-	
-	String name;
-	
-	String status;
-	
-	String challenged_id_claim;
-	
-	List<Vertex> verteces;
-	
-	List<Attachment> attachments;
-	
-	List<XMetadata> metadata;
-	
-	Person person;
-	
-	
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getChallenged_id_claim() {
-		return challenged_id_claim;
-	}
-
-	public void setChallenged_id_claim(String challenged_id_claim) {
-		this.challenged_id_claim = challenged_id_claim;
-	}
-
-	public org.fao.sola.clients.android.opentenure.filesystem.json.model.Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(
-			org.fao.sola.clients.android.opentenure.filesystem.json.model.Person person) {
-		this.person = person;
-	}
-
-	public List<Vertex> getVerteces() {
-		return verteces;
-	}
-
-	public void setVerteces(List<Vertex> verteces) {
-		this.verteces = verteces;
-	}
-
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
-
-	public List<XMetadata> getMetadata() {
-		return metadata;
-	}
-
-	public void setMetadata(List<XMetadata> metadata) {
-		this.metadata = metadata;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}	
-	
+	public static String _CREATED = "created";
+	public static String _UPLOADING = "uploading";
+	public static String _UPLOADED = "uploaded";
+	public static String _MODERATED = "moderated";
+	public static String _CHALLENGED = "challenged";
 
 }
