@@ -32,6 +32,8 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -40,7 +42,10 @@ import java.util.concurrent.TimeoutException;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
@@ -434,8 +439,7 @@ public class ClaimDetailsFragment extends Fragment {
 			return true;
 		case R.id.action_submit:
 
-			if(!OpenTenureApplication.isLoggedin()){				
-
+			if(!OpenTenureApplication.isLoggedin()){
 				toast = Toast
 						.makeText(rootView.getContext(),
 								R.string.message_login_before,
@@ -447,8 +451,15 @@ public class ClaimDetailsFragment extends Fragment {
 			else{
 
 				if (claimActivity.getClaimId() != null) {				
-
-					JsonUtilities.createClaimJson(claimActivity.getClaimId());
+					
+					
+					JsonUtilities.
+						createClaimJson(claimActivity.getClaimId());
+					
+					/*
+					 * A temporary Moke Submission of the Claim
+					 * */
+					Moke.mokeSubmit(claimActivity.getClaimId());
 
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_submitted, Toast.LENGTH_SHORT);
@@ -461,8 +472,6 @@ public class ClaimDetailsFragment extends Fragment {
 					toast.show();
 				}
 				return true;
-
-
 			}
 
 
@@ -502,7 +511,8 @@ public class ClaimDetailsFragment extends Fragment {
 					}
 				});
 
-				metadataDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				metadataDialog.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
 						return;

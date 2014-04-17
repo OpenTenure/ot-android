@@ -15,6 +15,7 @@
     <string name="action_save">Save</string>
     <string name="action_center">Center</string>
     <string name="action_submit">Submit</string>
+    <string name="action_download_file">Download File</string>
     <string name="action_new_picture">New picture</string>
     <string name="action_new_metadata">Add information</string>
     <string name="action_new_attachment">New document</string>
@@ -58,7 +59,7 @@
     <string name="attachment_removed">The attachment has been removed</string>
     <string name="metadata_removed">Information removed</string>
     <string name="message_saved">The claim has been saved</string>
-
+	<string name="message_downloading_attachment">Downloading the attachment</string>
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>

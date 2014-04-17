@@ -27,46 +27,36 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+public class Moke {
+	
+	public static void mokeSubmit(String claimId ){
+		
+		
+		/*Change the status of Claim*/
+		Claim claim = Claim.
+					getClaim(claimId);
+		claim.setStatus(ClaimStatus._UPLOADING);					
+		
+		List<Attachment> list = claim.getAttachments();
+		for (Iterator iterator = list.iterator(); iterator
+				.hasNext();) {
+			Attachment attachment = (Attachment) iterator.next();
+			attachment.setStatus(AttacchementStatus._UPLOADING);
+			Attachment.updateAttachment(attachment);
+			
+		}					
+		
+		Claim.updateClaim(claim);
+	}
+	
+	
 
-public class LocalClaimsListAdapter extends ArrayAdapter<String> {
-  private final Context context;
-  private final String[] slogans;
-  private final String[] ids;
-  private final String[] stati;
-
-  public LocalClaimsListAdapter(Context context, String[] slogans, String[] ids, String[] stati) {
-    super(context, R.layout.local_claims_list_item, slogans);
-    this.context = context;
-    this.slogans = slogans;
-    this.ids = ids;
-    this.stati = stati;
-  }
-
-  @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
-    LayoutInflater inflater = (LayoutInflater) context
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View rowView = inflater.inflate(R.layout.local_claims_list_item, parent, false);
-    TextView slogan = (TextView) rowView.findViewById(R.id.claim_slogan);
-    TextView status = (TextView) rowView.findViewById(R.id.claim_status);
-    TextView id = (TextView) rowView.findViewById(R.id.claim_id);
-    ImageView picture = (ImageView) rowView.findViewById(R.id.claimant_picture);
-    slogan.setText(slogans[position]);
-    status.setText(stati[position]);
-    id.setTextSize(8);
-    id.setText(ids[position]);
-	picture.setImageBitmap(Person.getPersonPicture(context, Person.getPersonPictureFile(Claim.getClaim(ids[position]).getPerson().getPersonId()), 96));
-
-    return rowView;
-  }
-} 
+}

@@ -164,8 +164,8 @@ public class OpenTenure extends FragmentActivity {
 				return new LocalClaimsFragment();
 			case 3:
 				return new SubmittedClaimsFragment();
-			case 4:
-				return new ChallengedClaimsFragment();
+//			case 4:
+//				return new ChallengedClaimsFragment();
 			}
 			return null;
 		}
@@ -173,7 +173,7 @@ public class OpenTenure extends FragmentActivity {
 		@Override
 		public int getCount() {
 
-			return 5;
+			return 4;
 		}
 
 		@Override
@@ -189,9 +189,9 @@ public class OpenTenure extends FragmentActivity {
 			case 3:
 				return getString(R.string.title_submitted_claims)
 						.toUpperCase(l);
-			case 4:
-				return getString(R.string.title_challenged_claims).toUpperCase(
-						l);
+//			case 4:
+//				return getString(R.string.title_challenged_claims).toUpperCase(
+//						l);
 			}
 			return null;
 		}
