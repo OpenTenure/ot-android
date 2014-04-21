@@ -38,6 +38,8 @@ public class Claim {
 	
 	String name;
 	
+	String status;
+	
 	String challenged_id_claim;
 	
 	List<Vertex> verteces;
@@ -105,6 +107,14 @@ public class Claim {
 
 	public void setMetadata(List<XMetadata> metadata) {
 		this.metadata = metadata;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}	
 	
 

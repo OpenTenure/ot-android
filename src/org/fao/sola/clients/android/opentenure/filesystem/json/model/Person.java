@@ -42,6 +42,7 @@ public class Person {
 	private String contact_phone_number;
 	private String email_address;
 	private Date date_of_birth;
+	private String gender;
 	
 	
 	
@@ -100,6 +101,12 @@ public class Person {
 	}
 	public void setDate_of_birth(Date date_of_birth) {
 		this.date_of_birth = date_of_birth;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
 	} 
 	
 	

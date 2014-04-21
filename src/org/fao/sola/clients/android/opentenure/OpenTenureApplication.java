@@ -34,11 +34,14 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Database;
+
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 
 public class OpenTenureApplication extends Application {
 
@@ -48,10 +51,12 @@ public class OpenTenureApplication extends Application {
 	    
 	    private static boolean loggedin ;
 	    private static String username;
+	    private static Activity activity;
 		
 		private static AndroidHttpClient mHttpClient;
 		private static CookieStore cookieStore;
 		private static HttpContext http_context;
+		
 
 	    public static OpenTenureApplication getInstance() {
 	      return sInstance;
@@ -152,6 +157,14 @@ public class OpenTenureApplication extends Application {
 			     }		
 		
 		
+		public static Activity getActivity() {
+			return activity;
+		}
+
+		public static void setActivity(Activity activity) {
+			OpenTenureApplication.activity = activity;
+		}
+
 		/*
 		 * Initialize the single istance of AndroidHttpClient that will 
 		 * handle the connections to the server
@@ -167,10 +180,10 @@ public class OpenTenureApplication extends Application {
 		         
 			    cookieStore = new BasicCookieStore();
 			    http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-				System.out.println("Inizialized HTTP Client");
+			    Log.d("OpenTEnureApplication","Inizialized HTTP Client");
 				
 			} catch (Throwable e) {
-				e.printStackTrace();				
+				e.printStackTrace();			
 				
 			}
 			return mHttpClient;

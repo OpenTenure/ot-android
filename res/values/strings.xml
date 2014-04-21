@@ -10,9 +10,12 @@
     <string name="action_remove_metadata">Remove information</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
+    <string name="action_login">Log In</string>
+    <string name="action_logout">Log Out</string>
     <string name="action_save">Save</string>
     <string name="action_center">Center</string>
     <string name="action_submit">Submit</string>
+    <string name="action_download_file">Download File</string>
     <string name="action_new_picture">New picture</string>
     <string name="action_new_metadata">Add information</string>
     <string name="action_new_attachment">New document</string>
@@ -40,6 +43,9 @@
     <string name="community_recorder_name">Community recorder</string>
     <string name="postal_address">Postal Address</string>
     <string name="email_address">Email Address</string>
+    <string name="gender_masculine">Male</string>
+    <string name="gender_feminine">Female</string>
+    <string name="gender">Gender</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>
     <string name="claim_notes">Notes</string>
@@ -53,6 +59,7 @@
     <string name="attachment_removed">The attachment has been removed</string>
     <string name="metadata_removed">Information removed</string>
     <string name="message_saved">The claim has been saved</string>
+	<string name="message_downloading_attachment">Downloading the attachment</string>
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>

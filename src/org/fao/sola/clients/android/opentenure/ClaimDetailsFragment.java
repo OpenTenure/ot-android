@@ -32,20 +32,31 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
+import org.fao.sola.clients.android.opentenure.network.LogoutTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +65,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,9 +76,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 public class ClaimDetailsFragment extends Fragment {
@@ -74,6 +90,7 @@ public class ClaimDetailsFragment extends Fragment {
 	final Calendar localCalendar = Calendar.getInstance();
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	File claimantPictureFile;
+	Menu menu;
 	ImageView claimantImageView;
 
 
@@ -94,10 +111,48 @@ public class ClaimDetailsFragment extends Fragment {
 
 	public ClaimDetailsFragment() {}
 
+
+	@Override
+	public void onPrepareOptionsMenu(Menu menu){
+		MenuItem itemIn;
+		MenuItem itemOut;		
+		
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Is the user logged in ? : " + OpenTenureApplication.isLoggedin());
+
+		
+		if(OpenTenureApplication.isLoggedin()){
+			
+		itemIn = menu.getItem(4);
+		itemIn.setVisible(false);
+		itemOut = menu.getItem(5);
+		itemOut.setVisible(true);
+		
+		}
+		else{
+			
+			itemIn = menu.getItem(4);
+			itemIn.setVisible(true);
+			itemOut = menu.getItem(5);
+			itemOut.setVisible(false);
+		}
+		
+		this.menu = menu;
+		super.onPrepareOptionsMenu(menu);
+		
+	}
+	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.claim_details, menu);
 
+
+		inflater.inflate(R.menu.claim_details, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -180,6 +235,10 @@ public class ClaimDetailsFragment extends Fragment {
 		.setText(claim.getPerson().getPostalAddress());
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
 		.setText(claim.getPerson().getEmailAddress());
+		((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
+		.setChecked((claim.getPerson().getGender().equals("F")));
+		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
+		.setChecked((claim.getPerson().getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
 		.setText(claim.getPerson().getMobilePhoneNumber());
 		((EditText) rootView
@@ -262,6 +321,12 @@ public class ClaimDetailsFragment extends Fragment {
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_feminine_input_field)).isChecked())
+			person.setGender("F");
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_masculine_input_field)).isChecked())
+			person.setGender("M");
 		person.create();
 
 		Claim claim = new Claim();
@@ -322,7 +387,13 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.getPerson().setContactPhoneNumber(
 				((EditText) rootView
 						.findViewById(R.id.contact_phone_number_input_field))
-						.getText().toString());
+						.getText().toString());		
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_feminine_input_field)).isChecked())
+			claim.getPerson().setGender("F");
+		if(((RadioButton) rootView
+				.findViewById(R.id.gender_masculine_input_field)).isChecked())
+			claim.getPerson().setGender("M");
 		claim.getPerson().update();
 	}
 
@@ -331,6 +402,10 @@ public class ClaimDetailsFragment extends Fragment {
 		// handle item selection
 		Toast toast;
 		switch (item.getItemId()) {
+		
+
+		
+		
 		case R.id.action_save:
 
 			if (claimActivity.getClaimId() == null) {
@@ -363,22 +438,42 @@ public class ClaimDetailsFragment extends Fragment {
 
 			return true;
 		case R.id.action_submit:
-			if (claimActivity.getClaimId() != null) {
 
-
-				JsonUtilities.createClaimJson(claimActivity.getClaimId());
-
-				toast = Toast.makeText(rootView.getContext(),
-						R.string.message_submitted, Toast.LENGTH_SHORT);
-				toast.show();
-			} else {
+			if(!OpenTenureApplication.isLoggedin()){
 				toast = Toast
 						.makeText(rootView.getContext(),
-								R.string.message_save_before_submit,
+								R.string.message_login_before,
 								Toast.LENGTH_SHORT);
 				toast.show();
+				return true;				
+
 			}
-			return true;
+			else{
+
+				if (claimActivity.getClaimId() != null) {				
+					
+					
+					JsonUtilities.
+						createClaimJson(claimActivity.getClaimId());
+					
+					/*
+					 * A temporary Moke Submission of the Claim
+					 * */
+					Moke.mokeSubmit(claimActivity.getClaimId());
+
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_submitted, Toast.LENGTH_SHORT);
+					toast.show();
+				} else {
+					toast = Toast
+							.makeText(rootView.getContext(),
+									R.string.message_save_before_submit,
+									Toast.LENGTH_SHORT);
+					toast.show();
+				}
+				return true;
+			}
+
 
 		case R.id.action_export:
 
@@ -389,9 +484,14 @@ public class ClaimDetailsFragment extends Fragment {
 						Builder(rootView.getContext());
 
 				metadataDialog.setTitle(R.string.password);
-				
+
 				final EditText input = new EditText(rootView.
 						getContext());
+
+				input.
+				setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				input.
+				setTransformationMethod(PasswordTransformationMethod.getInstance());
 				metadataDialog.setView(input);
 
 				metadataDialog.setPositiveButton(R.string.confirm,
@@ -411,7 +511,8 @@ public class ClaimDetailsFragment extends Fragment {
 					}
 				});
 
-				metadataDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+				metadataDialog.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
 
 					public void onClick(DialogInterface dialog, int which) {
 						return;
@@ -432,7 +533,36 @@ public class ClaimDetailsFragment extends Fragment {
 			return true;
 
 
-
+		case R.id.action_login:
+			
+			OpenTenureApplication.setActivity(getActivity());
+			
+        	Context context = getActivity().getApplicationContext();
+        	Intent intent = new Intent( context, LoginActivity.class );            	            	 
+        	startActivity(intent);
+        	
+        	OpenTenureApplication.setActivity(getActivity());
+        	
+        	return false;
+        	
+        	
+		case R.id.action_logout:	
+		
+			
+			
+			try {
+				
+				LogoutTask logoutTask = new LogoutTask();
+				
+				logoutTask.execute(getActivity());	
+								
+			} catch (Exception e) {
+				Log.d("Details", "An error ");
+				
+				e.printStackTrace();
+			}
+			
+			return true;
 
 		default:
 			return super.onOptionsItemSelected(item);

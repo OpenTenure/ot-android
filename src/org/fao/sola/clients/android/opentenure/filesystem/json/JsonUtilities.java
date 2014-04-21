@@ -27,22 +27,18 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Person;
@@ -52,20 +48,17 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
 
-import android.util.JsonReader;
-import android.util.JsonWriter;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 
 public class JsonUtilities {
 	
 	
  public static boolean createClaimJson(String claimID){
 	 
-	System.out.println("Calling data2json");
+	Log.d("CreateClaimJson","Calling data2json");
 	 
 	 String json = data2Json(claimID);	 
 	 writeJsonTofile(claimID,json);
@@ -88,6 +81,7 @@ public class JsonUtilities {
 		 tempClaim.setName(claim.getName());
 		 tempClaim.setChallenged_id_claim(claim.getChallengedClaim()!=null?claim.getChallengedClaim().getClaimId():null);
 		 tempClaim.setId(claimId);
+		 tempClaim.setStatus(claim.getStatus());
 		 
 		 Person person = new Person();
 		 
@@ -101,6 +95,7 @@ public class JsonUtilities {
 		 person.setMobile_phone_number(claim.getPerson().getMobilePhoneNumber());
 		 person.setPlace_of_birth(claim.getPerson().getPlaceOfBirth());
 		 person.setPostal_address(claim.getPerson().getPostalAddress());
+		 person.setGender(claim.getPerson().getGender());
 		 
 		 tempClaim.setPerson(person);
 		 
@@ -135,6 +130,7 @@ public class JsonUtilities {
 			attach.setFileType(attachment.getFileType());
 			attach.setMD5Sum(attachment.getMD5Sum());
 			attach.setMimeType(attachment.getMimeType());
+			attach.setStatus(attachment.getStatus());
 			
 			attachments.add(attach);
 		}
@@ -163,12 +159,13 @@ public class JsonUtilities {
 			 Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 			 
 			 String g = gson.toJson(tempClaim);			 
-			 System.out.println(g);
+			 Log.d("CreateClaimJson",g);
 			 
 			 return g;
 			
 		} catch (Throwable e) {			
-			System.out.println("An error has occurred" + e.getMessage());			
+			
+			Log.d("CreateClaimJson","An error has occurred" + e.getMessage());
 			e.printStackTrace();
 			
 			return null;			
@@ -176,7 +173,7 @@ public class JsonUtilities {
 	 }
 	 else{ 
 		 
-		 System.out.println("The claim is null");
+		 Log.d("CreateClaimJson","The claim is null");
 		 return null;		 
 	 }
 	 
@@ -196,7 +193,7 @@ public class JsonUtilities {
 		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 		
 		
-		File jFile = new File(FileSystemUtilities.getMetadataFolder(claimID),"metadata.json");
+		File jFile = new File(FileSystemUtilities.getClaimFolder(claimID),"claim.json");
 		
 		
 		if(jFile.exists())
@@ -223,7 +220,7 @@ public class JsonUtilities {
 				
 		
 	} catch (Exception e) {
-		System.out.println("Error occured here" + e.getMessage());
+		Log.d("CreateClaimJson","An error has occurred" + e.getMessage());
 	}
 	 
 		return false;

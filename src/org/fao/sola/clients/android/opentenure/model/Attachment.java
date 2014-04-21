@@ -59,12 +59,14 @@ public class Attachment {
 
 	public Attachment(){
 		this.attachmentId = UUID.randomUUID().toString();
+		this.status = AttacchementStatus._CREATED;
 	}
 	
 	@Override
 	public String toString() {
 		return "Attachment [attachmentId=" + attachmentId
 				+ ", uploaded=" + uploaded.toString() + ", claimId=" + claimId
+				+ ", status=" + status
 				+ ", description=" + description + ", fileName="
 				+ fileName + ", fileType=" + fileType + ", mimeType="
 				+ mimeType + ", MD5Sum=" + MD5Sum + ", path=" + path + "]";
@@ -114,16 +116,17 @@ public class Attachment {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, attachment.getAttachmentId());
 			statement.setBoolean(2, attachment.getUploaded());
-			statement.setString(3, attachment.getClaimId());
-			statement.setString(4, attachment.getDescription());
-			statement.setString(5, attachment.getFileName());
-			statement.setString(6, attachment.getFileType());
-			statement.setString(7, attachment.getMimeType());
-			statement.setString(8, attachment.getMD5Sum());
-			statement.setString(9, attachment.getPath());
+			statement.setString(3, attachment.getStatus());
+			statement.setString(4, attachment.getClaimId());
+			statement.setString(5, attachment.getDescription());
+			statement.setString(6, attachment.getFileName());
+			statement.setString(7, attachment.getFileType());
+			statement.setString(8, attachment.getMimeType());
+			statement.setString(9, attachment.getMD5Sum());
+			statement.setString(10, attachment.getPath());
 			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -157,16 +160,17 @@ public class Attachment {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, UPLOADED, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getAttachmentId());
 			statement.setBoolean(2, getUploaded());
-			statement.setString(3, getClaimId());
-			statement.setString(4, getDescription());
-			statement.setString(5, getFileName());
-			statement.setString(6, getFileType());
-			statement.setString(7, getMimeType());
-			statement.setString(8, getMD5Sum());
-			statement.setString(9, getPath());
+			statement.setString(3, getStatus());
+			statement.setString(4, getClaimId());
+			statement.setString(5, getDescription());
+			statement.setString(6, getFileName());
+			statement.setString(7, getFileType());
+			statement.setString(8, getMimeType());
+			statement.setString(9, getMD5Sum());
+			statement.setString(10, getPath());
 			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -200,16 +204,17 @@ public class Attachment {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
+					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, STATUS=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
 			statement.setBoolean(1, attachment.getUploaded());
-			statement.setString(2, attachment.getClaimId());
-			statement.setString(3, attachment.getDescription());
-			statement.setString(4, attachment.getFileName());
-			statement.setString(5, attachment.getFileType());
-			statement.setString(6, attachment.getMimeType());
-			statement.setString(7, attachment.getMD5Sum());
-			statement.setString(8, attachment.getPath());
-			statement.setString(9, attachment.getAttachmentId());
+			statement.setString(2, attachment.getStatus());
+			statement.setString(3, attachment.getClaimId());
+			statement.setString(4, attachment.getDescription());
+			statement.setString(5, attachment.getFileName());
+			statement.setString(6, attachment.getFileType());
+			statement.setString(7, attachment.getMimeType());
+			statement.setString(8, attachment.getMD5Sum());
+			statement.setString(9, attachment.getPath());
+			statement.setString(10, attachment.getAttachmentId());
 			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -243,16 +248,17 @@ public class Attachment {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
+					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED=?, STATUS=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=? WHERE ATTACHMENT_ID=?");
 			statement.setBoolean(1, getUploaded());
-			statement.setString(2, getClaimId());
-			statement.setString(3, getDescription());
-			statement.setString(4, getFileName());
-			statement.setString(5, getFileType());
-			statement.setString(6, getMimeType());
-			statement.setString(7, getMD5Sum());
-			statement.setString(8, getPath());
-			statement.setString(9, getAttachmentId());
+			statement.setString(2, getStatus());
+			statement.setString(3, getClaimId());
+			statement.setString(4, getDescription());
+			statement.setString(5, getFileName());
+			statement.setString(6, getFileType());
+			statement.setString(7, getMimeType());
+			statement.setString(8, getMD5Sum());
+			statement.setString(9, getPath());
+			statement.setString(10, getAttachmentId());
 			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -357,20 +363,21 @@ public class Attachment {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT UPLOADED, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
+					.prepareStatement("SELECT UPLOADED, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
 			statement.setString(1, attachmentId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				attachment = new Attachment();
 				attachment.setAttachmentId(attachmentId);
 				attachment.setUploaded(rs.getBoolean(1));
-				attachment.setClaimId(rs.getString(2));
-				attachment.setDescription(rs.getString(3));
-				attachment.setFileName(rs.getString(4));
-				attachment.setFileType(rs.getString(5));
-				attachment.setMimeType(rs.getString(6));
-				attachment.setMD5Sum(rs.getString(7));
-				attachment.setPath(rs.getString(8));
+				attachment.setStatus(rs.getString(2));
+				attachment.setClaimId(rs.getString(3));
+				attachment.setDescription(rs.getString(4));
+				attachment.setFileName(rs.getString(5));
+				attachment.setFileType(rs.getString(6));
+				attachment.setMimeType(rs.getString(7));
+				attachment.setMD5Sum(rs.getString(8));
+				attachment.setPath(rs.getString(9));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -409,20 +416,21 @@ public class Attachment {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT ATTACHMENT_ID, UPLOADED, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT ATT WHERE ATT.CLAIM_ID=?");
+					.prepareStatement("SELECT ATTACHMENT_ID, UPLOADED, STATUS, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH FROM ATTACHMENT ATT WHERE ATT.CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				Attachment attachment = new Attachment();
 				attachment.setAttachmentId(rs.getString(1));
 				attachment.setUploaded(rs.getBoolean(2));
+				attachment.setStatus(rs.getString(3));
 				attachment.setClaimId(claimId);
-				attachment.setDescription(rs.getString(3));
-				attachment.setFileName(rs.getString(4));
-				attachment.setFileType(rs.getString(5));
-				attachment.setMimeType(rs.getString(6));
-				attachment.setMD5Sum(rs.getString(7));
-				attachment.setPath(rs.getString(8));
+				attachment.setDescription(rs.getString(4));
+				attachment.setFileName(rs.getString(5));
+				attachment.setFileType(rs.getString(6));
+				attachment.setMimeType(rs.getString(7));
+				attachment.setMD5Sum(rs.getString(8));
+				attachment.setPath(rs.getString(9));
 				attachments.add(attachment);
 			}
 		} catch (SQLException e) {
@@ -476,6 +484,14 @@ public class Attachment {
 		this.uploaded = uploaded;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	String attachmentId;
 	Boolean uploaded = Boolean.valueOf(false);
 	String claimId;
@@ -485,5 +501,6 @@ public class Attachment {
 	String mimeType;
 	String MD5Sum;
 	String path;
+	String status;
 
 }

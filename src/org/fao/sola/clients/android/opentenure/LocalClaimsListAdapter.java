@@ -42,12 +42,14 @@ public class LocalClaimsListAdapter extends ArrayAdapter<String> {
   private final Context context;
   private final String[] slogans;
   private final String[] ids;
+  private final String[] stati;
 
-  public LocalClaimsListAdapter(Context context, String[] slogans, String[] ids) {
+  public LocalClaimsListAdapter(Context context, String[] slogans, String[] ids, String[] stati) {
     super(context, R.layout.local_claims_list_item, slogans);
     this.context = context;
     this.slogans = slogans;
     this.ids = ids;
+    this.stati = stati;
   }
 
   @Override
@@ -56,9 +58,11 @@ public class LocalClaimsListAdapter extends ArrayAdapter<String> {
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View rowView = inflater.inflate(R.layout.local_claims_list_item, parent, false);
     TextView slogan = (TextView) rowView.findViewById(R.id.claim_slogan);
+    TextView status = (TextView) rowView.findViewById(R.id.claim_status);
     TextView id = (TextView) rowView.findViewById(R.id.claim_id);
     ImageView picture = (ImageView) rowView.findViewById(R.id.claimant_picture);
     slogan.setText(slogans[position]);
+    status.setText(stati[position]);
     id.setTextSize(8);
     id.setText(ids[position]);
 	picture.setImageBitmap(Person.getPersonPicture(context, Person.getPersonPictureFile(Claim.getClaim(ids[position]).getPerson().getPersonId()), 96));

@@ -7,4 +7,6 @@
     <color name="light_background_opentenure">#E6EDDF</color>
     <color name="dark_background_opentenure">#B7CBA4</color>
     <color name="background_tab_pressed">#6633B5E5</color>
+    <color name="status_uploading">#C6B246</color>
+    <color name="status_uploaded">#00FF00</color>
 </resources>

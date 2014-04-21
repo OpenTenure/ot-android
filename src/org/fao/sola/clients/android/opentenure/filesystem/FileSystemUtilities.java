@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 public class FileSystemUtilities {
 
@@ -46,8 +47,7 @@ public class FileSystemUtilities {
 	private static String _CLAIMANTS_FOLDER = "claimants";
 	private static String _CLAIM_PREFIX = "claim_";
 	private static String _CLAIMANT_PREFIX = "claimant_";
-	private static String _CLAIM_METADATA = "metadata";
-	private static String _ATTACHMENT_FOLDER = "attachment_folder";
+	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
 	
 
@@ -103,8 +103,8 @@ public class FileSystemUtilities {
 			File ot = new File(path.getParentFile(),_OPEN_TENURE_FOLDER);		
 
 			if (ot.mkdir() && ot.isDirectory()){
-
-				System.out.println("Created Open Tenure Folder");
+				
+				Log.d("FileSystemUtilities","Created Open Tenure Folder");
 				return true;
 			}		
 			return false;					
@@ -156,20 +156,18 @@ public class FileSystemUtilities {
 			new File(claimsFolder,_CLAIM_PREFIX+claimID).mkdir();
 
 			claimFolder = new File(claimsFolder,_CLAIM_PREFIX+claimID);
-
-			new File(claimFolder, _CLAIM_METADATA).mkdir();		
+					
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 
-			System.out.println("Claim File System created " + claimFolder.getAbsolutePath());
+			Log.d("FileSystemUtilities","Claim File System created " + claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
-			System.out.println("Error creating the file system of the claim!!!");
+			Log.d("FileSystemUtilities","Error creating the file system of the claim!!!");		
 			return false ;
 		}
 
-		return( new File(claimFolder,_CLAIM_METADATA).exists() && 
-
-				new File(claimFolder,_ATTACHMENT_FOLDER).exists()
+		return( new File(claimFolder,_ATTACHMENT_FOLDER).
+				exists()
 				);		
 	}
 
@@ -180,7 +178,7 @@ public class FileSystemUtilities {
 			new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).mkdir();
 
 		} catch (Exception e) {
-			System.out.println("Error creating the file system of the claim!!!");
+			Log.d("FileSystemUtilities","Error creating the file system of the claim: " + e.getMessage());
 			return false ;
 		}
 
@@ -196,7 +194,7 @@ public class FileSystemUtilities {
 			if(file.list().length==0){
 
 				file.delete();
-				System.out.println("Directory is deleted : " 
+				Log.d("FileSystemUtilities","Directory is deleted : " 
 						+ file.getAbsolutePath());
 
 			}else{
@@ -215,7 +213,7 @@ public class FileSystemUtilities {
 				//check the directory again, if empty then delete it
 				if(file.list().length==0){
 					file.delete();
-					System.out.println("Directory is deleted : " 
+					Log.d("FileSystemUtilities","Directory is deleted : " 
 							+ file.getAbsolutePath());
 				}
 			}
@@ -223,7 +221,7 @@ public class FileSystemUtilities {
 		}else{
 			//if file, then delete it
 			file.delete();
-			System.out.println("File is deleted : " + file.getAbsolutePath());
+			Log.d("FileSystemUtilities","File is deleted : " + file.getAbsolutePath());
 		}
 	}
 	
@@ -272,9 +270,6 @@ public class FileSystemUtilities {
 		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId);
 	}
 
-	public static File getMetadataFolder(String claimID){		
-		return new File(getClaimFolder(claimID), _CLAIM_METADATA);
-	}	
 
 	public static File getAttachmentFolder(String claimID){		
 		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);
@@ -296,7 +291,7 @@ public class FileSystemUtilities {
 			dest = new File(getAttachmentFolder(claimID),source.getName());		
 			dest.createNewFile();
 
-			System.out.println(dest.getAbsolutePath());
+			Log.d("FileSystemUtilities",dest.getAbsolutePath());
 			byte[] buffer = new byte[1024];
 
 			FileInputStream reader = new FileInputStream(source);

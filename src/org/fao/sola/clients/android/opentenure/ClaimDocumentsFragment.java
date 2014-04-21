@@ -155,35 +155,35 @@ public class ClaimDocumentsFragment extends ListFragment {
 				snapshotDialog.setPositiveButton(R.string.confirm,
 						new OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
 
-								Attachment attachment = new Attachment();
-								attachment.setClaimId(claimActivity
-										.getClaimId());
-								attachment.setDescription(snapshotDescription
-										.getText().toString());
-								attachment.setFileName(FileUtils.getFile(
-										rootView.getContext(), uri).getName());
-								attachment.setFileType(fileType);
-								attachment.setMimeType(mimeType);
-								attachment.setMD5Sum(MD5.calculateMD5(FileUtils
-										.getFile(rootView.getContext(), uri)));
-								attachment.setPath(FileUtils.getPath(
-										rootView.getContext(), uri));
-								attachment.create();
-								update();
-							}
-						});
+						Attachment attachment = new Attachment();
+						attachment.setClaimId(claimActivity
+								.getClaimId());
+						attachment.setDescription(snapshotDescription
+								.getText().toString());
+						attachment.setFileName(FileUtils.getFile(
+								rootView.getContext(), uri).getName());
+						attachment.setFileType(fileType);
+						attachment.setMimeType(mimeType);
+						attachment.setMD5Sum(MD5.calculateMD5(FileUtils
+								.getFile(rootView.getContext(), uri)));
+						attachment.setPath(FileUtils.getPath(
+								rootView.getContext(), uri));
+						attachment.create();
+						update();
+					}
+				});
 				snapshotDialog.setNegativeButton(R.string.cancel,
 						new OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+					}
+				});
 
 				snapshotDialog.show();
 			}
@@ -214,38 +214,38 @@ public class ClaimDocumentsFragment extends ListFragment {
 				fileDialog.setPositiveButton(R.string.confirm,
 						new OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
 
-								File copy = FileSystemUtilities
-										.copyFileInAttachFolder(claimActivity
-												.getClaimId(), FileUtils
-												.getFile(rootView.getContext(),
-														uri));
+						File copy = FileSystemUtilities
+								.copyFileInAttachFolder(claimActivity
+										.getClaimId(), FileUtils
+										.getFile(rootView.getContext(),
+												uri));
 
-								Attachment attachment = new Attachment();
-								attachment.setClaimId(claimActivity
-										.getClaimId());
-								attachment.setDescription(fileDescription
-										.getText().toString());
-								attachment.setFileName(copy.getName());
-								attachment.setFileType("document");
-								attachment.setMimeType(mimeType);
-								attachment.setMD5Sum(MD5.calculateMD5(copy));
-								attachment.setPath(copy.getAbsolutePath());
-								attachment.create();
-								update();
-							}
-						});
+						Attachment attachment = new Attachment();
+						attachment.setClaimId(claimActivity
+								.getClaimId());
+						attachment.setDescription(fileDescription
+								.getText().toString());
+						attachment.setFileName(copy.getName());
+						attachment.setFileType("document");
+						attachment.setMimeType(mimeType);
+						attachment.setMD5Sum(MD5.calculateMD5(copy));
+						attachment.setPath(copy.getAbsolutePath());
+						attachment.create();
+						update();
+					}
+				});
 				fileDialog.setNegativeButton(R.string.cancel,
 						new OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+					}
+				});
 
 				fileDialog.show();
 			}
@@ -357,15 +357,26 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		/*
+		 * 
+		 * */
 		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
 				.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setDataAndType(Uri.parse("file://" + att.getPath()),
-				att.getMimeType());
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-		startActivity(intent);
+		if(att.getPath() != null &&  !att.getPath().equals("") ){
+
+			Intent intent = new Intent(Intent.ACTION_VIEW);
+			intent.setDataAndType(Uri.parse("file://" + att.getPath()),
+					att.getMimeType());
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+			startActivity(intent);
+			
+			
+		}
+
+
 	}
 
 	protected void update() {
@@ -373,6 +384,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 		List<Attachment> attachments;
 		List<String> ids = new ArrayList<String>();
 		List<String> slogans = new ArrayList<String>();
+		List<String> stati = new ArrayList<String>();
 
 		if (claimId != null) {
 			Claim claim = Claim.getClaim(claimId);
@@ -383,10 +395,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 						+ attachment.getMimeType();
 				slogans.add(slogan);
 				ids.add(attachment.getAttachmentId());
+				stati.add(attachment.getStatus());
 			}
 		}
 		ArrayAdapter<String> adapter = new ClaimAttachmentsListAdapter(
-				rootView.getContext(), slogans, ids);
+				rootView.getContext(), slogans, ids, claimId);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

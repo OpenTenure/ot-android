@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,12 +77,12 @@ public class LocalClaimsFragment extends ListFragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-			default:
-				update();
+		default:
+			update();
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -94,32 +95,38 @@ public class LocalClaimsFragment extends ListFragment {
 		setHasOptionsMenu(true);
 
 		update();
-		    
+
 		return rootView;
 	}
 
-	  @Override
-	  public void onListItemClick(ListView l, View v, int position, long id) {
-			Intent intent = new Intent(rootView.getContext(),
-					ClaimActivity.class);
-			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
-			intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
-			startActivityForResult(intent, CLAIM_RESULT);
-	  }
-	  
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Intent intent = new Intent(rootView.getContext(),
+				ClaimActivity.class);
+		intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
+		intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
+		startActivityForResult(intent, CLAIM_RESULT);
+	}
+
 	protected void update() {
 		List<Claim> claims = Claim.getAllClaims();
 		List<String> ids = new ArrayList<String>();
 		List<String> slogans = new ArrayList<String>();
-		
+		List<String> status = new ArrayList<String>();
+
 		for(Claim claim : claims){
 			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName();
 			slogans.add(slogan);
 			ids.add(claim.getClaimId());
+			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
+				status.add(claim.getStatus());
+			else status.add(" ");
+
+
 		}
-		ArrayAdapter<String> adapter = new LocalClaimsListAdapter(rootView.getContext(), slogans.toArray(new String[slogans.size()]), ids.toArray(new String[ids.size()]));
-	    setListAdapter(adapter);
-	    adapter.notifyDataSetChanged();
+		ArrayAdapter<String> adapter = new LocalClaimsListAdapter(rootView.getContext(), slogans.toArray(new String[slogans.size()]), ids.toArray(new String[ids.size()]), status.toArray(new String[status.size()]));
+		setListAdapter(adapter);
+		adapter.notifyDataSetChanged();
 
 	}
 }

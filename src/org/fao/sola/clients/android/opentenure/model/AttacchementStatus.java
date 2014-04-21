@@ -25,73 +25,13 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.filesystem.json.model;
+package org.fao.sola.clients.android.opentenure.model;
 
-public class Attachment {
+public class AttacchementStatus {
 	
+	public static String _CREATED = "created";
+	public static String _UPLOADING = "uploading";
+	public static String _UPLOADED = "uploaded";
+	public static String _MODERATED = "deleted";
 	
-	String attachmentId;	
-	String claimId;
-	String description;
-	String fileName;
-	String fileType;
-	String mimeType;
-	String MD5Sum;
-	String status;
-
-	
-	
-	
-	
-	public String getAttachmentId() {
-		return attachmentId;
-	}
-	public void setAttachmentId(String attachmentId) {
-		this.attachmentId = attachmentId;
-	}
-	public String getClaimId() {
-		return claimId;
-	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	public String getFileType() {
-		return fileType;
-	}
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
-	public String getMimeType() {
-		return mimeType;
-	}
-	public void setMimeType(String mimeType) {
-		this.mimeType = mimeType;
-	}
-	public String getMD5Sum() {
-		return MD5Sum;
-	}
-	public void setMD5Sum(String mD5Sum) {
-		MD5Sum = mD5Sum;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	
-
 }
