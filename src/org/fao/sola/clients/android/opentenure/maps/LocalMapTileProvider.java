@@ -54,9 +54,10 @@ public class LocalMapTileProvider implements TileProvider {
     private byte[] readTileImage(int x, int y, int zoom) {
         InputStream in = null;
         ByteArrayOutputStream buffer = null;
+	String tileFileName = Environment.getExternalStorageDirectory()+"/opentenure/tiles/" + zoom + "/" + x + "/" + y + ".png";
 
         try {
-            in = new FileInputStream(Environment.getExternalStorageDirectory()+"/osmdroid/tiles/Mapnik/" + zoom + '/' + x + '/' + y + ".png.tile");
+            in = new FileInputStream(tileFileName);
             buffer = new ByteArrayOutputStream();
 
             int nRead;
@@ -69,10 +70,10 @@ public class LocalMapTileProvider implements TileProvider {
 
             return buffer.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage() + " while getting " + tileFileName);
             return null;
         } catch (OutOfMemoryError e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage() + " while getting " + tileFileName);
             return null;
         } finally {
             if (in != null) try { in.close(); } catch (Exception ignored) {}
