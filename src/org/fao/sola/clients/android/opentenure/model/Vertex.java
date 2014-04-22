@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,12 +40,20 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.WKTWriter;
 
 public class Vertex {
-	
+
 	public static final LatLng INVALID_POSITION = new LatLng(400.0, 400.0);
-	
+
 	public int getSequenceNumber() {
 		return sequenceNumber;
 	}
@@ -54,43 +64,40 @@ public class Vertex {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Vertex(){
+	public Vertex() {
 		this.vertexId = UUID.randomUUID().toString();
 	}
 
-	public Vertex(LatLng mapPosition){
+	public Vertex(LatLng mapPosition) {
 		this.vertexId = UUID.randomUUID().toString();
 		setMapPosition(mapPosition);
 		setGPSPosition(INVALID_POSITION);
 	}
 
-	public Vertex(LatLng mapPosition,LatLng GPSPosition){
+	public Vertex(LatLng mapPosition, LatLng GPSPosition) {
 		this.vertexId = UUID.randomUUID().toString();
 		setMapPosition(mapPosition);
 		setGPSPosition(GPSPosition);
 	}
-	
-	public LatLng getMapPosition(){
+
+	public LatLng getMapPosition() {
 		return mapPosition;
 	}
 
-	public LatLng getGPSPosition(){
+	public LatLng getGPSPosition() {
 		return GPSPosition;
 	}
 
 	@Override
 	public String toString() {
-		return "Vertex ["
-				+ "vertexId=" + vertexId
-				+ ", claimId=" + claimId
-				+ ", uploaded=" + uploaded
-				+ ", sequenceNumber=" + sequenceNumber
-				+ ", GPSLat=" + GPSPosition.latitude
-				+ ", GPSLon=" + GPSPosition.longitude
-				+ ", MapLat=" + mapPosition.latitude
-				+ ", MapLon=" + mapPosition.longitude
+		return "Vertex [" + "vertexId=" + vertexId + ", claimId=" + claimId
+				+ ", uploaded=" + uploaded + ", sequenceNumber="
+				+ sequenceNumber + ", GPSLat=" + GPSPosition.latitude
+				+ ", GPSLon=" + GPSPosition.longitude + ", MapLat="
+				+ mapPosition.latitude + ", MapLon=" + mapPosition.longitude
 				+ "]";
 	}
+
 	public void setGPSPosition(LatLng GPSPosition) {
 		this.GPSPosition = GPSPosition;
 	}
@@ -99,12 +106,12 @@ public class Vertex {
 		this.mapPosition = mapPosition;
 	}
 
-	public static int markAsUploaded(Vertex vertex){
+	public static int markAsUploaded(Vertex vertex) {
 		vertex.setUploaded(true);
 		return Vertex.updateVertex(vertex);
 	}
 
-	public int markAsUploaded(){
+	public int markAsUploaded() {
 		setUploaded(true);
 		return update();
 	}
@@ -116,17 +123,22 @@ public class Vertex {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO VERTEX(VERTEX_ID, UPLOADED, CLAIM_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON) VALUES(?,?,?,?,?,?,?,?)");
 			statement.setString(1, vertex.getVertexId());
 			statement.setBoolean(2, vertex.getUploaded());
 			statement.setString(3, vertex.getClaimId());
 			statement.setInt(4, vertex.getSequenceNumber());
-			statement.setBigDecimal(5, new BigDecimal(vertex.getGPSPosition().latitude));
-			statement.setBigDecimal(6, new BigDecimal(vertex.getGPSPosition().longitude));
-			statement.setBigDecimal(7, new BigDecimal(vertex.getMapPosition().latitude));
-			statement.setBigDecimal(8, new BigDecimal(vertex.getMapPosition().longitude));
+			statement.setBigDecimal(5, new BigDecimal(
+					vertex.getGPSPosition().latitude));
+			statement.setBigDecimal(6, new BigDecimal(
+					vertex.getGPSPosition().longitude));
+			statement.setBigDecimal(7, new BigDecimal(
+					vertex.getMapPosition().latitude));
+			statement.setBigDecimal(8, new BigDecimal(
+					vertex.getMapPosition().longitude));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -152,7 +164,7 @@ public class Vertex {
 	public int create() {
 		int result = 0;
 		Connection localConnection = null;
-		PreparedStatement statement = null; 
+		PreparedStatement statement = null;
 
 		try {
 
@@ -163,10 +175,14 @@ public class Vertex {
 			statement.setBoolean(2, getUploaded());
 			statement.setString(3, getClaimId());
 			statement.setInt(4, getSequenceNumber());
-			statement.setBigDecimal(5, new BigDecimal(getGPSPosition().latitude));
-			statement.setBigDecimal(6, new BigDecimal(getGPSPosition().longitude));
-			statement.setBigDecimal(7, new BigDecimal(getMapPosition().latitude));
-			statement.setBigDecimal(8, new BigDecimal(getMapPosition().longitude));
+			statement.setBigDecimal(5,
+					new BigDecimal(getGPSPosition().latitude));
+			statement.setBigDecimal(6, new BigDecimal(
+					getGPSPosition().longitude));
+			statement.setBigDecimal(7,
+					new BigDecimal(getMapPosition().latitude));
+			statement.setBigDecimal(8, new BigDecimal(
+					getMapPosition().longitude));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -195,7 +211,8 @@ public class Vertex {
 		PreparedStatement statement = null;
 
 		try {
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE FROM VERTEX WHERE VERTEX_ID=?");
 			statement.setString(1, vertex.getVertexId());
@@ -227,7 +244,8 @@ public class Vertex {
 		PreparedStatement statement = null;
 
 		try {
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE FROM VERTEX WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
@@ -292,16 +310,21 @@ public class Vertex {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE VERTEX SET UPLOADED=?, CLAIM_ID=?, SEQUENCE_NUMBER=?, GPS_LAT=?, GPS_LON=?, MAP_LAT=?, MAP_LON=? WHERE VERTEX_ID=?");
 			statement.setBoolean(1, vertex.getUploaded());
 			statement.setString(2, vertex.getClaimId());
 			statement.setInt(3, vertex.getSequenceNumber());
-			statement.setBigDecimal(4, new BigDecimal(vertex.getGPSPosition().latitude));
-			statement.setBigDecimal(5, new BigDecimal(vertex.getGPSPosition().longitude));
-			statement.setBigDecimal(6, new BigDecimal(vertex.getMapPosition().latitude));
-			statement.setBigDecimal(7, new BigDecimal(vertex.getMapPosition().longitude));
+			statement.setBigDecimal(4, new BigDecimal(
+					vertex.getGPSPosition().latitude));
+			statement.setBigDecimal(5, new BigDecimal(
+					vertex.getGPSPosition().longitude));
+			statement.setBigDecimal(6, new BigDecimal(
+					vertex.getMapPosition().latitude));
+			statement.setBigDecimal(7, new BigDecimal(
+					vertex.getMapPosition().longitude));
 			statement.setString(8, vertex.getVertexId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -338,10 +361,14 @@ public class Vertex {
 			statement.setBoolean(1, getUploaded());
 			statement.setString(2, getClaimId());
 			statement.setInt(3, getSequenceNumber());
-			statement.setBigDecimal(4, new BigDecimal(getGPSPosition().latitude));
-			statement.setBigDecimal(5, new BigDecimal(getGPSPosition().longitude));
-			statement.setBigDecimal(6, new BigDecimal(getMapPosition().latitude));
-			statement.setBigDecimal(7, new BigDecimal(getMapPosition().longitude));
+			statement.setBigDecimal(4,
+					new BigDecimal(getGPSPosition().latitude));
+			statement.setBigDecimal(5, new BigDecimal(
+					getGPSPosition().longitude));
+			statement.setBigDecimal(6,
+					new BigDecimal(getMapPosition().latitude));
+			statement.setBigDecimal(7, new BigDecimal(
+					getMapPosition().longitude));
 			statement.setString(8, getVertexId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -373,7 +400,8 @@ public class Vertex {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT UPLOADED, CLAIM_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM VERTEX VERT WHERE VERT.VERTEX_ID=?");
 			statement.setString(1, vertexId);
@@ -384,8 +412,10 @@ public class Vertex {
 				vertex.setUploaded(rs.getBoolean(1));
 				vertex.setClaimId(rs.getString(2));
 				vertex.setSequenceNumber(rs.getInt(3));
-				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(4).doubleValue(),rs.getBigDecimal(5).doubleValue()));
-				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6).doubleValue(),rs.getBigDecimal(7).doubleValue()));
+				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(4)
+						.doubleValue(), rs.getBigDecimal(5).doubleValue()));
+				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6)
+						.doubleValue(), rs.getBigDecimal(7).doubleValue()));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -414,6 +444,121 @@ public class Vertex {
 		return vertex;
 	}
 
+	public static void storeWKT(String claimId, String mapWKT, String gpsWKT) {
+		deleteVertices(claimId);
+
+		List<Vertex> vertices = verticesFromWKT(mapWKT, gpsWKT);
+
+		for (Vertex vertex : vertices) {
+			vertex.setClaimId(claimId);
+			vertex.create();
+		}
+	}
+
+	public static String mapWKTFromVertices(List<Vertex> vertices) {
+		if (vertices == null) {
+			return null;
+		}
+		GeometryFactory gf = new GeometryFactory();
+		Coordinate[] coordinates = new Coordinate[vertices.size() + 1];
+		int i = 0;
+
+		for (Vertex vertex : vertices) {
+			coordinates[i] = new Coordinate(vertex.getMapPosition().longitude,
+					vertex.getMapPosition().latitude);
+			i++;
+		}
+		coordinates[i] = new Coordinate(
+				vertices.get(0).getMapPosition().longitude, vertices.get(0)
+						.getMapPosition().latitude);
+
+		Polygon polygon = gf.createPolygon(coordinates);
+		polygon.setSRID(3857);
+
+		StringWriter writer = new StringWriter();
+		WKTWriter wktWriter = new WKTWriter(2);
+
+		try {
+			wktWriter.write(polygon, writer);
+		} catch (IOException e) {
+		}
+
+		return writer.toString();
+	}
+
+	public static String gpsWKTFromVertices(List<Vertex> vertices) {
+		if (vertices == null) {
+			return null;
+		}
+		GeometryFactory gf = new GeometryFactory();
+		Coordinate[] coordinates = new Coordinate[vertices.size() + 1];
+		int i = 0;
+
+		for (Vertex vertex : vertices) {
+			coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude,
+					vertex.getGPSPosition().latitude);
+			i++;
+		}
+		coordinates[i] = new Coordinate(
+				vertices.get(0).getGPSPosition().longitude, vertices.get(0)
+						.getGPSPosition().latitude);
+
+		Polygon polygon = gf.createPolygon(coordinates);
+		polygon.setSRID(3857);
+
+		StringWriter writer = new StringWriter();
+		WKTWriter wktWriter = new WKTWriter(2);
+
+		try {
+			wktWriter.write(polygon, writer);
+		} catch (IOException e) {
+		}
+
+		return writer.toString();
+	}
+
+	public static List<Vertex> verticesFromWKT(String mapWKT, String gpsWKT) {
+		List<Vertex> vertices = new ArrayList<Vertex>();
+		GeometryFactory geometryFactory = new GeometryFactory();
+
+		WKTReader reader = new WKTReader(geometryFactory);
+		Polygon mapPolygon = null;
+		Polygon gpsPolygon = null;
+
+		try {
+			mapPolygon = (Polygon) reader.read(mapWKT);
+			mapPolygon.setSRID(3857);
+			if (gpsWKT != null) {
+				gpsPolygon = (Polygon) reader.read(gpsWKT);
+				gpsPolygon.setSRID(3857);
+			}
+		} catch (ParseException e) {
+			return null;
+		}
+
+		if (mapPolygon.getNumPoints() != gpsPolygon.getNumPoints()) {
+			Log.e(Vertex.class.getName(), mapWKT + " and " + gpsWKT
+					+ " have a different number of vertices");
+			return null;
+		}
+
+		for (int i = 0; i < mapPolygon.getNumPoints(); i++) {
+			Coordinate mapCoordinate = mapPolygon.getCoordinates()[i];
+			Vertex vertex = new Vertex(new LatLng(
+					mapCoordinate.getOrdinate(Coordinate.Y),
+					mapCoordinate.getOrdinate(Coordinate.Y)));
+			if (gpsPolygon != null) {
+				Coordinate gpsCoordinate = gpsPolygon.getCoordinates()[i];
+				vertex.setGPSPosition(new LatLng(gpsCoordinate
+						.getOrdinate(Coordinate.Y), gpsCoordinate
+						.getOrdinate(Coordinate.Y)));
+			}
+			vertices.add(vertex);
+		}
+
+		return vertices;
+	}
+
 	public static List<Vertex> getVertices(String claimId) {
 		List<Vertex> vertices = new ArrayList<Vertex>();
 		Connection localConnection = null;
@@ -422,7 +567,8 @@ public class Vertex {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT VERTEX_ID, UPLOADED, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM VERTEX VERT WHERE VERT.CLAIM_ID=? ORDER BY SEQUENCE_NUMBER");
 			statement.setString(1, claimId);
@@ -433,8 +579,10 @@ public class Vertex {
 				vertex.setUploaded(rs.getBoolean(2));
 				vertex.setClaimId(claimId);
 				vertex.setSequenceNumber(rs.getInt(3));
-				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(4).doubleValue(),rs.getBigDecimal(5).doubleValue()));
-				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6).doubleValue(),rs.getBigDecimal(7).doubleValue()));
+				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(4)
+						.doubleValue(), rs.getBigDecimal(5).doubleValue()));
+				vertex.setMapPosition(new LatLng(rs.getBigDecimal(6)
+						.doubleValue(), rs.getBigDecimal(7).doubleValue()));
 				vertices.add(vertex);
 			}
 		} catch (SQLException e) {

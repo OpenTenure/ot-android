@@ -32,31 +32,20 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
-import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.ClipData.Item;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -76,7 +65,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -455,6 +443,9 @@ public class ClaimDetailsFragment extends Fragment {
 					
 					JsonUtilities.
 						createClaimJson(claimActivity.getClaimId());
+					List<Vertex> vertices = Vertex.getVertices(claimActivity.getClaimId());
+					Log.d(this.getClass().getName(), "mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
+					Log.d(this.getClass().getName(), "gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
 					
 					/*
 					 * A temporary Moke Submission of the Claim
