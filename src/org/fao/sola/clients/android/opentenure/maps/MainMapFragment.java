@@ -317,7 +317,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			longitude.update();
 		}else{
 			longitude = new Configuration();
-			longitude.setName(MAIN_MAP_LATITUDE);
+			longitude.setName(MAIN_MAP_LONGITUDE);
 			longitude.setValue(""+cameraPosition.target.longitude);
 			longitude.create();
 		}

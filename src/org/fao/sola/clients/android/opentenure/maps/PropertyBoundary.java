@@ -62,6 +62,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
+import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineSegment;
 
 public class PropertyBoundary {
 
@@ -212,6 +216,10 @@ public class PropertyBoundary {
 	}
 	
 	private void update(){
+		
+		if(vertices == null  || vertices.size()<=0){
+			return;
+		}
 	
 		double minLat = Double.MAX_VALUE;
 	    double minLong = Double.MAX_VALUE;
@@ -285,16 +293,17 @@ public class PropertyBoundary {
 				to = vertices.get(i + 1);
 			}
 
-			double currDistance = Math
-					.sqrt(Math.pow(
-							from.getMapPosition().latitude
-									- newVertex.getMapPosition().latitude, 2.0)
-							+ Math.pow(from.getMapPosition().longitude
-									- newVertex.getMapPosition().longitude, 2.0))
-					+ Math.sqrt(Math.pow(newVertex.getMapPosition().latitude
-							- to.getMapPosition().latitude, 2.0)
-							+ Math.pow(newVertex.getMapPosition().longitude
-									- to.getMapPosition().longitude, 2.0));
+			PointPairDistance ppd = new PointPairDistance();
+			DistanceToPoint.computeDistance(
+					new LineSegment(from.getMapPosition().longitude, from
+							.getMapPosition().latitude,
+							to.getMapPosition().longitude,
+							to.getMapPosition().latitude),
+					new Coordinate(newVertex.getMapPosition().longitude,
+							newVertex.getMapPosition().latitude),
+					ppd);
+
+			double currDistance = ppd.getDistance();
 
 			if (currDistance < minDistance) {
 				minDistance = currDistance;

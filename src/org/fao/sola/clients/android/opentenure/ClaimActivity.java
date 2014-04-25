@@ -49,7 +49,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	public static final String CREATE_CLAIM_ID = "create";
 	public static final String MODE_RO = "RO";
 	public static final String MODE_RW = "RW";
-	private String claimId;
+	private String claimId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
@@ -73,6 +73,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	};
 
 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(CLAIM_ID_KEY, claimId);
+
+	}
+
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -86,7 +92,20 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		setClaimId(getIntent().getExtras().getString(CLAIM_ID_KEY).equalsIgnoreCase(CREATE_CLAIM_ID)?null:getIntent().getExtras().getString(CLAIM_ID_KEY));
+		
+		String savedInstanceClaimId = null;
+
+		if(savedInstanceState != null){
+			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
+		}
+
+		String intentClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
+		
+		if(savedInstanceClaimId != null){
+			claimId = savedInstanceClaimId;
+		}else if(intentClaimId != null && !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
+			claimId = intentClaimId;
+		}
 	}
 
 	@Override
