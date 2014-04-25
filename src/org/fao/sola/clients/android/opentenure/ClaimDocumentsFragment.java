@@ -98,6 +98,15 @@ public class ClaimDocumentsFragment extends ListFragment {
 	public ClaimDocumentsFragment() {
 	}
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (this.isVisible()) {
+        	update();
+        }
+    }
+    
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_documents, menu);
@@ -364,7 +373,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
 
-		if(att.getPath() != null &&  !att.getPath().equals("") ){
+		if(att != null && att.getPath() != null &&  !att.getPath().equals("") ){
 
 			Intent intent = new Intent(Intent.ACTION_VIEW);
 			intent.setDataAndType(Uri.parse("file://" + att.getPath()),

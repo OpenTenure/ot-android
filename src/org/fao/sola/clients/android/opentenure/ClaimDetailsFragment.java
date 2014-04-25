@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
+import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -112,7 +113,7 @@ public class ClaimDetailsFragment extends Fragment {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Is the user logged in ? : " + OpenTenureApplication.isLoggedin());
+		Log.d(this.getClass().getName(),"Is the user logged in ? : " + OpenTenureApplication.isLoggedin());
 
 		
 		if(OpenTenureApplication.isLoggedin()){
@@ -330,6 +331,7 @@ public class ClaimDetailsFragment extends Fragment {
 			claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
 					.getPersonId());
 		}
+
 	}
 
 	public void updateClaim() {
@@ -553,6 +555,25 @@ public class ClaimDetailsFragment extends Fragment {
 				e.printStackTrace();
 			}
 			
+			return true;
+		case R.id.action_print:
+			try {
+				PDFClaimExporter pdf = new PDFClaimExporter(rootView.getContext(), claimActivity.getClaimId());
+				intent = new Intent(Intent.ACTION_VIEW);
+				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
+						"application/pdf");
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+				startActivity(intent);
+
+			} catch (Error e) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_not_supported_on_this_device,
+						Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			
+
 			return true;
 
 		default:

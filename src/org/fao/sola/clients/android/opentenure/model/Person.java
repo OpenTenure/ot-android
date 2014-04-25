@@ -489,7 +489,7 @@ public class Person {
 			croppedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
 					height);
 		}
-		return Bitmap.createScaledBitmap(croppedBitmap, size, size, false);
+		return Bitmap.createScaledBitmap(croppedBitmap, size, size, true);
 	}
 
 	String personId;

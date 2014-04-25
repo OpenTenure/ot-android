@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/claim_name_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -25,7 +25,7 @@
 
         <EditText
             android:id="@+id/claim_name_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -35,7 +35,7 @@
 
         <TextView
             android:id="@+id/first_name_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:layout_weight="1"
@@ -43,7 +43,7 @@
 
         <EditText
             android:id="@+id/first_name_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -53,7 +53,7 @@
 
         <TextView
             android:id="@+id/last_name_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -61,7 +61,7 @@
 
         <EditText
             android:id="@+id/last_name_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -71,7 +71,7 @@
 
         <TextView
             android:id="@+id/date_of_birth_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -79,7 +79,7 @@
 
         <EditText
             android:id="@+id/date_of_birth_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -89,14 +89,14 @@
         
          <TextView
             android:id="@+id/gender_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
             android:text="@string/gender" />
 
 		  <LinearLayout
-		      android:layout_width="fill_parent"
+		      android:layout_width="match_parent"
 		      android:layout_height="wrap_content"
 		      android:layout_weight="1" >
 	        <RadioGroup 
@@ -120,7 +120,7 @@
 		
         <TextView
             android:id="@+id/place_of_birth_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -128,7 +128,7 @@
 
         <EditText
             android:id="@+id/place_of_birth_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -138,7 +138,7 @@
 
         <TextView
             android:id="@+id/postal_address_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -146,7 +146,7 @@
 
         <EditText
             android:id="@+id/postal_address_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -156,7 +156,7 @@
 
         <TextView
             android:id="@+id/email_address_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -164,7 +164,7 @@
 
         <EditText
             android:id="@+id/email_address_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -174,7 +174,7 @@
 
         <TextView
             android:id="@+id/mobile_phone_number_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -182,7 +182,7 @@
 
         <EditText
             android:id="@+id/mobile_phone_number_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -192,7 +192,7 @@
 
         <TextView
             android:id="@+id/contact_phone_number_label"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
@@ -200,7 +200,7 @@
 
         <EditText
             android:id="@+id/contact_phone_number_input_field"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
@@ -211,7 +211,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@color/light_background_opentenure"
 	    android:paddingLeft="10dp"
@@ -220,7 +220,7 @@
 
         <ImageView
             android:id="@+id/claimant_picture"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
 			android:layout_gravity="right|top"
             android:adjustViewBounds="true"

@@ -26,4 +26,9 @@
           android:title="@string/action_logout"          
           android:showAsAction="ifRoom" 
           android:orderInCategory="5"/>    
+    <item android:id="@+id/action_print"
+          android:icon="@drawable/ic_print"
+          android:title="@string/action_print"          
+          android:showAsAction="ifRoom" 
+          android:orderInCategory="6"/>    
 </menu>

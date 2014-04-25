@@ -328,6 +328,53 @@ public class Configuration {
 		return val;
 	}
 
+	public static Configuration getConfigurationByName(String name) {
+		Configuration cfg = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CFG.CONFIGURATION_ID, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
+			statement.setString(1, name);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				cfg = new Configuration();
+				cfg.setConfigurationId(rs.getString(1));
+				cfg.setName(name);
+				cfg.setValue(rs.getString(2));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return cfg;
+	}
+
 	public static Map<String, String> getConfigurationValues() {
 		Map<String, String> cfg = new HashMap<String, String>();
 		Connection localConnection = null;

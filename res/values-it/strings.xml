@@ -8,6 +8,7 @@
     <string name="action_new">Aggiungi</string>
     <string name="action_login">Log In</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_print">Stampa</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
     <string name="action_remove_metadata">Rimouvi informazione</string>
     <string name="action_camera">Foto</string>
@@ -46,6 +47,9 @@
     <string name="gender_masculine">Maschio</string>
     <string name="gender_feminine">Femmina</string>
     <string name="gender">Genere</string>
+    <string name="claim">Richiesta</string>
+    <string name="date">Data</string>
+    <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>
     <string name="claim_notes">Annotazioni</string>
@@ -59,6 +63,7 @@
     <string name="attachment_removed">Allegato rimosso</string>
     <string name="metadata_removed">Informazione rimossa</string>
     <string name="message_saved">Richiesta salvata</string>
+    <string name="message_map_snapshot_saved">Immagine della mappa salvata</string>
     <string name="message_invalid_url">URL non valido</string>
     <string name="message_unable_to_save">Impossibile salvare la richiesta. Controllare i dati e riprovare</string>
     <string name="message_submitted">Richiesta inviata</string>
@@ -93,6 +98,7 @@
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_metadata">Rimuovere l\'informazione?</string>
+    <string name="message_not_supported_on_this_device">Non supportato su questo dispositivo</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
     <string name="claimant_picture">Immagine del richiedente</string>
