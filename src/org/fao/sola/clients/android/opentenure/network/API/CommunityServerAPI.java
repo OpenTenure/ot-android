@@ -27,8 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.network.API;
 
-
-
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
@@ -40,6 +39,7 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities.Login;
 
 import com.google.gson.Gson;
@@ -49,16 +49,14 @@ import android.util.Log;
 
 public class CommunityServerAPI {
 
-	
 	/**
 	 * 
-	 * The login API 
+	 * The login API
 	 * 
-	 * * 
-	 * @return 200 in case of success,
-	 *  401 in case of fail,
-	 *  0 in case of generic error,
-	 *  80 in case of connection timed out error
+	 * *
+	 * 
+	 * @return 200 in case of success, 401 in case of fail, 0 in case of generic
+	 *         error, 80 in case of connection timed out error
 	 * 
 	 */
 	public static int login(String username, String password) {
@@ -73,7 +71,7 @@ public class CommunityServerAPI {
 
 			HttpGet request = new HttpGet(url);
 
-			/*Preparing to store coockies*/
+			/* Preparing to store coockies */
 			CookieStore CS = OpenTenureApplication.getCoockieStore();
 			HttpContext context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
@@ -83,52 +81,46 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
-			
-			Log.d("CommunityServerAPI","Login Status line " + response.getStatusLine());
-			
+			Log.d("CommunityServerAPI",
+					"Login Status line " + response.getStatusLine());
 
-			if (response.getStatusLine().getStatusCode()==(HttpStatus.SC_OK)) {
+//			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+//
+//				String json = CommunityServerAPIUtilities.Slurp(response
+//						.getEntity().getContent(), 1024);
+//
+//				/* parsing the response in a Login object */
+//				Gson gson = new Gson();
+//				Login login = gson.fromJson(json, Login.class);
 
-				String json = CommunityServerAPIUtilities.Slurp(response
-						.getEntity().getContent(), 1024);
+				switch (response.getStatusLine().getStatusCode()) {
 
-				/* parsing the response in a Login object*/
-				Gson gson = new Gson();
-				Login login = gson.fromJson(json, Login.class);
-
-				switch (login.getStatus()) {
-
-				case 200:					
+				case 200:
 					OpenTenureApplication.setCoockieStore(CS);
-					Log.d("CommunityServerAPI","Login status : 200");
+					Log.d("CommunityServerAPI", "Login status : 200");
 					return 200;
 
-				case 401:					
-					Log.d("CommunityServerAPI","Login status : 401");
+				case 401:
+					Log.d("CommunityServerAPI", "Login status : 401");
 					return 401;
 
-				default:					
-					Log.d("CommunityServerAPI","Login status : default");
+				default:
+					Log.d("CommunityServerAPI", "Login status : default");
 					return 0;
 				}
-			}
-			else{
-				Log.d("CommunityServerAPI","Login status NOT OK : "+response.getStatusLine().getStatusCode());
-				return 404;
-				
-			}
+
+
 		}
 
-		catch(ConnectTimeoutException ct){
+		catch (ConnectTimeoutException ct) {
 
-			Log.d("CommunityServerAPI", ct.getMessage() );
-			ct.printStackTrace();			
+			Log.d("CommunityServerAPI", ct.getMessage());
+			ct.printStackTrace();
 			return 80;
 
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 
-			Log.d("CommunityServerAPI","An error has occurred during Login "
+			Log.d("CommunityServerAPI", "An error has occurred during Login "
 					+ ex.getMessage());
 			ex.printStackTrace();
 			return 0;
@@ -136,27 +128,23 @@ public class CommunityServerAPI {
 
 	}
 
-	
 	/**
 	 * 
-	 * The logout API 
+	 * The logout API
 	 * 
-	 * * 
-	 * @return 200 in case of success
-	 * 401 in case of fail ,
-	 * 0 in case of generic error
-	 * 80 in case of connection timed out 
+	 * *
+	 * 
+	 * @return 200 in case of success 401 in case of fail , 0 in case of generic
+	 *         error 80 in case of connection timed out
 	 */
-	public static int logout(){
-
+	public static int logout() {
 
 		try {
-			
-			
 
-			HttpGet request = new HttpGet(CommunityServerAPIUtilities.HTTPS_LOGOUT);
+			HttpGet request = new HttpGet(
+					CommunityServerAPIUtilities.HTTPS_LOGOUT);
 
-			/*Preparing to store coockies*/
+			/* Preparing to store coockies */
 			CookieStore CS = OpenTenureApplication.getCoockieStore();
 			HttpContext context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
@@ -166,58 +154,107 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
-			
 			Log.d("CommunityServerAPI", response.getStatusLine().toString());
 
-			if (response.getStatusLine().getStatusCode()==(HttpStatus.SC_OK)) {
+//			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+//
+//				String json = CommunityServerAPIUtilities.Slurp(response
+//						.getEntity().getContent(), 1024);
+//
+//				/* parsing the response */
+//				Gson gson = new Gson();
+//				Login login = gson.fromJson(json, Login.class);
 
-				String json = CommunityServerAPIUtilities.Slurp(response
-						.getEntity().getContent(), 1024);
-
-				/* parsing the response */
-				Gson gson = new Gson();
-				Login login = gson.fromJson(json, Login.class);
-
-				switch (login.getStatus()) {
+				switch (response.getStatusLine().getStatusCode()) {
 
 				case 200:
-					
+
 					OpenTenureApplication.setCoockieStore(CS);
 
 					return 200;
 
 				case 401:
-					
+
 					return 401;
 
 				default:
-					
+
 					return 0;
 				}
-			}
-			else return 0;
-		}catch(ConnectTimeoutException ct){
 
-			Log.d("CommunityServerAPI","Logout ConnectTimeoutException" + ct.getMessage() );
-			ct.printStackTrace();			
+		} catch (ConnectTimeoutException ct) {
+
+			Log.d("CommunityServerAPI",
+					"Logout ConnectTimeoutException" + ct.getMessage());
+			ct.printStackTrace();
 			return 80;
 
 		}
-		
-		catch (UnknownHostException uhe) {
-			
-			Log.d("CommunityServerAPI","Logout UnknownHostException" + uhe.getMessage() );
-			uhe.printStackTrace();			
-			return 1;
-		}
-		catch (Throwable ex) {
 
-			Log.d("CommunityServerAPI","Logout Exception "
-					+ ex.getMessage());
+		catch (UnknownHostException uhe) {
+
+			Log.d("CommunityServerAPI",
+					"Logout UnknownHostException" + uhe.getMessage());
+			uhe.printStackTrace();
+			return 1;
+		} catch (Throwable ex) {
+
+			Log.d("CommunityServerAPI", "Logout Exception " + ex.getMessage());
 			ex.printStackTrace();
 			return 0;
 		}
 	}
 
+	public static Claim getClaim(String claimId) {
+
+		/*
+		 * Creating the url to call
+		 */
+		String url = String.format(CommunityServerAPIUtilities.HTTPS_GETCLAIM,
+				claimId);
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		/* Calling the Server.... */
+		try {
+			HttpResponse response = client.execute(request);
+
+			Log.d("CommunityServerAPI",
+					"GET Claim status line " + response.getStatusLine());
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				String json = CommunityServerAPIUtilities.Slurp(response
+						.getEntity().getContent(), 1024);
+				
+				Log.d("CommunityServerAPI",
+						"CLAIM JSON STRING " + json);
+
+				Gson gson = new Gson();
+				Claim claim = gson.fromJson(json, Claim.class);
+				
+				
+				Log.d("CommunityServerAPI",
+						"CLAIM JSON GPSGEOMETRY " + claim.getGpsGeometry());
+				
+				return claim;
+
+			} else {
+				
+				Log.d("CommunityServerAPI",
+						"CLAIM not retrieved ");
+				return null;	
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			return null;
+		}
+
+
+	}
 
 }

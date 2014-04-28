@@ -36,19 +36,31 @@ public class Claim {
 	
 	String id;
 	
+	String nr;
+	
 	String name;
 	
-	String status;
+	String statusCode;
 	
-	String challenged_id_claim;
+	String description;
+	
+	String challengeExpiryDate;
+	
+	String lodgementDate;
+	
+	String mappedGeometry;
+	
+	String gpsGeometry;	
+	
+	String challengedClaimId;
 	
 	List<Vertex> verteces;
 	
 	List<Attachment> attachments;
 	
-	List<XMetadata> metadata;
+	List<AdditionalInfo> additionaInfo;
 	
-	Person person;
+	Claimant claimant;
 	
 	
 
@@ -69,20 +81,20 @@ public class Claim {
 	}
 
 	public String getChallenged_id_claim() {
-		return challenged_id_claim;
+		return challengedClaimId;
 	}
 
-	public void setChallenged_id_claim(String challenged_id_claim) {
-		this.challenged_id_claim = challenged_id_claim;
+	public void setChallenged_id_claim(String challengedClaimId) {
+		this.challengedClaimId = challengedClaimId;
 	}
 
-	public org.fao.sola.clients.android.opentenure.filesystem.json.model.Person getPerson() {
-		return person;
+	public org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant getPerson() {
+		return claimant;
 	}
 
 	public void setPerson(
-			org.fao.sola.clients.android.opentenure.filesystem.json.model.Person person) {
-		this.person = person;
+			org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant claimant) {
+		this.claimant = claimant;
 	}
 
 	public List<Vertex> getVerteces() {
@@ -101,21 +113,89 @@ public class Claim {
 		this.attachments = attachments;
 	}
 
-	public List<XMetadata> getMetadata() {
-		return metadata;
+
+
+	public String getLodgementDate() {
+		return lodgementDate;
 	}
 
-	public void setMetadata(List<XMetadata> metadata) {
-		this.metadata = metadata;
+	public void setLodgementDate(String lodgementDate) {
+		this.lodgementDate = lodgementDate;
 	}
 
-	public String getStatus() {
-		return status;
+	public List<AdditionalInfo> getAdditionaInfo() {
+		return additionaInfo;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}	
+	public void setAdditionaInfo(List<AdditionalInfo> additionaInfo) {
+		this.additionaInfo = additionaInfo;
+	}
+
+	public String getNr() {
+		return nr;
+	}
+
+	public void setNr(String nr) {
+		this.nr = nr;
+	}
+
+	public String getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(String statusCode) {
+		this.statusCode = statusCode;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getChallengeExpiryDate() {
+		return challengeExpiryDate;
+	}
+
+	public void setChallengeExpiryDate(String challengeExpiryDate) {
+		this.challengeExpiryDate = challengeExpiryDate;
+	}
+
+	public String getMappedGeometry() {
+		return mappedGeometry;
+	}
+
+	public void setMappedGeometry(String mappedGeometry) {
+		this.mappedGeometry = mappedGeometry;
+	}
+
+	public String getGpsGeometry() {
+		return gpsGeometry;
+	}
+
+	public void setGpsGeometry(String gpsGeometry) {
+		this.gpsGeometry = gpsGeometry;
+	}
+
+	public String getChallengedClaimId() {
+		return challengedClaimId;
+	}
+
+	public void setChallengedClaimId(String challengedClaimId) {
+		this.challengedClaimId = challengedClaimId;
+	}
+
+	public Claimant getClaimant() {
+		return claimant;
+	}
+
+	public void setClaimant(Claimant claimant) {
+		this.claimant = claimant;
+	}
+
+
 	
 
 }

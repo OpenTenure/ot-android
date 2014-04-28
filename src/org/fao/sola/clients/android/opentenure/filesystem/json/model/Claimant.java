@@ -27,18 +27,27 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
-public class XMetadata {
-	
-	String metadataId;
-	String name;
-	String value;
-	
-	
-	public String getMetadataId() {
-		return metadataId;
+import java.util.Date;
+
+public class Claimant {
+
+	private String id;
+	private String name;
+	private String lastName;
+	private String idTypeCode;
+	private String idNumber;
+	private String place_of_birth;
+	private String address;
+	private String mobilePhone;
+	private String phone;
+	private String email;
+	private Date birthDate;
+	private String genderCode;
+	public String getId() {
+		return id;
 	}
-	public void setMetadataId(String metadataId) {
-		this.metadataId = metadataId;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getName() {
 		return name;
@@ -46,12 +55,74 @@ public class XMetadata {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getValue() {
-		return value;
+	public String getLastName() {
+		return lastName;
 	}
-	public void setValue(String value) {
-		this.value = value;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
-
+	public String getIdTypeCode() {
+		return idTypeCode;
+	}
+	public void setIdTypeCode(String idTypeCode) {
+		this.idTypeCode = idTypeCode;
+	}
+	public String getIdNumber() {
+		return idNumber;
+	}
+	public void setIdNumber(String idNumber) {
+		this.idNumber = idNumber;
+	}
+	public String getPlace_of_birth() {
+		return place_of_birth;
+	}
+	public void setPlace_of_birth(String place_of_birth) {
+		this.place_of_birth = place_of_birth;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getMobilePhone() {
+		return mobilePhone;
+	}
+	public void setMobilePhone(String mobilePhone) {
+		this.mobilePhone = mobilePhone;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public Date getBirthDate() {
+		return birthDate;
+	}
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+	public String getGenderCode() {
+		if (genderCode.equals("male"))
+				return "M";
+		if (genderCode.equals("female"))
+			return "M";
+		return genderCode;
+	}
+	public void setGenderCode(String genderCode) {
+		
+		if(genderCode == "M")		
+			this.genderCode = "male";
+		if(genderCode == "F")		
+			this.genderCode = "female";
+		else this.genderCode = genderCode;
+	}
 
 }
