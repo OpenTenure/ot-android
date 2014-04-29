@@ -41,9 +41,10 @@ import java.util.List;
 import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Person;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.AdditionalInfo;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Vertex;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.XMetadata;
+
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Metadata;
@@ -81,21 +82,21 @@ public class JsonUtilities {
 		 tempClaim.setName(claim.getName());
 		 tempClaim.setChallenged_id_claim(claim.getChallengedClaim()!=null?claim.getChallengedClaim().getClaimId():null);
 		 tempClaim.setId(claimId);
-		 tempClaim.setStatus(claim.getStatus());
+		 tempClaim.setStatusCode(claim.getStatus());
 		 
-		 Person person = new Person();
+		 Claimant person = new Claimant();
 		 
 		 
-		 person.setContact_phone_number(claim.getPerson().getContactPhoneNumber());
-		 person.setDate_of_birth(claim.getPerson().getDateOfBirth());
-		 person.setEmail_address(claim.getPerson().getEmailAddress());
-		 person.setFirst_name(claim.getPerson().getFirstName());
+		 person.setPhone(claim.getPerson().getContactPhoneNumber());
+		 person.setBirthDate(claim.getPerson().getDateOfBirth());
+		 person.setEmail(claim.getPerson().getEmailAddress());
+		 person.setName(claim.getPerson().getFirstName());
 		 person.setId(claim.getPerson().getPersonId());
-		 person.setLast_name(claim.getPerson().getLastName());
-		 person.setMobile_phone_number(claim.getPerson().getMobilePhoneNumber());
+		 person.setLastName(claim.getPerson().getLastName());
+		 person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
 		 person.setPlace_of_birth(claim.getPerson().getPlaceOfBirth());
-		 person.setPostal_address(claim.getPerson().getPostalAddress());
-		 person.setGender(claim.getPerson().getGender());
+		 person.setAddress(claim.getPerson().getPostalAddress());
+		 person.setGenderCode(claim.getPerson().getGender());
 		 
 		 tempClaim.setPerson(person);
 		 
@@ -124,7 +125,7 @@ public class JsonUtilities {
 			
 			org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
 			
-			attach.setAttachmentId(attachment.getAttachmentId());
+			attach.setId(attachment.getAttachmentId());
 			attach.setDescription(attachment.getDescription());
 			attach.setFileName(attachment.getFileName());
 			attach.setFileType(attachment.getFileType());
@@ -136,12 +137,12 @@ public class JsonUtilities {
 		}
 		 
 		 
-		 List<XMetadata> xMetadata = new ArrayList<XMetadata>();
+		 List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
 		 
 		 for (Iterator iterator = claim.getMetadata().iterator(); iterator.hasNext();) {
 			Metadata metadataO = (Metadata) iterator.next();
 			
-			XMetadata xm = new XMetadata();
+			AdditionalInfo xm = new AdditionalInfo();
 			
 			xm.setMetadataId(metadataO.getMetadataId());
 			xm.setName(metadataO.getName());
@@ -152,7 +153,7 @@ public class JsonUtilities {
 		 
 		 tempClaim.setVerteces(verteces);
 		 tempClaim.setAttachments(attachments);
-		 tempClaim.setMetadata(xMetadata);
+		 tempClaim.setAdditionaInfo(xMetadata);
 		
 		 
 		 try {

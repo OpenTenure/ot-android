@@ -11,8 +11,8 @@
     <string name="login_progress_signing_in">Loggin in&#8230;</string>
     <string name="error_invalid_username">Username troppo corto</string>
     <string name="error_invalid_password">Password troppo corta</string>
-    <string name="error_incorrect_password">La password non é corretta </string>
-    <string name="error_generic_login">Un errore é avvenuto durate la procedura di Log in </string>
+    <string name="error_incorrect_password">Username o  Password errata </string>
+    <string name="error_generic_login">Un errore é avvenuto durante la procedura di Log in </string>
     <string name="error_generic_conection">Errore di connessione</string>
     <string name="error_field_required">Questo campo é richiesto</string>
     <string name="message_login_before">Effettuare il login prima di procedere</string>

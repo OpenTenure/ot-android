@@ -35,11 +35,13 @@ import java.io.UnsupportedEncodingException;
 
 public class CommunityServerAPIUtilities {
 	
-	public static final String HTTP_LOGIN= "http://ot.flossola.org/ws/auth/login?name=%s&pass=%s";
-	public static final String HTTPS_LOGIN= "https://ot.flossola.org/ws/auth/login?name=%s&pass=%s";
+	public static final String HTTP_LOGIN= "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";	
+	public static final String HTTPS_LOGIN= "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
 	
-	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/auth/logout";
-	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/auth/logout";
+	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/en-us/auth/logout";
+	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/en-us/auth/logout";
+	
+	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/claim/en-us/getclaim/%s";
 	
 	
 	

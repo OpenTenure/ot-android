@@ -30,24 +30,11 @@ package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 public class Attachment {
 	
 	
-	String attachmentId;	
-	String claimId;
-	String description;
-	String fileName;
-	String fileType;
-	String mimeType;
-	String MD5Sum;
-	String status;
-
-	
-	
-	
-	
-	public String getAttachmentId() {
-		return attachmentId;
+	public String getId() {
+		return id;
 	}
-	public void setAttachmentId(String attachmentId) {
-		this.attachmentId = attachmentId;
+	public void setId(String id) {
+		this.id = id;
 	}
 	public String getClaimId() {
 		return claimId;
@@ -91,7 +78,47 @@ public class Attachment {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	public String getTypeCode() {
+		return typeCode;
+	}
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
+	}
+	public String getFileExtension() {
+		return fileExtension;
+	}
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
+	public String getReferenceNr() {
+		return referenceNr;
+	}
+	public void setReferenceNr(String referenceNr) {
+		this.referenceNr = referenceNr;
+	}
+	public String getDocumentDate() {
+		return documentDate;
+	}
+	public void setDocumentDate(String documentDate) {
+		this.documentDate = documentDate;
+	}
+	String id;	
+	String claimId;
+	String description;
+	String fileName;
+	String fileType;
+	String mimeType;
+	String MD5Sum;
+	String status;
+	String typeCode;
+	String fileExtension;
+	String referenceNr;
+	String documentDate;
 
+	
+	
+	
+	
 	
 
 }
