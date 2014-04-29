@@ -31,7 +31,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.maps.PropertyBoundary;
+import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -77,7 +77,7 @@ public class PDFClaimExporter {
 		fileName = FileSystemUtilities.getOpentenureFolder() + File.separator
 				+ "print_and_sign_this.pdf";
 		mapFileName = FileSystemUtilities.getAttachmentFolder(claimId)
-				+ File.separator + PropertyBoundary.DEFAULT_MAP_FILE_NAME;
+				+ File.separator + EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME;
 		try {
 			document = new PdfDocument();
 

@@ -102,9 +102,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 		String intentClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
 		
 		if(savedInstanceClaimId != null){
-			claimId = savedInstanceClaimId;
+			setClaimId(savedInstanceClaimId);
 		}else if(intentClaimId != null && !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
-			claimId = intentClaimId;
+			setClaimId(intentClaimId);
+			
 		}
 	}
 

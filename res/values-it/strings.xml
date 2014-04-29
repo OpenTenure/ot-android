@@ -52,6 +52,7 @@
     <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>
+    <string name="default_claim_name">Nuovo</string>
     <string name="claim_notes">Annotazioni</string>
     <string name="first_name">Nome</string>
     <string name="last_name">Cognome</string>

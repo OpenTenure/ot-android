@@ -27,9 +27,13 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
 import android.content.Context;
@@ -72,6 +76,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	private GoogleMap map;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
+	private List<BasePropertyBoundary> existingProperties;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +95,22 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
 		map.setOnCameraChangeListener(this);
+		List<Claim> claims = Claim.getAllClaims();
+		existingProperties = new ArrayList<BasePropertyBoundary>();
+		for(Claim claim : claims){
+				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
+						claim.getClaimId()));
+		}
+
+		drawProperties();
+
 		return mapView;
+	}
+
+	private void drawProperties(){
+		for(BasePropertyBoundary existingProperty : existingProperties){
+			existingProperty.drawBoundary();
+		}
 	}
 
 	@Override
@@ -190,6 +210,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider));
+			drawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapnik));
 			break;
@@ -200,6 +221,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider));
+			drawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapquest));
 			break;
@@ -208,6 +230,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()));
+			drawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_local_tiles));
 			break;
@@ -221,6 +244,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "nz:orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 			new GeoserverMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
+			drawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			break;

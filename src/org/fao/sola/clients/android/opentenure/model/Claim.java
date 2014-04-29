@@ -39,6 +39,9 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Claim {
+	
+	public enum Status{unmoderated, moderated, challenged, created, uploading};
+
 	public String getName() {
 		return name;
 	}
