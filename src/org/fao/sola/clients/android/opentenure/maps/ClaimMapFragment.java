@@ -77,13 +77,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class ClaimMapFragment extends Fragment implements OnCameraChangeListener {
+public class ClaimMapFragment extends Fragment implements
+		OnCameraChangeListener {
 
 	private static final int MAP_LABEL_FONT_SIZE = 16;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
-	private static final double SNAP_THRESHOLD = 0.0001;
 
 	private View mapView;
 	private MapLabel label;
@@ -192,13 +192,14 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 				.getResources().getString(R.string.map_provider_google_normal));
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
-		
+
 		List<Claim> claims = Claim.getAllClaims();
 		existingProperties = new ArrayList<BasePropertyBoundary>();
-		for(Claim claim : claims){
-			if(!claim.getClaimId().equalsIgnoreCase(claimActivity.getClaimId())){
-				BasePropertyBoundary bpb = new BasePropertyBoundary(mapView.getContext(), map,
-						claim);
+		for (Claim claim : claims) {
+			if (!claim.getClaimId()
+					.equalsIgnoreCase(claimActivity.getClaimId())) {
+				BasePropertyBoundary bpb = new BasePropertyBoundary(
+						mapView.getContext(), map, claim);
 				existingProperties.add(bpb);
 			}
 		}
@@ -206,8 +207,8 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
 
 		for (BasePropertyBoundary bpb : existingProperties) {
-			
-			if(bpb.getVertices() != null && bpb.getVertices().size() > 0){
+
+			if (bpb.getVertices() != null && bpb.getVertices().size() > 0) {
 				polygonList.add(bpb.getPolygon());
 			}
 		}
@@ -217,9 +218,9 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		GeometryFactory gf = new GeometryFactory();
 		existingPropertiesMultiPolygon = gf.createMultiPolygon(polygons);
 		existingPropertiesMultiPolygon.setSRID(3857);
-		
-		currentProperty = new EditablePropertyBoundary(mapView.getContext(), map, Claim.getClaim(claimActivity.getClaimId()),
-				claimActivity);
+
+		currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+				map, Claim.getClaim(claimActivity.getClaimId()), claimActivity);
 
 		drawProperties();
 
@@ -234,11 +235,11 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 			// probably an orientation change don't move the view but
 			// restore the current type of the map
 			setMapType(savedInstanceState.getInt(MAP_TYPE));
-		}else {
+		} else {
 			// restore the latest map type used on the main map
 			String mapType = Configuration
 					.getConfigurationValue(MainMapFragment.MAIN_MAP_TYPE);
-			
+
 			try {
 				setMapType(Integer.parseInt(mapType));
 			} catch (Exception e) {
@@ -246,13 +247,13 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		}
 
 		if (currentProperty.getCenter() != null) {
-			 // A property exists for the claim
-			 // so we center on it
+			// A property exists for the claim
+			// so we center on it
 			map.moveCamera(CameraUpdateFactory.newLatLngBounds(
 					currentProperty.getBounds(), 800, 800, 50));
 		} else {
-			 // No property exists for this claim
-			 // so we center where we left the main map
+			// No property exists for this claim
+			// so we center where we left the main map
 			String zoom = Configuration
 					.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
 			String latitude = Configuration
@@ -279,15 +280,15 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 
 				if (claimActivity.getClaimId() == null) {
 					// Useless to add markers without a claim
-					Toast toast = Toast
-							.makeText(mapView.getContext(),
-									R.string.message_save_before_adding_content,
-									Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mapView.getContext(),
+							R.string.message_save_before_adding_content,
+							Toast.LENGTH_SHORT);
 					toast.show();
 					return;
 				}
 
-				AlertDialog.Builder dialog = new AlertDialog.Builder(mapView.getContext());
+				AlertDialog.Builder dialog = new AlertDialog.Builder(mapView
+						.getContext());
 				dialog.setTitle(R.string.message_add_marker);
 				dialog.setMessage("Lon: " + position.longitude + ", lat: "
 						+ position.latitude);
@@ -300,6 +301,7 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 									int which) {
 
 								currentProperty.insertVertex(position);
+								currentProperty.resetMetadata(existingProperties);
 							}
 						});
 				dialog.setNegativeButton(R.string.cancel,
@@ -321,7 +323,7 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 			public boolean onMarkerClick(final Marker mark) {
 				if (currentProperty.handleMarkerClick(mark)) {
 					return true;
-				}else{
+				} else {
 					return false;
 				}
 			}
@@ -332,14 +334,14 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 				PointPairDistance ppd = new PointPairDistance();
 				DistanceToPoint.computeDistance(
 						existingPropertiesMultiPolygon,
-						new Coordinate(mark.getPosition().longitude,
-								mark.getPosition().latitude), ppd);
+						new Coordinate(mark.getPosition().longitude, mark
+								.getPosition().latitude), ppd);
 
-				if(ppd.getDistance() < SNAP_THRESHOLD){
+				if (ppd.getDistance() < BasePropertyBoundary.SNAP_THRESHOLD) {
 					snapLat = ppd.getCoordinate(0).y;
 					snapLon = ppd.getCoordinate(0).x;
-					mark.setPosition(new LatLng(snapLat,snapLon));
-				}else{
+					mark.setPosition(new LatLng(snapLat, snapLon));
+				} else {
 					snapLat = 0.0;
 					snapLon = 0.0;
 				}
@@ -350,12 +352,13 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 
 			@Override
 			public void onMarkerDragEnd(Marker mark) {
-				
-				if(snapLat != 0.0 && snapLon != 0.0){
-					mark.setPosition(new LatLng(snapLat,snapLon));
+
+				if (snapLat != 0.0 && snapLon != 0.0) {
+					mark.setPosition(new LatLng(snapLat, snapLon));
 				}
 				currentProperty.moveMarker(mark);
-				currentProperty.updateClaimBoundary();
+				currentProperty.updateVertices();
+				currentProperty.resetMetadata(existingProperties);
 				currentProperty.drawBoundary();
 			}
 
@@ -370,7 +373,7 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		return mapView;
 
 	}
-
+	
 	public void setMapType(int type) {
 
 		if (tiles != null) {
@@ -457,10 +460,10 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		}
 		mapType = type;
 	}
-	
-	private void drawProperties(){
+
+	private void drawProperties() {
 		currentProperty.drawBoundary();
-		for(BasePropertyBoundary existingProperty : existingProperties){
+		for (BasePropertyBoundary existingProperty : existingProperties) {
 			existingProperty.drawBoundary();
 		}
 	}
@@ -549,39 +552,42 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
 
-		Configuration zoom = Configuration.getConfigurationByName(MainMapFragment.MAIN_MAP_ZOOM);
+		Configuration zoom = Configuration
+				.getConfigurationByName(MainMapFragment.MAIN_MAP_ZOOM);
 
-		if(zoom != null){
-			zoom.setValue(""+cameraPosition.zoom);
+		if (zoom != null) {
+			zoom.setValue("" + cameraPosition.zoom);
 			zoom.update();
-		}else{
+		} else {
 			zoom = new Configuration();
 			zoom.setName(MainMapFragment.MAIN_MAP_ZOOM);
-			zoom.setValue(""+cameraPosition.zoom);
+			zoom.setValue("" + cameraPosition.zoom);
 			zoom.create();
 		}
-		
-		Configuration latitude = Configuration.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
 
-		if(latitude != null){
-			latitude.setValue(""+cameraPosition.target.latitude);
+		Configuration latitude = Configuration
+				.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
+
+		if (latitude != null) {
+			latitude.setValue("" + cameraPosition.target.latitude);
 			latitude.update();
-		}else{
+		} else {
 			latitude = new Configuration();
 			latitude.setName(MainMapFragment.MAIN_MAP_LATITUDE);
-			latitude.setValue(""+cameraPosition.target.latitude);
+			latitude.setValue("" + cameraPosition.target.latitude);
 			latitude.create();
 		}
-		
-		Configuration longitude = Configuration.getConfigurationByName(MainMapFragment.MAIN_MAP_LONGITUDE);
 
-		if(longitude != null){
-			longitude.setValue(""+cameraPosition.target.longitude);
+		Configuration longitude = Configuration
+				.getConfigurationByName(MainMapFragment.MAIN_MAP_LONGITUDE);
+
+		if (longitude != null) {
+			longitude.setValue("" + cameraPosition.target.longitude);
 			longitude.update();
-		}else{
+		} else {
 			longitude = new Configuration();
 			longitude.setName(MainMapFragment.MAIN_MAP_LONGITUDE);
-			longitude.setValue(""+cameraPosition.target.longitude);
+			longitude.setValue("" + cameraPosition.target.longitude);
 			longitude.create();
 		}
 	}

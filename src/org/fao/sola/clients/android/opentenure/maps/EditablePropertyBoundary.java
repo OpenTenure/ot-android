@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure.maps;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
@@ -38,6 +39,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.MD5;
+import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.app.AlertDialog;
@@ -77,7 +79,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 	}
 
-	public void updateClaimBoundary() {
+	public void updateVertices() {
 
 		Vertex.deleteVertices(claimActivity.getClaimId());
 
@@ -88,6 +90,39 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 		calculateGeometry();
 
+	}
+
+	public void resetMetadata(List<BasePropertyBoundary> existingProperties){
+
+		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
+		List<Metadata> metadata = Metadata.getClaimMetadata(claimActivity.getClaimId());
+		
+		for(Metadata item: metadata){
+			item.delete();
+		}
+
+		if(adjacentProperties != null){
+
+			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
+				
+				Metadata adjacent = new Metadata();
+				adjacent.setClaimId(claimActivity.getClaimId());
+				adjacent.setName(getBearing(getBearing(adjacentProperty))
+						+ ", "
+						+ context.getResources().getString(R.string.property)
+						+ ", "
+						+ adjacentProperty.getClaimId()
+						);
+				Claim claim = Claim.getClaim(adjacentProperty.getClaimId());
+				adjacent.setValue(claim.getName()
+						+ ", "
+						+ claim.getPerson().getFirstName()
+						+ ", "
+						+ claim.getPerson().getLastName()
+						);
+				adjacent.create();
+			}
+		}
 	}
 
 	public void moveMarker(Marker mark) {
@@ -111,7 +146,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 						removeMarker(mark);
 						drawBoundary();
-						updateClaimBoundary();
+						updateVertices();
 					}
 				});
 		dialog.setNegativeButton(R.string.cancel,
@@ -190,7 +225,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 		}
 		vertices.add(insertIndex, newVertex);
-		updateClaimBoundary();
+		updateVertices();
 		drawBoundary();
 	}
 

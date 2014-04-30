@@ -120,4 +120,14 @@
     <string name="geoserver_layer_pref_title">Layer GeoServer</string>
     <string name="geoserver_layer_pref_summary">WMS layer da richiedere al GeoServer (chiedere all\'amministratore)</string>
     <string name="geoserver_layer_pref_dialog_title">Inserisci il nome del layer WMS</string>
+    <string name="property">Proprietà</string>
+    <string name="adjacent_properties">Proprietà adiacenti</string>
+    <string name="north">Nord</string>
+    <string name="south">Sud</string>
+    <string name="east">Est</string>
+    <string name="west">Ovest</string>
+    <string name="north_east">Nord-Est</string>
+    <string name="north_west">Nord-Ovest</string>
+    <string name="south_east">Sud-Est</string>
+    <string name="south_west">Sud-Ovest</string>
 </resources>

@@ -58,7 +58,12 @@ import com.vividsolutions.jts.geom.Polygon;
 public class BasePropertyBoundary {
 
 	protected static final float BOUNDARY_Z_INDEX = 2.0f;
+	public static final double SNAP_THRESHOLD = 0.0001;
+
+	public enum Bearing{NORTH, SOUTH, EAST, WEST, SOUTH_WEST, SOUTH_EAST, NORTH_WEST, NORTH_EAST, NO_BEARING};
+
 	protected String name;
+	protected String claimId;
 	protected List<Vertex> vertices = new ArrayList<Vertex>();
 
 	public List<Vertex> getVertices() {
@@ -76,6 +81,10 @@ public class BasePropertyBoundary {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getClaimId() {
+		return claimId;
 	}
 
 	public LatLng getCenter() {
@@ -103,6 +112,7 @@ public class BasePropertyBoundary {
 			name = claim.getName() == null ? context.getResources().getString(
 					R.string.default_claim_name) : claim.getName();
 			String status = claim.getStatus();
+			claimId = claim.getClaimId();
 
 			if (status != null) {
 
@@ -203,5 +213,59 @@ public class BasePropertyBoundary {
 		polylineOptions.width(5);
 		polylineOptions.color(color);
 		polyline = map.addPolyline(polylineOptions);
+	}
+	
+	public List<BasePropertyBoundary> findAdjacentProperties(List<BasePropertyBoundary> properties){
+		List<BasePropertyBoundary> adjacentProperties = null;
+		for(BasePropertyBoundary property : properties){
+			if(polygon != null && property.getPolygon() != null && polygon.distance(property.getPolygon()) < SNAP_THRESHOLD){
+				if(adjacentProperties == null){
+					adjacentProperties = new ArrayList<BasePropertyBoundary>();
+				}
+				adjacentProperties.add(property);
+			}
+		}
+		return adjacentProperties;
+	}
+
+	public Bearing getBearing(BasePropertyBoundary dest){
+		double deltaX = dest.getCenter().longitude - center.longitude;
+		double deltaY = dest.getCenter().latitude - center.latitude;
+		if(deltaX == 0){
+			return deltaY > 0 ? Bearing.NORTH : Bearing.SOUTH;
+		}
+		double slope = deltaY/deltaX;
+		if(slope >= -1.0/3.0 && slope < 1.0/3.0){
+			return deltaX > 0 ? Bearing.EAST : Bearing.WEST;
+		}else if(slope >= 1.0/3.0 && slope < 3.0){
+			return deltaY > 0 ? Bearing.NORTH_EAST : Bearing.SOUTH_WEST;
+		}else if(slope >= 3.0 || slope <= -3.0){
+			return deltaY > 0 ? Bearing.NORTH : Bearing.SOUTH;
+		}else{
+			return deltaY > 0 ? Bearing.NORTH_WEST : Bearing.SOUTH_EAST;
+		}
+	}
+
+	public String getBearing(Bearing bearing){
+		switch(bearing){
+		case NORTH:
+			return context.getResources().getString(R.string.north);
+		case SOUTH:
+			return context.getResources().getString(R.string.south);
+		case EAST:
+			return context.getResources().getString(R.string.east);
+		case WEST:
+			return context.getResources().getString(R.string.west);
+		case NORTH_EAST:
+			return context.getResources().getString(R.string.north_east);
+		case NORTH_WEST:
+			return context.getResources().getString(R.string.north_west);
+		case SOUTH_EAST:
+			return context.getResources().getString(R.string.south_east);
+		case SOUTH_WEST:
+			return context.getResources().getString(R.string.south_west);
+		default:
+			return "";
+		}
 	}
 }

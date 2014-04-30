@@ -120,4 +120,14 @@
     <string name="geoserver_layer_pref_title">GeoServer layer</string>
     <string name="geoserver_layer_pref_summary">WMS layer to be retrieved from GeoServer (ask your administrator)</string>
     <string name="geoserver_layer_pref_dialog_title">Enter the name of the WMS layer</string>
+    <string name="property">Property</string>
+    <string name="adjacent_properties">Adjacent properties</string>
+    <string name="north">North</string>
+    <string name="south">South</string>
+    <string name="east">East</string>
+    <string name="west">West</string>
+    <string name="north_east">North-East</string>
+    <string name="north_west">North-West</string>
+    <string name="south_east">South-East</string>
+    <string name="south_west">South-West</string>
 </resources>
