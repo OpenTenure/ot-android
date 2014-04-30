@@ -456,7 +456,7 @@ public class Vertex {
 	}
 
 	public static String mapWKTFromVertices(List<Vertex> vertices) {
-		if (vertices == null) {
+		if (vertices == null || vertices.size() == 0) {
 			return null;
 		}
 		GeometryFactory gf = new GeometryFactory();
@@ -487,7 +487,7 @@ public class Vertex {
 	}
 
 	public static String gpsWKTFromVertices(List<Vertex> vertices) {
-		if (vertices == null) {
+		if (vertices == null || vertices.size() == 0) {
 			return null;
 		}
 		GeometryFactory gf = new GeometryFactory();
