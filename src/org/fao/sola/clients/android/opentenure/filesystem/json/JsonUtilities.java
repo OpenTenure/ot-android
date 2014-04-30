@@ -35,9 +35,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
+
+import android.text.format.DateFormat;
 import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
@@ -77,45 +83,70 @@ public class JsonUtilities {
 	 
 	 if(claim != null){
 		 
+		 TimeZone tz = TimeZone.getTimeZone("UTC");
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		 sdf.setTimeZone(tz);
+		 
+		 Calendar c = Calendar.getInstance();
+		 c.setTime(new Date());
+		   // number of days to add
+		 String lodgementDate = sdf.format(c.getTime());  
+		 
+		 c.add(Calendar.MONTH, 1);
+		   // number of days to add
+		 String challengeExpiryDate = sdf.format(c.getTime());
+		 
+		 
+		
+		 
+		 
 		 
 		// tempClaim.setChallengedClaim(null);
-		 tempClaim.setName(claim.getName());
+		 tempClaim.setDescription(claim.getName());
 		 tempClaim.setChallenged_id_claim(claim.getChallengedClaim()!=null?claim.getChallengedClaim().getClaimId():null);
 		 tempClaim.setId(claimId);
 		 tempClaim.setStatusCode(claim.getStatus());
+		 tempClaim.setNr("0001");
+		 
+		 
+		 tempClaim.setLodgementDate(lodgementDate);
+		 tempClaim.setChallengeExpiryDate(challengeExpiryDate);
 		 
 		 Claimant person = new Claimant();
 		 
 		 
 		 person.setPhone(claim.getPerson().getContactPhoneNumber());
-		 person.setBirthDate(claim.getPerson().getDateOfBirth());
+		 person.setBirthDate(sdf.format(claim.getPerson().getDateOfBirth()));
 		 person.setEmail(claim.getPerson().getEmailAddress());
 		 person.setName(claim.getPerson().getFirstName());
 		 person.setId(claim.getPerson().getPersonId());
 		 person.setLastName(claim.getPerson().getLastName());
 		 person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
-		 person.setPlace_of_birth(claim.getPerson().getPlaceOfBirth());
+		// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
 		 person.setAddress(claim.getPerson().getPostalAddress());
 		 person.setGenderCode(claim.getPerson().getGender());
 		 
 		 tempClaim.setPerson(person);
 		 
+//		 
+//		 List<Vertex> verteces = new ArrayList<Vertex>();
+//
+//		 for (Iterator iterator = claim.getVertices().iterator(); iterator.hasNext();) {
+//			org.fao.sola.clients.android.opentenure.model.Vertex vert = (org.fao.sola.clients.android.opentenure.model.Vertex) iterator.next();
+//			
+//			Vertex v = new Vertex();	 
+//
+//			v.setGPSPosition(vert.getGPSPosition());
+//			v.setMapPosition(vert.getMapPosition());
+//			v.setSequenceNumber(vert.getSequenceNumber());
+//			v.setVertexId(vert.getVertexId());
+//			
+//			
+//			verteces.add(v);
+//		}
 		 
-		 List<Vertex> verteces = new ArrayList<Vertex>();
+		 
 
-		 for (Iterator iterator = claim.getVertices().iterator(); iterator.hasNext();) {
-			org.fao.sola.clients.android.opentenure.model.Vertex vert = (org.fao.sola.clients.android.opentenure.model.Vertex) iterator.next();
-			
-			Vertex v = new Vertex();	 
-
-			v.setGPSPosition(vert.getGPSPosition());
-			v.setMapPosition(vert.getMapPosition());
-			v.setSequenceNumber(vert.getSequenceNumber());
-			v.setVertexId(vert.getVertexId());
-			
-			
-			verteces.add(v);
-		}
 		 
 		 
 		 List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
@@ -137,23 +168,29 @@ public class JsonUtilities {
 		}
 		 
 		 
-		 List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
+/*
+ * TEmporary off the additional info on the claim submission
+ * 
+ * */		 
 		 
-		 for (Iterator iterator = claim.getMetadata().iterator(); iterator.hasNext();) {
-			Metadata metadataO = (Metadata) iterator.next();
-			
-			AdditionalInfo xm = new AdditionalInfo();
-			
-			xm.setMetadataId(metadataO.getMetadataId());
-			xm.setName(metadataO.getName());
-			xm.setValue(metadataO.getValue());
-			
-			xMetadata.add(xm);
-		}
+//		 List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
+//		 
+//		 for (Iterator iterator = claim.getMetadata().iterator(); iterator.hasNext();) {
+//			Metadata metadataO = (Metadata) iterator.next();
+//			
+//			AdditionalInfo xm = new AdditionalInfo();
+//			
+//			xm.setMetadataId(metadataO.getMetadataId());
+//			xm.setName(metadataO.getName());
+//			xm.setValue(metadataO.getValue());
+//			
+//			xMetadata.add(xm);
+//		}
 		 
-		 tempClaim.setVerteces(verteces);
+		 tempClaim.setGpsGeometry(org.fao.sola.clients.android.opentenure.model.Vertex.gpsWKTFromVertices(claim.getVertices()));
+		 tempClaim.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex.mapWKTFromVertices(claim.getVertices()));
 		 tempClaim.setAttachments(attachments);
-		 tempClaim.setAdditionaInfo(xMetadata);
+//		 tempClaim.setAdditionaInfo(xMetadata);
 		
 		 
 		 try {

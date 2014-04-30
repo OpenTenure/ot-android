@@ -27,40 +27,41 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
+import java.util.Date;
 import java.util.List;
+
+import com.google.gson.annotations.SerializedName;
 
 
 
 
 public class Claim {
 	
-	String id;
+	@SerializedName("id") String id;
 	
-	String nr;
+	@SerializedName("nr") String nr;	
 	
-	String name;
+	@SerializedName("decisionDate") String decisionDate;
 	
-	String statusCode;
+	@SerializedName("statusCode") String statusCode;
 	
-	String description;
+	@SerializedName("description") String description;
 	
-	String challengeExpiryDate;
+	@SerializedName("challengeExpiryDate") String challengeExpiryDate;
 	
-	String lodgementDate;
+	@SerializedName("lodgementDate") String lodgementDate;
 	
-	String mappedGeometry;
+	@SerializedName("mappedGeometry") String mappedGeometry;
 	
-	String gpsGeometry;	
+	@SerializedName("gpsGeometry") String gpsGeometry;	
 	
-	String challengedClaimId;
+	@SerializedName("challengedClaimId") String challengedClaimId;
 	
-	List<Vertex> verteces;
+	@SerializedName("attachments") List<Attachment> attachments;
 	
-	List<Attachment> attachments;
+	//@SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
 	
-	List<AdditionalInfo> additionaInfo;
-	
-	Claimant claimant;
+	@SerializedName("claimant") Claimant claimant;
 	
 	
 
@@ -70,14 +71,6 @@ public class Claim {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getChallenged_id_claim() {
@@ -97,23 +90,21 @@ public class Claim {
 		this.claimant = claimant;
 	}
 
-	public List<Vertex> getVerteces() {
-		return verteces;
+
+
+//	public List<AdditionalInfo> getAdditionaInfo() {
+//		return additionaInfo;
+//	}
+//
+//	public void setAdditionaInfo(List<AdditionalInfo> additionaInfo) {
+//		this.additionaInfo = additionaInfo;
+//	}
+
+
+
+	public String getNr() {
+		return nr;
 	}
-
-	public void setVerteces(List<Vertex> verteces) {
-		this.verteces = verteces;
-	}
-
-	public List<Attachment> getAttachments() {
-		return attachments;
-	}
-
-	public void setAttachments(List<Attachment> attachments) {
-		this.attachments = attachments;
-	}
-
-
 
 	public String getLodgementDate() {
 		return lodgementDate;
@@ -123,16 +114,12 @@ public class Claim {
 		this.lodgementDate = lodgementDate;
 	}
 
-	public List<AdditionalInfo> getAdditionaInfo() {
-		return additionaInfo;
+	public List<Attachment> getAttachments() {
+		return attachments;
 	}
 
-	public void setAdditionaInfo(List<AdditionalInfo> additionaInfo) {
-		this.additionaInfo = additionaInfo;
-	}
-
-	public String getNr() {
-		return nr;
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
 	}
 
 	public void setNr(String nr) {

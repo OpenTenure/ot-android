@@ -25,75 +25,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network.API;
+package org.fao.sola.clients.android.opentenure.network;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 
-public class CommunityServerAPIUtilities {
-	
-	public static final String HTTP_LOGIN= "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";	
-	public static final String HTTPS_LOGIN= "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
-	
-	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/en-us/auth/logout";
-	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/en-us/auth/logout";
-	
-	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/claim/en-us/getclaim/%s";
-	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/claim/en-us/getclaim/%s";
-	
-	public static final String HTTPS_SAVECLAIM = "https://ot.flossola.org/ws/en-us/claim/saveClaim";
-	
-	
-	
-public static String Slurp(final InputStream is, final int bufferSize)
-	{
-	  final char[] buffer = new char[bufferSize];
-	  final StringBuilder out = new StringBuilder();
-	  try {
-	    final Reader in = new InputStreamReader(is, "UTF-8");
-	    try {
-	      for (;;) {
-	        int rsz = in.read(buffer, 0, buffer.length);
-	        if (rsz < 0)
-	          break;
-	        out.append(buffer, 0, rsz);
-	      }
-	    }
-	    finally {
-	      in.close();
-	    }
-	  }
-	  catch (UnsupportedEncodingException ex) {
-	    /* ... */
-	  }
-	  catch (IOException ex) {
-	      /* ... */
-	  }
-	  return out.toString();
-}
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
-	
-public class Login{
-	private int status;
+import android.os.AsyncTask;
 
-	public int getStatus() {
-		return status;
+public class SaveClaimTask extends AsyncTask<String, Void, Boolean>{
+
+	@Override
+	protected Boolean doInBackground(String... params) {		
+		
+		String json = FileSystemUtilities.getJsonClaim(params[0]);
+		return CommunityServerAPI.saveClaim(json);
+		
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
-
-	
 }
-
-}
-
-
-
-
-

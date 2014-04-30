@@ -27,10 +27,13 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.AdditionalInfo;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
@@ -88,32 +91,49 @@ public class GetClaimTask extends AsyncTask<String, Void, Claim> {
 			attachmentsDB.add(attachmentDB);
 
 		}
+		
+		
+		 TimeZone tz = TimeZone.getTimeZone("UTC");
+		 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+		 df.setTimeZone(tz);
+		
 
-		List<AdditionalInfo> metadataList;
-		if ((metadataList = claim.getAdditionaInfo()) != null) {
-
-			for (Iterator iterator = metadataList.iterator(); iterator
-					.hasNext();) {
-				AdditionalInfo additionalInfo = (AdditionalInfo) iterator
-						.next();
-
-				org.fao.sola.clients.android.opentenure.model.Metadata metadataDB = new Metadata();
-
-				metadataDB.setClaimId(claim.getId());
-				metadataDB.setMetadataId(additionalInfo.getMetadataId());
-				metadataDB.setName(additionalInfo.getName());
-				metadataDB.setValue(additionalInfo.getValue());
-
-				metadataDBList.add(metadataDB);
-
-			}
-		}
+		
+		/*
+		 * Temporary disable 
+		 * 
+		 * */
+//		List<AdditionalInfo> metadataList;
+//		if ((metadataList = claim.getAdditionaInfo()) != null) {
+//
+//			for (Iterator iterator = metadataList.iterator(); iterator
+//					.hasNext();) {
+//				AdditionalInfo additionalInfo = (AdditionalInfo) iterator
+//						.next();
+//
+//				org.fao.sola.clients.android.opentenure.model.Metadata metadataDB = new Metadata();
+//
+//				metadataDB.setClaimId(claim.getId());
+//				metadataDB.setMetadataId(additionalInfo.getMetadataId());
+//				metadataDB.setName(additionalInfo.getName());
+//				metadataDB.setValue(additionalInfo.getValue());
+//
+//				metadataDBList.add(metadataDB);
+//
+//			}
+//		}
 		Claimant claimant = claim.getClaimant();
 
 		Person person = new Person();
 		person.setContactPhoneNumber(claimant.getPhone());
 
-		Date birth = claimant.getBirthDate();
+		Date birth=null;
+		try {
+			birth = df.parse(claimant.getBirthDate());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (birth != null)
 			person.setDateOfBirth(new java.sql.Date(birth.getTime()));
 		else
@@ -128,7 +148,7 @@ public class GetClaimTask extends AsyncTask<String, Void, Claim> {
 		person.setLastName(claimant.getLastName());
 		person.setMobilePhoneNumber(claimant.getMobilePhone());
 		person.setPersonId(claimant.getId());
-		person.setPlaceOfBirth(claimant.getPlace_of_birth());
+		//person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 		person.setPostalAddress(claimant.getAddress());
 
 		org.fao.sola.clients.android.opentenure.model.Claim claimDB = new org.fao.sola.clients.android.opentenure.model.Claim();
