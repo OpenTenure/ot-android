@@ -29,20 +29,24 @@ package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
 import java.util.Date;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Claimant {
 
-	private String id;
-	private String name;
-	private String lastName;
-	private String idTypeCode;
-	private String idNumber;
-	private String place_of_birth;
-	private String address;
-	private String mobilePhone;
-	private String phone;
-	private String email;
-	private Date birthDate;
-	private String genderCode;
+	@SerializedName("id")          private String id;
+	@SerializedName("name")        private String name;
+	@SerializedName("lastName")    private String lastName;
+	@SerializedName("idTypeCode")  private String idTypeCode;
+	@SerializedName("idNumber")    private String idNumber;
+	//@SerializedName("placeOfBirth")private String placeOfBirth;
+	@SerializedName("address")     private String address;
+	@SerializedName("mobilePhone") private String mobilePhone;
+	@SerializedName("phone")       private String phone;
+	@SerializedName("email")       private String email;
+	@SerializedName("birthDate")   private String birthDate;
+	@SerializedName("genderCode")  private String genderCode;
+	
+	
 	public String getId() {
 		return id;
 	}
@@ -73,12 +77,12 @@ public class Claimant {
 	public void setIdNumber(String idNumber) {
 		this.idNumber = idNumber;
 	}
-	public String getPlace_of_birth() {
-		return place_of_birth;
-	}
-	public void setPlace_of_birth(String place_of_birth) {
-		this.place_of_birth = place_of_birth;
-	}
+//	public String getPlaceOfBirth() {
+//		return placeOfBirth;
+//	}
+//	public void setPlaceOfBirth(String placeOfBirth) {
+//		this.placeOfBirth = placeOfBirth;
+//	}
 	public String getAddress() {
 		return address;
 	}
@@ -103,10 +107,11 @@ public class Claimant {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Date getBirthDate() {
+
+	public String getBirthDate() {
 		return birthDate;
 	}
-	public void setBirthDate(Date birthDate) {
+	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 	public String getGenderCode() {
@@ -118,9 +123,9 @@ public class Claimant {
 	}
 	public void setGenderCode(String genderCode) {
 		
-		if(genderCode == "M")		
+		if(genderCode.equals("M"))		
 			this.genderCode = "male";
-		if(genderCode == "F")		
+		if(genderCode.equals("F"))		
 			this.genderCode = "female";
 		else this.genderCode = genderCode;
 	}

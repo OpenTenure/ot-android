@@ -35,6 +35,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.content.Context;
 import android.os.Environment;
@@ -317,6 +318,20 @@ public class FileSystemUtilities {
 		}
 
 		return dest;
+	}
+	
+	public static String getJsonClaim(String claimId){
+		try {
+			
+			File folder = getClaimFolder(claimId);			
+			FileInputStream fis = new FileInputStream(folder+File.separator+"claim.json");
+			return CommunityServerAPIUtilities.Slurp(fis, 100);
+						
+		} catch (Exception e) {
+			System.out.println("Error reading claim.json :" + e.getStackTrace());
+			return null;
+		}
+		
 	}
 
 

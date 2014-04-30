@@ -28,15 +28,19 @@
 package org.fao.sola.clients.android.opentenure.network.API;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
@@ -255,6 +259,52 @@ public class CommunityServerAPI {
 		}
 
 
+	}
+	
+	public static boolean saveClaim(String claim){
+		
+		String url = String.format(CommunityServerAPIUtilities.HTTPS_SAVECLAIM);
+		System.out.println("********************************************************URL : " + url);
+		
+
+		HttpPost request = new HttpPost(url);
+		
+		
+		StringEntity entity;
+		try {
+			entity = new StringEntity(claim, HTTP.UTF_8);
+			entity.setContentType("application/json");
+			request.setEntity(entity);
+			
+			System.out.println("********************************************************setted claim : " + claim);
+			AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+			
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+			
+			
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			
+
+			/* Calling the Server.... */
+			HttpResponse response = client.execute(request, context);
+			
+			System.out.println("***************************************************SAVE CLAIM ESEGUITO response: " + response.getStatusLine());
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
+		
+		
+		
+		return false;	
 	}
 
 }

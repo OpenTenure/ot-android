@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
+import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
@@ -449,10 +450,8 @@ public class ClaimDetailsFragment extends Fragment {
 					Log.d(this.getClass().getName(), "mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
 					Log.d(this.getClass().getName(), "gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
 					
-					/*
-					 * A temporary Moke Submission of the Claim
-					 * */
-					Moke.mokeSubmit(claimActivity.getClaimId());
+					SaveClaimTask saveClaimtask = new SaveClaimTask();
+					saveClaimtask.execute(claimActivity.getClaimId());
 
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_submitted, Toast.LENGTH_SHORT);
