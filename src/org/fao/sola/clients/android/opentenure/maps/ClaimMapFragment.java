@@ -70,6 +70,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
+import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.MultiPolygon;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class ClaimMapFragment extends Fragment implements OnCameraChangeListener {
 
@@ -77,18 +83,22 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
+	private static final double SNAP_THRESHOLD = 0.0001;
 
 	private View mapView;
 	private MapLabel label;
 	private GoogleMap map;
 	private EditablePropertyBoundary currentProperty;
 	private List<BasePropertyBoundary> existingProperties;
+	private MultiPolygon existingPropertiesMultiPolygon;
 	private boolean saved = false;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
 	private int mapType = R.id.map_provider_google_normal;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
+	private double snapLat;
+	private double snapLon;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -188,12 +198,27 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		for(Claim claim : claims){
 			if(!claim.getClaimId().equalsIgnoreCase(claimActivity.getClaimId())){
 				BasePropertyBoundary bpb = new BasePropertyBoundary(mapView.getContext(), map,
-						claim.getClaimId());
+						claim);
 				existingProperties.add(bpb);
 			}
 		}
 
-		currentProperty = new EditablePropertyBoundary(mapView.getContext(), map,
+		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
+
+		for (BasePropertyBoundary bpb : existingProperties) {
+			
+			if(bpb.getVertices() != null && bpb.getVertices().size() > 0){
+				polygonList.add(bpb.getPolygon());
+			}
+		}
+		Polygon[] polygons = new Polygon[polygonList.size()];
+		polygonList.toArray(polygons);
+
+		GeometryFactory gf = new GeometryFactory();
+		existingPropertiesMultiPolygon = gf.createMultiPolygon(polygons);
+		existingPropertiesMultiPolygon.setSRID(3857);
+		
+		currentProperty = new EditablePropertyBoundary(mapView.getContext(), map, Claim.getClaim(claimActivity.getClaimId()),
 				claimActivity);
 
 		drawProperties();
@@ -304,6 +329,20 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 		this.map.setOnMarkerDragListener(new OnMarkerDragListener() {
 			@Override
 			public void onMarkerDrag(Marker mark) {
+				PointPairDistance ppd = new PointPairDistance();
+				DistanceToPoint.computeDistance(
+						existingPropertiesMultiPolygon,
+						new Coordinate(mark.getPosition().longitude,
+								mark.getPosition().latitude), ppd);
+
+				if(ppd.getDistance() < SNAP_THRESHOLD){
+					snapLat = ppd.getCoordinate(0).y;
+					snapLon = ppd.getCoordinate(0).x;
+					mark.setPosition(new LatLng(snapLat,snapLon));
+				}else{
+					snapLat = 0.0;
+					snapLon = 0.0;
+				}
 				currentProperty.moveMarker(mark);
 				currentProperty.drawBoundary();
 
@@ -311,7 +350,10 @@ public class ClaimMapFragment extends Fragment implements OnCameraChangeListener
 
 			@Override
 			public void onMarkerDragEnd(Marker mark) {
-				mark.setTitle(mark.getId());
+				
+				if(snapLat != 0.0 && snapLon != 0.0){
+					mark.setPosition(new LatLng(snapLat,snapLon));
+				}
 				currentProperty.moveMarker(mark);
 				currentProperty.updateClaimBoundary();
 				currentProperty.drawBoundary();

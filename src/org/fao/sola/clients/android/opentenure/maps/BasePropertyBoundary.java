@@ -51,6 +51,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class BasePropertyBoundary {
 
@@ -64,6 +67,7 @@ public class BasePropertyBoundary {
 
 	protected Context context;
 	protected Polyline polyline = null;
+	protected Polygon polygon = null;
 	protected GoogleMap map;
 	protected LatLng center = null;
 	protected Marker marker = null;
@@ -78,6 +82,10 @@ public class BasePropertyBoundary {
 		return center;
 	}
 
+	public Polygon getPolygon() {
+		return polygon;
+	}
+
 	public Marker getMarker() {
 		return marker;
 	}
@@ -87,19 +95,19 @@ public class BasePropertyBoundary {
 	}
 
 	public BasePropertyBoundary(final Context context, final GoogleMap map,
-			final String claimId) {
+			final Claim claim) {
 		this.context = context;
 		this.map = map;
-		Claim claim = Claim.getClaim(claimId);
-		if(claim != null){
+		if (claim != null) {
 			vertices = claim.getVertices();
-			name = claim.getName()==null?context.getResources().getString(R.string.default_claim_name):claim.getName();
+			name = claim.getName() == null ? context.getResources().getString(
+					R.string.default_claim_name) : claim.getName();
 			String status = claim.getStatus();
 
-			if(status != null){
-			
-				switch(Claim.Status.valueOf(status)){
-				
+			if (status != null) {
+
+				switch (Claim.Status.valueOf(status)) {
+
 				case unmoderated:
 					color = Color.YELLOW;
 					break;
@@ -115,34 +123,42 @@ public class BasePropertyBoundary {
 				}
 			}
 
-			if(vertices != null && vertices.size() > 0){
-				calculateCenterAndBounds();
-				marker = createMarker(center, claim.getName()+"\n"+claim.getPerson().getFirstName()+" "+claim.getPerson().getLastName());
+			if (vertices != null && vertices.size() > 0) {
+				calculateGeometry();
+				marker = createMarker(center, claim.getName() + "\n"
+						+ claim.getPerson().getFirstName() + " "
+						+ claim.getPerson().getLastName());
 			}
 		}
 	}
-	
-	protected void calculateCenterAndBounds(){
-		
-		if(vertices == null  || vertices.size()<=0){
+
+	protected void calculateGeometry() {
+
+		GeometryFactory gf = new GeometryFactory();
+
+		if (vertices == null || vertices.size() <= 0) {
 			return;
 		}
-	
-		double minLat = Double.MAX_VALUE;
-	    double minLong = Double.MAX_VALUE;
-	    double maxLat = Double.MIN_VALUE;
-	    double maxLong = Double.MIN_VALUE;
 
-	    for (Vertex vertex : vertices) {
-	    	minLat = Math.min(vertex.getMapPosition().latitude, minLat);
-	    	minLong = Math.min(vertex.getMapPosition().longitude, minLong);
-	    	maxLat = Math.max(vertex.getMapPosition().latitude, maxLat);
-	    	maxLong = Math.max(vertex.getMapPosition().longitude, maxLong);
-	    }
+		Coordinate[] coords = new Coordinate[vertices.size() + 1];
+		int i = 0;
 
-	    bounds = new LatLngBounds(new LatLng(minLat, minLong),new LatLng(maxLat, maxLong));
-		center = new LatLng(minLat + ((maxLat - minLat) / 2), minLong
-				+ ((maxLong - minLong) / 2));
+		for (Vertex vertex : vertices) {
+			coords[i++] = new Coordinate(vertex.getMapPosition().longitude,
+					vertex.getMapPosition().latitude);
+		}
+
+		coords[i] = new Coordinate(vertices.get(0).getMapPosition().longitude,
+				vertices.get(0).getMapPosition().latitude);
+		polygon = gf.createPolygon(coords);
+		polygon.setSRID(3857);
+
+		bounds = new LatLngBounds(new LatLng(polygon.getEnvelope().getCoordinates()[0].y,
+						polygon.getEnvelope().getCoordinates()[0].x),
+				new LatLng(polygon.getEnvelope().getCoordinates()[2].y,
+						polygon.getEnvelope().getCoordinates()[2].x));
+		center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
+				.getCentroid().getCoordinate().x);
 	}
 
 	private Marker createMarker(LatLng position, String title) {
@@ -156,17 +172,15 @@ public class BasePropertyBoundary {
 		tf.getTextBounds(name, 0, name.length(), boundsText);
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmpText = Bitmap.createBitmap(boundsText.width(),
-		    boundsText.height(), conf);
+				boundsText.height(), conf);
 
 		Canvas canvasText = new Canvas(bmpText);
 		canvasText.drawText(name, canvasText.getWidth() / 2,
-		            canvasText.getHeight(), tf);
+				canvasText.getHeight(), tf);
 
-		return map.addMarker(new MarkerOptions()
-	    .position(position)
-	    .title(title)
-	    .icon(BitmapDescriptorFactory.fromBitmap(bmpText))
-	    .anchor(0.5f, 1));
+		return map.addMarker(new MarkerOptions().position(position)
+				.title(title).icon(BitmapDescriptorFactory.fromBitmap(bmpText))
+				.anchor(0.5f, 1));
 	}
 
 	public void drawBoundary() {

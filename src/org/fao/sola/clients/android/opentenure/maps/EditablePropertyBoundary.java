@@ -64,9 +64,9 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
 	private ClaimDispatcher claimActivity;
 
-	public EditablePropertyBoundary(final Context context, final GoogleMap map,
+	public EditablePropertyBoundary(final Context context, final GoogleMap map, final Claim claim,
 			final ClaimDispatcher claimActivity) {
-		super(context, map, claimActivity.getClaimId());
+		super(context, map, claim);
 		this.claimActivity = claimActivity;
 
 		if (vertices != null && vertices.size() > 0) {
@@ -86,7 +86,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			vertex.setSequenceNumber(i);
 			Vertex.createVertex(vertex);
 		}
-		calculateCenterAndBounds();
+		calculateGeometry();
 
 	}
 
