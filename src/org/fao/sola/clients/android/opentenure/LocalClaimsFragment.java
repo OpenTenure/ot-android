@@ -115,11 +115,14 @@ public class LocalClaimsFragment extends ListFragment {
 		List<String> status = new ArrayList<String>();
 
 		for(Claim claim : claims){
-			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName();
+			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName() + " " ;
 			slogans.add(slogan);
 			ids.add(claim.getClaimId());
 			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
 				status.add(claim.getStatus());
+			else if(claim.getStatus().equals(ClaimStatus._UNMODERATED)){
+				status.add("uploaded");
+				}
 			else status.add(" ");
 
 

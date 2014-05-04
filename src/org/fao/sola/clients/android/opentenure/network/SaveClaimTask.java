@@ -28,18 +28,99 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
-public class SaveClaimTask extends AsyncTask<String, Void, Boolean>{
+public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
 
 	@Override
-	protected Boolean doInBackground(String... params) {		
+	protected SaveClaimResponse doInBackground(String... params) {		
 		
 		String json = FileSystemUtilities.getJsonClaim(params[0]);
-		return CommunityServerAPI.saveClaim(json);
+		SaveClaimResponse res =  CommunityServerAPI.saveClaim(json);
+		res.setClaimId(params[0]);
+		return res;
+	}
+	
+	
+	protected void onPostExecute(final SaveClaimResponse res){
+		
+		Toast toast;
+		
+		Claim claim = Claim.getClaim(res.getClaimId());	
+		
+		switch (res.getHttpStatusCode()) {
+		case 200:			
+					
+			claim.setStatus(ClaimStatus._UNMODERATED);			
+			claim.update();
+			
+			toast = Toast
+					.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submitted, Toast.LENGTH_SHORT);
+			toast.show();
+			
+			break;
+			
+			
+		case 452:	
+						
+			claim.setStatus(ClaimStatus._UPLOADING);		
+			claim.update();			
+			
+			toast = Toast
+					.makeText(OpenTenureApplication.getContext(),
+					R.string.message_uploading, Toast.LENGTH_SHORT);
+			toast.show();
+			
+			/***
+			 * Qui ad un certo punto inizieremo a far l'upload degli attachments
+			 * 
+			 * 
+			 * 
+			 *****/
+				
+			break;	
+			
+			
+		case 450:			
+			
+			toast = Toast
+			.makeText(OpenTenureApplication.getContext(),
+			R.string.message_submission_error + res.getMessage(), Toast.LENGTH_SHORT);
+			toast.show();
+
+				
+			break;
+			
+		case 400:			
+			
+			toast = Toast
+			.makeText(OpenTenureApplication.getContext(),
+			R.string.message_submission_error + res.getMessage(), Toast.LENGTH_SHORT);
+			toast.show();
+
+				
+			break;	
+	
+
+		default:
+			break;
+		}
+		
+		return;
+		
+		
+		
+		
 		
 	}
 

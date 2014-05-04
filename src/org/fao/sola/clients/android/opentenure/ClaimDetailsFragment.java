@@ -453,9 +453,7 @@ public class ClaimDetailsFragment extends Fragment {
 					SaveClaimTask saveClaimtask = new SaveClaimTask();
 					saveClaimtask.execute(claimActivity.getClaimId());
 
-					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_submitted, Toast.LENGTH_SHORT);
-					toast.show();
+					
 				} else {
 					toast = Toast
 							.makeText(rootView.getContext(),

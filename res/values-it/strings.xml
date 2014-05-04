@@ -68,6 +68,8 @@
     <string name="message_invalid_url">URL non valido</string>
     <string name="message_unable_to_save">Impossibile salvare la richiesta. Controllare i dati e riprovare</string>
     <string name="message_submitted">Richiesta inviata</string>
+    <string name="message_uploading">Il claim e\' in upload</string>
+    <string name="message_submission_error">Errore durante l\'invio del claim</string>
     <string name="message_save_before_submit">Salvare la richiesta prima di inviarla</string>
     <string name="message_save_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>

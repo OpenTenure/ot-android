@@ -69,6 +69,8 @@
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save the claim. Check details and retry</string>
     <string name="message_submitted">The claim has been submitted</string>
+    <string name="message_uploading">The claim is in upload</string>
+    <string name="message_submission_error">Error during submission of the claim</string>
     <string name="message_save_before_submit">The claim must be saved before submission</string>
     <string name="message_save_before_adding_content">The claim must be saved before adding content</string>
     <string name="message_export">Exporting</string>
