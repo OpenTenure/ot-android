@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Attachment {
 	
 	
@@ -35,12 +37,6 @@ public class Attachment {
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getClaimId() {
-		return claimId;
-	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
 	}
 	public String getDescription() {
 		return description;
@@ -54,29 +50,25 @@ public class Attachment {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
-	public String getFileType() {
-		return fileType;
-	}
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
+//	public String getFileType() {
+//		return fileType;
+//	}
+//	public void setFileType(String fileType) {
+//		this.fileType = fileType;
+//	}
 	public String getMimeType() {
 		return mimeType;
 	}
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
 	}
-	public String getMD5Sum() {
-		return MD5Sum;
+
+
+	public String getMd5() {
+		return md5;
 	}
-	public void setMD5Sum(String mD5Sum) {
-		MD5Sum = mD5Sum;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
+	public void setMd5(String md5) {
+		this.md5 = md5;
 	}
 	public String getTypeCode() {
 		return typeCode;
@@ -102,18 +94,32 @@ public class Attachment {
 	public void setDocumentDate(String documentDate) {
 		this.documentDate = documentDate;
 	}
-	String id;	
-	String claimId;
-	String description;
-	String fileName;
-	String fileType;
-	String mimeType;
-	String MD5Sum;
-	String status;
-	String typeCode;
-	String fileExtension;
-	String referenceNr;
-	String documentDate;
+	
+	
+
+	public Integer getSize() {
+		return size;
+	}
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+
+
+	@SerializedName("id") String id;	
+	@SerializedName("typeCode") String typeCode;
+	@SerializedName("referenceNr") String referenceNr;
+	@SerializedName("documentDate") String documentDate;
+	@SerializedName("description") String description;
+	@SerializedName("fileName") String fileName;
+	@SerializedName("fileExtension") String fileExtension;
+	@SerializedName("size") Integer size;
+	//@SerializedName("fileType") String fileType;
+	@SerializedName("mimeType") String mimeType;
+	@SerializedName("md5") String md5;
+	
+	
+	
+	
 
 	
 	

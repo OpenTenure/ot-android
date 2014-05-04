@@ -45,6 +45,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
@@ -497,21 +498,41 @@ public class Vertex {
 		for (Vertex vertex : vertices) {
 			coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude,
 					vertex.getGPSPosition().latitude);
+			System.out.println("Le coordinate GPS : "
+					+ ((Coordinate) coordinates[i]).x
+					+ ((Coordinate) coordinates[i]).y);
 			i++;
 		}
 		coordinates[i] = new Coordinate(
 				vertices.get(0).getGPSPosition().longitude, vertices.get(0)
 						.getGPSPosition().latitude);
 
-		Polygon polygon = gf.createPolygon(coordinates);
-		polygon.setSRID(3857);
-
 		StringWriter writer = new StringWriter();
-		WKTWriter wktWriter = new WKTWriter(2);
+		
+		if (coordinates[0].x == 40.0 && coordinates[0].y == 90.0) {			
+			
+			
+			Point point = gf.createPoint(coordinates[0]);
+			point.setSRID(3857);
 
-		try {
-			wktWriter.write(polygon, writer);
-		} catch (IOException e) {
+			WKTWriter wktWriter = new WKTWriter(2);
+
+			try {
+				wktWriter.write(point, writer);
+			} catch (IOException e) {
+			}
+
+		} else {
+
+			Polygon polygon = gf.createPolygon(coordinates);
+			polygon.setSRID(3857);
+
+			WKTWriter wktWriter = new WKTWriter(2);
+
+			try {
+				wktWriter.write(polygon, writer);
+			} catch (IOException e) {
+			}
 		}
 
 		return writer.toString();

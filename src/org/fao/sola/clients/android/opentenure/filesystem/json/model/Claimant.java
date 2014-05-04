@@ -126,8 +126,7 @@ public class Claimant {
 		if(genderCode.equals("M"))		
 			this.genderCode = "male";
 		if(genderCode.equals("F"))		
-			this.genderCode = "female";
-		else this.genderCode = genderCode;
+			this.genderCode = "female";		
 	}
 
 }

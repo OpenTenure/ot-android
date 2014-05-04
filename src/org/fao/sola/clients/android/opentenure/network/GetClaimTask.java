@@ -82,10 +82,10 @@ public class GetClaimTask extends AsyncTask<String, Void, Claim> {
 			attachmentDB.setClaimId(claim.getId());
 			attachmentDB.setDescription(attachment.getDescription());
 			attachmentDB.setFileName(attachment.getFileName());
-			attachmentDB.setFileType(attachment.getFileType());
-			attachmentDB.setMD5Sum(attachment.getMD5Sum());
+			//attachmentDB.setFileType(attachment.getFileType());
+			attachmentDB.setMD5Sum(attachment.getMd5());
 			attachmentDB.setMimeType(attachment.getMimeType());
-			attachmentDB.setStatus(attachment.getStatus());
+			//attachmentDB.setStatus(attachment.getStatus());
 
 
 			attachmentsDB.add(attachmentDB);

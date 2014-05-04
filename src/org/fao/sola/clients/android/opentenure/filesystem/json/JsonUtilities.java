@@ -159,10 +159,12 @@ public class JsonUtilities {
 			attach.setId(attachment.getAttachmentId());
 			attach.setDescription(attachment.getDescription());
 			attach.setFileName(attachment.getFileName());
-			attach.setFileType(attachment.getFileType());
-			attach.setMD5Sum(attachment.getMD5Sum());
+			attach.setFileExtension(attachment.getFileType());
+			attach.setTypeCode(attachment.getFileType());
+			//attach.setFileType(attachment.getFileType());
+			attach.setMd5(attachment.getMD5Sum());
 			attach.setMimeType(attachment.getMimeType());
-			attach.setStatus(attachment.getStatus());
+			
 			
 			attachments.add(attach);
 		}
