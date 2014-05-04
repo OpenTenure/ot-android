@@ -268,6 +268,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						att.setMimeType("image/jpeg");
 						att.setMD5Sum(MD5.calculateMD5(new File(path)));
 						att.setPath(path);
+						att.setSize(new File(path).length());
 						att.create();
 						Toast toast = Toast.makeText(context,
 								R.string.message_map_snapshot_saved,

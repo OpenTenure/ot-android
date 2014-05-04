@@ -163,6 +163,7 @@ public class JsonUtilities {
 			attach.setTypeCode(attachment.getFileType());
 			//attach.setFileType(attachment.getFileType());
 			attach.setMd5(attachment.getMD5Sum());
+			attach.setSize(attachment.getSize());
 			attach.setMimeType(attachment.getMimeType());
 			
 			

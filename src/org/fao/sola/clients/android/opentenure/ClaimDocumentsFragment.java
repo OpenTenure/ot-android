@@ -181,6 +181,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 								.getFile(rootView.getContext(), uri)));
 						attachment.setPath(FileUtils.getPath(
 								rootView.getContext(), uri));
+						attachment.setSize(FileUtils.getFile(
+								rootView.getContext(), uri).length());
 						attachment.create();
 						update();
 					}
@@ -243,6 +245,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
+						attachment.setSize(copy.length());
 						attachment.create();
 						update();
 					}

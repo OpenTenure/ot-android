@@ -97,10 +97,10 @@ public class Attachment {
 	
 	
 
-	public Integer getSize() {
+	public Long getSize() {
 		return size;
 	}
-	public void setSize(Integer size) {
+	public void setSize(Long size) {
 		this.size = size;
 	}
 
@@ -112,7 +112,7 @@ public class Attachment {
 	@SerializedName("description") String description;
 	@SerializedName("fileName") String fileName;
 	@SerializedName("fileExtension") String fileExtension;
-	@SerializedName("size") Integer size;
+	@SerializedName("size") Long size;
 	//@SerializedName("fileType") String fileType;
 	@SerializedName("mimeType") String mimeType;
 	@SerializedName("md5") String md5;
