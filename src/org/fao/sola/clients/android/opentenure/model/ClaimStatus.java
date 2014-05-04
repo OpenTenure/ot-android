@@ -31,7 +31,7 @@ public class ClaimStatus {
 	
 	public static String _CREATED = "created";
 	public static String _UPLOADING = "uploading";
-	public static String _UPLOADED = "uploaded";
+	public static String _UNMODERATED = "unmoderated";
 	public static String _MODERATED = "moderated";
 	public static String _CHALLENGED = "challenged";
 
