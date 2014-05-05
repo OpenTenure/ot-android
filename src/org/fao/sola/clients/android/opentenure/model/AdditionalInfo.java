@@ -71,19 +71,9 @@ public class AdditionalInfo {
 
 	@Override
 	public String toString() {
-		return "AdditionalInfo [" + "additionalInfoId=" + additionalInfoId + ", uploaded="
-				+ uploaded.toString() + ", claimId=" + claimId + ", name="
+		return "AdditionalInfo [" + "additionalInfoId=" + additionalInfoId
+				+ ", claimId=" + claimId + ", name="
 				+ name + ", value=" + value + "]";
-	}
-
-	public static int markAsUploaded(AdditionalInfo additionalInfo) {
-		additionalInfo.setUploaded(true);
-		return AdditionalInfo.updateAdditionalInfo(additionalInfo);
-	}
-
-	public int markAsUploaded() {
-		setUploaded(true);
-		return update();
 	}
 
 	public static int createAdditionalInfo(AdditionalInfo additionalInfo) {
@@ -96,12 +86,11 @@ public class AdditionalInfo {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?)");
 			statement.setString(1, additionalInfo.getAdditionalInfoId());
-			statement.setBoolean(2, additionalInfo.getUploaded());
-			statement.setString(3, additionalInfo.getClaimId());
-			statement.setString(4, additionalInfo.getName());
-			statement.setString(5, additionalInfo.getValue());
+			statement.setString(2, additionalInfo.getClaimId());
+			statement.setString(3, additionalInfo.getName());
+			statement.setString(4, additionalInfo.getValue());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -133,12 +122,11 @@ public class AdditionalInfo {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?)");
 			statement.setString(1, getAdditionalInfoId());
-			statement.setBoolean(2, getUploaded());
-			statement.setString(3, getClaimId());
-			statement.setString(4, getName());
-			statement.setString(5, getValue());
+			statement.setString(2, getClaimId());
+			statement.setString(3, getName());
+			statement.setString(4, getValue());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -238,12 +226,11 @@ public class AdditionalInfo {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE ADDITIONAL_INFO SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
-			statement.setBoolean(1, additionalInfo.getUploaded());
-			statement.setString(2, additionalInfo.getClaimId());
-			statement.setString(3, additionalInfo.getName());
-			statement.setString(4, additionalInfo.getValue());
-			statement.setString(5, additionalInfo.getAdditionalInfoId());
+					.prepareStatement("UPDATE ADDITIONAL_INFO SET CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
+			statement.setString(1, additionalInfo.getClaimId());
+			statement.setString(2, additionalInfo.getName());
+			statement.setString(3, additionalInfo.getValue());
+			statement.setString(4, additionalInfo.getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -275,12 +262,11 @@ public class AdditionalInfo {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE ADDITIONAL_INFO SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
-			statement.setBoolean(1, getUploaded());
-			statement.setString(2, getClaimId());
-			statement.setString(3, getName());
-			statement.setString(4, getValue());
-			statement.setString(5, getAdditionalInfoId());
+					.prepareStatement("UPDATE ADDITIONAL_INFO SET CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
+			statement.setString(1, getClaimId());
+			statement.setString(2, getName());
+			statement.setString(3, getValue());
+			statement.setString(4, getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -314,16 +300,15 @@ public class AdditionalInfo {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT UPLOADED, CLAIM_ID, NAME, VALUE FROM ADDITIONAL_INFO WHERE ADDITIONAL_INFO_ID=?");
+					.prepareStatement("SELECT CLAIM_ID, NAME, VALUE FROM ADDITIONAL_INFO WHERE ADDITIONAL_INFO_ID=?");
 			statement.setString(1, additionalInfoId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				additionalInfo = new AdditionalInfo();
 				additionalInfo.setAdditionalInfoId(additionalInfoId);
-				additionalInfo.setUploaded(rs.getBoolean(1));
-				additionalInfo.setClaimId(rs.getString(2));
-				additionalInfo.setName(rs.getString(3));
-				additionalInfo.setValue(rs.getString(4));
+				additionalInfo.setClaimId(rs.getString(1));
+				additionalInfo.setName(rs.getString(2));
+				additionalInfo.setValue(rs.getString(3));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -415,16 +400,15 @@ public class AdditionalInfo {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT ADDITIONAL_INFO_ID, UPLOADED, NAME, VALUE FROM ADDITIONAL_INFO META WHERE META.CLAIM_ID=?");
+					.prepareStatement("SELECT ADDITIONAL_INFO_ID, NAME, VALUE FROM ADDITIONAL_INFO META WHERE META.CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				AdditionalInfo item = new AdditionalInfo();
 				item.setClaimId(claimId);
 				item.setAdditionalInfoId(rs.getString(1));
-				item.setUploaded(rs.getBoolean(2));
-				item.setName(rs.getString(3));
-				item.setValue(rs.getString(4));
+				item.setName(rs.getString(2));
+				item.setValue(rs.getString(3));
 				additionalInfo.add(item);
 			}
 		} catch (SQLException e) {
@@ -454,16 +438,7 @@ public class AdditionalInfo {
 		return additionalInfo;
 	}
 
-	public Boolean getUploaded() {
-		return uploaded;
-	}
-
-	public void setUploaded(Boolean uploaded) {
-		this.uploaded = uploaded;
-	}
-
 	String additionalInfoId;
-	Boolean uploaded = Boolean.valueOf(false);
 	String claimId;
 	String name;
 	String value;

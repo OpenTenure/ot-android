@@ -65,7 +65,6 @@ public class Claim {
 	@Override
 	public String toString() {
 		return "Claim [claimId=" + claimId
-				+ ", uploaded=" + uploaded.toString()
 				+ ", status=" + status
 				+ ", name=" + name
 				+ ", person=" + person
@@ -112,60 +111,6 @@ public class Claim {
 		this.attachments = attachments;
 	}
 
-	public static int markAsUploaded(Claim claim){
-		if(claim.getPerson() != null){
-			claim.getPerson().setUploaded(true);
-			claim.getPerson().update();
-		}
-		if(claim.getVertices() != null){
-			for(Vertex vertex:claim.getVertices()){
-				vertex.setUploaded(true);
-				vertex.update();
-			}
-		}
-		if(claim.getAdditionalInfo() != null){
-			for(AdditionalInfo additionalInfo:claim.getAdditionalInfo()){
-				additionalInfo.setUploaded(true);
-				additionalInfo.update();
-			}
-		}
-		if(claim.getAttachments() != null){
-			for(Attachment attachment:claim.getAttachments()){
-				attachment.setUploaded(true);
-				attachment.update();
-			}
-		}
-		claim.setUploaded(true);
-		return claim.update();
-	}
-
-	public int markAsUploaded(){
-		if(getPerson() != null){
-			getPerson().setUploaded(true);
-			getPerson().update();
-		}
-		if(getVertices() != null){
-			for(Vertex vertex:getVertices()){
-				vertex.setUploaded(true);
-				vertex.update();
-			}
-		}
-		if(getAdditionalInfo() != null){
-			for(AdditionalInfo additionalInfo:getAdditionalInfo()){
-				additionalInfo.setUploaded(true);
-				additionalInfo.update();
-			}
-		}
-		if(getAttachments() != null){
-			for(Attachment attachment:getAttachments()){
-				attachment.setUploaded(true);
-				attachment.update();
-			}
-		}
-		setUploaded(true);
-		return update();
-	}
-
 	public static int createClaim(Claim claim){
 		int result = 0;
 		Connection localConnection = null;
@@ -175,16 +120,15 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, UPLOADED, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
 			statement.setString(1, claim.getClaimId());
-			statement.setBoolean(2, claim.getUploaded());
-			statement.setString(3, claim.getStatus());
-			statement.setString(4, claim.getName());
-			statement.setString(5, claim.getPerson().getPersonId());
+			statement.setString(2, claim.getStatus());
+			statement.setString(3, claim.getName());
+			statement.setString(4, claim.getPerson().getPersonId());
 			if(claim.getChallengedClaim() != null){
-				statement.setString(6, claim.getChallengedClaim().getClaimId());
+				statement.setString(5, claim.getChallengedClaim().getClaimId());
 			}else{
-				statement.setString(6, null);
+				statement.setString(5, null);
 			}
 				
 			result = statement.executeUpdate();
@@ -218,16 +162,15 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, UPLOADED, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
 			statement.setString(1, getClaimId());
-			statement.setBoolean(2, getUploaded());
-			statement.setString(3, getStatus());
-			statement.setString(4, getName());
-			statement.setString(5, getPerson().getPersonId());
+			statement.setString(2, getStatus());
+			statement.setString(3, getName());
+			statement.setString(4, getPerson().getPersonId());
 			if(getChallengedClaim() != null){
-				statement.setString(6, getChallengedClaim().getClaimId());
+				statement.setString(5, getChallengedClaim().getClaimId());
 			}else{
-				statement.setString(6, null);
+				statement.setString(5, null);
 			}
 				
 			result = statement.executeUpdate();
@@ -261,17 +204,16 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
-			statement.setBoolean(1, claim.getUploaded());
-			statement.setString(2, claim.getStatus());
-			statement.setString(3, claim.getName());
-			statement.setString(4, claim.getPerson().getPersonId());
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+			statement.setString(1, claim.getStatus());
+			statement.setString(2, claim.getName());
+			statement.setString(3, claim.getPerson().getPersonId());
 			if(claim.getChallengedClaim() != null){
-				statement.setString(5, claim.getChallengedClaim().getClaimId());
+				statement.setString(4, claim.getChallengedClaim().getClaimId());
 			}else{
-				statement.setString(5, null);
+				statement.setString(4, null);
 			}
-			statement.setString(6, claim.getClaimId());
+			statement.setString(5, claim.getClaimId());
 				
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -304,17 +246,16 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET UPLOADED=?, STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
-			statement.setBoolean(1, getUploaded());
-			statement.setString(2, getStatus());
-			statement.setString(3, getName());
-			statement.setString(4, getPerson().getPersonId());
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+			statement.setString(1, getStatus());
+			statement.setString(2, getName());
+			statement.setString(3, getPerson().getPersonId());
 			if(getChallengedClaim() != null){
-				statement.setString(5, getChallengedClaim().getClaimId());
+				statement.setString(4, getChallengedClaim().getClaimId());
 			}else{
-				statement.setString(5, null);
+				statement.setString(4, null);
 			}
-			statement.setString(6, getClaimId());
+			statement.setString(5, getClaimId());
 				
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -348,17 +289,16 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT UPLOADED, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				claim = new Claim();
 				claim.setClaimId(claimId);
-				claim.setUploaded(rs.getBoolean(1));
-				claim.setStatus(rs.getString(2));
-				claim.setName(rs.getString(3));
-				claim.setPerson(Person.getPerson(rs.getString(4)));
-				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
+				claim.setStatus(rs.getString(1));
+				claim.setName(rs.getString(2));
+				claim.setPerson(Person.getPerson(rs.getString(3)));
+				claim.setChallengedClaim(Claim.getClaim(rs.getString(4)));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
@@ -401,17 +341,16 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, UPLOADED, STATUS, NAME, PERSON_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
+					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				String challengingClaimId = rs.getString(1);
 				Claim challengingClaim = new Claim();
 				challengingClaim.setClaimId(challengingClaimId);
-				challengingClaim.setUploaded(rs.getBoolean(2));
-				challengingClaim.setStatus(rs.getString(3));
-				challengingClaim.setName(rs.getString(4));
-				challengingClaim.setPerson(Person.getPerson(rs.getString(5)));
+				challengingClaim.setStatus(rs.getString(2));
+				challengingClaim.setName(rs.getString(3));
+				challengingClaim.setPerson(Person.getPerson(rs.getString(4)));
 				challengingClaim.setChallengedClaim(this);
 				challengingClaim.setVertices(Vertex.getVertices(challengingClaimId));
 				challengingClaim.setAttachments(Attachment.getAttachments(challengingClaimId));
@@ -455,17 +394,16 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, UPLOADED, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM");
+					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				String claimId = rs.getString(1);
 				Claim claim = new Claim();
 				claim.setClaimId(claimId);
-				claim.setUploaded(rs.getBoolean(2));
-				claim.setStatus(rs.getString(3));
-				claim.setName(rs.getString(4));
-				claim.setPerson(Person.getPerson(rs.getString(5)));
-				claim.setChallengedClaim(Claim.getClaim(rs.getString(6)));
+				claim.setStatus(rs.getString(2));
+				claim.setName(rs.getString(3));
+				claim.setPerson(Person.getPerson(rs.getString(4)));
+				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
@@ -498,13 +436,6 @@ public class Claim {
 		return claims;
 	}
 
-	public Boolean getUploaded() {
-		return uploaded;
-	}
-	public void setUploaded(Boolean uploaded) {
-		this.uploaded = uploaded;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -513,7 +444,6 @@ public class Claim {
 	}
 
 	String claimId;
-	Boolean uploaded = Boolean.valueOf(false);
 	String name;
 	String status;
 	Person person;

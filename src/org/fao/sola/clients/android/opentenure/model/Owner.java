@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,72 +37,45 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-public class Adjacency {
+public class Owner {
 	
 	@Override
 	public String toString() {
-		return "Adjacency [sourceClaimId=" + sourceClaimId + ", destClaimId="
-				+ destClaimId + ", cardinalDirection=" + cardinalDirection
-				+ "]";
+		return "Owner [claimId=" + claimId + ", personId=" + personId
+				+ ", shares=" + shares + "]";
 	}
 
-	public String getSourceClaimId() {
-		return sourceClaimId;
+	public String getClaimId() {
+		return claimId;
 	}
 
-	public void setSourceClaimId(String sourceClaimId) {
-		this.sourceClaimId = sourceClaimId;
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
 	}
 
-	public String getDestClaimId() {
-		return destClaimId;
+	public String getPersonId() {
+		return personId;
 	}
 
-	public void setDestClaimId(String destClaimId) {
-		this.destClaimId = destClaimId;
+	public void setPersonId(String personId) {
+		this.personId = personId;
 	}
 
-	public CardinalDirection getCardinalDirection() {
-		return cardinalDirection;
+	public BigDecimal getShares() {
+		return shares;
 	}
 
-	public static CardinalDirection getReverseCardinalDirection(CardinalDirection cardinalDirection) {
-		switch (cardinalDirection) {
-		case NORTH:
-			return CardinalDirection.SOUTH;
-		case SOUTH:
-			return CardinalDirection.NORTH;
-		case EAST:
-			return CardinalDirection.WEST;
-		case WEST:
-			return CardinalDirection.EAST;
-		case NORTHEAST:
-			return CardinalDirection.SOUTHWEST;
-		case NORTHWEST:
-			return CardinalDirection.SOUTHEAST;
-		case SOUTHEAST:
-			return CardinalDirection.NORTHWEST;
-		case SOUTHWEST:
-			return CardinalDirection.NORTHEAST;
-
-		default:
-			return CardinalDirection.NONE;
-		}
+	public void setShares(BigDecimal shares) {
+		this.shares = shares;
 	}
 
-	public void setCardinalDirection(CardinalDirection cardinalDirection) {
-		this.cardinalDirection = cardinalDirection;
-	}
-
-	public enum CardinalDirection{NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, NONE};
-
-	String sourceClaimId;
-	String destClaimId;
-	CardinalDirection cardinalDirection;
+	String claimId;
+	String personId;
+	BigDecimal shares;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public static int createAdjacency(Adjacency adj) {
+	public static int createOwner(Owner own) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -111,10 +85,10 @@ public class Adjacency {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ADJACENCY(SOURCE_CLAIM_ID, DEST_CLAIM_ID, CARDINAL_DIRECTION) VALUES (?,?,?)");
-			statement.setString(1, adj.getSourceClaimId());
-			statement.setString(2, adj.getDestClaimId());
-			statement.setString(3, adj.getCardinalDirection().name());
+					.prepareStatement("INSERT INTO OWNER(CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?)");
+			statement.setString(1, own.getClaimId());
+			statement.setString(2, own.getPersonId());
+			statement.setBigDecimal(3, own.getShares());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -146,10 +120,10 @@ public class Adjacency {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ADJACENCY(SOURCE_CLAIM_ID, DEST_CLAIM_ID, CARDINAL_DIRECTION) VALUES (?,?,?)");
-			statement.setString(1, getSourceClaimId());
-			statement.setString(2, getDestClaimId());
-			statement.setString(3, getCardinalDirection().name());
+					.prepareStatement("INSERT INTO OWNER(CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?)");
+			statement.setString(1, getClaimId());
+			statement.setString(2, getPersonId());
+			statement.setBigDecimal(3, getShares());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -173,7 +147,7 @@ public class Adjacency {
 		return result;
 	}
 
-	public static int deleteAdjacency(Adjacency adj) {
+	public static int deleteOwner(Owner own) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -183,9 +157,9 @@ public class Adjacency {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE ADJACENCY WHERE SOURCE_CLAIM_ID=? AND DEST_CLAIM_ID=?");
-			statement.setString(1, adj.getSourceClaimId());
-			statement.setString(2, adj.getDestClaimId());
+					.prepareStatement("DELETE OWNER WHERE CLAIM_ID=? AND PERSON_ID=?");
+			statement.setString(1, own.getClaimId());
+			statement.setString(2, own.getPersonId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -209,7 +183,7 @@ public class Adjacency {
 		return result;
 	}
 
-	public static int deleteAdjacencies(String claimId) {
+	public static int deleteOwners(String claimId) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -219,9 +193,8 @@ public class Adjacency {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE ADJACENCY WHERE SOURCE_CLAIM_ID=? OR DEST_CLAIM_ID=?");
+					.prepareStatement("DELETE OWNER WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
-			statement.setString(2, claimId);
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -254,9 +227,9 @@ public class Adjacency {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE ADJACENCY WHERE SOURCE_CLAIM_ID=? AND DEST_CLAIM_ID=?");
-			statement.setString(1, getSourceClaimId());
-			statement.setString(2, getDestClaimId());
+					.prepareStatement("DELETE OWNER WHERE CLAIM_ID=? AND PERSON_ID=?");
+			statement.setString(1, getClaimId());
+			statement.setString(2, getPersonId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -279,8 +252,8 @@ public class Adjacency {
 		return result;
 	}
 
-	public static List<Adjacency> getAdjacencies(String claimId) {
-		List<Adjacency> adjList = new ArrayList<Adjacency>();
+	public static List<Owner> getOwners(String claimId) {
+		List<Owner> ownList = new ArrayList<Owner>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -290,24 +263,15 @@ public class Adjacency {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT ADJ.SOURCE_CLAIM_ID, ADJ.DEST_CLAIM_ID, ADJ.CARDINAL_DIRECTION FROM ADJACENCY ADJ WHERE SOURCE_CLAIM_ID=? OR DEST_CLAIM_ID=?");
+					.prepareStatement("SELECT OWN.PERSON_ID, OWN.SHARES FROM OWNER OWN WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
-			statement.setString(2, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				Adjacency adj = new Adjacency();
-				String sourceClaimId = rs.getString(1);
-				if (sourceClaimId.equalsIgnoreCase(claimId)) {
-					adj.setSourceClaimId(sourceClaimId);
-					adj.setDestClaimId(rs.getString(2));
-					adj.setCardinalDirection(CardinalDirection.valueOf(rs.getString(3)));
-				} else {
-					// Reversing actual direction for consistency
-					adj.setSourceClaimId(rs.getString(2));
-					adj.setDestClaimId(sourceClaimId);
-					adj.setCardinalDirection(Adjacency.getReverseCardinalDirection(CardinalDirection.valueOf(rs.getString(3))));
-				}
-				adjList.add(adj);
+				Owner own = new Owner();
+				own.setClaimId(claimId);
+				own.setPersonId(rs.getString(1));
+				own.setShares(rs.getBigDecimal(2));
+				ownList.add(own);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -333,6 +297,6 @@ public class Adjacency {
 				}
 			}
 		}
-		return adjList;
+		return ownList;
 	}
 }

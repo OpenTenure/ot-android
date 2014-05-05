@@ -70,7 +70,7 @@ public class Person {
 	@Override
 	public String toString() {
 		return "Person [" + "personId=" + personId + ", firstName=" + firstName
-				+ ", uploaded=" + uploaded + ", lastName=" + lastName
+				+ ", lastName=" + lastName
 				+ ", dateOfBirth=" + dateOfBirth + ", placeOfBirth="
 				+ placeOfBirth +",gender="+gender+ ", emailAddress=" + emailAddress
 				+ ", postalAddress=" + postalAddress + ", mobilePhoneNumber="
@@ -142,16 +142,6 @@ public class Person {
 		this.gender = gender;
 	}
 
-	public static int markAsUploaded(Person person) {
-		person.setUploaded(true);
-		return Person.updatePerson(person);
-	}
-
-	public int markAsUploaded() {
-		setUploaded(true);
-		return update();
-	}
-
 	public static int createPerson(Person person) {
 		int result = 0;
 		Connection localConnection = null;
@@ -162,18 +152,17 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, person.getPersonId());
-			statement.setBoolean(2, person.getUploaded());
-			statement.setString(3, person.getFirstName());
-			statement.setString(4, person.getLastName());
-			statement.setDate(5, person.getDateOfBirth());
-			statement.setString(6, person.getPlaceOfBirth());
-			statement.setString(7, person.getEmailAddress());
-			statement.setString(8, person.getPostalAddress());
-			statement.setString(9, person.getMobilePhoneNumber());
-			statement.setString(10, person.getContactPhoneNumber());
-			statement.setString(11, person.getGender());
+			statement.setString(2, person.getFirstName());
+			statement.setString(3, person.getLastName());
+			statement.setDate(4, person.getDateOfBirth());
+			statement.setString(5, person.getPlaceOfBirth());
+			statement.setString(6, person.getEmailAddress());
+			statement.setString(7, person.getPostalAddress());
+			statement.setString(8, person.getMobilePhoneNumber());
+			statement.setString(9, person.getContactPhoneNumber());
+			statement.setString(10, person.getGender());
 			result = statement.executeUpdate();
 			FileSystemUtilities.createClaimantFolder(person.getPersonId());
 		} catch (SQLException e) {
@@ -206,18 +195,17 @@ public class Person {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO PERSON(PERSON_ID, UPLOADED, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER) VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getPersonId());
-			statement.setBoolean(2, getUploaded());
-			statement.setString(3, getFirstName());
-			statement.setString(4, getLastName());
-			statement.setDate(5, getDateOfBirth());
-			statement.setString(6, getPlaceOfBirth());
-			statement.setString(7, getEmailAddress());
-			statement.setString(8, getPostalAddress());
-			statement.setString(9, getMobilePhoneNumber());
-			statement.setString(10, getContactPhoneNumber());
-			statement.setString(11, getGender());
+			statement.setString(2, getFirstName());
+			statement.setString(3, getLastName());
+			statement.setDate(4, getDateOfBirth());
+			statement.setString(5, getPlaceOfBirth());
+			statement.setString(6, getEmailAddress());
+			statement.setString(7, getPostalAddress());
+			statement.setString(8, getMobilePhoneNumber());
+			statement.setString(9, getContactPhoneNumber());
+			statement.setString(10, getGender());
 			result = statement.executeUpdate();
 			FileSystemUtilities.createClaimantFolder(getPersonId());
 		} catch (SQLException e) {
@@ -318,17 +306,16 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=? WHERE PERSON_ID=?");
-			statement.setBoolean(1, person.getUploaded());
-			statement.setString(2, person.getFirstName());
-			statement.setString(3, person.getLastName());
-			statement.setDate(4, person.getDateOfBirth());
-			statement.setString(5, person.getPlaceOfBirth());
-			statement.setString(6, person.getEmailAddress());
-			statement.setString(7, person.getPostalAddress());
-			statement.setString(8, person.getMobilePhoneNumber());
-			statement.setString(9, person.getContactPhoneNumber());
-			statement.setString(10, person.getPersonId());
+					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=? WHERE PERSON_ID=?");
+			statement.setString(1, person.getFirstName());
+			statement.setString(2, person.getLastName());
+			statement.setDate(3, person.getDateOfBirth());
+			statement.setString(4, person.getPlaceOfBirth());
+			statement.setString(5, person.getEmailAddress());
+			statement.setString(6, person.getPostalAddress());
+			statement.setString(7, person.getMobilePhoneNumber());
+			statement.setString(8, person.getContactPhoneNumber());
+			statement.setString(9, person.getPersonId());
 			statement.setString(10, person.getGender());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -361,18 +348,17 @@ public class Person {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE PERSON SET UPLOADED=?, FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=? WHERE PERSON_ID=?");
-			statement.setBoolean(1, getUploaded());
-			statement.setString(2, getFirstName());
-			statement.setString(3, getLastName());
-			statement.setDate(4, getDateOfBirth());
-			statement.setString(5, getPlaceOfBirth());
-			statement.setString(6, getEmailAddress());
-			statement.setString(7, getPostalAddress());
-			statement.setString(8, getMobilePhoneNumber());
-			statement.setString(9, getContactPhoneNumber());
-			statement.setString(10, getPersonId());
-			statement.setString(11, getGender());
+					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=? WHERE PERSON_ID=?");
+			statement.setString(1, getFirstName());
+			statement.setString(2, getLastName());
+			statement.setDate(3, getDateOfBirth());
+			statement.setString(4, getPlaceOfBirth());
+			statement.setString(5, getEmailAddress());
+			statement.setString(6, getPostalAddress());
+			statement.setString(7, getMobilePhoneNumber());
+			statement.setString(8, getContactPhoneNumber());
+			statement.setString(9, getPersonId());
+			statement.setString(10, getGender());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -449,14 +435,6 @@ public class Person {
 		return person;
 	}
 
-	public Boolean getUploaded() {
-		return uploaded;
-	}
-
-	public void setUploaded(Boolean uploaded) {
-		this.uploaded = uploaded;
-	}
-
 	public static File getPersonPictureFile(String personId) {
 		return new File(FileSystemUtilities.getClaimantFolder(personId)
 				+ File.separator + personId + ".jpg");
@@ -493,7 +471,6 @@ public class Person {
 	}
 
 	String personId;
-	Boolean uploaded = Boolean.valueOf(false);
 	String firstName;
 	String lastName;
 	java.sql.Date dateOfBirth;

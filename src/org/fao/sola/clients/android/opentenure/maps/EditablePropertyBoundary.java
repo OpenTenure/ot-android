@@ -95,7 +95,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	public void resetAdjacency(List<BasePropertyBoundary> existingProperties){
 
 		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
-		Adjacency.deleteAdjacency(claimActivity.getClaimId());
+		Adjacency.deleteAdjacencies(claimActivity.getClaimId());
 
 		if(adjacentProperties != null){
 
