@@ -49,6 +49,10 @@
     <string name="gender">Genere</string>
     <string name="claim">Richiesta</string>
     <string name="date">Data</string>
+    <string name="additional_info">Informazioni aggiuntive</string>
+    <string name="adjacency">Adiacenza</string>
+    <string name="cardinal_direction">Direzione</string>
+    <string name="by">Di</string>
     <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>

@@ -30,7 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.Iterator;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -49,7 +49,7 @@ public class Moke {
 		for (Iterator iterator = list.iterator(); iterator
 				.hasNext();) {
 			Attachment attachment = (Attachment) iterator.next();
-			attachment.setStatus(AttacchementStatus._UPLOADING);
+			attachment.setStatus(AttachmentStatus._UPLOADING);
 			Attachment.updateAttachment(attachment);
 			
 		}					

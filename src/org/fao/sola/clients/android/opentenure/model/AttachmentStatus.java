@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
-public class AttacchementStatus {
+public class AttachmentStatus {
 	
 	public static String _CREATED = "created";
 	public static String _UPLOADING = "uploading";

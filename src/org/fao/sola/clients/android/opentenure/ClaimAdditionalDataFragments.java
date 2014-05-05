@@ -35,7 +35,7 @@ import java.util.List;
 
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
+import org.fao.sola.clients.android.opentenure.model.AdditionalInfo;
 
 
 
@@ -142,13 +142,13 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 					EditText key = (EditText)mView.findViewById(R.id.metadataKey);
 					EditText value = (EditText)mView.findViewById(R.id.metadataValue);
 
-					Metadata metadata = new Metadata();
+					AdditionalInfo additionalInfo = new AdditionalInfo();
 
-					metadata.setClaimId(claimActivity.getClaimId());
-					metadata.setName(key.getText().toString());
-					metadata.setValue(value.getText().toString());
+					additionalInfo.setClaimId(claimActivity.getClaimId());
+					additionalInfo.setName(key.getText().toString());
+					additionalInfo.setValue(value.getText().toString());
 
-					metadata.create();					
+					additionalInfo.create();					
 					update();
 
 				}
@@ -171,17 +171,17 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 
 	protected void update() {
 		String claimId = claimActivity.getClaimId();
-		List<Metadata> metadata;
+		List<AdditionalInfo> additionalInfo;
 		List<String> ids = new ArrayList<String>();
 		List<String> slogans = new ArrayList<String>();
 
 		if (claimId != null) {
 			Claim claim = Claim.getClaim(claimId);
-			metadata = claim.getMetadata();
-			for (Metadata meta : metadata) {
+			additionalInfo = claim.getAdditionalInfo();
+			for (AdditionalInfo meta : additionalInfo) {
 				String slogan = meta.getName() +" = "+ meta.getValue()  ;
 				slogans.add(slogan);
-				ids.add(meta.getMetadataId());
+				ids.add(meta.getAdditionalInfoId());
 			}
 		}
 		ArrayAdapter<String> adapter = new ClaimDetailsListAdapter(

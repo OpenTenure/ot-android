@@ -30,7 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
+import org.fao.sola.clients.android.opentenure.model.AdditionalInfo;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -84,7 +84,7 @@ public class ClaimDetailsListAdapter extends ArrayAdapter<String> {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Metadata.getMetadata(ids.get(position)).delete();
+						AdditionalInfo.getAdditionalInfo(ids.get(position)).delete();
 						Toast
 						.makeText(context,
 								R.string.metadata_removed,

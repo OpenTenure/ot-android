@@ -39,7 +39,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.MD5;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
+import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.app.AlertDialog;
@@ -92,35 +92,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	}
 
-	public void resetMetadata(List<BasePropertyBoundary> existingProperties){
+	public void resetAdjacency(List<BasePropertyBoundary> existingProperties){
 
 		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
-		List<Metadata> metadata = Metadata.getClaimMetadata(claimActivity.getClaimId());
-		
-		for(Metadata item: metadata){
-			item.delete();
-		}
+		Adjacency.deleteAdjacency(claimActivity.getClaimId());
 
 		if(adjacentProperties != null){
 
 			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
 				
-				Metadata adjacent = new Metadata();
-				adjacent.setClaimId(claimActivity.getClaimId());
-				adjacent.setName(getBearing(getBearing(adjacentProperty))
-						+ ", "
-						+ context.getResources().getString(R.string.property)
-						+ ", "
-						+ adjacentProperty.getClaimId()
-						);
-				Claim claim = Claim.getClaim(adjacentProperty.getClaimId());
-				adjacent.setValue(claim.getName()
-						+ ", "
-						+ claim.getPerson().getFirstName()
-						+ ", "
-						+ claim.getPerson().getLastName()
-						);
-				adjacent.create();
+				Adjacency adj = new Adjacency();
+				adj.setSourceClaimId(claimActivity.getClaimId());
+				adj.setDestClaimId(adjacentProperty.getClaimId());
+				adj.setCardinalDirection(getCardinalDirection(adjacentProperty));
+				adj.create();
 			}
 		}
 	}
@@ -129,7 +114,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
 	}
 
-	public boolean handleMarkerClick(final Marker mark){
+	public boolean handleMarkerClick(final Marker mark, final List<BasePropertyBoundary> existingProperties){
 		if (verticesMap.get(mark.getId()) == null) {
 			return false;
 		}
@@ -147,6 +132,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						removeMarker(mark);
 						drawBoundary();
 						updateVertices();
+						resetAdjacency(existingProperties);
 					}
 				});
 		dialog.setNegativeButton(R.string.cancel,

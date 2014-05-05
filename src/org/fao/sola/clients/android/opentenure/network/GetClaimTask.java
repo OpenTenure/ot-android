@@ -35,11 +35,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.AdditionalInfo;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -67,13 +65,13 @@ public class GetClaimTask extends AsyncTask<String, Void, Claim> {
 		 **/
 
 		List<org.fao.sola.clients.android.opentenure.model.Attachment> attachmentsDB = new ArrayList<org.fao.sola.clients.android.opentenure.model.Attachment>();
-		List<org.fao.sola.clients.android.opentenure.model.Metadata> metadataDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.Metadata>();
+		List<org.fao.sola.clients.android.opentenure.model.AdditionalInfo> additionalInfoDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.AdditionalInfo>();
 		List<org.fao.sola.clients.android.opentenure.model.Vertex> vertexDBList = Vertex
 				.verticesFromWKT(claim.getMappedGeometry(),
 						claim.getGpsGeometry());
 
 		List<Attachment> attachments = claim.getAttachments();
-		for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+		for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
 
 			org.fao.sola.clients.android.opentenure.model.Attachment attachmentDB = new org.fao.sola.clients.android.opentenure.model.Attachment();
 			Attachment attachment = (Attachment) iterator.next();
@@ -163,7 +161,7 @@ public class GetClaimTask extends AsyncTask<String, Void, Claim> {
 		 **/
 		// claimDB.setChallengedClaim(org.fao.sola.clients.android.opentenure.model.Claim.getClaim(claim.getChallengedClaimId()));
 		claimDB.setClaimId(claim.getId());
-		claimDB.setMetadata(metadataDBList);
+		claimDB.setAdditionalInfo(additionalInfoDBList);
 		claimDB.setName(claim.getDescription());
 		claimDB.setVertices(vertexDBList);
 		claimDB.setPerson(person);

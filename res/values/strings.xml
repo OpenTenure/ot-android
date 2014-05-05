@@ -49,6 +49,10 @@
     <string name="gender">Gender</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
+    <string name="additional_info">Additional information</string>
+    <string name="adjacency">Adjacency</string>
+    <string name="cardinal_direction">Cardinal direction</string>
+    <string name="by">By</string>
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>

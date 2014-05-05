@@ -29,7 +29,7 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.model.AttacchementStatus;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -81,11 +81,11 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		
 		TextView status = (TextView) rowView
 				.findViewById(R.id.attachment_status);
-		if(att.getStatus().equals(AttacchementStatus._UPLOADED) ){
+		if(att.getStatus().equals(AttachmentStatus._UPLOADED) ){
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(R.color.status_uploaded));
 			}
-		if(att.getStatus().equals(AttacchementStatus._UPLOADING) ){
+		if(att.getStatus().equals(AttachmentStatus._UPLOADING) ){
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(R.color.status_uploading));
 			}

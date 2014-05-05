@@ -48,11 +48,11 @@ public class Claim {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public List<Metadata> getMetadata() {
-		return metadata;
+	public List<AdditionalInfo> getAdditionalInfo() {
+		return additionalInfo;
 	}
-	public void setMetadata(List<Metadata> metadata) {
-		this.metadata = metadata;
+	public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
+		this.additionalInfo = additionalInfo;
 	}
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
@@ -70,7 +70,7 @@ public class Claim {
 				+ ", name=" + name
 				+ ", person=" + person
 				+ ", vertices=" + Arrays.toString(vertices.toArray())
-				+ ", metadata=" + Arrays.toString(metadata.toArray())
+				+ ", additionalInfo=" + Arrays.toString(additionalInfo.toArray())
 				+ ", challengedClaim=" + challengedClaim
 				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())+ "]";
@@ -123,10 +123,10 @@ public class Claim {
 				vertex.update();
 			}
 		}
-		if(claim.getMetadata() != null){
-			for(Metadata metadata:claim.getMetadata()){
-				metadata.setUploaded(true);
-				metadata.update();
+		if(claim.getAdditionalInfo() != null){
+			for(AdditionalInfo additionalInfo:claim.getAdditionalInfo()){
+				additionalInfo.setUploaded(true);
+				additionalInfo.update();
 			}
 		}
 		if(claim.getAttachments() != null){
@@ -150,10 +150,10 @@ public class Claim {
 				vertex.update();
 			}
 		}
-		if(getMetadata() != null){
-			for(Metadata metadata:getMetadata()){
-				metadata.setUploaded(true);
-				metadata.update();
+		if(getAdditionalInfo() != null){
+			for(AdditionalInfo additionalInfo:getAdditionalInfo()){
+				additionalInfo.setUploaded(true);
+				additionalInfo.update();
 			}
 		}
 		if(getAttachments() != null){
@@ -361,7 +361,7 @@ public class Claim {
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setMetadata(Metadata.getClaimMetadata(claimId));
+				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
 			}
 
 		} catch (SQLException e) {
@@ -415,7 +415,7 @@ public class Claim {
 				challengingClaim.setChallengedClaim(this);
 				challengingClaim.setVertices(Vertex.getVertices(challengingClaimId));
 				challengingClaim.setAttachments(Attachment.getAttachments(challengingClaimId));
-				challengingClaim.setMetadata(Metadata.getClaimMetadata(challengingClaimId));
+				challengingClaim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(challengingClaimId));
 				challengingClaims.add(challengingClaim);
 			}
 		} catch (SQLException e) {
@@ -468,7 +468,7 @@ public class Claim {
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(6)));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setMetadata(Metadata.getClaimMetadata(claimId));
+				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
 				claims.add(claim);
 			}
 		} catch (SQLException e) {
@@ -519,7 +519,7 @@ public class Claim {
 	Person person;
 	Claim challengedClaim;
 	List<Vertex> vertices;
-	List<Metadata> metadata;
+	List<AdditionalInfo> additionalInfo;
 	List<Claim> challengingClaims;
 	List<Attachment> attachments;
 

@@ -47,13 +47,11 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.AdditionalInfo;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Vertex;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Metadata;
 
 
 import com.google.gson.FieldNamingPolicy;

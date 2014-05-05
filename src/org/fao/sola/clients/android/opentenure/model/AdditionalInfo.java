@@ -37,12 +37,12 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-public class Metadata {
+public class AdditionalInfo {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Metadata() {
-		this.metadataId = UUID.randomUUID().toString();
+	public AdditionalInfo() {
+		this.additionalInfoId = UUID.randomUUID().toString();
 	}
 
 	public String getClaimId() {
@@ -71,14 +71,14 @@ public class Metadata {
 
 	@Override
 	public String toString() {
-		return "Metadata [" + "metadataId=" + metadataId + ", uploaded="
+		return "AdditionalInfo [" + "additionalInfoId=" + additionalInfoId + ", uploaded="
 				+ uploaded.toString() + ", claimId=" + claimId + ", name="
 				+ name + ", value=" + value + "]";
 	}
 
-	public static int markAsUploaded(Metadata metadata) {
-		metadata.setUploaded(true);
-		return Metadata.updateMetadata(metadata);
+	public static int markAsUploaded(AdditionalInfo additionalInfo) {
+		additionalInfo.setUploaded(true);
+		return AdditionalInfo.updateAdditionalInfo(additionalInfo);
 	}
 
 	public int markAsUploaded() {
@@ -86,7 +86,7 @@ public class Metadata {
 		return update();
 	}
 
-	public static int createMetadata(Metadata metadata) {
+	public static int createAdditionalInfo(AdditionalInfo additionalInfo) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -96,12 +96,12 @@ public class Metadata {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO METADATA (METADATA_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
-			statement.setString(1, metadata.getMetadataId());
-			statement.setBoolean(2, metadata.getUploaded());
-			statement.setString(3, metadata.getClaimId());
-			statement.setString(4, metadata.getName());
-			statement.setString(5, metadata.getValue());
+					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
+			statement.setString(1, additionalInfo.getAdditionalInfoId());
+			statement.setBoolean(2, additionalInfo.getUploaded());
+			statement.setString(3, additionalInfo.getClaimId());
+			statement.setString(4, additionalInfo.getName());
+			statement.setString(5, additionalInfo.getValue());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -133,8 +133,8 @@ public class Metadata {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO METADATA (METADATA_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
-			statement.setString(1, getMetadataId());
+					.prepareStatement("INSERT INTO ADDITIONAL_INFO (ADDITIONAL_INFO_ID, UPLOADED, CLAIM_ID, NAME, VALUE) VALUES(?,?,?,?,?)");
+			statement.setString(1, getAdditionalInfoId());
 			statement.setBoolean(2, getUploaded());
 			statement.setString(3, getClaimId());
 			statement.setString(4, getName());
@@ -170,8 +170,8 @@ public class Metadata {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE FROM METADATA WHERE METADATA_ID=?");
-			statement.setString(1, getMetadataId());
+					.prepareStatement("DELETE FROM ADDITIONAL_INFO WHERE ADDITIONAL_INFO_ID=?");
+			statement.setString(1, getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -194,7 +194,7 @@ public class Metadata {
 		return result;
 	}
 
-	public static int deleteMetadata(Metadata metadata) {
+	public static int deleteAdditionalInfo(AdditionalInfo additionalInfo) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -204,8 +204,8 @@ public class Metadata {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE FROM METADATA WHERE METADATA_ID=?");
-			statement.setString(1, metadata.getMetadataId());
+					.prepareStatement("DELETE FROM ADDITIONAL_INFO WHERE ADDITIONAL_INFO_ID=?");
+			statement.setString(1, additionalInfo.getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -228,7 +228,7 @@ public class Metadata {
 		return result;
 	}
 
-	public static int updateMetadata(Metadata metadata) {
+	public static int updateAdditionalInfo(AdditionalInfo additionalInfo) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -238,12 +238,12 @@ public class Metadata {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE METADATA SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE METADATA_ID=?");
-			statement.setBoolean(1, metadata.getUploaded());
-			statement.setString(2, metadata.getClaimId());
-			statement.setString(3, metadata.getName());
-			statement.setString(4, metadata.getValue());
-			statement.setString(5, metadata.getMetadataId());
+					.prepareStatement("UPDATE ADDITIONAL_INFO SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
+			statement.setBoolean(1, additionalInfo.getUploaded());
+			statement.setString(2, additionalInfo.getClaimId());
+			statement.setString(3, additionalInfo.getName());
+			statement.setString(4, additionalInfo.getValue());
+			statement.setString(5, additionalInfo.getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -275,12 +275,12 @@ public class Metadata {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE METADATA SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE METADATA_ID=?");
+					.prepareStatement("UPDATE ADDITIONAL_INFO SET UPLOADED=?, CLAIM_ID=?, NAME=?, VALUE=? WHERE ADDITIONAL_INFO_ID=?");
 			statement.setBoolean(1, getUploaded());
 			statement.setString(2, getClaimId());
 			statement.setString(3, getName());
 			statement.setString(4, getValue());
-			statement.setString(5, getMetadataId());
+			statement.setString(5, getAdditionalInfoId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -303,8 +303,8 @@ public class Metadata {
 		return result;
 	}
 
-	public static Metadata getMetadata(String metadataId) {
-		Metadata metadata = null;
+	public static AdditionalInfo getAdditionalInfo(String additionalInfoId) {
+		AdditionalInfo additionalInfo = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -314,16 +314,16 @@ public class Metadata {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT UPLOADED, CLAIM_ID, NAME, VALUE FROM METADATA WHERE METADATA_ID=?");
-			statement.setString(1, metadataId);
+					.prepareStatement("SELECT UPLOADED, CLAIM_ID, NAME, VALUE FROM ADDITIONAL_INFO WHERE ADDITIONAL_INFO_ID=?");
+			statement.setString(1, additionalInfoId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				metadata = new Metadata();
-				metadata.setMetadataId(metadataId);
-				metadata.setUploaded(rs.getBoolean(1));
-				metadata.setClaimId(rs.getString(2));
-				metadata.setName(rs.getString(3));
-				metadata.setValue(rs.getString(4));
+				additionalInfo = new AdditionalInfo();
+				additionalInfo.setAdditionalInfoId(additionalInfoId);
+				additionalInfo.setUploaded(rs.getBoolean(1));
+				additionalInfo.setClaimId(rs.getString(2));
+				additionalInfo.setName(rs.getString(3));
+				additionalInfo.setValue(rs.getString(4));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -349,10 +349,10 @@ public class Metadata {
 				}
 			}
 		}
-		return metadata;
+		return additionalInfo;
 	}
 
-	public String getMetadata(String claimId, String name) {
+	public String getAdditionalInfo(String claimId, String name) {
 		String value = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -362,7 +362,7 @@ public class Metadata {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT VALUE FROM METADATA META WHERE META.CLAIM_ID=? AND META.NAME=?");
+					.prepareStatement("SELECT VALUE FROM ADDITIONAL_INFO META WHERE META.CLAIM_ID=? AND META.NAME=?");
 			statement.setString(1, claimId);
 			statement.setString(2, name);
 			rs = statement.executeQuery();
@@ -396,16 +396,16 @@ public class Metadata {
 		return value;
 	}
 
-	public String getMetadataId() {
-		return metadataId;
+	public String getAdditionalInfoId() {
+		return additionalInfoId;
 	}
 
-	public void setMetadataId(String metadataId) {
-		this.metadataId = metadataId;
+	public void setAdditionalInfoId(String additionalInfoId) {
+		this.additionalInfoId = additionalInfoId;
 	}
 
-	public static List<Metadata> getClaimMetadata(String claimId) {
-		List<Metadata> metadata = new ArrayList<Metadata>();
+	public static List<AdditionalInfo> getClaimAdditionalInfo(String claimId) {
+		List<AdditionalInfo> additionalInfo = new ArrayList<AdditionalInfo>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -415,17 +415,17 @@ public class Metadata {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT METADATA_ID, UPLOADED, NAME, VALUE FROM METADATA META WHERE META.CLAIM_ID=?");
+					.prepareStatement("SELECT ADDITIONAL_INFO_ID, UPLOADED, NAME, VALUE FROM ADDITIONAL_INFO META WHERE META.CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				Metadata item = new Metadata();
+				AdditionalInfo item = new AdditionalInfo();
 				item.setClaimId(claimId);
-				item.setMetadataId(rs.getString(1));
+				item.setAdditionalInfoId(rs.getString(1));
 				item.setUploaded(rs.getBoolean(2));
 				item.setName(rs.getString(3));
 				item.setValue(rs.getString(4));
-				metadata.add(item);
+				additionalInfo.add(item);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -451,7 +451,7 @@ public class Metadata {
 				}
 			}
 		}
-		return metadata;
+		return additionalInfo;
 	}
 
 	public Boolean getUploaded() {
@@ -462,7 +462,7 @@ public class Metadata {
 		this.uploaded = uploaded;
 	}
 
-	String metadataId;
+	String additionalInfoId;
 	Boolean uploaded = Boolean.valueOf(false);
 	String claimId;
 	String name;

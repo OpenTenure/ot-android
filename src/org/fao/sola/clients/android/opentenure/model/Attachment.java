@@ -59,7 +59,7 @@ public class Attachment {
 
 	public Attachment(){
 		this.attachmentId = UUID.randomUUID().toString();
-		this.status = AttacchementStatus._CREATED;
+		this.status = AttachmentStatus._CREATED;
 	}
 	
 	@Override

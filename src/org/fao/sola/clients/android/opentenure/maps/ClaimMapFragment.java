@@ -301,7 +301,7 @@ public class ClaimMapFragment extends Fragment implements
 									int which) {
 
 								currentProperty.insertVertex(position);
-								currentProperty.resetMetadata(existingProperties);
+								currentProperty.resetAdjacency(existingProperties);
 							}
 						});
 				dialog.setNegativeButton(R.string.cancel,
@@ -321,7 +321,7 @@ public class ClaimMapFragment extends Fragment implements
 
 			@Override
 			public boolean onMarkerClick(final Marker mark) {
-				if (currentProperty.handleMarkerClick(mark)) {
+				if (currentProperty.handleMarkerClick(mark, existingProperties)) {
 					return true;
 				} else {
 					return false;
@@ -358,7 +358,7 @@ public class ClaimMapFragment extends Fragment implements
 				}
 				currentProperty.moveMarker(mark);
 				currentProperty.updateVertices();
-				currentProperty.resetMetadata(existingProperties);
+				currentProperty.resetAdjacency(existingProperties);
 				currentProperty.drawBoundary();
 			}
 

@@ -29,10 +29,15 @@ package org.fao.sola.clients.android.opentenure.print;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.List;
+
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.maps.BasePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
+import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -44,7 +49,8 @@ import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfDocument.Page;
 import android.graphics.pdf.PdfDocument.PageInfo;
 
-@SuppressLint("NewApi") // Suppressions needed to allow compiling for API level 17
+@SuppressLint("NewApi")
+// Suppressions needed to allow compiling for API level 17
 public class PDFClaimExporter {
 
 	public static final int A4_PAGE_WIDTH = 595;
@@ -77,7 +83,8 @@ public class PDFClaimExporter {
 		fileName = FileSystemUtilities.getOpentenureFolder() + File.separator
 				+ "print_and_sign_this.pdf";
 		mapFileName = FileSystemUtilities.getAttachmentFolder(claimId)
-				+ File.separator + EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME;
+				+ File.separator
+				+ EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME;
 		try {
 			document = new PdfDocument();
 
@@ -86,22 +93,31 @@ public class PDFClaimExporter {
 			addPage(document, context, claimId);
 
 			setFont(FONT_SANS_SERIF, Typeface.NORMAL);
-			writeText(context.getResources().getString(R.string.app_name) + " " + context.getResources().getString(R.string.claim) + ": " + claim.getName() + " (id: " + claimId + ")");
+			writeText(context.getResources().getString(R.string.app_name) + " "
+					+ context.getResources().getString(R.string.claim) + ": "
+					+ claim.getName() + " (id: " + claimId + ")");
 			newLine();
 			drawBitmap(bitmapFromResource(context, R.drawable.sola_logo, 128,
 					110));
 			newLine();
-			writeText(context.getResources().getString(R.string.first_name) + ": " + claim.getPerson().getFirstName());
+			writeText(context.getResources().getString(R.string.first_name)
+					+ ": " + claim.getPerson().getFirstName());
 			newLine();
-			writeText(context.getResources().getString(R.string.last_name) + ": " + claim.getPerson().getLastName());
+			writeText(context.getResources().getString(R.string.last_name)
+					+ ": " + claim.getPerson().getLastName());
 			newLine();
-			writeText(context.getResources().getString(R.string.date_of_birth) + ": " + claim.getPerson().getDateOfBirth());
+			writeText(context.getResources().getString(R.string.date_of_birth)
+					+ ": " + claim.getPerson().getDateOfBirth());
 			newLine();
-			writeText(context.getResources().getString(R.string.place_of_birth) + ": " + claim.getPerson().getPlaceOfBirth());
+			writeText(context.getResources().getString(R.string.place_of_birth)
+					+ ": " + claim.getPerson().getPlaceOfBirth());
 			newLine();
-			writeText(context.getResources().getString(R.string.postal_address) + ": " + claim.getPerson().getPostalAddress());
+			writeText(context.getResources().getString(R.string.postal_address)
+					+ ": " + claim.getPerson().getPostalAddress());
 			newLine();
-			writeText(context.getResources().getString(R.string.contact_phone_number) + ": " + claim.getPerson().getContactPhoneNumber());
+			writeText(context.getResources().getString(
+					R.string.contact_phone_number)
+					+ ": " + claim.getPerson().getContactPhoneNumber());
 			newLine();
 			drawHorizontalLine();
 			newLine();
@@ -111,10 +127,45 @@ public class PDFClaimExporter {
 			newLine();
 			newLine();
 			writeText(context.getResources().getString(R.string.date));
-			drawHorizontalLine(pageWidth/2);
+			drawHorizontalLine(pageWidth / 2);
 			writeText(context.getResources().getString(R.string.signature));
 			drawHorizontalLine(pageWidth - horizontalMargin);
+
+			addPage(document, context, claimId);
+			writeText(context.getResources().getString(
+					R.string.adjacent_properties));
 			newLine();
+			drawHorizontalLine();
+			List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
+			for (Adjacency adj : adjList) {
+				Claim adjacentClaim = Claim.getClaim(adj.getDestClaimId());
+				newLine();
+				newLine();
+				writeText(context.getResources().getString(
+						R.string.cardinal_direction)
+						+ ": "
+						+ BasePropertyBoundary.getCardinalDirection(context,
+								adj.getCardinalDirection())
+						+ ", "
+						+ context.getResources().getString(R.string.property)
+						+ ": "
+						+ adjacentClaim.getName()
+						+ ", "
+						+ context.getResources().getString(R.string.by)
+						+ ": "
+						+ adjacentClaim.getPerson().getFirstName()
+						+ " "
+						+ adjacentClaim.getPerson().getLastName());
+			}
+			newLine();
+			newLine();
+			drawHorizontalLine();
+			newLine();
+			newLine();
+			writeText(context.getResources().getString(R.string.date));
+			drawHorizontalLine(pageWidth / 2);
+			writeText(context.getResources().getString(R.string.signature));
+			drawHorizontalLine(pageWidth - horizontalMargin);
 
 			if (currentPage != null) {
 				document.finishPage(currentPage);
@@ -141,8 +192,8 @@ public class PDFClaimExporter {
 	private void writeText(String text) {
 		Rect bounds = new Rect();
 		typeface.getTextBounds(text, 0, text.length(), bounds);
-		currentPage.getCanvas().drawText(text, currentX, currentY + bounds.height(),
-				typeface);
+		currentPage.getCanvas().drawText(text, currentX,
+				currentY + (bounds.height() - bounds.bottom), typeface);
 		currentX += bounds.width() + horizontalSpace;
 		currentLineHeight = Math.max(currentLineHeight, bounds.height());
 	}
@@ -160,28 +211,29 @@ public class PDFClaimExporter {
 	}
 
 	private void drawHorizontalLine() {
-		currentPage.getCanvas().drawLine(currentX, currentY + currentLineHeight,
-				pageWidth - horizontalMargin, currentY + currentLineHeight, typeface);
+		currentPage.getCanvas().drawLine(currentX,
+				currentY + currentLineHeight, pageWidth - horizontalMargin,
+				currentY + currentLineHeight, typeface);
 		currentX = pageWidth - horizontalMargin;
 
 	}
 
 	private void drawHorizontalLine(int to) {
-		currentPage.getCanvas().drawLine(currentX, currentY + currentLineHeight,
-				to, currentY + currentLineHeight, typeface);
+		currentPage.getCanvas().drawLine(currentX,
+				currentY + currentLineHeight, to, currentY + currentLineHeight,
+				typeface);
 		currentX = to + horizontalSpace;
 
 	}
 
-	private void addPage(PdfDocument document, Context context,
-			String claimId) {
+	private void addPage(PdfDocument document, Context context, String claimId) {
 
 		if (currentPage != null) {
 			document.finishPage(currentPage);
 		}
 		// crate a page description
-		PageInfo pageInfo = new PageInfo.Builder(pageWidth,
-				pageHeight, currentPageIndex++).create();
+		PageInfo pageInfo = new PageInfo.Builder(pageWidth, pageHeight,
+				currentPageIndex++).create();
 
 		// start a page
 		currentPage = document.startPage(pageInfo);
@@ -190,8 +242,8 @@ public class PDFClaimExporter {
 
 	}
 
-	private Bitmap bitmapFromResource(Context context, int resId,
-			int width, int height) {
+	private Bitmap bitmapFromResource(Context context, int resId, int width,
+			int height) {
 		try {
 			Bitmap resource = BitmapFactory.decodeResource(
 					context.getResources(), resId);

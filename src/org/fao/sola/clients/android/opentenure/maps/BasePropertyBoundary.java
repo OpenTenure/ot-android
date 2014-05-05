@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
@@ -59,8 +60,6 @@ public class BasePropertyBoundary {
 
 	protected static final float BOUNDARY_Z_INDEX = 2.0f;
 	public static final double SNAP_THRESHOLD = 0.0001;
-
-	public enum Bearing{NORTH, SOUTH, EAST, WEST, SOUTH_WEST, SOUTH_EAST, NORTH_WEST, NORTH_EAST, NO_BEARING};
 
 	protected String name;
 	protected String claimId;
@@ -182,7 +181,7 @@ public class BasePropertyBoundary {
 		tf.getTextBounds(name, 0, name.length(), boundsText);
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmpText = Bitmap.createBitmap(boundsText.width(),
-				boundsText.height(), conf);
+				boundsText.height() - boundsText.bottom, conf);
 
 		Canvas canvasText = new Canvas(bmpText);
 		canvasText.drawText(name, canvasText.getWidth() / 2,
@@ -228,25 +227,25 @@ public class BasePropertyBoundary {
 		return adjacentProperties;
 	}
 
-	public Bearing getBearing(BasePropertyBoundary dest){
+	public CardinalDirection getCardinalDirection(BasePropertyBoundary dest){
 		double deltaX = dest.getCenter().longitude - center.longitude;
 		double deltaY = dest.getCenter().latitude - center.latitude;
 		if(deltaX == 0){
-			return deltaY > 0 ? Bearing.NORTH : Bearing.SOUTH;
+			return deltaY > 0 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
 		}
 		double slope = deltaY/deltaX;
 		if(slope >= -1.0/3.0 && slope < 1.0/3.0){
-			return deltaX > 0 ? Bearing.EAST : Bearing.WEST;
+			return deltaX > 0 ? CardinalDirection.EAST : CardinalDirection.WEST;
 		}else if(slope >= 1.0/3.0 && slope < 3.0){
-			return deltaY > 0 ? Bearing.NORTH_EAST : Bearing.SOUTH_WEST;
+			return deltaY > 0 ? CardinalDirection.NORTHEAST : CardinalDirection.SOUTHWEST;
 		}else if(slope >= 3.0 || slope <= -3.0){
-			return deltaY > 0 ? Bearing.NORTH : Bearing.SOUTH;
+			return deltaY > 0 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
 		}else{
-			return deltaY > 0 ? Bearing.NORTH_WEST : Bearing.SOUTH_EAST;
+			return deltaY > 0 ? CardinalDirection.NORTHWEST : CardinalDirection.SOUTHEAST;
 		}
 	}
 
-	public String getBearing(Bearing bearing){
+	public static String getCardinalDirection(Context context, CardinalDirection bearing){
 		switch(bearing){
 		case NORTH:
 			return context.getResources().getString(R.string.north);
@@ -256,13 +255,13 @@ public class BasePropertyBoundary {
 			return context.getResources().getString(R.string.east);
 		case WEST:
 			return context.getResources().getString(R.string.west);
-		case NORTH_EAST:
+		case NORTHEAST:
 			return context.getResources().getString(R.string.north_east);
-		case NORTH_WEST:
+		case NORTHWEST:
 			return context.getResources().getString(R.string.north_west);
-		case SOUTH_EAST:
+		case SOUTHEAST:
 			return context.getResources().getString(R.string.south_east);
-		case SOUTH_WEST:
+		case SOUTHWEST:
 			return context.getResources().getString(R.string.south_west);
 		default:
 			return "";
