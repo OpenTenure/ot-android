@@ -329,7 +329,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 			} else {
 				toast = Toast
 						.makeText(rootView.getContext(),
-								R.string.message_save_before_submit,
+								R.string.message_save_claim_before_submit,
 								Toast.LENGTH_SHORT);
 				toast.show();
 			}

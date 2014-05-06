@@ -163,9 +163,7 @@ public class OpenTenure extends FragmentActivity {
 			case 2:
 				return new LocalClaimsFragment();
 			case 3:
-				return new SubmittedClaimsFragment();
-//			case 4:
-//				return new ChallengedClaimsFragment();
+				return new PersonsFragment();
 			}
 			return null;
 		}
@@ -185,9 +183,9 @@ public class OpenTenure extends FragmentActivity {
 			case 1:
 				return getString(R.string.title_map).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_local_claims).toUpperCase(l);
+				return getString(R.string.title_claims).toUpperCase(l);
 			case 3:
-				return getString(R.string.title_submitted_claims)
+				return getString(R.string.title_persons)
 						.toUpperCase(l);
 //			case 4:
 //				return getString(R.string.title_challenged_claims).toUpperCase(

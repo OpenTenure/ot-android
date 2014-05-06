@@ -141,7 +141,7 @@ public class LoggingFragment extends SeparatedListFragment implements
 				toast = Toast.makeText(rootView.getContext(), R.string.message_submitted, Toast.LENGTH_SHORT);
 				toast.show();
 			}else{
-				toast = Toast.makeText(rootView.getContext(), R.string.message_save_before_submit, Toast.LENGTH_SHORT);
+				toast = Toast.makeText(rootView.getContext(), R.string.message_save_claim_before_submit, Toast.LENGTH_SHORT);
 				toast.show();
 			}
 			return true;

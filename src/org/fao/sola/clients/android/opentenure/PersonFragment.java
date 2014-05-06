@@ -32,33 +32,19 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.LoginActivity;
-import org.fao.sola.clients.android.opentenure.network.LogoutTask;
-import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
-import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,16 +59,15 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-public class ClaimDetailsFragment extends Fragment {
+public class PersonFragment extends Fragment {
 
 	View rootView;
-	private ClaimDispatcher claimActivity;
+	private PersonDispatcher personActivity;
 	final Calendar localCalendar = Calendar.getInstance();
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-	File claimantPictureFile;
+	File personPictureFile;
 	Menu menu;
 	ImageView claimantImageView;
-
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -91,65 +76,24 @@ public class ClaimDetailsFragment extends Fragment {
 		// This makes sure that the container activity has implemented
 		// the callback interface. If not, it throws an exception
 		try {
-			claimActivity = (ClaimDispatcher) activity;
+			personActivity = (PersonDispatcher) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement ClaimDispatcher");
+					+ " must implement PersonDispatcher");
 		}
 	}
 
-
-	public ClaimDetailsFragment() {}
-
-
-	@Override
-	public void onPrepareOptionsMenu(Menu menu){
-		MenuItem itemIn;
-		MenuItem itemOut;		
-		
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		Log.d(this.getClass().getName(),"Is the user logged in ? : " + OpenTenureApplication.isLoggedin());
-
-		
-		if(OpenTenureApplication.isLoggedin()){
-			
-		itemIn = menu.getItem(4);
-		itemIn.setVisible(false);
-		itemOut = menu.getItem(5);
-		itemOut.setVisible(true);
-		
-		}
-		else{
-			
-			itemIn = menu.getItem(4);
-			itemIn.setVisible(true);
-			itemOut = menu.getItem(5);
-			itemOut.setVisible(false);
-		}
-		
-		this.menu = menu;
-		super.onPrepareOptionsMenu(menu);
-		
-	}
-	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-
-		inflater.inflate(R.menu.claim_details, menu);
+		inflater.inflate(R.menu.person, menu);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
-				false);
+		rootView = inflater.inflate(R.layout.fragment_person, container, false);
 		setHasOptionsMenu(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -166,7 +110,7 @@ public class ClaimDetailsFragment extends Fragment {
 				localCalendar.set(Calendar.YEAR, year);
 				localCalendar.set(Calendar.MONTH, monthOfYear);
 				localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateLabel();
+				updateDoB();
 			}
 
 		};
@@ -187,63 +131,60 @@ public class ClaimDetailsFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				if (claimantPictureFile != null) {
+				if (personPictureFile != null) {
 					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 					intent.putExtra(MediaStore.EXTRA_OUTPUT,
-							Uri.fromFile(claimantPictureFile));
+							Uri.fromFile(personPictureFile));
 					startActivityForResult(intent,
 							CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 				} else {
 					Toast toast = Toast.makeText(rootView.getContext(),
-							R.string.message_save_claim_before_adding_content,
+							R.string.message_save_person_before_adding_content,
 							Toast.LENGTH_SHORT);
 					toast.show();
 				}
 
 			}
 		});
-		if (claimActivity.getClaimId() != null) {
-			load(claimActivity.getClaimId());
+		if (personActivity.getPersonId() != null) {
+			load(personActivity.getPersonId());
 		}
 
 		return rootView;
 	}
 
-	private void load(String claimId) {
-		Claim claim = Claim.getClaim(claimId);
+	private void load(String personId) {
+		Person person = Person.getPerson(personId);
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
-		.setText(claim.getPerson().getFirstName());
+				.setText(person.getFirstName());
 		((EditText) rootView.findViewById(R.id.last_name_input_field))
-		.setText(claim.getPerson().getLastName());
+				.setText(person.getLastName());
 		((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
-		.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-		.format(claim.getPerson().getDateOfBirth()));
+				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.format(person.getDateOfBirth()));
 		((EditText) rootView.findViewById(R.id.place_of_birth_input_field))
-		.setText(claim.getPerson().getPlaceOfBirth());
+				.setText(person.getPlaceOfBirth());
 		((EditText) rootView.findViewById(R.id.postal_address_input_field))
-		.setText(claim.getPerson().getPostalAddress());
+				.setText(person.getPostalAddress());
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
-		.setText(claim.getPerson().getEmailAddress());
+				.setText(person.getEmailAddress());
 		((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
-		.setChecked((claim.getPerson().getGender().equals("F")));
+				.setChecked((person.getGender().equals("F")));
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
-		.setChecked((claim.getPerson().getGender().equals("M")));
+				.setChecked((person.getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
-		.setText(claim.getPerson().getMobilePhoneNumber());
+				.setText(person.getMobilePhoneNumber());
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
-				.setText(claim.getPerson().getContactPhoneNumber());
-		((EditText) rootView.findViewById(R.id.claim_name_input_field))
-		.setText(claim.getName());
-		claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
-				.getPersonId());
+				.setText(person.getContactPhoneNumber());
+		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
 		try {
 			if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
 				claimantImageView.setImageBitmap(Person.getPersonPicture(
-						rootView.getContext(), claimantPictureFile, 128));
+						rootView.getContext(), personPictureFile, 128));
 			} else {
 				claimantImageView.setImageBitmap(Person.getPersonPicture(
-						rootView.getContext(), claimantPictureFile, 128));
+						rootView.getContext(), personPictureFile, 128));
 			}
 		} catch (Exception e) {
 			claimantImageView.setImageDrawable(getResources().getDrawable(
@@ -258,7 +199,7 @@ public class ClaimDetailsFragment extends Fragment {
 			if (resultCode == Activity.RESULT_OK) {
 				try {
 					claimantImageView.setImageBitmap(Person.getPersonPicture(
-							rootView.getContext(), claimantPictureFile, 128));
+							rootView.getContext(), personPictureFile, 128));
 				} catch (Exception e) {
 					claimantImageView.setImageDrawable(getResources()
 							.getDrawable(R.drawable.ic_contact_picture));
@@ -267,7 +208,7 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	private void updateLabel() {
+	private void updateDoB() {
 
 		EditText dateOfBirth = (EditText) getView().findViewById(
 				R.id.date_of_birth_input_field);
@@ -277,7 +218,7 @@ public class ClaimDetailsFragment extends Fragment {
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
 
-	public void saveClaim() {
+	public void savePerson() {
 		Person person = new Person();
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
@@ -287,9 +228,9 @@ public class ClaimDetailsFragment extends Fragment {
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-			.parse(((EditText) rootView
-					.findViewById(R.id.date_of_birth_input_field))
-					.getText().toString());
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_birth_input_field))
+							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = new java.util.Date();
@@ -310,97 +251,76 @@ public class ClaimDetailsFragment extends Fragment {
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
-		if(((RadioButton) rootView
+		if (((RadioButton) rootView
 				.findViewById(R.id.gender_feminine_input_field)).isChecked())
 			person.setGender("F");
-		if(((RadioButton) rootView
+		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
-		person.create();
 
-		Claim claim = new Claim();
-		claim.setPerson(person);
-		claim.setName(((EditText) rootView
-				.findViewById(R.id.claim_name_input_field)).getText()
-				.toString());
-		if (claim.create() == 1) {
+		if (person.create() == 1) {
 
-			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
-
-			claimActivity.setClaimId(claim.getClaimId());
-			claimantPictureFile = Person.getPersonPictureFile(claim.getPerson()
+			personActivity.setPersonId(person.getPersonId());
+			personPictureFile = Person.getPersonPictureFile(person
 					.getPersonId());
 		}
 
 	}
 
-	public void updateClaim() {
+	public void updatePerson() {
 
-		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		claim.setName(((EditText) rootView
-				.findViewById(R.id.claim_name_input_field)).getText()
+		Person person = Person.getPerson(personActivity.getPersonId());
+		person.setFirstName(((EditText) rootView
+				.findViewById(R.id.first_name_input_field)).getText()
 				.toString());
-		claim.update();
-		claim.getPerson().setFirstName(
-				((EditText) rootView.findViewById(R.id.first_name_input_field))
-				.getText().toString());
-		claim.getPerson().setLastName(
-				((EditText) rootView.findViewById(R.id.last_name_input_field))
-				.getText().toString());
+		person.setLastName(((EditText) rootView
+				.findViewById(R.id.last_name_input_field)).getText().toString());
 		java.util.Date dob;
 		try {
 			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-			.parse(((EditText) rootView
-					.findViewById(R.id.date_of_birth_input_field))
-					.getText().toString());
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_birth_input_field))
+							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = new java.util.Date();
 		}
-		claim.getPerson().setDateOfBirth(new Date(dob.getTime()));
-		claim.getPerson().setPlaceOfBirth(
-				((EditText) rootView
-						.findViewById(R.id.place_of_birth_input_field))
-						.getText().toString());
-		claim.getPerson().setPostalAddress(
-				((EditText) rootView
-						.findViewById(R.id.postal_address_input_field))
-						.getText().toString());
-		claim.getPerson().setEmailAddress(
-				((EditText) rootView
-						.findViewById(R.id.email_address_input_field))
-						.getText().toString());
-		claim.getPerson().setMobilePhoneNumber(
-				((EditText) rootView
-						.findViewById(R.id.mobile_phone_number_input_field))
-						.getText().toString());
-		claim.getPerson().setContactPhoneNumber(
-				((EditText) rootView
-						.findViewById(R.id.contact_phone_number_input_field))
-						.getText().toString());		
-		if(((RadioButton) rootView
+		person.setDateOfBirth(new Date(dob.getTime()));
+		person.setPlaceOfBirth(((EditText) rootView
+				.findViewById(R.id.place_of_birth_input_field)).getText()
+				.toString());
+		person.setPostalAddress(((EditText) rootView
+				.findViewById(R.id.postal_address_input_field)).getText()
+				.toString());
+		person.setEmailAddress(((EditText) rootView
+				.findViewById(R.id.email_address_input_field)).getText()
+				.toString());
+		person.setMobilePhoneNumber(((EditText) rootView
+				.findViewById(R.id.mobile_phone_number_input_field)).getText()
+				.toString());
+		person.setContactPhoneNumber(((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field)).getText()
+				.toString());
+		if (((RadioButton) rootView
 				.findViewById(R.id.gender_feminine_input_field)).isChecked())
-			claim.getPerson().setGender("F");
-		if(((RadioButton) rootView
+			person.setGender("F");
+		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
-			claim.getPerson().setGender("M");
-		claim.getPerson().update();
+			person.setGender("M");
+		person.update();
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// handle item selection
+
 		Toast toast;
 		switch (item.getItemId()) {
-		
 
-		
-		
 		case R.id.action_save:
 
-			if (claimActivity.getClaimId() == null) {
-				saveClaim();
-				if (claimActivity.getClaimId() != null) {
+			if (personActivity.getPersonId() == null) {
+				savePerson();
+				if (personActivity.getPersonId() != null) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
@@ -412,8 +332,8 @@ public class ClaimDetailsFragment extends Fragment {
 					toast.show();
 				}
 			} else {
-				updateClaim();
-				if (claimActivity.getClaimId() != null) {
+				updatePerson();
+				if (personActivity.getPersonId() != null) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
@@ -427,151 +347,6 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 			return true;
-		case R.id.action_submit:
-
-			if(!OpenTenureApplication.isLoggedin()){
-				toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_login_before,
-								Toast.LENGTH_SHORT);
-				toast.show();
-				return true;				
-
-			}
-			else{
-
-				if (claimActivity.getClaimId() != null) {				
-					
-					
-					JsonUtilities.
-						createClaimJson(claimActivity.getClaimId());
-					List<Vertex> vertices = Vertex.getVertices(claimActivity.getClaimId());
-					Log.d(this.getClass().getName(), "mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
-					Log.d(this.getClass().getName(), "gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
-					
-					SaveClaimTask saveClaimtask = new SaveClaimTask();
-					saveClaimtask.execute(claimActivity.getClaimId());
-
-					
-				} else {
-					toast = Toast
-							.makeText(rootView.getContext(),
-									R.string.message_save_claim_before_submit,
-									Toast.LENGTH_SHORT);
-					toast.show();
-				}
-				return true;
-			}
-
-
-		case R.id.action_export:
-
-
-			if (claimActivity.getClaimId() != null) {
-
-				AlertDialog.Builder metadataDialog = new AlertDialog.
-						Builder(rootView.getContext());
-
-				metadataDialog.setTitle(R.string.password);
-
-				final EditText input = new EditText(rootView.
-						getContext());
-
-				input.
-				setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-				input.
-				setTransformationMethod(PasswordTransformationMethod.getInstance());
-				metadataDialog.setView(input);
-
-				metadataDialog.setPositiveButton(R.string.confirm,
-						new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-
-						String password = input.getText().toString();
-						dialog.dismiss();
-
-						new ExporterTask(rootView.getContext()).execute(password,
-								claimActivity.getClaimId());
-
-						return;
-
-					}
-				});
-
-				metadataDialog.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-					}
-				});
-
-				metadataDialog.show();
-
-
-
-			}else {
-				toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_save_claim_before_submit,
-								Toast.LENGTH_SHORT);
-				toast.show();
-			}
-			return true;
-
-
-		case R.id.action_login:
-			
-			OpenTenureApplication.setActivity(getActivity());
-			
-        	Context context = getActivity().getApplicationContext();
-        	Intent intent = new Intent( context, LoginActivity.class );            	            	 
-        	startActivity(intent);
-        	
-        	OpenTenureApplication.setActivity(getActivity());
-        	
-        	return false;
-        	
-        	
-		case R.id.action_logout:	
-		
-			
-			
-			try {
-				
-				LogoutTask logoutTask = new LogoutTask();
-				
-				logoutTask.execute(getActivity());	
-								
-			} catch (Exception e) {
-				Log.d("Details", "An error ");
-				
-				e.printStackTrace();
-			}
-			
-			return true;
-		case R.id.action_print:
-			try {
-				PDFClaimExporter pdf = new PDFClaimExporter(rootView.getContext(), claimActivity.getClaimId());
-				intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
-						"application/pdf");
-				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-				startActivity(intent);
-
-			} catch (Error e) {
-				toast = Toast.makeText(rootView.getContext(),
-						R.string.message_not_supported_on_this_device,
-						Toast.LENGTH_SHORT);
-				toast.show();
-			}
-			
-
-			return true;
-
 		default:
 			return super.onOptionsItemSelected(item);
 		}

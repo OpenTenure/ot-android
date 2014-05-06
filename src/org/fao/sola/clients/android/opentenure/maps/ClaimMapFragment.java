@@ -281,7 +281,7 @@ public class ClaimMapFragment extends Fragment implements
 				if (claimActivity.getClaimId() == null) {
 					// Useless to add markers without a claim
 					Toast toast = Toast.makeText(mapView.getContext(),
-							R.string.message_save_before_adding_content,
+							R.string.message_save_claim_before_adding_content,
 							Toast.LENGTH_SHORT);
 					toast.show();
 					return;
@@ -502,7 +502,7 @@ public class ClaimMapFragment extends Fragment implements
 			} else {
 				toast = Toast
 						.makeText(mapView.getContext(),
-								R.string.message_save_before_submit,
+								R.string.message_save_claim_before_submit,
 								Toast.LENGTH_SHORT);
 				toast.show();
 			}

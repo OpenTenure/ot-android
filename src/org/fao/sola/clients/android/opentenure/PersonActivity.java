@@ -29,10 +29,7 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
-import org.fao.sola.clients.android.opentenure.model.Claim;
-
-import com.astuetz.PagerSlidingTabStrip;
+import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,16 +37,17 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
 
-public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
+import com.astuetz.PagerSlidingTabStrip;
 
-	public static final String CLAIM_ID_KEY = "claimId";
+public class PersonActivity extends FragmentActivity implements PersonDispatcher {
+
+	public static final String PERSON_ID_KEY = "personId";
 	public static final String MODE_KEY = "mode";
-	public static final String CREATE_CLAIM_ID = "create";
+	public static final String CREATE_PERSON_ID = "create";
 	public static final String MODE_RO = "RO";
 	public static final String MODE_RW = "RW";
-	private String claimId = null;
+	private String personId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
@@ -74,7 +72,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putString(CLAIM_ID_KEY, claimId);
+		outState.putString(PERSON_ID_KEY, personId);
 
 	}
 
@@ -82,10 +80,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_claim);
+		setContentView(R.layout.activity_person);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		mViewPager = (ViewPager) findViewById(R.id.claim_pager);
+		mViewPager = (ViewPager) findViewById(R.id.person_pager);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 
@@ -93,27 +91,20 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
 		
-		String savedInstanceClaimId = null;
+		String savedInstancePersonId = null;
 
 		if(savedInstanceState != null){
-			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
+			savedInstancePersonId = savedInstanceState.getString(PERSON_ID_KEY);
 		}
 
-		String intentClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
+		String intentPersonId = getIntent().getExtras().getString(PERSON_ID_KEY);
 		
-		if(savedInstanceClaimId != null){
-			setClaimId(savedInstanceClaimId);
-		}else if(intentClaimId != null && !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
-			setClaimId(intentClaimId);
+		if(savedInstancePersonId != null){
+			setPersonId(savedInstancePersonId);
+		}else if(intentPersonId != null && !intentPersonId.equalsIgnoreCase(CREATE_PERSON_ID)){
+			setPersonId(intentPersonId);
 			
 		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		getMenuInflater().inflate(R.menu.claim, menu);
-		return true;
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -127,20 +118,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 
 			switch (position) {
 			case 0:
-				return new ClaimDetailsFragment();
-			case 1:
-				return new ClaimMapFragment();
-			case 2:
-				return new ClaimDocumentsFragment();
-			case 3:
-				return new ClaimAdditionalDataFragments();
+				return new PersonFragment();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 4;
+			return 1;
 		}
 
 		@Override
@@ -148,29 +133,23 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_claim).toUpperCase(l);
-			case 1:
-				return getString(R.string.title_claim_map).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_claim_documents).toUpperCase(l);				
-			case 3:
-				return getString(R.string.title_claim_additional_info).toUpperCase(l);
+				return getString(R.string.title_person_details).toUpperCase(l);
 			}
 			return null;
 		}
 	}
 
 	@Override
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-		if(claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
-			Claim claim = Claim.getClaim(claimId);
-			setTitle(getResources().getString(R.string.app_name)+": "+claim.getName());
+	public void setPersonId(String personId) {
+		this.personId = personId;
+		if(personId != null && !personId.equalsIgnoreCase(CREATE_PERSON_ID)){
+			Person person = Person.getPerson(personId);
+			setTitle(getResources().getString(R.string.app_name) + ": " + person.getFirstName() + " " + person.getLastName());
 		}
 	}
 
 	@Override
-	public String getClaimId() {
-		return claimId;
+	public String getPersonId() {
+		return personId;
 	}
 }

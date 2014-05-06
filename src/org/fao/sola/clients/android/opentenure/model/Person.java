@@ -32,12 +32,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -433,6 +434,61 @@ public class Person {
 			}
 		}
 		return person;
+	}
+
+	public static List<Person> getAllPersons() {
+		List<Person> persons = new ArrayList<Person>();
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER FROM PERSON");
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				
+				Person person = new Person();
+				person.setPersonId(rs.getString(1));
+				person.setFirstName(rs.getString(2));
+				person.setLastName(rs.getString(3));
+				person.setDateOfBirth(rs.getDate(4));
+				person.setPlaceOfBirth(rs.getString(5));
+				person.setEmailAddress(rs.getString(6));
+				person.setPostalAddress(rs.getString(7));
+				person.setMobilePhoneNumber(rs.getString(8));
+				person.setContactPhoneNumber(rs.getString(9));
+				person.setGender(rs.getString(10));
+				persons.add(person);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return persons;
 	}
 
 	public static File getPersonPictureFile(String personId) {

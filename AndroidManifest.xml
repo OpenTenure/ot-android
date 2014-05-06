@@ -55,6 +55,11 @@
             android:label="@string/title_activity_claim" >
         </activity>
         <activity
+            android:name="org.fao.sola.clients.android.opentenure.PersonActivity"
+            android:theme="@style/Theme.Opentenure"
+            android:label="@string/title_activity_person" >
+        </activity>
+        <activity
             android:name="org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_settings" >
