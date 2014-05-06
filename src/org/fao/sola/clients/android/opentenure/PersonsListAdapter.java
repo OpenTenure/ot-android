@@ -27,6 +27,10 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.content.Context;
@@ -34,34 +38,99 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class PersonsListAdapter extends ArrayAdapter<String> {
-  private final Context context;
-  private final String[] slogans;
-  private final String[] ids;
+public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
+		Filterable {
+	private final Context context;
+	private final List<PersonListTO> originalPersons;
+	private List<PersonListTO> filteredPersons;
+	private List<PersonListTO> persons;
+	LayoutInflater inflater;
 
-  public PersonsListAdapter(Context context, String[] slogans, String[] ids) {
-    super(context, R.layout.persons_list_item, slogans);
-    this.context = context;
-    this.slogans = slogans;
-    this.ids = ids;
-  }
+	public PersonsListAdapter(Context context, List<PersonListTO> persons) {
+		super(context, R.layout.persons_list_item, persons);
+		this.context = context;
+		this.inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.originalPersons = new ArrayList<PersonListTO>(persons);
+		this.persons = persons;
+		this.filteredPersons = null;
+	}
 
-  @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
-    LayoutInflater inflater = (LayoutInflater) context
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View rowView = inflater.inflate(R.layout.persons_list_item, parent, false);
-    TextView slogan = (TextView) rowView.findViewById(R.id.person_slogan);
-    TextView id = (TextView) rowView.findViewById(R.id.person_id);
-    ImageView picture = (ImageView) rowView.findViewById(R.id.person_picture);
-    slogan.setText(slogans[position]);
-    id.setTextSize(8);
-    id.setText(ids[position]);
-	picture.setImageBitmap(Person.getPersonPicture(context, Person.getPersonPictureFile(ids[position]), 96));
+	@Override
+	public Filter getFilter() {
 
-    return rowView;
-  }
-} 
+		Filter filter = new Filter() {
+
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) {
+				String filterString = constraint.toString().toLowerCase(Locale.US);
+				filteredPersons = new ArrayList<PersonListTO>();
+				for (PersonListTO pto : originalPersons) {
+					if (pto.getSlogan().toLowerCase(Locale.US).contains(filterString)) {
+						filteredPersons.add(pto);
+					}
+				}
+
+				FilterResults results = new FilterResults();
+				results.count = filteredPersons.size();
+				results.values = filteredPersons;
+				return results;
+			}
+
+			@Override
+			protected void publishResults(CharSequence constraint,
+					FilterResults results) {
+				persons = (ArrayList<PersonListTO>) results.values;
+
+				if (results.count > 0) {
+					notifyDataSetChanged();
+				} else {
+					notifyDataSetInvalidated();
+				}
+			}
+		};
+		return filter;
+	}
+
+	@Override
+	public int getCount() {
+		return persons.size();
+	}
+
+	static class ViewHolder {
+		TextView id;
+		TextView slogan;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+
+		ViewHolder vh;
+
+		if (convertView == null) {
+			convertView = inflater.inflate(R.layout.persons_list_item, parent,
+					false);
+			vh = new ViewHolder();
+			vh.slogan = (TextView) convertView
+					.findViewById(R.id.person_slogan);
+			vh.id = (TextView) convertView.findViewById(R.id.person_id);
+			convertView.setTag(vh);
+		}else{
+			vh = (ViewHolder)convertView.getTag();
+		}
+		ImageView picture = (ImageView) convertView
+				.findViewById(R.id.person_picture);
+		vh.slogan.setText(persons.get(position).getSlogan());
+		vh.id.setTextSize(8);
+		vh.id.setText(persons.get(position).getId());
+		picture.setImageBitmap(Person.getPersonPicture(context,
+				Person.getPersonPictureFile(persons.get(position).getId()), 96));
+
+		return convertView;
+	}
+}

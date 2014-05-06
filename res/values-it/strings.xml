@@ -140,4 +140,5 @@
     <string name="north_west">Nord-Ovest</string>
     <string name="south_east">Sud-Est</string>
     <string name="south_west">Sud-Ovest</string>
+    <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
 </resources>

@@ -35,6 +35,8 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -90,6 +93,21 @@ public class PersonsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.persons_list, container,
 				false);
 		setHasOptionsMenu(true);
+	    EditText inputSearch = (EditText) rootView.findViewById(R.id.filter_input_field);
+	    inputSearch.addTextChangedListener(new TextWatcher() {
+
+	        @Override
+	        public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+	        }
+
+	        @Override
+	        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+
+	        @Override
+	        public void afterTextChanged(Editable arg0) {
+	            ((PersonsListAdapter)getListAdapter()).getFilter().filter(arg0.toString());
+	        }
+	    });
 
 		update();
 
@@ -107,15 +125,15 @@ public class PersonsFragment extends ListFragment {
 
 	protected void update() {
 		List<Person> persons = Person.getAllPersons();
-		List<String> ids = new ArrayList<String>();
-		List<String> slogans = new ArrayList<String>();
+		List<PersonListTO> personListTOs = new ArrayList<PersonListTO>();
 
 		for(Person person : persons){
-			String slogan = person.getFirstName()+ " " + person.getLastName();
-			slogans.add(slogan);
-			ids.add(person.getPersonId());
+			PersonListTO pto = new PersonListTO();
+			pto.setId(person.getPersonId());
+			pto.setSlogan(person.getFirstName()+ " " + person.getLastName());
+			personListTOs.add(pto);
 		}
-		ArrayAdapter<String> adapter = new PersonsListAdapter(rootView.getContext(), slogans.toArray(new String[slogans.size()]), ids.toArray(new String[ids.size()]));
+		ArrayAdapter<PersonListTO> adapter = new PersonsListAdapter(rootView.getContext(), personListTOs);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

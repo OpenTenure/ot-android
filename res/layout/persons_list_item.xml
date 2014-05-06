@@ -17,7 +17,8 @@
         <TextView
             android:id="@+id/person_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+	        android:layout_weight="1"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:text="@string/title_item" />
@@ -25,7 +26,8 @@
         <TextView
             android:id="@+id/person_slogan"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+	        android:layout_weight="3"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:text="@string/title_item" />
