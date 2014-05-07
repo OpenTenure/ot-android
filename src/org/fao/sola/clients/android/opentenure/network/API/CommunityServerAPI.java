@@ -44,8 +44,16 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities.Login;
+import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
+import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
+import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;
+
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import com.google.gson.Gson;
 
@@ -89,31 +97,31 @@ public class CommunityServerAPI {
 			Log.d("CommunityServerAPI",
 					"Login Status line " + response.getStatusLine());
 
-//			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
-//
-//				String json = CommunityServerAPIUtilities.Slurp(response
-//						.getEntity().getContent(), 1024);
-//
-//				/* parsing the response in a Login object */
-//				Gson gson = new Gson();
-//				Login login = gson.fromJson(json, Login.class);
+			// if (response.getStatusLine().getStatusCode() ==
+			// (HttpStatus.SC_OK)) {
+			//
+			// String json = CommunityServerAPIUtilities.Slurp(response
+			// .getEntity().getContent(), 1024);
+			//
+			// /* parsing the response in a Login object */
+			// Gson gson = new Gson();
+			// Login login = gson.fromJson(json, Login.class);
 
-				switch (response.getStatusLine().getStatusCode()) {
+			switch (response.getStatusLine().getStatusCode()) {
 
-				case 200:
-					OpenTenureApplication.setCoockieStore(CS);
-					Log.d("CommunityServerAPI", "Login status : 200");
-					return 200;
+			case 200:
+				OpenTenureApplication.setCoockieStore(CS);
+				Log.d("CommunityServerAPI", "Login status : 200");
+				return 200;
 
-				case 401:
-					Log.d("CommunityServerAPI", "Login status : 401");
-					return 401;
+			case 401:
+				Log.d("CommunityServerAPI", "Login status : 401");
+				return 401;
 
-				default:
-					Log.d("CommunityServerAPI", "Login status : default");
-					return 0;
-				}
-
+			default:
+				Log.d("CommunityServerAPI", "Login status : default");
+				return 0;
+			}
 
 		}
 
@@ -161,31 +169,32 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI", response.getStatusLine().toString());
 
-//			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
-//
-//				String json = CommunityServerAPIUtilities.Slurp(response
-//						.getEntity().getContent(), 1024);
-//
-//				/* parsing the response */
-//				Gson gson = new Gson();
-//				Login login = gson.fromJson(json, Login.class);
+			// if (response.getStatusLine().getStatusCode() ==
+			// (HttpStatus.SC_OK)) {
+			//
+			// String json = CommunityServerAPIUtilities.Slurp(response
+			// .getEntity().getContent(), 1024);
+			//
+			// /* parsing the response */
+			// Gson gson = new Gson();
+			// Login login = gson.fromJson(json, Login.class);
 
-				switch (response.getStatusLine().getStatusCode()) {
+			switch (response.getStatusLine().getStatusCode()) {
 
-				case 200:
+			case 200:
 
-					OpenTenureApplication.setCoockieStore(CS);
+				OpenTenureApplication.setCoockieStore(CS);
 
-					return 200;
+				return 200;
 
-				case 401:
+			case 401:
 
-					return 401;
+				return 401;
 
-				default:
+			default:
 
-					return 0;
-				}
+				return 0;
+			}
 
 		} catch (ConnectTimeoutException ct) {
 
@@ -232,82 +241,70 @@ public class CommunityServerAPI {
 
 				String json = CommunityServerAPIUtilities.Slurp(response
 						.getEntity().getContent(), 1024);
-				
-				Log.d("CommunityServerAPI",
-						"CLAIM JSON STRING " + json);
+
+				Log.d("CommunityServerAPI", "CLAIM JSON STRING " + json);
 
 				Gson gson = new Gson();
 				Claim claim = gson.fromJson(json, Claim.class);
-				
-				
+
 				Log.d("CommunityServerAPI",
 						"CLAIM JSON GPSGEOMETRY " + claim.getGpsGeometry());
-				
+
 				return claim;
 
 			} else {
-				
-				Log.d("CommunityServerAPI",
-						"CLAIM not retrieved ");
-				return null;	
+
+				Log.d("CommunityServerAPI", "CLAIM not retrieved ");
+				return null;
 			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			return null;
 		}
 
-
 	}
-	
-	public static SaveClaimResponse saveClaim(String claim){
-		
+
+	public static SaveClaimResponse saveClaim(String claim) {
+
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_SAVECLAIM);
-		
-		
 
 		HttpPost request = new HttpPost(url);
-		
-		
+
 		StringEntity entity;
 		try {
 			entity = new StringEntity(claim, HTTP.UTF_8);
 			entity.setContentType("application/json");
 			request.setEntity(entity);
-			
-			
+
 			AndroidHttpClient client = OpenTenureApplication.getHttpClient();
-			
+
 			CookieStore CS = OpenTenureApplication.getCoockieStore();
-			
-			
+
 			HttpContext context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
-
-			
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 			Log.d("CommunityServerAPI",
 					"saveClaim status line " + response.getStatusLine());
-			
-			
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
-			
-			Log.d("CommunityServerAPI",
-					"SAVE CLAIM JSON RESPONSE " + json);
-			
+
+			Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
+
 			Gson gson = new Gson();
-			SaveClaimResponse saveResponse = gson.fromJson(json, SaveClaimResponse.class);
-			
-			saveResponse.setHttpStatusCode(response.getStatusLine().getStatusCode());
-			
+			SaveClaimResponse saveResponse = gson.fromJson(json,
+					SaveClaimResponse.class);
+
+			saveResponse.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
+
 			return saveResponse;
-			
-			
+
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -316,9 +313,117 @@ public class CommunityServerAPI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		}		
-		
+		}
 
 	}
 
+	public static SaveAttachmentResponse saveAttachment(String attachment,
+			String attachmentId) {
+
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_SAVEATTACHMENT);
+
+		HttpPost request = new HttpPost(url);
+		SaveAttachmentResponse saveAttachmentResponse = null;
+
+		StringEntity entity;
+		try {
+			
+			Log.d("CommunityServerAPI", "saveAttachment payload "
+					+ attachment);
+			
+			entity = new StringEntity(attachment, HTTP.UTF_8);
+			entity.setContentType("application/json");
+			request.setEntity(entity);
+
+			AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			/* Calling the Server.... */
+
+			HttpResponse response = client.execute(request, context);
+
+			Log.d("CommunityServerAPI", "saveAttachment HTTP status line "
+					+ response.getStatusLine());
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			Log.d("CommunityServerAPI", "SAVE ATTACHMENT JSON RESPONSE " + json);
+
+			Gson gson = new Gson();
+			saveAttachmentResponse = gson.fromJson(json,
+					SaveAttachmentResponse.class);
+
+			saveAttachmentResponse.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
+
+			saveAttachmentResponse.setAttachmentId(attachmentId);
+
+		} catch (Throwable ex) {
+
+			Log.d("CommunityServerAPI",
+					"saveAttachment Error quite huge !!!!!!!!! "
+							+ ex.getMessage());
+			ex.printStackTrace();
+			return null;
+		}
+
+		return saveAttachmentResponse;
+
+	}
+
+	public static ApiResponse uploadChunk(String payload, byte[] chunk) {
+
+		Log.d("CommunityServerAPI", "chunk descriptor" + payload);
+
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_UPLOADCHUNK);
+
+		HttpPost request = new HttpPost(url);
+		ApiResponse apiResponse = null;
+
+		MultipartEntityBuilder entity = MultipartEntityBuilder.create();
+		try {
+
+			entity.addTextBody("descriptor", payload);
+			entity.addBinaryBody("chunk", chunk);
+			entity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			request.setEntity(entity.build());
+
+			/* Preparing the client */
+			AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			/* Calling the Server.... */
+
+			HttpResponse response = client.execute(request, context);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			Log.d("CommunityServerAPI", "UPLOAD CHUNK JSON RESPONSE " + json);
+
+			Gson gson = new Gson();
+			apiResponse = gson.fromJson(json, ApiResponse.class);
+			apiResponse.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
+
+		} catch (Throwable ex) {
+
+			Log.d("CommunityServerAPI",
+					"uploadChunk error : " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+		}
+
+		return apiResponse;
+
+	}
 }

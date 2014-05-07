@@ -28,12 +28,16 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 
 import android.os.AsyncTask;
@@ -80,6 +84,18 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
 					.makeText(OpenTenureApplication.getContext(),
 					R.string.message_uploading, Toast.LENGTH_SHORT);
 			toast.show();
+			
+			
+			List<Attachment> list = res.getAttachments();
+
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				Attachment attachment = (Attachment) iterator.next();
+				
+				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
+				saveAttachmentTask.execute(attachment.getId());
+				
+			}
+			
 			
 			/***
 			 * Qui ad un certo punto inizieremo a far l'upload degli attachments

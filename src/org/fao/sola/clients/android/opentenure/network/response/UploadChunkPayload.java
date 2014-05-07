@@ -27,27 +27,52 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-
-public class SaveClaimResponse extends ApiResponse{	
-
-	String claimId;	
-	List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments;	
+public class UploadChunkPayload {
 	
-
-	public List<org.fao.sola.clients.android.opentenure.network.response.Attachment> getAttachments() {
-		return attachments;
-	}
-	public void setAttachments(List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments) {
-		this.attachments = attachments;
-	}
+	@SerializedName("id") String id;
+	@SerializedName("attachmentId") String attachmentId;
+	@SerializedName("claimId") String claimId;
+	@SerializedName("startPosition") Integer startPosition;
+	@SerializedName("size") Long size;
+	@SerializedName("md5") String md5;
 	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getAttachmentId() {
+		return attachmentId;
+	}
+	public void setAttachmentId(String attachmentId) {
+		this.attachmentId = attachmentId;
+	}
 	public String getClaimId() {
 		return claimId;
 	}
 	public void setClaimId(String claimId) {
 		this.claimId = claimId;
+	}
+	public Integer getStartPosition() {
+		return startPosition;
+	}
+	public void setStartPosition(Integer startPosition) {
+		this.startPosition = startPosition;
+	}
+	public Long getSize() {
+		return size;
+	}
+	public void setSize(Long size) {
+		this.size = size;
+	}
+	public String getMd5() {
+		return md5;
+	}
+	public void setMd5(String md5) {
+		this.md5 = md5;
 	}
 
 }

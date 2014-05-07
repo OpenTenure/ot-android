@@ -99,4 +99,65 @@ public class MD5 {
             }
         }
     }
+    
+    
+//    public static String calculateMD5(byte[] chunk ){
+//    	
+//    	 MessageDigest digest;
+//         try {
+//             digest = MessageDigest.getInstance("MD5");
+//         } catch (NoSuchAlgorithmException e) {
+//             Log.e(TAG, "Exception while getting digest", e);
+//             return null;
+//         }
+//    	
+//    	try{
+//    			
+//    		 digest.update(chunk);
+//    		 byte[] md5sum = digest.digest();
+//             BigInteger bigInt = new BigInteger(1, md5sum);
+//             String output = bigInt.toString(16);
+//             // Fill to 32 chars
+//             output = String.format("%32s", output).replace(' ', '0');
+//             return output;
+//    		
+//    	}catch(Exception ex){
+//    		
+//    		Log.e(TAG, "Exception while getting digest", ex);
+//            return null;
+//    	}
+//    	
+//    	
+//    	
+//    }
+    
+    
+    public static String calculateMD5(byte[] bytes) {
+        try {
+            if(bytes == null || bytes.length < 1){
+                return null;
+            }
+            
+            MessageDigest m = MessageDigest.getInstance("MD5");
+            m.reset();
+            m.update(bytes);
+            byte[] digest = m.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            String hashtext = bigInt.toString(16);
+            
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
+        } catch (NoSuchAlgorithmException ex) {
+            return null;
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
 }

@@ -27,27 +27,21 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-import java.util.List;
-
-
-public class SaveClaimResponse extends ApiResponse{	
-
-	String claimId;	
-	List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments;	
+public class ApiResponse {
 	
-
-	public List<org.fao.sola.clients.android.opentenure.network.response.Attachment> getAttachments() {
-		return attachments;
+	int httpStatusCode;
+	String message;
+	public int getHttpStatusCode() {
+		return httpStatusCode;
 	}
-	public void setAttachments(List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments) {
-		this.attachments = attachments;
+	public void setHttpStatusCode(int httpStatusCode) {
+		this.httpStatusCode = httpStatusCode;
 	}
-	
-	public String getClaimId() {
-		return claimId;
+	public String getMessage() {
+		return message;
 	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

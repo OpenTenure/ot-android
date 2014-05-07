@@ -35,7 +35,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.os.Environment;
@@ -333,6 +338,45 @@ public class FileSystemUtilities {
 		}
 		
 	}
+	
+	
+	public static String getJsonAttachment(String attachmentId){
+		try {
+			
+			Attachment attach = Attachment.getAttachment(attachmentId);
+			org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attachment = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
+			
+			
+			String extension = "";
+
+			int i = attach.getPath().lastIndexOf('.');
+			if (i > 0) {
+			    extension = attach.getPath().substring(i+1);
+			}
+			
+			
+			
+			attachment.setDescription(attach.getDescription());
+			attachment.setTypeCode(attach.getFileType());
+			attachment.setFileName(attach.getFileName());
+			attachment.setId(attachmentId);
+			attachment.setMd5(attach.getMD5Sum());
+			attachment.setMimeType(attach.getMimeType());
+			attachment.setSize(attach.getSize());
+			attachment.setFileExtension(extension);
+			
+			
+			Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+			return gson.toJson(attachment);
+						
+		} catch (Exception e) {
+			System.out.println("Error reading creating Attachment json :" + e.getStackTrace());
+			return null;
+		}
+		
+	}
+	
+
 
 
 

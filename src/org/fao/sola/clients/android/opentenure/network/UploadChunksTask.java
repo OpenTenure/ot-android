@@ -25,29 +25,55 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network.response;
-
-import java.util.List;
+package org.fao.sola.clients.android.opentenure.network;
 
 
-public class SaveClaimResponse extends ApiResponse{	
 
-	String claimId;	
-	List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments;	
+import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
+
+import android.os.AsyncTask;
+
+/*
+ * Here transfers one chunk at time. Return true if all the chunks of an attachment are correctly transferred . 
+ * 
+ * */
+
+public class UploadChunksTask extends AsyncTask<String, Void, UploadChunksResponse>{
+
+	@Override
+	protected UploadChunksResponse doInBackground(String... params) {
+
+			UploadChunks ulc = new UploadChunks();
+			UploadChunksResponse res = ulc.execute(params[0]);
+			
+			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@ tornata la response dell'attachmentID " + res.getAttachmentId());
+			
+			return res;
+	}
+
+
+		
+	protected void onPostExecute(final UploadChunksResponse res){
+		
+		
+		if(res.getSuccess()){
+			
+			System.out.println("Sono proprio in questo caso POSITIVISSIMO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			
+			/**
+			 * All the Chunk of the claim are uploaded . Call SaveAttachment to close the flow.
+			 * There 's the risk of a infinite loop 
+			 ***/
+			
+			SaveAttachmentTask sat = new SaveAttachmentTask();
+			sat.execute(res.getAttachmentId());
+			
+		}
+		
+		
+	}
+		
+		
 	
-
-	public List<org.fao.sola.clients.android.opentenure.network.response.Attachment> getAttachments() {
-		return attachments;
-	}
-	public void setAttachments(List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments) {
-		this.attachments = attachments;
-	}
-	
-	public String getClaimId() {
-		return claimId;
-	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-	}
 
 }
