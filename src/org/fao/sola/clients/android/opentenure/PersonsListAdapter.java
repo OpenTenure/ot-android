@@ -68,10 +68,13 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 			@Override
 			protected FilterResults performFiltering(CharSequence constraint) {
-				String filterString = constraint.toString().toLowerCase(Locale.US);
+
+				String filterString = constraint.toString();
+				
 				filteredPersons = new ArrayList<PersonListTO>();
 				for (PersonListTO pto : originalPersons) {
-					if (pto.getSlogan().toLowerCase(Locale.US).contains(filterString)) {
+					String lcase = pto.getSlogan().toLowerCase(Locale.getDefault());
+					if (lcase.contains(filterString.toLowerCase(Locale.getDefault()))) {
 						filteredPersons.add(pto);
 					}
 				}
@@ -105,6 +108,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 	static class ViewHolder {
 		TextView id;
 		TextView slogan;
+		ImageView picture;
 	}
 
 	@Override
@@ -119,16 +123,16 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 			vh.slogan = (TextView) convertView
 					.findViewById(R.id.person_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.person_id);
+			vh.picture = (ImageView) convertView
+					.findViewById(R.id.person_picture);
 			convertView.setTag(vh);
 		}else{
 			vh = (ViewHolder)convertView.getTag();
 		}
-		ImageView picture = (ImageView) convertView
-				.findViewById(R.id.person_picture);
 		vh.slogan.setText(persons.get(position).getSlogan());
 		vh.id.setTextSize(8);
 		vh.id.setText(persons.get(position).getId());
-		picture.setImageBitmap(Person.getPersonPicture(context,
+		vh.picture.setImageBitmap(Person.getPersonPicture(context,
 				Person.getPersonPictureFile(persons.get(position).getId()), 96));
 
 		return convertView;

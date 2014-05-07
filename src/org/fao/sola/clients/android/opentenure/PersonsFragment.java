@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -94,6 +95,7 @@ public class PersonsFragment extends ListFragment {
 				false);
 		setHasOptionsMenu(true);
 	    EditText inputSearch = (EditText) rootView.findViewById(R.id.filter_input_field);
+	    inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 	    inputSearch.addTextChangedListener(new TextWatcher() {
 
 	        @Override

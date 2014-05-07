@@ -30,6 +30,9 @@ package org.fao.sola.clients.android.opentenure;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -93,6 +97,22 @@ public class LocalClaimsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.local_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
+	    EditText inputSearch = (EditText) rootView.findViewById(R.id.filter_input_field);
+	    inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+	    inputSearch.addTextChangedListener(new TextWatcher() {
+
+	        @Override
+	        public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
+	        }
+
+	        @Override
+	        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+
+	        @Override
+	        public void afterTextChanged(Editable arg0) {
+	            ((LocalClaimsListAdapter)getListAdapter()).getFilter().filter(arg0.toString());
+	        }
+	    });
 
 		update();
 
@@ -110,24 +130,21 @@ public class LocalClaimsFragment extends ListFragment {
 
 	protected void update() {
 		List<Claim> claims = Claim.getAllClaims();
-		List<String> ids = new ArrayList<String>();
-		List<String> slogans = new ArrayList<String>();
-		List<String> status = new ArrayList<String>();
+		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
 		for(Claim claim : claims){
-			String slogan = claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName() + " " ;
-			slogans.add(slogan);
-			ids.add(claim.getClaimId());
+			ClaimListTO cto = new ClaimListTO();
+			cto.setSlogan(claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName());
+			cto.setId(claim.getClaimId());
 			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
-				status.add(claim.getStatus());
+				cto.setStatus(claim.getStatus());
 			else if(claim.getStatus().equals(ClaimStatus._UNMODERATED)){
-				status.add("uploaded");
+				cto.setStatus("uploaded");
 				}
-			else status.add(" ");
-
-
+			else cto.setStatus(" ");
+			claimListTOs.add(cto);
 		}
-		ArrayAdapter<String> adapter = new LocalClaimsListAdapter(rootView.getContext(), slogans.toArray(new String[slogans.size()]), ids.toArray(new String[ids.size()]), status.toArray(new String[status.size()]));
+		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

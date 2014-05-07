@@ -27,6 +27,10 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -35,38 +39,106 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class LocalClaimsListAdapter extends ArrayAdapter<String> {
-  private final Context context;
-  private final String[] slogans;
-  private final String[] ids;
-  private final String[] stati;
+public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements Filterable {
+	private final Context context;
+	private final List<ClaimListTO> originalClaims;
+	private List<ClaimListTO> filteredClaims;
+	private List<ClaimListTO> claims;
+	LayoutInflater inflater;
 
-  public LocalClaimsListAdapter(Context context, String[] slogans, String[] ids, String[] stati) {
-    super(context, R.layout.local_claims_list_item, slogans);
-    this.context = context;
-    this.slogans = slogans;
-    this.ids = ids;
-    this.stati = stati;
-  }
+	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims) {
+		super(context, R.layout.local_claims_list_item, claims);
+		this.context = context;
+		this.inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.originalClaims = new ArrayList<ClaimListTO>(claims);
+		this.claims = claims;
+		this.filteredClaims = null;
+	}
 
-  @Override
-  public View getView(int position, View convertView, ViewGroup parent) {
-    LayoutInflater inflater = (LayoutInflater) context
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View rowView = inflater.inflate(R.layout.local_claims_list_item, parent, false);
-    TextView slogan = (TextView) rowView.findViewById(R.id.claim_slogan);
-    TextView status = (TextView) rowView.findViewById(R.id.claim_status);
-    TextView id = (TextView) rowView.findViewById(R.id.claim_id);
-    ImageView picture = (ImageView) rowView.findViewById(R.id.claimant_picture);
-    slogan.setText(slogans[position]);
-    status.setText(stati[position]);
-    id.setTextSize(8);
-    id.setText(ids[position]);
-	picture.setImageBitmap(Person.getPersonPicture(context, Person.getPersonPictureFile(Claim.getClaim(ids[position]).getPerson().getPersonId()), 96));
+	@Override
+	public Filter getFilter() {
 
-    return rowView;
-  }
-} 
+		Filter filter = new Filter() {
+
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) {
+
+				String filterString = constraint.toString();
+				
+				filteredClaims = new ArrayList<ClaimListTO>();
+				for (ClaimListTO cto : originalClaims) {
+					String lcase = cto.getSlogan().toLowerCase(Locale.getDefault());
+					if (lcase.contains(filterString.toLowerCase(Locale.getDefault()))) {
+						filteredClaims.add(cto);
+					}
+				}
+
+				FilterResults results = new FilterResults();
+				results.count = filteredClaims.size();
+				results.values = filteredClaims;
+				return results;
+			}
+
+			@Override
+			protected void publishResults(CharSequence constraint,
+					FilterResults results) {
+				claims = (ArrayList<ClaimListTO>) results.values;
+
+				if (results.count > 0) {
+					notifyDataSetChanged();
+				} else {
+					notifyDataSetInvalidated();
+				}
+			}
+		};
+		return filter;
+	}
+
+	@Override
+	public int getCount() {
+		return claims.size();
+	}
+
+	static class ViewHolder {
+		TextView id;
+		TextView slogan;
+		TextView status;
+		ImageView picture;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder vh;
+
+		if (convertView == null) {
+			convertView = inflater.inflate(R.layout.local_claims_list_item,
+					parent, false);
+			vh = new ViewHolder();
+			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
+			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
+			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
+			vh.picture = (ImageView) convertView
+					.findViewById(R.id.claimant_picture);
+			convertView.setTag(vh);
+		} else {
+			vh = (ViewHolder) convertView.getTag();
+		}
+		vh.slogan.setText(claims.get(position).getSlogan());
+		vh.status.setText(claims.get(position).getStatus());
+		vh.id.setTextSize(8);
+		vh.id.setText(claims.get(position).getId());
+		vh.picture.setImageBitmap(Person.getPersonPicture(
+				context,
+				Person.getPersonPictureFile(Claim
+						.getClaim(claims.get(position).getId()).getPerson()
+						.getPersonId()), 96));
+
+		return convertView;
+	}
+}
