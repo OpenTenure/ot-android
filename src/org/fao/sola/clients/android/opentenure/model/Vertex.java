@@ -434,9 +434,11 @@ public class Vertex {
 		deleteVertices(claimId);
 
 		List<Vertex> vertices = verticesFromWKT(mapWKT, gpsWKT);
+		int i = 0;
 
 		for (Vertex vertex : vertices) {
 			vertex.setClaimId(claimId);
+			vertex.setSequenceNumber(i++);
 			vertex.create();
 		}
 	}
@@ -542,7 +544,7 @@ public class Vertex {
 			return null;
 		}
 
-		if (mapPolygon.getNumPoints() != gpsPolygon.getNumPoints()) {
+		if (gpsPolygon != null && mapPolygon.getNumPoints() != gpsPolygon.getNumPoints()) {
 			Log.e(Vertex.class.getName(), mapWKT + " and " + gpsWKT
 					+ " have a different number of vertices");
 			return null;
@@ -552,12 +554,12 @@ public class Vertex {
 			Coordinate mapCoordinate = mapPolygon.getCoordinates()[i];
 			Vertex vertex = new Vertex(new LatLng(
 					mapCoordinate.getOrdinate(Coordinate.Y),
-					mapCoordinate.getOrdinate(Coordinate.Y)));
+					mapCoordinate.getOrdinate(Coordinate.X)));
 			if (gpsPolygon != null) {
 				Coordinate gpsCoordinate = gpsPolygon.getCoordinates()[i];
 				vertex.setGPSPosition(new LatLng(gpsCoordinate
 						.getOrdinate(Coordinate.Y), gpsCoordinate
-						.getOrdinate(Coordinate.Y)));
+						.getOrdinate(Coordinate.X)));
 			}
 			vertices.add(vertex);
 		}
