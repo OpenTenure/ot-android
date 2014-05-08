@@ -3,6 +3,10 @@
           android:icon="@android:drawable/ic_menu_compass"
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_download_claims"
+          android:icon="@android:drawable/ic_menu_myplaces"
+          android:title="@string/action_download_claims"
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/map_provider_google_normal"
           android:title="@string/map_provider_google_normal"
           android:showAsAction="never" />

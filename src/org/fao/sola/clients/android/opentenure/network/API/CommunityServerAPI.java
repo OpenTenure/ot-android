@@ -29,7 +29,10 @@ package org.fao.sola.clients.android.opentenure.network.API;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -47,6 +50,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities.Login;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimsResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;
@@ -56,6 +60,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
@@ -219,6 +224,56 @@ public class CommunityServerAPI {
 		}
 	}
 
+	public static List<org.fao.sola.clients.android.opentenure.network.response.Claim> getAllClaims() {
+
+		/*
+		 * Creating the url to call
+		 */
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETALLCLAIMS);
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI", "GET ALL CLAIMS JSON RESPONSE "
+						+ json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.Claim>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.Claim> claimList = new Gson()
+						.fromJson(json, listType);
+
+				return claimList;
+
+			} else {
+
+				Log.d("CommunityServerAPI", "GET ALL CLAIMS JSON RESPONSE "
+						+ json);
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI",
+					"GET ALL CLAIMS error " + ex.getMessage());
+			ex.printStackTrace();
+
+			return null;
+
+		}
+
+	}
+
 	public static Claim getClaim(String claimId) {
 
 		/*
@@ -243,7 +298,7 @@ public class CommunityServerAPI {
 						.getEntity().getContent(), 1024);
 
 				Log.d("CommunityServerAPI", "CLAIM JSON STRING " + json);
-
+				
 				Gson gson = new Gson();
 				Claim claim = gson.fromJson(json, Claim.class);
 
@@ -328,10 +383,9 @@ public class CommunityServerAPI {
 
 		StringEntity entity;
 		try {
-			
-			Log.d("CommunityServerAPI", "saveAttachment payload "
-					+ attachment);
-			
+
+			Log.d("CommunityServerAPI", "saveAttachment payload " + attachment);
+
 			entity = new StringEntity(attachment, HTTP.UTF_8);
 			entity.setContentType("application/json");
 			request.setEntity(entity);
