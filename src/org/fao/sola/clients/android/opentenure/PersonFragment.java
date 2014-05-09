@@ -188,18 +188,8 @@ public class PersonFragment extends Fragment {
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(person.getContactPhoneNumber());
 		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
-		try {
-			if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-				claimantImageView.setImageBitmap(Person.getPersonPicture(
-						rootView.getContext(), personPictureFile, 128));
-			} else {
-				claimantImageView.setImageBitmap(Person.getPersonPicture(
-						rootView.getContext(), personPictureFile, 128));
-			}
-		} catch (Exception e) {
-			claimantImageView.setImageDrawable(getResources().getDrawable(
-					R.drawable.ic_contact_picture));
-		}
+		claimantImageView.setImageBitmap(Person.getPersonPicture(
+				rootView.getContext(), personPictureFile, 128));
 	}
 
 	@Override

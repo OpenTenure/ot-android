@@ -45,6 +45,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -135,18 +137,25 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		switch (requestCode) {
-		case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
-			String personId = data.getStringExtra(PersonActivity.PERSON_ID_KEY);
-			Person claimant = Person.getPerson(personId);
-			loadClaimant(claimant);
-			break;
-		case SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT:
-			String claimId = data.getStringExtra(ClaimActivity.CLAIM_ID_KEY);
-			Claim challengedClaim = Claim.getClaim(claimId);
-			loadChallengedClaim(challengedClaim);
-			break;
+
+		if (data != null) { // No selection has been done
+		
+			switch (requestCode) {
+			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
+				String personId = data
+						.getStringExtra(PersonActivity.PERSON_ID_KEY);
+				Person claimant = Person.getPerson(personId);
+				loadClaimant(claimant);
+				break;
+			case SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT:
+				String claimId = data
+						.getStringExtra(ClaimActivity.CLAIM_ID_KEY);
+				Claim challengedClaim = Claim.getClaim(claimId);
+				loadChallengedClaim(challengedClaim);
+				break;
+			}
 		}
+
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
@@ -228,8 +237,11 @@ public class ClaimDetailsFragment extends Fragment {
 		ImageView challengedClaimantImageView = (ImageView) rootView
 				.findViewById(R.id.challenge_to_claimant_picture);
 
-		challengedClaimantImageView.setImageDrawable(getResources()
-				.getDrawable(R.drawable.ic_contact_picture));
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_contact_picture);
+
+		challengedClaimantImageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 128, 128, true));
 	}
 
 	private void loadChallengedClaim(Claim challengedClaim) {
@@ -250,14 +262,9 @@ public class ClaimDetailsFragment extends Fragment {
 					.findViewById(R.id.challenge_to_claimant_picture);
 			File challengedPersonPictureFile = Person
 					.getPersonPictureFile(challengedPerson.getPersonId());
-			try {
-				challengedClaimantImageView.setImageBitmap(Person
-						.getPersonPicture(rootView.getContext(),
-								challengedPersonPictureFile, 128));
-			} catch (Exception e) {
-				challengedClaimantImageView.setImageDrawable(getResources()
-						.getDrawable(R.drawable.ic_contact_picture));
-			}
+			challengedClaimantImageView.setImageBitmap(Person
+					.getPersonPicture(rootView.getContext(),
+							challengedPersonPictureFile, 128));
 		}
 	}
 
@@ -272,13 +279,8 @@ public class ClaimDetailsFragment extends Fragment {
 					.findViewById(R.id.claimant_picture);
 			File personPictureFile = Person.getPersonPictureFile(claimant
 					.getPersonId());
-			try {
-					claimantImageView.setImageBitmap(Person.getPersonPicture(
-							rootView.getContext(), personPictureFile, 128));
-			} catch (Exception e) {
-				claimantImageView.setImageDrawable(getResources().getDrawable(
-						R.drawable.ic_contact_picture));
-			}
+			claimantImageView.setImageBitmap(Person.getPersonPicture(
+					rootView.getContext(), personPictureFile, 128));
 		}
 	}
 

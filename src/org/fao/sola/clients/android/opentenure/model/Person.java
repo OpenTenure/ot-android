@@ -496,6 +496,9 @@ public class Person {
 				+ File.separator + personId + ".jpg");
 	}
 
+	public static Bitmap getPersonPicture(Context context, String personId, int size) {
+		return getPersonPicture(context, getPersonPictureFile(personId), size);
+	}
 	public static Bitmap getPersonPicture(Context context, File personPictureFile, int size) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
