@@ -35,6 +35,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -49,6 +50,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -301,6 +304,16 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 						R.string.check_location_service, Toast.LENGTH_LONG)
 						.show();
 			}
+			return true;
+			
+		case R.id.action_download_claims:
+			
+						
+			GetAllClaimsTask task = new GetAllClaimsTask();
+			task.execute();
+			
+			
+			
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

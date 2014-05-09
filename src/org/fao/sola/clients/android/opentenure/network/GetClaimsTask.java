@@ -25,19 +25,45 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network.response;
+package org.fao.sola.clients.android.opentenure.network;
 
-public class Attachment {
-	
-	String id;
+import org.fao.sola.clients.android.opentenure.LocalClaimsFragment;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.network.response.Claim;
 
+import android.os.AsyncTask;
+import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
-	public String getId() {
-		return id;
+public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
+
+	@Override
+	protected Boolean doInBackground(Claim... params) {
+
+		return GetClaims.execute(params);
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	@Override
+	protected void onPostExecute(final Boolean result) {
+
+		Toast toast;
+
+		if (result) {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_claims_downloaded, Toast.LENGTH_SHORT);
+			toast.show();
+
+		} else {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_claims_downloaded, Toast.LENGTH_SHORT);
+			toast.show();
+		}
+
 	}
 
 }

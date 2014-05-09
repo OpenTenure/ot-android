@@ -25,19 +25,47 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network.response;
+package org.fao.sola.clients.android.opentenure.network;
 
-public class Attachment {
-	
-	String id;
+import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.Claim;
+import android.os.AsyncTask;
 
-	public String getId() {
-		return id;
+import android.widget.Toast;
+
+public class GetAllClaimsTask extends AsyncTask<String, Void, List<Claim>> {
+
+	@Override
+	protected List<Claim> doInBackground(String... params) {
+		// TODO Auto-generated method stub
+
+		return (List<Claim>) CommunityServerAPI.getAllClaims();
+
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	@Override
+	protected void onPostExecute(final List<Claim> listClaim) {
 
+		Toast toast;
+
+		if (listClaim == null) {
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_no_claim_to_download, Toast.LENGTH_SHORT);
+			toast.show();
+			return;
+		}
+
+		Claim[] array = new Claim[listClaim.size()];
+		listClaim.toArray(array);
+
+		GetClaimsTask task = new GetClaimsTask();
+		task.execute(array);
+
+		return;
+
+	}
 }

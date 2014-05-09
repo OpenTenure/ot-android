@@ -27,17 +27,20 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-public class Attachment {
+import java.util.List;
+
+public class GetClaimsResponse extends ApiResponse{
 	
-	String id;
+	List<Claim> Claims;
 
-
-	public String getId() {
-		return id;
+	public List<Claim> getClaims() {
+		return Claims;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setClaims(List<Claim> claims) {
+		Claims = claims;
 	}
+	
+	
 
 }

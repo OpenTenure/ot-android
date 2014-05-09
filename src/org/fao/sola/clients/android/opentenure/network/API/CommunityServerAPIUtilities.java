@@ -41,8 +41,8 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/en-us/auth/logout";
 	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/en-us/auth/logout";
 	
-	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/claim/en-us/getclaim/%s";
-	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/claim/en-us/getclaim/%s";
+	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/en-us/claim/getClaim/%s";
+	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/en-us/claim/getClaim/%s";
 	
 	public static final String HTTPS_SAVECLAIM = "https://ot.flossola.org/ws/en-us/claim/saveClaim";
 	public static final String HTTP_SAVECLAIM = "http://ot.flossola.org/ws/en-us/claim/saveClaim";
@@ -52,6 +52,9 @@ public class CommunityServerAPIUtilities {
 	
 	public static final String HTTPS_UPLOADCHUNK = "https://ot.flossola.org/ws/en-us/claim/uploadChunk";
 	public static final String HTTP_UPLOADCHUNK = "http://ot.flossola.org/ws/en-us/claim/uploadChunk";
+	
+	public static final String HTTPS_GETALLCLAIMS = "https://ot.flossola.org/ws/en-us/claim/getAllClaims";
+	public static final String HTTP_GETALLCLAIMS = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
 	
 	
 	

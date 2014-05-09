@@ -18,6 +18,7 @@
     <string name="action_download_file">Scarica File</string>
     <string name="action_center">Centra</string>
     <string name="action_submit">Invia</string>
+    <string name="action_download_claims">Scarica Claims</string>
     <string name="action_new_picture">Aggiungi immagine</string>
     <string name="action_new_additional_info">Aggiungi informazione</string>
     <string name="action_new_attachment">Aggiungi documento</string>
@@ -85,6 +86,9 @@
     <string name="message_save_person_before_adding_content">Salvare la persona prima di aggiungere contenuti</string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
     <string name="message_export">Esportando</string>
+    <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>
+    <string name="message_claims_downloaded">Claim correttamente scaricati</string>
+    <string name="message_error_downloading_claims">Errore durante lo scaricamento dei Claim</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
