@@ -92,6 +92,7 @@
     <string name="message_no_claim_to_download">There\'s no claim to download</string>
     <string name="message_claims_downloaded">Claims correctly downloaded</string>
     <string name="message_error_downloading_claims">Error during downloading Claims</string>
+    <string name="message_login_no_more_valid">Session expired. Do login again</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
