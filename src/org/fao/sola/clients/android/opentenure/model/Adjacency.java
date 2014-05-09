@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+
+import android.content.Context;
 
 public class Adjacency {
 	
@@ -335,4 +338,27 @@ public class Adjacency {
 		}
 		return adjList;
 	}
+	public static String getCardinalDirection(Context context, CardinalDirection cardinalDirection){
+		switch(cardinalDirection){
+		case NORTH:
+			return context.getResources().getString(R.string.north);
+		case SOUTH:
+			return context.getResources().getString(R.string.south);
+		case EAST:
+			return context.getResources().getString(R.string.east);
+		case WEST:
+			return context.getResources().getString(R.string.west);
+		case NORTHEAST:
+			return context.getResources().getString(R.string.north_east);
+		case NORTHWEST:
+			return context.getResources().getString(R.string.north_west);
+		case SOUTHEAST:
+			return context.getResources().getString(R.string.south_east);
+		case SOUTHWEST:
+			return context.getResources().getString(R.string.south_west);
+		default:
+			return "";
+		}
+	}
+
 }

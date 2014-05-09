@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.maps.BasePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -144,7 +143,7 @@ public class PDFClaimExporter {
 				writeText(context.getResources().getString(
 						R.string.cardinal_direction)
 						+ ": "
-						+ BasePropertyBoundary.getCardinalDirection(context,
+						+ Adjacency.getCardinalDirection(context,
 								adj.getCardinalDirection())
 						+ ", "
 						+ context.getResources().getString(R.string.property)

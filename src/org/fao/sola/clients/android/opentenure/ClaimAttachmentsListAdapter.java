@@ -55,7 +55,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
 			List<String> ids, String claimId, String mode) {
-		super(context, R.layout.local_claims_list_item, slogans);
+		super(context, R.layout.claims_list_item, slogans);
 		this.context = context;
 		this.slogans = slogans;
 		this.ids = ids;

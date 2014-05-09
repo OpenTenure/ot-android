@@ -35,6 +35,9 @@
     <string name="title_claim_documents">Documents</string>
     <string name="title_claim_photos">Claim photos</string>
     <string name="title_claim_map">Map</string>
+    <string name="title_claim_adjacencies">Adjacencies</string>
+    <string name="title_claim_owners">Owners</string>
+    <string name="title_claim_challenges">Challenges</string>
     <string name="title_export">Exporting Claim as compressed file</string>
     <string name="title_section">Section</string>
     <string name="title_item">Item</string>

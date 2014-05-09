@@ -144,13 +144,15 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 				ClaimAdditionalInfoFragments claimAdditionalInfoFragments = new ClaimAdditionalInfoFragments();
 				claimAdditionalInfoFragments.setMode(mode);
 				return claimAdditionalInfoFragments;
+			case 4:
+				return new AdjacentClaimsFragment();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 4;
+			return 5;
 		}
 
 		@Override
@@ -165,6 +167,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 				return getString(R.string.title_claim_documents).toUpperCase(l);				
 			case 3:
 				return getString(R.string.title_claim_additional_info).toUpperCase(l);
+			case 4:
+				return getString(R.string.title_claim_adjacencies).toUpperCase(l);
 			}
 			return null;
 		}

@@ -27,9 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Person;
@@ -39,76 +37,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements Filterable {
+public class AdjacentClaimsListAdapter extends ArrayAdapter<AdjacentClaimListTO> {
 	private final Context context;
-	private final List<ClaimListTO> originalClaims;
-	private List<ClaimListTO> filteredClaims;
-	private List<ClaimListTO> claims;
+	private List<AdjacentClaimListTO> claims;
 	LayoutInflater inflater;
 
-	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims) {
-		super(context, R.layout.claims_list_item, claims);
+	public AdjacentClaimsListAdapter(Context context, List<AdjacentClaimListTO> claims) {
+		super(context, R.layout.adjacent_claims_list_item, claims);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.originalClaims = new ArrayList<ClaimListTO>(claims);
 		this.claims = claims;
-		this.filteredClaims = null;
 	}
 
-	@Override
-	public Filter getFilter() {
-
-		Filter filter = new Filter() {
-
-			@Override
-			protected FilterResults performFiltering(CharSequence constraint) {
-
-				String filterString = constraint.toString();
-				
-				filteredClaims = new ArrayList<ClaimListTO>();
-				for (ClaimListTO cto : originalClaims) {
-					String lcase = cto.getSlogan().toLowerCase(Locale.getDefault());
-					if (lcase.contains(filterString.toLowerCase(Locale.getDefault()))) {
-						filteredClaims.add(cto);
-					}
-				}
-
-				FilterResults results = new FilterResults();
-				results.count = filteredClaims.size();
-				results.values = filteredClaims;
-				return results;
-			}
-
-			@Override
-			protected void publishResults(CharSequence constraint,
-					FilterResults results) {
-				claims = (ArrayList<ClaimListTO>) results.values;
-
-				if (results.count > 0) {
-					notifyDataSetChanged();
-				} else {
-					notifyDataSetInvalidated();
-				}
-			}
-		};
-		return filter;
-	}
-
-	@Override
-	public int getCount() {
-		return claims.size();
-	}
 
 	static class ViewHolder {
 		TextView id;
 		TextView slogan;
 		TextView status;
+		TextView cardinalDirection;
 		ImageView picture;
 	}
 
@@ -117,12 +67,13 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		ViewHolder vh;
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.claims_list_item,
+			convertView = inflater.inflate(R.layout.adjacent_claims_list_item,
 					parent, false);
 			vh = new ViewHolder();
 			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
 			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
+			vh.cardinalDirection = (TextView) convertView.findViewById(R.id.cardinal_direction);
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.claimant_picture);
 			convertView.setTag(vh);
@@ -133,6 +84,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.status.setText(claims.get(position).getStatus());
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
+		vh.cardinalDirection.setText(claims.get(position).getCardinalDirection());
 		vh.picture.setImageBitmap(Person.getPersonPicture(
 				context,
 				Person.getPersonPictureFile(Claim

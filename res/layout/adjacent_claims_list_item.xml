@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_background_opentenure"
+    android:orientation="horizontal"
+    android:padding="10dp" >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="9"
+        android:background="@color/light_background_opentenure"
+        android:orientation="vertical"
+        android:padding="0dp" >
+
+        <TextView
+            android:id="@+id/claim_id"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+	        android:layout_weight="1"
+            android:background="@drawable/item_color"
+            android:gravity="left|center"
+            android:text="@string/title_item" />
+
+        <TextView
+            android:id="@+id/claim_slogan"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+	        android:layout_weight="4"
+            android:background="@drawable/item_color"
+            android:gravity="left|center"
+            android:text="@string/title_item" />
+
+        
+        <TextView
+            android:id="@+id/claim_status"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+	        android:layout_weight="1"
+            android:background="@drawable/item_color"
+            android:paddingTop="10sp"
+            android:gravity="left|bottom"
+            android:textColor="#C6B246"
+            android:textSize="20sp"            
+            android:text="@string/title_item" />
+
+        <TextView
+            android:id="@+id/cardinal_direction"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+	        android:layout_weight="1"
+            android:background="@drawable/item_color"
+            android:gravity="left|center"
+            android:text="@string/title_item" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/claimant_picture"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:contentDescription="@string/claimant_picture"
+        android:src="@drawable/ic_contact_picture" />
+
+</LinearLayout>

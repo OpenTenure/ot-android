@@ -245,26 +245,4 @@ public class BasePropertyBoundary {
 		}
 	}
 
-	public static String getCardinalDirection(Context context, CardinalDirection bearing){
-		switch(bearing){
-		case NORTH:
-			return context.getResources().getString(R.string.north);
-		case SOUTH:
-			return context.getResources().getString(R.string.south);
-		case EAST:
-			return context.getResources().getString(R.string.east);
-		case WEST:
-			return context.getResources().getString(R.string.west);
-		case NORTHEAST:
-			return context.getResources().getString(R.string.north_east);
-		case NORTHWEST:
-			return context.getResources().getString(R.string.north_west);
-		case SOUTHEAST:
-			return context.getResources().getString(R.string.south_east);
-		case SOUTHWEST:
-			return context.getResources().getString(R.string.south_west);
-		default:
-			return "";
-		}
-	}
 }
