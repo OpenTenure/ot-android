@@ -64,11 +64,7 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 
 	private View rootView;
 	private ClaimDispatcher claimActivity;
-	private String mode;
-	
-	public void setMode(String mode){
-		this.mode = mode;
-	}
+	private ModeDispatcher modeActivity;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -82,6 +78,12 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 			throw new ClassCastException(activity.toString()
 					+ " must implement ClaimDispatcher");
 		}
+		try {
+			modeActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 
 	public ClaimAdditionalInfoFragments() {
@@ -91,7 +93,7 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_metadata, menu);
 
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+		if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_new_metadata);
 		}
 
@@ -193,7 +195,7 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 			}
 		}
 		ArrayAdapter<String> adapter = new ClaimAdditionalInfoListAdapter(
-				rootView.getContext(), slogans, ids, mode);
+				rootView.getContext(), slogans, ids, modeActivity.getMode());
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

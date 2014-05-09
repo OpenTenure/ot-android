@@ -29,8 +29,6 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.model.Person;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -40,13 +38,10 @@ import android.support.v4.view.ViewPager;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-public class SelectPersonActivity extends FragmentActivity implements PersonDispatcher {
+public class SelectPersonActivity extends FragmentActivity implements ModeDispatcher {
 
-	public static final String PERSON_ID_KEY = "personId";
-	public static final String CREATE_PERSON_ID = "create";
 	public static final int SELECT_PERSON_ACTIVITY_RESULT = 100;
 
-	private String personId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
@@ -70,12 +65,6 @@ public class SelectPersonActivity extends FragmentActivity implements PersonDisp
 	};
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		outState.putString(PERSON_ID_KEY, personId);
-
-	}
-
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
@@ -89,21 +78,6 @@ public class SelectPersonActivity extends FragmentActivity implements PersonDisp
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		
-		String savedInstancePersonId = null;
-
-		if(savedInstanceState != null){
-			savedInstancePersonId = savedInstanceState.getString(PERSON_ID_KEY);
-		}
-
-		String intentPersonId = getIntent().getExtras().getString(PERSON_ID_KEY);
-		
-		if(savedInstancePersonId != null){
-			setPersonId(savedInstancePersonId);
-		}else if(intentPersonId != null && !intentPersonId.equalsIgnoreCase(CREATE_PERSON_ID)){
-			setPersonId(intentPersonId);
-			
-		}
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -117,9 +91,7 @@ public class SelectPersonActivity extends FragmentActivity implements PersonDisp
 
 			switch (position) {
 			case 0:
-				PersonsFragment pf = new PersonsFragment();
-				pf.setMode(PersonActivity.MODE_RO);
-				return pf;
+				return new PersonsFragment();
 			}
 			return null;
 		}
@@ -141,16 +113,7 @@ public class SelectPersonActivity extends FragmentActivity implements PersonDisp
 	}
 
 	@Override
-	public void setPersonId(String personId) {
-		this.personId = personId;
-		if(personId != null && !personId.equalsIgnoreCase(CREATE_PERSON_ID)){
-			Person person = Person.getPerson(personId);
-			setTitle(getResources().getString(R.string.app_name) + ": " + person.getFirstName() + " " + person.getLastName());
-		}
-	}
-
-	@Override
-	public String getPersonId() {
-		return personId;
+	public Mode getMode() {
+		return ModeDispatcher.Mode.MODE_RO;
 	}
 }

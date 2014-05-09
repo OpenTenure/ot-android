@@ -40,7 +40,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -63,10 +62,10 @@ public class PersonFragment extends Fragment {
 
 	View rootView;
 	private PersonDispatcher personActivity;
+	private ModeDispatcher mainActivity;
 	final Calendar localCalendar = Calendar.getInstance();
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	File personPictureFile;
-	String mode;
 	Menu menu;
 	ImageView claimantImageView;
 
@@ -82,18 +81,20 @@ public class PersonFragment extends Fragment {
 			throw new ClassCastException(activity.toString()
 					+ " must implement PersonDispatcher");
 		}
+		try {
+			mainActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 	
-	public void setMode(String mode){
-		this.mode = mode;
-	}
-
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.person, menu);
 
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_save);
 		}
 

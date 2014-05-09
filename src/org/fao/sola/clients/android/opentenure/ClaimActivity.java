@@ -42,14 +42,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
-public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
+public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, ModeDispatcher {
 
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
 	public static final String CREATE_CLAIM_ID = "create";
-	public static final String MODE_RO = "RO";
-	public static final String MODE_RW = "RW";
-	private String mode;
+	private ModeDispatcher.Mode mode;
 	private String claimId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -83,7 +81,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		mode = getIntent().getStringExtra(MODE_KEY);
+		mode = ModeDispatcher.Mode.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -129,30 +127,24 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 
 			switch (position) {
 			case 0:
-				ClaimDetailsFragment claimDetailsFragment = new ClaimDetailsFragment();
-				claimDetailsFragment.setMode(mode);
-				return claimDetailsFragment;
+				return new ClaimDetailsFragment();
 			case 1:
-				ClaimMapFragment claimMapFragment =new ClaimMapFragment(); 
-				claimMapFragment.setMode(mode);
-				return claimMapFragment;
+				return new ClaimMapFragment();
 			case 2:
-				ClaimDocumentsFragment claimDocumentsFragment = new ClaimDocumentsFragment();
-				claimDocumentsFragment.setMode(mode);
-				return claimDocumentsFragment;
+				return new ClaimDocumentsFragment();
 			case 3:
-				ClaimAdditionalInfoFragments claimAdditionalInfoFragments = new ClaimAdditionalInfoFragments();
-				claimAdditionalInfoFragments.setMode(mode);
-				return claimAdditionalInfoFragments;
+				return new ClaimAdditionalInfoFragments();
 			case 4:
 				return new AdjacentClaimsFragment();
+			case 5:
+				return new ChallengingClaimsFragment();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 5;
+			return 6;
 		}
 
 		@Override
@@ -169,6 +161,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 				return getString(R.string.title_claim_additional_info).toUpperCase(l);
 			case 4:
 				return getString(R.string.title_claim_adjacencies).toUpperCase(l);
+			case 5:
+				return getString(R.string.title_claim_challenges).toUpperCase(l);
 			}
 			return null;
 		}
@@ -186,5 +180,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher {
 	@Override
 	public String getClaimId() {
 		return claimId;
+	}
+
+	@Override
+	public Mode getMode() {
+		return mode;
 	}
 }

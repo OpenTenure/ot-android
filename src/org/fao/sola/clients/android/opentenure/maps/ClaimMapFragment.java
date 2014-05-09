@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -95,15 +96,11 @@ public class ClaimMapFragment extends Fragment implements
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
+	private ModeDispatcher modeActivity;
 	private int mapType = R.id.map_provider_google_normal;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
 	private double snapLon;
-	private String mode;
-	
-	public void setMode(String mode){
-		this.mode = mode;
-	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -117,6 +114,12 @@ public class ClaimMapFragment extends Fragment implements
 			throw new ClassCastException(activity.toString()
 					+ " must implement ClaimDispatcher");
 		}
+		try {
+			modeActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 
 	@Override
@@ -128,7 +131,10 @@ public class ClaimMapFragment extends Fragment implements
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_map, menu);
-
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+			menu.removeItem(R.id.action_new);
+			menu.removeItem(R.id.action_new_picture);
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -224,8 +230,13 @@ public class ClaimMapFragment extends Fragment implements
 		existingPropertiesMultiPolygon = gf.createMultiPolygon(polygons);
 		existingPropertiesMultiPolygon.setSRID(3857);
 
-		currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-				map, Claim.getClaim(claimActivity.getClaimId()), claimActivity);
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, false);
+		}else{
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, true);
+		}
 
 		drawProperties();
 
@@ -278,107 +289,113 @@ public class ClaimMapFragment extends Fragment implements
 
 		}
 
-		this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+			// Allow adding, removing and dragging markers
 
-			@Override
-			public void onMapLongClick(final LatLng position) {
+			this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
 
-				if (claimActivity.getClaimId() == null) {
-					// Useless to add markers without a claim
-					Toast toast = Toast.makeText(mapView.getContext(),
-							R.string.message_save_claim_before_adding_content,
-							Toast.LENGTH_SHORT);
-					toast.show();
-					return;
+				@Override
+				public void onMapLongClick(final LatLng position) {
+
+					if (claimActivity.getClaimId() == null) {
+						// Useless to add markers without a claim
+						Toast toast = Toast.makeText(
+								mapView.getContext(),
+								R.string.message_save_claim_before_adding_content,
+								Toast.LENGTH_SHORT);
+						toast.show();
+						return;
+					}
+
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							mapView.getContext());
+					dialog.setTitle(R.string.message_add_marker);
+					dialog.setMessage("Lon: " + position.longitude + ", lat: "
+							+ position.latitude);
+
+					dialog.setPositiveButton(R.string.confirm,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+
+									currentProperty.insertVertex(position);
+									currentProperty
+											.resetAdjacency(existingProperties);
+								}
+							});
+					dialog.setNegativeButton(R.string.cancel,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
+
+					dialog.show();
+
+				}
+			});
+			this.map.setOnMarkerDragListener(new OnMarkerDragListener() {
+				@Override
+				public void onMarkerDrag(Marker mark) {
+					PointPairDistance ppd = new PointPairDistance();
+					DistanceToPoint.computeDistance(
+							existingPropertiesMultiPolygon,
+							new Coordinate(mark.getPosition().longitude, mark
+									.getPosition().latitude), ppd);
+
+					if (ppd.getDistance() < BasePropertyBoundary.SNAP_THRESHOLD) {
+						snapLat = ppd.getCoordinate(0).y;
+						snapLon = ppd.getCoordinate(0).x;
+						mark.setPosition(new LatLng(snapLat, snapLon));
+					} else {
+						snapLat = 0.0;
+						snapLon = 0.0;
+					}
+					currentProperty.moveMarker(mark);
+					currentProperty.drawBoundary();
+
 				}
 
-				AlertDialog.Builder dialog = new AlertDialog.Builder(mapView
-						.getContext());
-				dialog.setTitle(R.string.message_add_marker);
-				dialog.setMessage("Lon: " + position.longitude + ", lat: "
-						+ position.latitude);
+				@Override
+				public void onMarkerDragEnd(Marker mark) {
 
-				dialog.setPositiveButton(R.string.confirm,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-								currentProperty.insertVertex(position);
-								currentProperty.resetAdjacency(existingProperties);
-							}
-						});
-				dialog.setNegativeButton(R.string.cancel,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
-
-				dialog.show();
-
-			}
-		});
-		this.map.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-			@Override
-			public boolean onMarkerClick(final Marker mark) {
-				if (currentProperty.handleMarkerClick(mark, existingProperties)) {
-					return true;
-				} else {
-					return false;
+					if (snapLat != 0.0 && snapLon != 0.0) {
+						mark.setPosition(new LatLng(snapLat, snapLon));
+					}
+					currentProperty.moveMarker(mark);
+					currentProperty.updateVertices();
+					currentProperty.resetAdjacency(existingProperties);
+					currentProperty.drawBoundary();
 				}
-			}
-		});
-		this.map.setOnMarkerDragListener(new OnMarkerDragListener() {
-			@Override
-			public void onMarkerDrag(Marker mark) {
-				PointPairDistance ppd = new PointPairDistance();
-				DistanceToPoint.computeDistance(
-						existingPropertiesMultiPolygon,
-						new Coordinate(mark.getPosition().longitude, mark
-								.getPosition().latitude), ppd);
 
-				if (ppd.getDistance() < BasePropertyBoundary.SNAP_THRESHOLD) {
-					snapLat = ppd.getCoordinate(0).y;
-					snapLon = ppd.getCoordinate(0).x;
-					mark.setPosition(new LatLng(snapLat, snapLon));
-				} else {
-					snapLat = 0.0;
-					snapLon = 0.0;
+				@Override
+				public void onMarkerDragStart(Marker mark) {
+					currentProperty.moveMarker(mark);
+					currentProperty.drawBoundary();
 				}
-				currentProperty.moveMarker(mark);
-				currentProperty.drawBoundary();
 
-			}
+			});
 
-			@Override
-			public void onMarkerDragEnd(Marker mark) {
+			this.map.setOnMarkerClickListener(new OnMarkerClickListener() {
 
-				if (snapLat != 0.0 && snapLon != 0.0) {
-					mark.setPosition(new LatLng(snapLat, snapLon));
+				@Override
+				public boolean onMarkerClick(final Marker mark) {
+					if (currentProperty.handleMarkerClick(mark, existingProperties)) {
+						return true;
+					} else {
+						return false;
+					}
 				}
-				currentProperty.moveMarker(mark);
-				currentProperty.updateVertices();
-				currentProperty.resetAdjacency(existingProperties);
-				currentProperty.drawBoundary();
-			}
-
-			@Override
-			public void onMarkerDragStart(Marker mark) {
-				currentProperty.moveMarker(mark);
-				currentProperty.drawBoundary();
-			}
-
-		});
-
+			});
+		}
 		return mapView;
 
 	}
-	
+
 	public void setMapType(int type) {
 
 		if (tiles != null) {
@@ -505,10 +522,9 @@ public class ClaimMapFragment extends Fragment implements
 						R.string.message_submitted, Toast.LENGTH_SHORT);
 				toast.show();
 			} else {
-				toast = Toast
-						.makeText(mapView.getContext(),
-								R.string.message_save_claim_before_submit,
-								Toast.LENGTH_SHORT);
+				toast = Toast.makeText(mapView.getContext(),
+						R.string.message_save_claim_before_submit,
+						Toast.LENGTH_SHORT);
 				toast.show();
 			}
 			return true;

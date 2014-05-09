@@ -48,10 +48,10 @@ public class ClaimAdditionalInfoListAdapter extends ArrayAdapter<String> {
 	  private final Context context;
 	  private final List<String> slogans;
 	  private final List<String> ids;
-	  private String mode;
+	  private ModeDispatcher.Mode mode;
 	
 	
-	public ClaimAdditionalInfoListAdapter(Context context, List<String> slogans, List<String> ids, String mode) {
+	public ClaimAdditionalInfoListAdapter(Context context, List<String> slogans, List<String> ids, ModeDispatcher.Mode mode) {
 	    super(context, R.layout.claim_additional_info_list_item, slogans);
 	    this.context = context;
 	    this.slogans = slogans;
@@ -70,7 +70,7 @@ public class ClaimAdditionalInfoListAdapter extends ArrayAdapter<String> {
 	    id.setTextSize(8);
 	    id.setText(ids.get(position));
 
-	    if (mode != ClaimActivity.MODE_RO) {
+	    if (mode.compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
 
 	    	ImageView picture = (ImageView) rowView.findViewById(R.id.remove_icon);
 

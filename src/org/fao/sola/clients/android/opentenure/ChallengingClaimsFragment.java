@@ -30,7 +30,6 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
@@ -45,7 +44,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AdjacentClaimsFragment extends ListFragment {
+public class ChallengingClaimsFragment extends ListFragment {
 
 	private View rootView;
 	private ClaimDispatcher claimActivity;
@@ -71,13 +70,13 @@ public class AdjacentClaimsFragment extends ListFragment {
 		}
 	}
 
-	public AdjacentClaimsFragment() {
+	public ChallengingClaimsFragment() {
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.adjacent_claims_list, container,
+		rootView = inflater.inflate(R.layout.challenging_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
 		update();
@@ -103,26 +102,23 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		if(claimId != null){
 
-			List<Adjacency> adjacencies = Adjacency.getAdjacencies(claimId);
-			List<AdjacentClaimListTO> claimListTOs = new ArrayList<AdjacentClaimListTO>();
+			List<Claim> challengingClaims = Claim.getChallengingClaims(claimId);
+			List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
-			for(Adjacency adjacency : adjacencies){
+			for(Claim challengingClaim : challengingClaims){
 				
-				Claim adjacentClaim = Claim.getClaim(adjacency.getDestClaimId());
-				
-				AdjacentClaimListTO acto = new AdjacentClaimListTO();
-				acto.setSlogan(adjacentClaim.getName() + ", " + getResources().getString(R.string.by) + ": " + adjacentClaim.getPerson().getFirstName()+ " " + adjacentClaim.getPerson().getLastName());
-				acto.setId(adjacentClaim.getClaimId());
-				acto.setCardinalDirection(Adjacency.getCardinalDirection(rootView.getContext(),adjacency.getCardinalDirection()));
-				if(adjacentClaim.getStatus().equals(ClaimStatus._UPLOADING)) 
-					acto.setStatus(adjacentClaim.getStatus());
-				else if(adjacentClaim.getStatus().equals(ClaimStatus._UNMODERATED)){
-					acto.setStatus("uploaded");
+				ClaimListTO cto = new ClaimListTO();
+				cto.setSlogan(challengingClaim.getName() + ", " + getResources().getString(R.string.by) + ": " + challengingClaim.getPerson().getFirstName()+ " " + challengingClaim.getPerson().getLastName());
+				cto.setId(challengingClaim.getClaimId());
+				if(challengingClaim.getStatus().equals(ClaimStatus._UPLOADING)) 
+					cto.setStatus(challengingClaim.getStatus());
+				else if(challengingClaim.getStatus().equals(ClaimStatus._UNMODERATED)){
+					cto.setStatus("uploaded");
 					}
-				else acto.setStatus(" ");
-				claimListTOs.add(acto);
+				else cto.setStatus(" ");
+				claimListTOs.add(cto);
 			}
-			ArrayAdapter<AdjacentClaimListTO> adapter = new AdjacentClaimsListAdapter(rootView.getContext(), claimListTOs);
+			ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs);
 			setListAdapter(adapter);
 			adapter.notifyDataSetChanged();
 

@@ -69,9 +69,8 @@ import android.widget.Toast;
 public class ClaimDetailsFragment extends Fragment {
 
 	View rootView;
-	String mode;
 	private ClaimDispatcher claimActivity;
-	Menu menu;
+	private ModeDispatcher modeActivity;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -85,10 +84,12 @@ public class ClaimDetailsFragment extends Fragment {
 			throw new ClassCastException(activity.toString()
 					+ " must implement ClaimDispatcher");
 		}
-	}
-
-	public void setMode(String mode) {
-		this.mode = mode;
+		try {
+			modeActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 
 	public ClaimDetailsFragment() {
@@ -96,34 +97,35 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		MenuItem itemIn;
-		MenuItem itemOut;
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+			MenuItem itemIn;
+			MenuItem itemOut;
 
-		try {
-			Thread.sleep(400);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			try {
+				Thread.sleep(400);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Log.d(this.getClass().getName(), "Is the user logged in ? : "
+					+ OpenTenureApplication.isLoggedin());
+
+			if (OpenTenureApplication.isLoggedin()) {
+
+				itemIn = menu.getItem(4);
+				itemIn.setVisible(false);
+				itemOut = menu.getItem(5);
+				itemOut.setVisible(true);
+
+			} else {
+
+				itemIn = menu.getItem(4);
+				itemIn.setVisible(true);
+				itemOut = menu.getItem(5);
+				itemOut.setVisible(false);
+			}
+
 		}
-
-		Log.d(this.getClass().getName(), "Is the user logged in ? : "
-				+ OpenTenureApplication.isLoggedin());
-
-		if (OpenTenureApplication.isLoggedin()) {
-
-			itemIn = menu.getItem(4);
-			itemIn.setVisible(false);
-			itemOut = menu.getItem(5);
-			itemOut.setVisible(true);
-
-		} else {
-
-			itemIn = menu.getItem(4);
-			itemIn.setVisible(true);
-			itemOut = menu.getItem(5);
-			itemOut.setVisible(false);
-		}
-
-		this.menu = menu;
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -132,6 +134,14 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.claim_details, menu);
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+			menu.removeItem(R.id.action_save);
+			menu.removeItem(R.id.action_submit);
+			menu.removeItem(R.id.action_export);
+			menu.removeItem(R.id.action_login);
+			menu.removeItem(R.id.action_logout);
+			menu.removeItem(R.id.action_print);
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -139,7 +149,7 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (data != null) { // No selection has been done
-		
+
 			switch (requestCode) {
 			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
 				String personId = data
@@ -172,37 +182,33 @@ public class ClaimDetailsFragment extends Fragment {
 		preload();
 		loadClaim(Claim.getClaim(claimActivity.getClaimId()));
 
-		((View) rootView.findViewById(R.id.claimant))
-				.setOnClickListener(new OnClickListener() {
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+			((View) rootView.findViewById(R.id.claimant))
+					.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(rootView.getContext(),
-								SelectPersonActivity.class);
-						intent.putExtra(SelectPersonActivity.PERSON_ID_KEY,
-								SelectPersonActivity.CREATE_PERSON_ID);
-						intent.putExtra(PersonActivity.MODE_KEY,
-								PersonActivity.MODE_RO);
-						startActivityForResult(intent,
-								SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
-					}
-				});
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(rootView.getContext(),
+									SelectPersonActivity.class);
+							startActivityForResult(
+									intent,
+									SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
+						}
+					});
 
-		((View) rootView.findViewById(R.id.challenge_to))
-				.setOnClickListener(new OnClickListener() {
+			((View) rootView.findViewById(R.id.challenge_to))
+					.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						Intent intent = new Intent(rootView.getContext(),
-								SelectClaimActivity.class);
-						intent.putExtra(SelectClaimActivity.PERSON_ID_KEY,
-								SelectClaimActivity.CREATE_PERSON_ID);
-						intent.putExtra(SelectClaimActivity.MODE_KEY,
-								SelectClaimActivity.MODE_RO);
-						startActivityForResult(intent,
-								SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT);
-					}
-				});
+						@Override
+						public void onClick(View v) {
+							Intent intent = new Intent(rootView.getContext(),
+									SelectClaimActivity.class);
+							startActivityForResult(
+									intent,
+									SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT);
+						}
+					});
+		}
 
 		return rootView;
 	}
@@ -239,9 +245,11 @@ public class ClaimDetailsFragment extends Fragment {
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.ic_contact_picture);
+		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+				R.drawable.ic_contact_picture);
 
-		challengedClaimantImageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 128, 128, true));
+		challengedClaimantImageView.setImageBitmap(Bitmap.createScaledBitmap(
+				bitmap, 128, 128, true));
 	}
 
 	private void loadChallengedClaim(Claim challengedClaim) {
@@ -253,7 +261,8 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setText(challengedClaim.getClaimId());
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-					.setText(challengedClaim.getName() + ", " + getResources().getString(R.string.by) + ": "
+					.setText(challengedClaim.getName() + ", "
+							+ getResources().getString(R.string.by) + ": "
 							+ challengedPerson.getFirstName() + " "
 							+ challengedPerson.getLastName());
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_status))
@@ -262,19 +271,19 @@ public class ClaimDetailsFragment extends Fragment {
 					.findViewById(R.id.challenge_to_claimant_picture);
 			File challengedPersonPictureFile = Person
 					.getPersonPictureFile(challengedPerson.getPersonId());
-			challengedClaimantImageView.setImageBitmap(Person
-					.getPersonPicture(rootView.getContext(),
-							challengedPersonPictureFile, 128));
+			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
+					rootView.getContext(), challengedPersonPictureFile, 128));
 		}
 	}
 
 	private void loadClaimant(Person claimant) {
-		if(claimant != null){
+		if (claimant != null) {
 			((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
-			((TextView) rootView.findViewById(R.id.claimant_id)).setText(claimant
-					.getPersonId());
+			((TextView) rootView.findViewById(R.id.claimant_id))
+					.setText(claimant.getPersonId());
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
-					.setText(claimant.getFirstName() + " " + claimant.getLastName());
+					.setText(claimant.getFirstName() + " "
+							+ claimant.getLastName());
 			ImageView claimantImageView = (ImageView) rootView
 					.findViewById(R.id.claimant_picture);
 			File personPictureFile = Person.getPersonPictureFile(claimant
@@ -290,9 +299,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
 					.setText(claim.getName());
-			if (mode.equalsIgnoreCase(ClaimActivity.MODE_RO)) {
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
-				.setFocusable(false);
+						.setFocusable(false);
 			}
 
 			Person claimant = claim.getPerson();
@@ -303,8 +312,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 	public void saveClaim() {
 
-		Person person = Person.getPerson(((TextView) rootView.findViewById(R.id.claimant_id)).getText().toString());
-		Claim challengedClaim = Claim.getClaim(((TextView) rootView.findViewById(R.id.challenge_to_claim_id)).getText().toString());
+		Person person = Person.getPerson(((TextView) rootView
+				.findViewById(R.id.claimant_id)).getText().toString());
+		Claim challengedClaim = Claim
+				.getClaim(((TextView) rootView
+						.findViewById(R.id.challenge_to_claim_id)).getText()
+						.toString());
 
 		Claim claim = new Claim();
 		claim.setName(((EditText) rootView
@@ -322,8 +335,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 	public void updateClaim() {
 
-		Person person = Person.getPerson(((TextView) rootView.findViewById(R.id.claimant_id)).getText().toString());
-		Claim challengedClaim = Claim.getClaim(((TextView) rootView.findViewById(R.id.challenge_to_claim_id)).getText().toString());
+		Person person = Person.getPerson(((TextView) rootView
+				.findViewById(R.id.claimant_id)).getText().toString());
+		Claim challengedClaim = Claim
+				.getClaim(((TextView) rootView
+						.findViewById(R.id.challenge_to_claim_id)).getText()
+						.toString());
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		claim.setName(((EditText) rootView

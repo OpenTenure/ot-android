@@ -77,13 +77,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 	private String fileType;
 	private String mimeType;
 	private View rootView;
-	private String mode;
-	
-	public void setMode(String mode){
-		this.mode = mode;
-	}
 
 	private ClaimDispatcher claimActivity;
+	private ModeDispatcher mainActivity;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -96,6 +92,12 @@ public class ClaimDocumentsFragment extends ListFragment {
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement ClaimDispatcher");
+		}
+		try {
+			mainActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
 		}
 	}
 
@@ -115,7 +117,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_documents, menu);
 
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_new_picture);
 			menu.removeItem(R.id.action_new_attachment);
 		}
@@ -391,7 +393,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 			}
 		}
 		ArrayAdapter<String> adapter = new ClaimAttachmentsListAdapter(
-				rootView.getContext(), slogans, ids, claimId, mode);
+				rootView.getContext(), slogans, ids, claimId, mainActivity.getMode());
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

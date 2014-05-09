@@ -331,8 +331,62 @@ public class Claim {
 		return claim;
 	}
 
-	public List<Claim> getChallengingClaims(String claimId) {
+	public static List<Claim> getChallengingClaims(String claimId) {
 		List<Claim> challengingClaims = new ArrayList<Claim>();
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			Claim challengedClaim = getClaim(claimId);
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
+			statement.setString(1, claimId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				String challengingClaimId = rs.getString(1);
+				Claim challengingClaim = new Claim();
+				challengingClaim.setClaimId(challengingClaimId);
+				challengingClaim.setStatus(rs.getString(2));
+				challengingClaim.setName(rs.getString(3));
+				challengingClaim.setPerson(Person.getPerson(rs.getString(4)));
+				challengingClaim.setChallengedClaim(challengedClaim);
+				challengingClaim.setVertices(Vertex.getVertices(challengingClaimId));
+				challengingClaim.setAttachments(Attachment.getAttachments(challengingClaimId));
+				challengingClaim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(challengingClaimId));
+				challengingClaims.add(challengingClaim);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return challengingClaims;
+	}
+
+	private void loadChallengingClaims() {
+		challengingClaims = new ArrayList<Claim>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -381,7 +435,6 @@ public class Claim {
 				}
 			}
 		}
-		return challengingClaims;
 	}
 
 	public static List<Claim> getAllClaims() {

@@ -65,9 +65,10 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
 	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
 	private ClaimDispatcher claimActivity;
+	private boolean allowDragging;
 
 	public EditablePropertyBoundary(final Context context, final GoogleMap map, final Claim claim,
-			final ClaimDispatcher claimActivity) {
+			final ClaimDispatcher claimActivity, boolean allowDragging) {
 		super(context, map, claim);
 		this.claimActivity = claimActivity;
 
@@ -216,12 +217,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	private Marker createMarker(LatLng position) {
-		return map.addMarker(new MarkerOptions()
-				.position(position)
-				.title(vertices.size() + "")
-				.draggable(true)
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.ot_blue_marker)));
+		if(allowDragging){
+			return map.addMarker(new MarkerOptions()
+			.position(position)
+			.title(vertices.size() + "")
+			.draggable(true)
+			.icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.ot_blue_marker)));
+		}else{
+			return map.addMarker(new MarkerOptions()
+			.position(position)
+			.title(vertices.size() + "")
+			.icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.ot_blue_marker)));
+		}
 	}
 
 	public void saveSnapshot() {

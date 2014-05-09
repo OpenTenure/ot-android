@@ -41,14 +41,12 @@ import android.support.v4.view.ViewPager;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-public class PersonActivity extends FragmentActivity implements PersonDispatcher {
+public class PersonActivity extends FragmentActivity implements PersonDispatcher, ModeDispatcher {
 
 	public static final String PERSON_ID_KEY = "personId";
 	public static final String MODE_KEY = "mode";
 	public static final String CREATE_PERSON_ID = "create";
-	public static final String MODE_RO = "RO";
-	public static final String MODE_RW = "RW";
-	private String mode = MODE_RW;
+	private ModeDispatcher.Mode mode = ModeDispatcher.Mode.MODE_RW;
 	private String personId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -83,7 +81,7 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		mode = intent.getStringExtra(MODE_KEY);
+		mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_person);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -122,9 +120,7 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 
 			switch (position) {
 			case 0:
-				PersonFragment pf = new PersonFragment();
-				pf.setMode(mode);
-				return pf;
+				return new PersonFragment();
 			}
 			return null;
 		}
@@ -157,5 +153,10 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	@Override
 	public String getPersonId() {
 		return personId;
+	}
+
+	@Override
+	public Mode getMode() {
+		return mode;
 	}
 }

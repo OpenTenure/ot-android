@@ -51,10 +51,10 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	private final List<String> slogans;
 	private final List<String> ids;
 	private String claimId;
-	private String mode;
+	private ModeDispatcher.Mode mode;
 
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
-			List<String> ids, String claimId, String mode) {
+			List<String> ids, String claimId, ModeDispatcher.Mode mode) {
 		super(context, R.layout.claims_list_item, slogans);
 		this.context = context;
 		this.slogans = slogans;
@@ -95,7 +95,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			status.setVisibility(View.INVISIBLE);
 		}
 
-		if (mode != ClaimActivity.MODE_RO) {
+		if (mode.compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
 
 			ImageView picture = (ImageView) rowView
 					.findViewById(R.id.remove_icon);

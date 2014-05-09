@@ -50,12 +50,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-public class OpenTenure extends FragmentActivity {
+public class OpenTenure extends FragmentActivity implements ModeDispatcher {
 
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
+	Mode mode = Mode.MODE_RW;
 
 	@Override
 	public void onPause() {
@@ -161,13 +162,9 @@ public class OpenTenure extends FragmentActivity {
 			case 1:
 				return new MainMapFragment();
 			case 2:
-				LocalClaimsFragment lcf = new LocalClaimsFragment();
-				lcf.setMode(ClaimActivity.MODE_RW);
-				return lcf;
+				return new PersonsFragment();
 			case 3:
-				PersonsFragment pf = new PersonsFragment();
-				pf.setMode(PersonActivity.MODE_RW);
-				return pf;
+				return new LocalClaimsFragment();
 			}
 			return null;
 		}
@@ -187,15 +184,17 @@ public class OpenTenure extends FragmentActivity {
 			case 1:
 				return getString(R.string.title_map).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_claims).toUpperCase(l);
-			case 3:
 				return getString(R.string.title_persons)
 						.toUpperCase(l);
-//			case 4:
-//				return getString(R.string.title_challenged_claims).toUpperCase(
-//						l);
+			case 3:
+				return getString(R.string.title_claims).toUpperCase(l);
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public Mode getMode() {
+		return mode;
 	}
 }

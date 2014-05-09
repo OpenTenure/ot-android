@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -53,20 +54,31 @@ public class PersonsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int PERSON_RESULT = 100;
-	private String mode;
+
+	private ModeDispatcher mainActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mainActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
+	}
 
 	public PersonsFragment() {
 	}
 	
-	public void setMode(String mode){
-		this.mode = mode;
-	}
-
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.persons, menu);
 
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_new);
 		}else{
 			
@@ -82,7 +94,7 @@ public class PersonsFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
 			intent.putExtra(PersonActivity.PERSON_ID_KEY, PersonActivity.CREATE_PERSON_ID);
-			intent.putExtra(PersonActivity.MODE_KEY, mode);
+			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode().toString());
 			startActivityForResult(intent, PERSON_RESULT);
 			return true;
 		default:
@@ -129,11 +141,11 @@ public class PersonsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RW)){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
 			intent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
-			intent.putExtra(PersonActivity.MODE_KEY, mode);
+			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode());
 			startActivityForResult(intent, PERSON_RESULT);
 		}else{
 			Intent resultIntent = new Intent();

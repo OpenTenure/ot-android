@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -55,10 +56,21 @@ public class LocalClaimsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int CLAIM_RESULT = 100;
-	private String mode;
 	
-	public void setMode(String mode){
-		this.mode = mode;
+	private ModeDispatcher mainActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+		try {
+			mainActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 
 	public LocalClaimsFragment() {
@@ -68,10 +80,8 @@ public class LocalClaimsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.local_claims, menu);
 
-		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_new);
-		}else{
-			
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -84,7 +94,7 @@ public class LocalClaimsFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ClaimActivity.CREATE_CLAIM_ID);
-			intent.putExtra(ClaimActivity.MODE_KEY, mode);
+			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode().toString());
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		default:
@@ -131,11 +141,11 @@ public class LocalClaimsFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if (mode.equalsIgnoreCase(ClaimActivity.MODE_RW)) {
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
-			intent.putExtra(ClaimActivity.MODE_KEY, mode);
+			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode().toString());
 			startActivityForResult(intent, CLAIM_RESULT);
 		}else{
 			Intent resultIntent = new Intent();
