@@ -161,9 +161,13 @@ public class OpenTenure extends FragmentActivity {
 			case 1:
 				return new MainMapFragment();
 			case 2:
-				return new LocalClaimsFragment();
+				LocalClaimsFragment lcf = new LocalClaimsFragment();
+				lcf.setMode(ClaimActivity.MODE_RW);
+				return lcf;
 			case 3:
-				return new PersonsFragment();
+				PersonsFragment pf = new PersonsFragment();
+				pf.setMode(PersonActivity.MODE_RW);
+				return pf;
 			}
 			return null;
 		}

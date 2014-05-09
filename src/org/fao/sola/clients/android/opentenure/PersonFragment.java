@@ -66,6 +66,7 @@ public class PersonFragment extends Fragment {
 	final Calendar localCalendar = Calendar.getInstance();
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	File personPictureFile;
+	String mode;
 	Menu menu;
 	ImageView claimantImageView;
 
@@ -82,11 +83,20 @@ public class PersonFragment extends Fragment {
 					+ " must implement PersonDispatcher");
 		}
 	}
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.person, menu);
+
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+			menu.removeItem(R.id.action_save);
+		}
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

@@ -29,7 +29,6 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AdditionalInfo;
 
 import android.app.AlertDialog;
@@ -37,76 +36,80 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ClaimDetailsListAdapter extends ArrayAdapter<String> {
+public class ClaimAdditionalInfoListAdapter extends ArrayAdapter<String> {
 		
 	  private final Context context;
 	  private final List<String> slogans;
 	  private final List<String> ids;
+	  private String mode;
 	
 	
-	public ClaimDetailsListAdapter(Context context, List<String> slogans, List<String> ids) {
-	    super(context, R.layout.local_claims_list_item, slogans);
+	public ClaimAdditionalInfoListAdapter(Context context, List<String> slogans, List<String> ids, String mode) {
+	    super(context, R.layout.claim_additional_info_list_item, slogans);
 	    this.context = context;
 	    this.slogans = slogans;
 	    this.ids = ids;
+	    this.mode = mode;
 	  }
 	
 	@Override
 	  public View getView(final int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    View rowView = inflater.inflate(R.layout.claim_attachments_list_item, parent, false);
-	    TextView slogan = (TextView) rowView.findViewById(R.id.attachment_description);
-	    TextView id = (TextView) rowView.findViewById(R.id.attachment_id);
+	    View rowView = inflater.inflate(R.layout.claim_additional_info_list_item, parent, false);
+	    TextView slogan = (TextView) rowView.findViewById(R.id.additional_info_description);
+	    TextView id = (TextView) rowView.findViewById(R.id.additional_info_id);
 	    slogan.setText(slogans.get(position));
 	    id.setTextSize(8);
 	    id.setText(ids.get(position));
-	    ImageView picture = (ImageView) rowView.findViewById(R.id.remove_icon);
-	    
-	    
-	    
-	    picture.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(context);
-				confirmNewPasswordDialog.setTitle(R.string.action_remove_metadata);
-				confirmNewPasswordDialog.setMessage(slogans.get(position) + ": "+ context.getResources().getString(R.string.message_remove_metadata));
+	    if (mode != ClaimActivity.MODE_RO) {
 
-				confirmNewPasswordDialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+	    	ImageView picture = (ImageView) rowView.findViewById(R.id.remove_icon);
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						AdditionalInfo.getAdditionalInfo(ids.get(position)).delete();
-						Toast
-						.makeText(context,
-								R.string.metadata_removed,
-								Toast.LENGTH_SHORT).show();
-						slogans.remove(position);
-						ids.remove(position);
-						notifyDataSetChanged();
-					}
-				});
-				confirmNewPasswordDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+		    picture.setOnClickListener(new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-					}
-				});
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(context);
+					confirmNewPasswordDialog.setTitle(R.string.action_remove_additional_info);
+					confirmNewPasswordDialog.setMessage(slogans.get(position) + ": "+ context.getResources().getString(R.string.message_remove_additional_info));
 
-				confirmNewPasswordDialog.show();
-				
-			}
-		});
-	    
-	    
+					confirmNewPasswordDialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							AdditionalInfo.getAdditionalInfo(ids.get(position)).delete();
+							Toast
+							.makeText(context,
+									R.string.additional_info_removed,
+									Toast.LENGTH_SHORT).show();
+							slogans.remove(position);
+							ids.remove(position);
+							notifyDataSetChanged();
+						}
+					});
+					confirmNewPasswordDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
+
+					confirmNewPasswordDialog.show();
+					
+				}
+			});
+		}else{
+			rowView.findViewById(R.id.remove_icon).setVisibility(View.INVISIBLE);
+		}
 	    return rowView;
 	    
 	}

@@ -6,8 +6,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_new">New</string>
+    <string name="action_done">Done</string>
     <string name="action_remove_attachment">Remove attachment</string>
-    <string name="action_remove_metadata">Remove information</string>
+    <string name="action_remove_additional_info">Remove information</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
@@ -18,7 +19,7 @@
     <string name="action_submit">Submit</string>
     <string name="action_download_file">Download File</string>
     <string name="action_new_picture">New picture</string>
-    <string name="action_new_metadata">Add information</string>
+    <string name="action_new_additional_info">Add information</string>
     <string name="action_new_attachment">New document</string>
     <string name="action_lock_db">Configure data encryption</string>
     <string name="action_export">Export</string>
@@ -39,6 +40,8 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_claim">Open Tenure: New claim</string>
     <string name="title_activity_person">Open Tenure: New person</string>
+    <string name="title_activity_select_claim">Open Tenure: Select claim</string>
+    <string name="title_activity_select_person">Open Tenure: Select person</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>
     <string name="choose_file">Choose a file</string>
@@ -55,6 +58,7 @@
     <string name="adjacency">Adjacency</string>
     <string name="cardinal_direction">Cardinal direction</string>
     <string name="by">By</string>
+    <string name="na">N.A.</string>
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>
@@ -68,7 +72,7 @@
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
     <string name="attachment_removed">The attachment has been removed</string>
-    <string name="metadata_removed">Information removed</string>
+    <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
     <string name="message_map_snapshot_saved">Map snapshot saved</string>
     <string name="message_downloading_attachment">Downloading the attachment</string>
@@ -91,7 +95,7 @@
     <string name="cancel">Cancel</string>
     <string name="new_snapshot">New snapshot</string>
     <string name="new_file">New file</string>
-    <string name="new_metadata">Add information</string>
+    <string name="new_additional_info">Add information</string>
     <string name="add_description">Description?</string>
     <string name="add_key">Key?</string>
     <string name="add_value">Value?</string>
@@ -107,11 +111,16 @@
     <string name="message_add_marker">Add marker here?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
-    <string name="message_remove_metadata">Remove information?</string>
+    <string name="message_remove_additional_info">Remove information?</string>
     <string name="message_not_supported_on_this_device">Not supported on this device</string>
     <string name="draggable_marker">Draggable marker</string>
     <string name="sticky_marker">Sticky marker</string>
     <string name="claimant_picture">Claimant picture</string>
+    <string name="claimant">Claimant</string>
+    <string name="owner">Owner</string>
+    <string name="challenge_to">Challenge to</string>
+    <string name="challenged_by">Challenged by</string>
+    <string name="owners">Owners</string>
     <string name="person_picture">Person picture</string>
     <string name="map_provider_google_normal">Google Maps</string>
     <string name="map_provider_google_satellite">Google Earth</string>

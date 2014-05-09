@@ -53,13 +53,24 @@ public class PersonsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int PERSON_RESULT = 100;
+	private String mode;
 
 	public PersonsFragment() {
+	}
+	
+	public void setMode(String mode){
+		this.mode = mode;
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.persons, menu);
+
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+			menu.removeItem(R.id.action_new);
+		}else{
+			
+		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -71,7 +82,7 @@ public class PersonsFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
 			intent.putExtra(PersonActivity.PERSON_ID_KEY, PersonActivity.CREATE_PERSON_ID);
-			intent.putExtra(PersonActivity.MODE_KEY, PersonActivity.MODE_RW);
+			intent.putExtra(PersonActivity.MODE_KEY, mode);
 			startActivityForResult(intent, PERSON_RESULT);
 			return true;
 		default:
@@ -118,11 +129,18 @@ public class PersonsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Intent intent = new Intent(rootView.getContext(),
-				PersonActivity.class);
-		intent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
-		intent.putExtra(PersonActivity.MODE_KEY, PersonActivity.MODE_RW);
-		startActivityForResult(intent, PERSON_RESULT);
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RW)){
+			Intent intent = new Intent(rootView.getContext(),
+					PersonActivity.class);
+			intent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
+			intent.putExtra(PersonActivity.MODE_KEY, mode);
+			startActivityForResult(intent, PERSON_RESULT);
+		}else{
+			Intent resultIntent = new Intent();
+			resultIntent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
+			getActivity().setResult(SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT, resultIntent);
+			getActivity().finish();
+		}
 	}
 
 	protected void update() {

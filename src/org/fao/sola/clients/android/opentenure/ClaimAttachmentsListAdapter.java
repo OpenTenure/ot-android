@@ -51,14 +51,16 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	private final List<String> slogans;
 	private final List<String> ids;
 	private String claimId;
+	private String mode;
 
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
-			List<String> ids, String claimId) {
+			List<String> ids, String claimId, String mode) {
 		super(context, R.layout.local_claims_list_item, slogans);
 		this.context = context;
 		this.slogans = slogans;
 		this.ids = ids;
 		this.claimId = claimId;
+		this.mode = mode;
 	}
 
 	@Override
@@ -69,75 +71,81 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				parent, false);
 		TextView slogan = (TextView) rowView
 				.findViewById(R.id.attachment_description);
-		
+
 		TextView id = (TextView) rowView.findViewById(R.id.attachment_id);
 		slogan.setText(slogans.get(position));
 		id.setTextSize(8);
 		id.setText(ids.get(position));
-		
-		
+
 		String attachmentId = id.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
-		
+
 		TextView status = (TextView) rowView
 				.findViewById(R.id.attachment_status);
-		if(att.getStatus().equals(AttachmentStatus._UPLOADED) ){
+		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
 			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(R.color.status_uploaded));
-			}
-		if(att.getStatus().equals(AttachmentStatus._UPLOADING) ){
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploaded));
+		}
+		if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
 			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(R.color.status_uploading));
-			}
-		else{			
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
+		} else {
 			status.setVisibility(View.INVISIBLE);
 		}
-		
-		
-		ImageView picture = (ImageView) rowView.findViewById(R.id.remove_icon);
-		picture.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(
-						context);
-				confirmNewPasswordDialog
-						.setTitle(R.string.action_remove_attachment);
-				confirmNewPasswordDialog.setMessage(slogans.get(position)
-						+ ": "
-						+ context.getResources().getString(
-								R.string.message_remove_attachment));
+		if (mode != ClaimActivity.MODE_RO) {
 
-				confirmNewPasswordDialog.setPositiveButton(R.string.confirm,
-						new DialogInterface.OnClickListener() {
+			ImageView picture = (ImageView) rowView
+					.findViewById(R.id.remove_icon);
+			picture.setOnClickListener(new OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Attachment.getAttachment(ids.get(position))
-										.delete();
-								Toast.makeText(context,
-										R.string.attachment_removed,
-										Toast.LENGTH_SHORT).show();
-								slogans.remove(position);
-								ids.remove(position);
-								notifyDataSetChanged();
-							}
-						});
-				confirmNewPasswordDialog.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(
+							context);
+					confirmNewPasswordDialog
+							.setTitle(R.string.action_remove_attachment);
+					confirmNewPasswordDialog.setMessage(slogans.get(position)
+							+ ": "
+							+ context.getResources().getString(
+									R.string.message_remove_attachment));
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
+					confirmNewPasswordDialog.setPositiveButton(
+							R.string.confirm,
+							new DialogInterface.OnClickListener() {
 
-				confirmNewPasswordDialog.show();
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Attachment.getAttachment(ids.get(position))
+											.delete();
+									Toast.makeText(context,
+											R.string.attachment_removed,
+											Toast.LENGTH_SHORT).show();
+									slogans.remove(position);
+									ids.remove(position);
+									notifyDataSetChanged();
+								}
+							});
+					confirmNewPasswordDialog.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
 
-			}
-		});
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
 
+					confirmNewPasswordDialog.show();
+
+				}
+			});
+
+		} else {
+			rowView.findViewById(R.id.remove_icon).setVisibility(View.INVISIBLE);;
+		}
 		ImageView downloadPic = (ImageView) rowView
 				.findViewById(R.id.download_file);
 

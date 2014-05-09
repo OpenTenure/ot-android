@@ -55,6 +55,11 @@ public class LocalClaimsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int CLAIM_RESULT = 100;
+	private String mode;
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
 
 	public LocalClaimsFragment() {
 	}
@@ -63,6 +68,11 @@ public class LocalClaimsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.local_claims, menu);
 
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+			menu.removeItem(R.id.action_new);
+		}else{
+			
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -74,7 +84,7 @@ public class LocalClaimsFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ClaimActivity.CREATE_CLAIM_ID);
-			intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
+			intent.putExtra(ClaimActivity.MODE_KEY, mode);
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		default:
@@ -118,14 +128,21 @@ public class LocalClaimsFragment extends ListFragment {
 
 		return rootView;
 	}
-
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Intent intent = new Intent(rootView.getContext(),
-				ClaimActivity.class);
-		intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
-		intent.putExtra(ClaimActivity.MODE_KEY, ClaimActivity.MODE_RW);
-		startActivityForResult(intent, CLAIM_RESULT);
+		if (mode.equalsIgnoreCase(ClaimActivity.MODE_RW)) {
+			Intent intent = new Intent(rootView.getContext(),
+					ClaimActivity.class);
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
+			intent.putExtra(ClaimActivity.MODE_KEY, mode);
+			startActivityForResult(intent, CLAIM_RESULT);
+		}else{
+			Intent resultIntent = new Intent();
+			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
+			getActivity().setResult(SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT, resultIntent);
+			getActivity().finish();
+		}
 	}
 
 	protected void update() {
@@ -134,7 +151,7 @@ public class LocalClaimsFragment extends ListFragment {
 
 		for(Claim claim : claims){
 			ClaimListTO cto = new ClaimListTO();
-			cto.setSlogan(claim.getName() + ", by: " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName());
+			cto.setSlogan(claim.getName() + ", " + getResources().getString(R.string.by) + ": " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName());
 			cto.setId(claim.getClaimId());
 			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
 				cto.setStatus(claim.getStatus());

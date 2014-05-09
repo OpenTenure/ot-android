@@ -61,6 +61,18 @@
             android:label="@string/title_activity_person" >
         </activity>
         <activity
+            android:name="org.fao.sola.clients.android.opentenure.SelectClaimActivity"
+            android:theme="@style/Theme.Opentenure"
+            android:label="@string/title_activity_select_claim"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
+            android:name="org.fao.sola.clients.android.opentenure.SelectPersonActivity"
+            android:theme="@style/Theme.Opentenure"
+            android:label="@string/title_activity_select_person"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
             android:name="org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_settings" >

@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -47,6 +48,7 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	public static final String CREATE_PERSON_ID = "create";
 	public static final String MODE_RO = "RO";
 	public static final String MODE_RW = "RW";
+	private String mode = MODE_RW;
 	private String personId = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -61,7 +63,7 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	@Override
 	public void onPause() {
 		super.onPause();
-		OpenTenureApplication.getInstance().getDatabase().sync();;
+		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
 	
 	@Override
@@ -80,6 +82,8 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		Intent intent = getIntent();
+		mode = intent.getStringExtra(MODE_KEY);
 		setContentView(R.layout.activity_person);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -118,7 +122,9 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 
 			switch (position) {
 			case 0:
-				return new PersonFragment();
+				PersonFragment pf = new PersonFragment();
+				pf.setMode(mode);
+				return pf;
 			}
 			return null;
 		}

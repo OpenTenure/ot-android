@@ -4,227 +4,140 @@
     android:layout_height="fill_parent"
     android:background="@color/light_background_opentenure"
     android:baselineAligned="false"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_weight="3"
-        android:background="@color/light_background_opentenure"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/claim_name_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/claim_name" />
-
-        <EditText
-            android:id="@+id/claim_name_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/claim_name"
-            android:inputType="text" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/first_name_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="bottom"
-            android:layout_weight="1"
-            android:text="@string/first_name" />
-
-        <EditText
-            android:id="@+id/first_name_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/first_name"
-            android:inputType="text" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/last_name_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/last_name" />
-
-        <EditText
-            android:id="@+id/last_name_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/last_name"
-            android:inputType="text" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/date_of_birth_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/date_of_birth" />
-
-        <EditText
-            android:id="@+id/date_of_birth_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/date_of_birth"
-            android:inputType="date" >
-        </EditText>
-        
-         <TextView
-            android:id="@+id/gender_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/gender" />
-
-		  <LinearLayout
-		      android:layout_width="match_parent"
-		      android:layout_height="wrap_content"
-		      android:layout_weight="1" >
-	        <RadioGroup 
-			    android:layout_width="0dip"
-			    android:layout_height="wrap_content"
-			    android:orientation="horizontal"
-			    android:layout_weight="1" 
-			    android:background="@color/dark_background_opentenure">
-			    <RadioButton android:id="@+id/gender_masculine_input_field"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="@string/gender_masculine"
-			        />
-			    <RadioButton android:id="@+id/gender_feminine_input_field"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:text="@string/gender_feminine"
-			        />
-			</RadioGroup>	        
-		</LinearLayout>
-		
-        <TextView
-            android:id="@+id/place_of_birth_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/place_of_birth" />
-
-        <EditText
-            android:id="@+id/place_of_birth_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/place_of_birth"
-            android:inputType="text" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/postal_address_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/postal_address" />
-
-        <EditText
-            android:id="@+id/postal_address_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/postal_address"
-            android:inputType="textPostalAddress" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/email_address_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/email_address" />
-
-        <EditText
-            android:id="@+id/email_address_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/email_address"
-            android:inputType="textEmailAddress" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/mobile_phone_number_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/mobile_phone_number" />
-
-        <EditText
-            android:id="@+id/mobile_phone_number_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/mobile_phone_number"
-            android:inputType="phone" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/contact_phone_number_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-			android:gravity="bottom"
-            android:text="@string/contact_phone_number" />
-
-        <EditText
-            android:id="@+id/contact_phone_number_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-	        android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/contact_phone_number"
-            android:inputType="phone" >
-        </EditText>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+    <TextView
+        android:id="@+id/claim_name_label"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
         android:layout_weight="1"
+        android:gravity="bottom"
+        android:text="@string/claim_name" />
+
+    <EditText
+        android:id="@+id/claim_name_input_field"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/dark_background_opentenure"
+        android:hint="@string/claim_name"
+        android:inputType="text" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/claimant_label"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:text="@string/claimant" />
+
+    <LinearLayout
+        android:id="@+id/claimant"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
         android:background="@color/light_background_opentenure"
-	    android:paddingLeft="10dp"
-	    android:paddingRight="10dp"
-        android:orientation="vertical" >
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="9"
+            android:background="@color/light_background_opentenure"
+            android:orientation="vertical"
+            android:padding="0dp" >
+
+            <TextView
+                android:id="@+id/claimant_id"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_color"
+                android:gravity="left|center"
+                android:text="@string/title_item" />
+
+            <TextView
+                android:id="@+id/claimant_slogan"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_color"
+                android:gravity="left|center"
+                android:text="@string/title_item" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/claimant_picture"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-			android:layout_gravity="right|top"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/claimant_picture"
+            android:layout_weight="1"
+            android:contentDescription="@string/person_picture"
+            android:src="@drawable/ic_contact_picture" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/challenge_to_label"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:text="@string/challenge_to" />
+
+    <LinearLayout
+        android:id="@+id/challenge_to"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@color/light_background_opentenure"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="9"
+            android:background="@color/light_background_opentenure"
+            android:orientation="vertical"
+            android:padding="0dp" >
+
+            <TextView
+                android:id="@+id/challenge_to_claim_id"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_color"
+                android:gravity="left|center"
+                android:text="@string/title_item" />
+
+            <TextView
+                android:id="@+id/challenge_to_claim_slogan"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_color"
+                android:gravity="left|center"
+                android:text="@string/title_item" />
+
+            <TextView
+                android:id="@+id/challenge_to_claim_status"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/item_color"
+                android:gravity="left|center"
+                android:text="@string/title_item" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/challenge_to_claimant_picture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/person_picture"
             android:src="@drawable/ic_contact_picture" />
     </LinearLayout>
 

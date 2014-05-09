@@ -99,6 +99,11 @@ public class ClaimMapFragment extends Fragment implements
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
 	private double snapLon;
+	private String mode;
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
 
 	@Override
 	public void onAttach(Activity activity) {

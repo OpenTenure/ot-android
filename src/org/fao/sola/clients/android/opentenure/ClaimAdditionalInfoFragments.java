@@ -34,8 +34,10 @@ import java.util.List;
 
 
 
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.AdditionalInfo;
+
 
 
 
@@ -58,13 +60,15 @@ import android.widget.Toast;
 
 
 
-public class ClaimAdditionalDataFragments extends ListFragment{
+public class ClaimAdditionalInfoFragments extends ListFragment{
 
 	private View rootView;
-
-
-
 	private ClaimDispatcher claimActivity;
+	private String mode;
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -80,12 +84,16 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 		}
 	}
 
-	public ClaimAdditionalDataFragments() {
+	public ClaimAdditionalInfoFragments() {
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_metadata, menu);
+
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+			menu.removeItem(R.id.action_new_metadata);
+		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -124,7 +132,7 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 			final View mView;
 
 			AlertDialog.Builder metadataDialog = new AlertDialog.Builder(rootView.getContext());
-			metadataDialog.setTitle(R.string.new_metadata);
+			metadataDialog.setTitle(R.string.new_additional_info);
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 
 			// Inflate and set the layout for the dialog
@@ -184,8 +192,8 @@ public class ClaimAdditionalDataFragments extends ListFragment{
 				ids.add(meta.getAdditionalInfoId());
 			}
 		}
-		ArrayAdapter<String> adapter = new ClaimDetailsListAdapter(
-				rootView.getContext(), slogans, ids);
+		ArrayAdapter<String> adapter = new ClaimAdditionalInfoListAdapter(
+				rootView.getContext(), slogans, ids, mode);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

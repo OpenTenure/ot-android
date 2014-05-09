@@ -272,7 +272,11 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 					}
 				}
 			});
+		}else{
+			Toast toast = Toast.makeText(context,
+					R.string.message_save_claim_before_adding_content,
+					Toast.LENGTH_SHORT);
+			toast.show();
 		}
-
 	}
 }

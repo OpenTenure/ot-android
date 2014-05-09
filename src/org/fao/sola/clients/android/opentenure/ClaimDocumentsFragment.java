@@ -66,7 +66,6 @@ import org.fao.sola.clients.android.opentenure.model.MD5;
 
 public class ClaimDocumentsFragment extends ListFragment {
 
-	private boolean saved = false;
 	private static final int REQUEST_CHOOSER = 1234;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
@@ -78,6 +77,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 	private String fileType;
 	private String mimeType;
 	private View rootView;
+	private String mode;
+	
+	public void setMode(String mode){
+		this.mode = mode;
+	}
 
 	private ClaimDispatcher claimActivity;
 
@@ -110,6 +114,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_documents, menu);
+
+		if(mode.equalsIgnoreCase(PersonActivity.MODE_RO)){
+			menu.removeItem(R.id.action_new_picture);
+			menu.removeItem(R.id.action_new_attachment);
+		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -266,15 +275,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	static ClaimDocumentsFragment newInstance(String claimId, String mode) {
-		ClaimDocumentsFragment fragment = new ClaimDocumentsFragment();
-		Bundle args = new Bundle();
-		args.putString(ClaimActivity.CLAIM_ID_KEY, claimId);
-		args.putString(ClaimActivity.MODE_KEY, mode);
-		fragment.setArguments(args);
-		return fragment;
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
@@ -313,26 +313,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 			intent = Intent.createChooser(getContentIntent, getResources()
 					.getString(R.string.choose_file));
 			startActivityForResult(intent, REQUEST_CHOOSER);
-			return true;
-
-		case R.id.action_save:
-			saved = true;
-			toast = Toast.makeText(rootView.getContext(),
-					R.string.message_saved, Toast.LENGTH_SHORT);
-			toast.show();
-			return true;
-		case R.id.action_submit:
-			if (saved) {
-				toast = Toast.makeText(rootView.getContext(),
-						R.string.message_submitted, Toast.LENGTH_SHORT);
-				toast.show();
-			} else {
-				toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_save_claim_before_submit,
-								Toast.LENGTH_SHORT);
-				toast.show();
-			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -411,7 +391,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 			}
 		}
 		ArrayAdapter<String> adapter = new ClaimAttachmentsListAdapter(
-				rootView.getContext(), slogans, ids, claimId);
+				rootView.getContext(), slogans, ids, claimId, mode);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
