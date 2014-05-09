@@ -41,6 +41,7 @@ import org.fao.sola.clients.android.opentenure.network.response.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
@@ -74,6 +75,18 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
 			
 			break;
 			
+		case 403:		
+			
+			Log.d("CommunityServerAPI",
+					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
+			toast.show();
+			
+			OpenTenureApplication.setLoggedin(false);
+			
+			break;
 			
 		case 452:	
 						

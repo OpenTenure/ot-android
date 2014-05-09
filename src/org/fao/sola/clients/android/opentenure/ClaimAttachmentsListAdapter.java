@@ -86,13 +86,14 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(
 					R.color.status_uploaded));
-		}
-		if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+		} else if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
-		} else {
-			status.setVisibility(View.INVISIBLE);
+		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
+			status.setText(att.getStatus());
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
 		}
 
 		if (mode != ClaimActivity.MODE_RO) {
@@ -144,7 +145,9 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			});
 
 		} else {
-			rowView.findViewById(R.id.remove_icon).setVisibility(View.INVISIBLE);;
+			rowView.findViewById(R.id.remove_icon)
+					.setVisibility(View.INVISIBLE);
+			;
 		}
 		ImageView downloadPic = (ImageView) rowView
 				.findViewById(R.id.download_file);

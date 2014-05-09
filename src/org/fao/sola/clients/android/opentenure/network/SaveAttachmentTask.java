@@ -27,129 +27,169 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
-
-
 
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SaveAttachmentTask extends AsyncTask<String, Void, SaveAttachmentResponse>{
+public class SaveAttachmentTask extends
+		AsyncTask<String, Void, SaveAttachmentResponse> {
 
 	@Override
 	protected SaveAttachmentResponse doInBackground(String... params) {
 		// TODO Auto-generated method stub
-		
-		
+
 		String json = FileSystemUtilities.getJsonAttachment(params[0]);
-		SaveAttachmentResponse res = CommunityServerAPI.saveAttachment(json,params[0]);		
-		
-		System.out.println("La risposta " + res.getHttpStatusCode() +  "  mess:   "+ res.getMessage());
-		
-		
+		SaveAttachmentResponse res = CommunityServerAPI.saveAttachment(json,
+				params[0]);
+
+		System.out.println("La risposta " + res.getHttpStatusCode()
+				+ "  mess:   " + res.getMessage());
+
 		return res;
 	}
-	
-	
-	protected void onPostExecute(final SaveAttachmentResponse res){
-		
-	switch (res.getHttpStatusCode()) {
-	
-	
-	case 200:
-		/*
-		 * OK 
-		 * */
-		
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-		Attachment.getAttachment(res.getAttachmentId()).setStatus(AttachmentStatus._UPLOADED);
-		Attachment.getAttachment(res.getAttachmentId()).update();
+
+	protected void onPostExecute(final SaveAttachmentResponse res) {
+
+		switch (res.getHttpStatusCode()) {
+
+		case 200:
+			/*
+			 * OK
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+			Attachment toUpdate = Attachment.getAttachment(res.getAttachmentId());
+						toUpdate.setStatus(AttachmentStatus._UPLOADED);
 				
-		break;
-		
-	case 400:
-		
-		/*
-		 * "Bad Request
-."
-		 * */
-		
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-		
-		break;
-	
-	case 450:
-		
-		/*
-		 * "Malformed JSON input. Failed to convert."
-		 * */
-		
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-		
-		break;
-		
+						Attachment.updateAttachment(toUpdate);
+			//toUpdate.update();
+			//Attachment.getAttachment(res.getAttachmentId()).update();
 
-		
-	case 454:
-		
-		/*
-		 * "Object already exists." 
-		 * */
-		
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-		
-		Attachment.getAttachment(res.getAttachmentId()).setStatus(AttachmentStatus._UPLOADED);
-		Attachment.getAttachment(res.getAttachmentId()).update();
-		break;
-		
+			/*
+			 * Now check the list of attachment for that Claim . If all the
+			 * attachments are uploaded I can call saveClaim. 
+			 * 
+			 * 
+			 */
 
-	case 455:
-		/*
-		 * "MD5 is not matching." 
-		 * */
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-		
-		break;	
-		
-		
-	case 456:
-		
-		/*
-		 * "Attachment chunks not found." 
-		 * */ 
-		Log.d("CommunityServerAPI",
-				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());	
-		
-		
-		Attachment.getAttachment(res.getAttachmentId()).setStatus(AttachmentStatus._UPLOADING);
-		Attachment.getAttachment(res.getAttachmentId()).update();
-		
-		
-		UploadChunksTask uploadTask = new UploadChunksTask();
-		uploadTask.execute(res.getAttachmentId());
-		
-		break;	
+			
+			String claimId =  Attachment.getAttachment(res.getAttachmentId()).getClaimId();
+			
+			List<Attachment> attachments = Claim.getClaim(claimId).getAttachments();
+			
+			boolean action = true;
+			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+				Attachment attachment = (Attachment) iterator.next();
+				if(! attachment.getStatus().equals(AttachmentStatus._UPLOADED)){					
+					action = false;
+					}
+			}
+			
+			if(action){
+				
+				SaveClaimTask saveClaim = new SaveClaimTask();
+				saveClaim.execute(claimId);
+			}
+			
+			break;
+		case 403:
 
-	default:
-		break;
+			/*
+			 * "Bad Request ."
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+			
+			Toast toast;
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
+			toast.show();
+			
+			OpenTenureApplication.setLoggedin(false);
+
+			break;	
+
+		case 400:
+
+			/*
+			 * "Bad Request ."
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+
+			break;
+
+		case 450:
+
+			/*
+			 * "Malformed JSON input. Failed to convert."
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+
+			break;
+
+		case 454:
+
+			/*
+			 * "Object already exists."
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+
+			Attachment.getAttachment(res.getAttachmentId()).setStatus(
+					AttachmentStatus._UPLOADED);
+			Attachment.getAttachment(res.getAttachmentId()).update();
+			break;
+
+		case 455:
+			/*
+			 * "MD5 is not matching."
+			 */
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+
+			break;
+
+		case 456:
+
+			/*
+			 * "Attachment chunks not found."
+			 */
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+
+			Attachment.getAttachment(res.getAttachmentId()).setStatus(
+					AttachmentStatus._UPLOADING);
+			Attachment.getAttachment(res.getAttachmentId()).update();
+
+			UploadChunksTask uploadTask = new UploadChunksTask();
+			uploadTask.execute(res.getAttachmentId());
+
+			break;
+
+		default:
+			break;
+		}
+
 	}
-		
-		
-		
-	}
-	
-	
-	
 
 }

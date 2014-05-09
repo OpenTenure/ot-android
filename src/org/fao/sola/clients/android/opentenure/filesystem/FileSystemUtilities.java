@@ -354,10 +354,18 @@ public class FileSystemUtilities {
 			    extension = attach.getPath().substring(i+1);
 			}
 			
-			
-			
 			attachment.setDescription(attach.getDescription());
-			attachment.setTypeCode(attach.getFileType());
+			
+			
+			/*
+			 * 
+			 * Temporary solution for typeCode
+			 * 
+			 * 
+			 * */			
+			attachment.setTypeCode(matchTypeCode(extension));
+			
+								
 			attachment.setFileName(attach.getFileName());
 			attachment.setId(attachmentId);
 			attachment.setMd5(attach.getMD5Sum());
@@ -386,6 +394,23 @@ public class FileSystemUtilities {
 			return true;
 		}
 		return false;
+	}
+	
+	protected static String matchTypeCode(String original){
+		
+		if(original.equals("pdf"))
+			return "pdf";
+		else if(original.equals("jpg") || original.equals("jpeg"))
+			return "jpg";
+		else if(original.equals("tiff") || original.equals("tif"))
+			return original;
+		else if(original.equals("mpeg") || original.equals("avi"))
+			return "standardDocument";
+		else if (original.equals("doc") || original.equals("docx") || original.equals("xlsb") || original.equals("xlsb") )
+			return "standardDocument";
+		
+		return "standardDocument";
+		
 	}
 
 
