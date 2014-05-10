@@ -52,11 +52,16 @@ public class SaveAttachmentTask extends
 		// TODO Auto-generated method stub
 
 		String json = FileSystemUtilities.getJsonAttachment(params[0]);
+		
+		Attachment toUpdate = Attachment.getAttachment(params[0]);
+		toUpdate.setStatus(AttachmentStatus._UPLOADING);
+		Attachment.updateAttachment(toUpdate);
+		
 		SaveAttachmentResponse res = CommunityServerAPI.saveAttachment(json,
 				params[0]);
 
-		System.out.println("La risposta " + res.getHttpStatusCode()
-				+ "  mess:   " + res.getMessage());
+		Log.d("CommunityServerAPI",
+				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
 		return res;
 	}
@@ -180,6 +185,10 @@ public class SaveAttachmentTask extends
 			Attachment.getAttachment(res.getAttachmentId()).setStatus(
 					AttachmentStatus._UPLOADING);
 			Attachment.getAttachment(res.getAttachmentId()).update();
+			
+			Attachment toUpdate2 = Attachment.getAttachment(res.getAttachmentId());
+			toUpdate2.setStatus(AttachmentStatus._UPLOADING);
+			Attachment.updateAttachment(toUpdate2);
 
 			UploadChunksTask uploadTask = new UploadChunksTask();
 			uploadTask.execute(res.getAttachmentId());

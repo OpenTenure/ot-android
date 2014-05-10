@@ -108,14 +108,6 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
 				saveAttachmentTask.execute(attachment.getId());
 				
 			}
-			
-			
-			/***
-			 * Qui ad un certo punto inizieremo a far l'upload degli attachments
-			 * 
-			 * 
-			 * 
-			 *****/
 				
 			break;	
 			
