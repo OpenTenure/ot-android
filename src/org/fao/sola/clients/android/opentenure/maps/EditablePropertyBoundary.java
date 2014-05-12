@@ -71,6 +71,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			final ClaimDispatcher claimActivity, boolean allowDragging) {
 		super(context, map, claim);
 		this.claimActivity = claimActivity;
+		this.allowDragging = allowDragging;
 
 		if (vertices != null && vertices.size() > 0) {
 			for (Vertex vertex : vertices) {

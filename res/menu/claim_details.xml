@@ -22,7 +22,7 @@
           android:showAsAction="ifRoom" 
           android:orderInCategory="4"/>
     <item android:id="@+id/action_logout"
-          android:icon="@drawable/ic_menu_set_as"
+          android:icon="@drawable/logout_door"
           android:title="@string/action_logout"          
           android:showAsAction="ifRoom" 
           android:orderInCategory="5"/>    

@@ -40,6 +40,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -69,25 +70,7 @@ public class GetClaims {
 			List<org.fao.sola.clients.android.opentenure.model.Attachment> attachmentsDB = new ArrayList<org.fao.sola.clients.android.opentenure.model.Attachment>();
 			List<org.fao.sola.clients.android.opentenure.model.AdditionalInfo> additionalInfoDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.AdditionalInfo>();
 
-			List<Attachment> attachments = downloadedClaim.getAttachments();
-			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
-					.hasNext();) {
 
-				org.fao.sola.clients.android.opentenure.model.Attachment attachmentDB = new org.fao.sola.clients.android.opentenure.model.Attachment();
-				Attachment attachment = (Attachment) iterator.next();
-
-				attachmentDB.setAttachmentId(attachment.getId());
-				attachmentDB.setClaimId(claim.getId());
-				attachmentDB.setDescription(attachment.getDescription());
-				attachmentDB.setFileName(attachment.getFileName());
-				// attachmentDB.setFileType(attachment.getFileType());
-				attachmentDB.setMD5Sum(attachment.getMd5());
-				attachmentDB.setMimeType(attachment.getMimeType());
-				//attachmentDB.setStatus(attachment.getStatus());
-
-				attachmentsDB.add(attachmentDB);
-
-			}
 			/*
 			 * Temporary disable
 			 */
@@ -185,6 +168,31 @@ public class GetClaims {
 					Vertex.storeWKT(claimDB.getClaimId(),
 							downloadedClaim.getMappedGeometry(),
 							downloadedClaim.getGpsGeometry());
+				
+				
+				List<Attachment> attachments = downloadedClaim.getAttachments();
+				for (Iterator<Attachment> iterator = attachments.iterator(); iterator
+						.hasNext();) {
+
+					org.fao.sola.clients.android.opentenure.model.Attachment attachmentDB = new org.fao.sola.clients.android.opentenure.model.Attachment();
+					Attachment attachment = (Attachment) iterator.next();
+
+					attachmentDB.setAttachmentId(attachment.getId());
+					attachmentDB.setClaimId(claim.getId());
+					attachmentDB.setDescription(attachment.getDescription());
+					attachmentDB.setFileName(attachment.getFileName());
+					attachmentDB.setFileType(attachment.getMimeType());
+					attachmentDB.setMD5Sum(attachment.getMd5());
+					attachmentDB.setMimeType(attachment.getMimeType());
+					attachmentDB.setPath("");
+					attachmentDB.setStatus(AttachmentStatus._UPLOADED);
+					attachmentDB.setSize(attachment.getSize());
+					
+					org.fao.sola.clients.android.opentenure.model.Attachment.createAttachment(attachmentDB);
+
+					//attachmentsDB.add(attachmentDB);
+
+				}
 
 			}
 
