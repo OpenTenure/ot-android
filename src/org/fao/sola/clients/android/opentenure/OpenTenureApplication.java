@@ -33,6 +33,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Database;
 
 import android.app.Activity;
@@ -42,6 +43,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
+import android.view.View;
 
 public class OpenTenureApplication extends Application {
 
@@ -56,6 +58,7 @@ public class OpenTenureApplication extends Application {
 		private static AndroidHttpClient mHttpClient;
 		private static CookieStore cookieStore;
 		private static HttpContext http_context;
+		private static MainMapFragment mapFragment;
 		
 
 	    public static OpenTenureApplication getInstance() {
@@ -80,7 +83,8 @@ public class OpenTenureApplication extends Application {
 	      super.onCreate();  
 	      sInstance = this;
 	      sInstance.initializeInstance();
-	      context = getApplicationContext();	      
+	      context = getApplicationContext();	 
+	      
 	      
 	      FileSystemUtilities.createClaimsFolder();
 		  FileSystemUtilities.createClaimantsFolder();
@@ -163,6 +167,13 @@ public class OpenTenureApplication extends Application {
 
 		public static void setActivity(Activity activity) {
 			OpenTenureApplication.activity = activity;
+		}
+		public static MainMapFragment getMapFragment() {
+			return mapFragment;
+		}
+
+		public static void setMapFragment(MainMapFragment mapFragment) {
+			OpenTenureApplication.mapFragment = mapFragment;
 		}
 
 		/*

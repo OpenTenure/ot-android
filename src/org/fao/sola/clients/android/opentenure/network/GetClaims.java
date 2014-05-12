@@ -83,7 +83,7 @@ public class GetClaims {
 				// attachmentDB.setFileType(attachment.getFileType());
 				attachmentDB.setMD5Sum(attachment.getMd5());
 				attachmentDB.setMimeType(attachment.getMimeType());
-				// attachmentDB.setStatus(attachment.getStatus());
+				//attachmentDB.setStatus(attachment.getStatus());
 
 				attachmentsDB.add(attachmentDB);
 
@@ -170,6 +170,7 @@ public class GetClaims {
 				claimDB.setAdditionalInfo(additionalInfoDBList);
 				claimDB.setName(downloadedClaim.getDescription());
 				claimDB.setPerson(person);
+				claimDB.setStatus(downloadedClaim.getStatusCode());
 
 				Person.createPerson(person);
 

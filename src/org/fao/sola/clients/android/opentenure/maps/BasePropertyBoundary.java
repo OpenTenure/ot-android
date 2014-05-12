@@ -118,10 +118,12 @@ public class BasePropertyBoundary {
 				switch (Claim.Status.valueOf(status)) {
 
 				case unmoderated:
-					color = Color.YELLOW;
+					color = context.getResources().getColor(
+							R.color.status_uploaded);
 					break;
 				case moderated:
-					color = Color.GREEN;
+					color = context.getResources().getColor(
+							R.color.status_moderated);
 					break;
 				case challenged:
 					color = Color.RED;

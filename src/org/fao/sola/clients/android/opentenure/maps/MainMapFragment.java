@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -85,7 +86,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		mapView = inflater.inflate(R.layout.main_map, container, false);
+		mapView = inflater.inflate(R.layout.main_map, container, false);		
 		setHasOptionsMenu(true);
 		label = (MapLabel) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.main_map_provider_label);
@@ -306,13 +307,12 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			}
 			return true;
 			
-		case R.id.action_download_claims:
+		case R.id.action_download_claims:		
 			
-						
+			
+			OpenTenureApplication.setMapFragment(this);	
 			GetAllClaimsTask task = new GetAllClaimsTask();
-			task.execute();
-			
-			
+			task.execute();				
 			
 			return true;
 		default:
@@ -359,4 +359,22 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			longitude.create();
 		}
 	}
+	
+	
+	public void refreshMap(){		
+		
+		List<Claim> claims = Claim.getAllClaims();
+		existingProperties = new ArrayList<BasePropertyBoundary>();
+		for(Claim claim : claims){
+				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
+						claim));
+		}
+
+		drawProperties();
+
+		return ;
+	}
+	
+	
+	
 }
