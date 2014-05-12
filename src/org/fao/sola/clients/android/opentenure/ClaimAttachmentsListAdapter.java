@@ -154,9 +154,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 		Claim claim = Claim.getClaim(claimId);
 
-		if (claim.getStatus().equals(ClaimStatus._CREATED)
-				|| claim.getStatus().equals(ClaimStatus._UPLOADING)) {
-			downloadPic.setVisibility(View.INVISIBLE);
+		if ( (!claim.getStatus().equals(ClaimStatus._CREATED) && !claim.getStatus().equals(ClaimStatus._UPLOADING)) && (att.getPath() == null || att.getPath().equals(""))) {
+			downloadPic.setVisibility(View.VISIBLE);
 		}
 
 		downloadPic.setOnClickListener(new OnClickListener() {

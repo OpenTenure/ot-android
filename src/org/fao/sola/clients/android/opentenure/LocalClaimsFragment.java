@@ -166,9 +166,9 @@ public class LocalClaimsFragment extends ListFragment {
 			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
 				cto.setStatus(claim.getStatus());
 			else if(claim.getStatus().equals(ClaimStatus._UNMODERATED)){
-				cto.setStatus("uploaded");
+				cto.setStatus(claim.getStatus());
 				}
-			else cto.setStatus(" ");
+			else cto.setStatus(claim.getStatus());
 			claimListTOs.add(cto);
 		}
 		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs);
