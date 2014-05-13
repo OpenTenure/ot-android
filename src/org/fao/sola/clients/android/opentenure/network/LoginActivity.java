@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 //import com.abblasio.login.LoginPlainGet;
 
 /**
@@ -229,6 +230,8 @@ public class LoginActivity extends Activity {
 			mAuthTask = null;
 			showProgress(false);
 			
+			Toast toast;
+			
 			switch (status) {
 			case 200:
 				OpenTenureApplication.setLoggedin(true);
@@ -236,6 +239,12 @@ public class LoginActivity extends Activity {
 				
 				FragmentActivity fa = (FragmentActivity) OpenTenureApplication.getActivity();
 				fa.invalidateOptionsMenu();
+				
+				toast = Toast
+						.makeText(OpenTenureApplication.getContext(),
+								R.string.message_login_ok,
+								Toast.LENGTH_SHORT);
+				toast.show();	
 				
 				finish();
 				
