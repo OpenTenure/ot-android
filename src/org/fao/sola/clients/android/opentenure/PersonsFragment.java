@@ -145,7 +145,7 @@ public class PersonsFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
 			intent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
-			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode());
+			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode().toString());
 			startActivityForResult(intent, PERSON_RESULT);
 		}else{
 			Intent resultIntent = new Intent();
