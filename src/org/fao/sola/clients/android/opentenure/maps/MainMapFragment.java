@@ -62,6 +62,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
@@ -311,8 +312,11 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			
 			
 			OpenTenureApplication.setMapFragment(this);	
+			
+			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+			
 			GetAllClaimsTask task = new GetAllClaimsTask();
-			task.execute();				
+			task.execute(bounds);				
 			
 			return true;
 		default:

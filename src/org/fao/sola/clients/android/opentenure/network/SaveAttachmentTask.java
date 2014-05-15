@@ -81,17 +81,13 @@ public class SaveAttachmentTask extends
 						toUpdate.setStatus(AttachmentStatus._UPLOADED);
 				
 						Attachment.updateAttachment(toUpdate);
-			//toUpdate.update();
-			//Attachment.getAttachment(res.getAttachmentId()).update();
+
 
 			/*
 			 * Now check the list of attachment for that Claim . If all the
 			 * attachments are uploaded I can call saveClaim. 
 			 * 
-			 * 
-			 */
-
-			
+			 */			
 			String claimId =  Attachment.getAttachment(res.getAttachmentId()).getClaimId();
 			
 			List<Attachment> attachments = Claim.getClaim(claimId).getAttachments();

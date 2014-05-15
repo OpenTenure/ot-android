@@ -273,6 +273,56 @@ public class CommunityServerAPI {
 		}
 
 	}
+	
+	public static List<org.fao.sola.clients.android.opentenure.network.response.Claim> getAllClaimsByBox(String[] coordinates) {
+
+		/*
+		 * Creating the url to call
+		 */
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETALLCLAIMSBYBOX,coordinates[0],coordinates[1],coordinates[2],coordinates[3],"100");
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI", "GET ALL CLAIMS BY BOX JSON RESPONSE "
+						+ json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.Claim>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.Claim> claimList = new Gson()
+						.fromJson(json, listType);
+
+				return claimList;
+
+			} else {
+
+				Log.d("CommunityServerAPI", "GET ALL CLAIMS JSON RESPONSE "
+						+ json);
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI",
+					"GET ALL CLAIMS error " + ex.getMessage());
+			ex.printStackTrace();
+
+			return null;
+
+		}
+
+	}
 
 	public static Claim getClaim(String claimId) {
 

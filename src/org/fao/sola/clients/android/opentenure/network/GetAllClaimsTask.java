@@ -27,23 +27,35 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
+
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import android.os.AsyncTask;
 
 import android.widget.Toast;
 
-public class GetAllClaimsTask extends AsyncTask<String, Void, List<Claim>> {
+public class GetAllClaimsTask extends
+		AsyncTask<LatLngBounds, Void, List<Claim>> {
 
 	@Override
-	protected List<Claim> doInBackground(String... params) {
+	protected List<Claim> doInBackground(LatLngBounds... params) {
 		// TODO Auto-generated method stub
 
-		return (List<Claim>) CommunityServerAPI.getAllClaims();
+		if (params == null || params.length == 0)
+			return (List<Claim>) CommunityServerAPI.getAllClaims();
+		else {
+
+			String[] coordinates = buildCoordinates(params[0]);
+			return (List<Claim>) CommunityServerAPI
+					.getAllClaimsByBox(coordinates);
+		}
 
 	}
 
@@ -68,4 +80,42 @@ public class GetAllClaimsTask extends AsyncTask<String, Void, List<Claim>> {
 		return;
 
 	}
+
+	private String[] buildCoordinates(LatLngBounds bounds) {
+
+		String[] coordinates = new String[4];
+
+		String minX = new String("" + bounds.southwest.longitude);
+		String minY = new String("" + bounds.southwest.latitude);
+		String maxX = new String("" + bounds.northeast.longitude);
+		String maxY = new String("" + bounds.northeast.latitude);
+
+		if (minX.startsWith("-"))
+			minX = minX.substring(0, 7);
+		else
+			minX = minX.substring(0, 6);
+
+		if (minY.startsWith("-"))
+			minY = minY.substring(0, 7);
+		else
+			minY = minY.substring(0, 6);
+
+		if (maxX.startsWith("-"))
+			maxX = maxX.substring(0, 7);
+		else
+			maxX = maxX.substring(0, 6);
+
+		if (maxY.startsWith("-"))
+			maxY = maxY.substring(0, 7);
+		else
+			maxY = maxY.substring(0, 6);
+
+		coordinates[0] = minX;
+		coordinates[1] = minY;
+		coordinates[2] = maxX;
+		coordinates[3] = maxY;
+
+		return coordinates;
+	}
+
 }

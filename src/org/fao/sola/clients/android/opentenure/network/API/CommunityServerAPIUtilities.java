@@ -56,6 +56,9 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETALLCLAIMS = "https://ot.flossola.org/ws/en-us/claim/getAllClaims";
 	public static final String HTTP_GETALLCLAIMS = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
 	
+	public static final String HTTPS_GETALLCLAIMSBYBOX = "https://ot.flossola.org/ws/en-us/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
+	public static final String HTTP_GETALLCLAIMSBYBOX = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
+	
 	
 	
 	
