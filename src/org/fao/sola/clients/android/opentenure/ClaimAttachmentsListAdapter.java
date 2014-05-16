@@ -33,6 +33,7 @@ import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -78,7 +79,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		id.setText(ids.get(position));
 
 		String attachmentId = id.getText().toString();
-		Attachment att = Attachment.getAttachment(attachmentId);
+		final Attachment att = Attachment.getAttachment(attachmentId);
 
 		TextView status = (TextView) rowView
 				.findViewById(R.id.attachment_status);
@@ -161,6 +162,13 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		downloadPic.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				
+				String[] params = new String[2];
+				params[0] = att.getClaimId();
+				params[1] = att.getAttachmentId();
+				
+				GetAttachmentTask task =  new GetAttachmentTask();
+				task.execute(params);				
 
 				Toast toast = Toast.makeText(
 						OpenTenureApplication.getContext(),

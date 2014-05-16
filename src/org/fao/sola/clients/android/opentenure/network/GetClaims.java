@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
@@ -190,7 +191,13 @@ public class GetClaims {
 					
 					org.fao.sola.clients.android.opentenure.model.Attachment.createAttachment(attachmentDB);
 
-					//attachmentsDB.add(attachmentDB);
+					/*
+					 * Here the creation of Folder for the claim
+					 * */
+					
+					FileSystemUtilities.createClaimantFolder(claimant.getId());
+					FileSystemUtilities.createClaimFileSystem(downloadedClaim.getId());					
+					
 
 				}
 

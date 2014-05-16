@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.network.API;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,80 +35,74 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 public class CommunityServerAPIUtilities {
-	
-	public static final String HTTP_LOGIN= "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";	
-	public static final String HTTPS_LOGIN= "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
-	
-	public static final String HTTPS_LOGOUT= "https://ot.flossola.org/ws/en-us/auth/logout";
-	public static final String HTTP_LOGOUT= "http://ot.flossola.org/ws/en-us/auth/logout";
-	
+
+	public static final String HTTP_LOGIN = "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
+	public static final String HTTPS_LOGIN = "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
+
+	public static final String HTTPS_LOGOUT = "https://ot.flossola.org/ws/en-us/auth/logout";
+	public static final String HTTP_LOGOUT = "http://ot.flossola.org/ws/en-us/auth/logout";
+
 	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/en-us/claim/getClaim/%s";
 	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/en-us/claim/getClaim/%s";
-	
+
+	public static final String HTTPS_GETATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/getAttachmentFile/%s";
+	public static final String HTTP_GETATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/getAttachmentFile/%s";
+
 	public static final String HTTPS_SAVECLAIM = "https://ot.flossola.org/ws/en-us/claim/saveClaim";
 	public static final String HTTP_SAVECLAIM = "http://ot.flossola.org/ws/en-us/claim/saveClaim";
-	
+
 	public static final String HTTPS_SAVEATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/saveAttachment";
 	public static final String HTTP_SAVEATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/saveAttachment";
-	
+
 	public static final String HTTPS_UPLOADCHUNK = "https://ot.flossola.org/ws/en-us/claim/uploadChunk";
 	public static final String HTTP_UPLOADCHUNK = "http://ot.flossola.org/ws/en-us/claim/uploadChunk";
-	
+
 	public static final String HTTPS_GETALLCLAIMS = "https://ot.flossola.org/ws/en-us/claim/getAllClaims";
 	public static final String HTTP_GETALLCLAIMS = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
-	
+
 	public static final String HTTPS_GETALLCLAIMSBYBOX = "https://ot.flossola.org/ws/en-us/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
 	public static final String HTTP_GETALLCLAIMSBYBOX = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
-	
-	
-	
-	
-public static String Slurp(final InputStream is, final int bufferSize)
-	{
-	  final char[] buffer = new char[bufferSize];
-	  final StringBuilder out = new StringBuilder();
-	  try {
-	    final Reader in = new InputStreamReader(is, "UTF-8");
-	    try {
-	      for (;;) {
-	        int rsz = in.read(buffer, 0, buffer.length);
-	        if (rsz < 0)
-	          break;
-	        out.append(buffer, 0, rsz);
-	      }
-	    }
-	    finally {
-	      in.close();
-	    }
-	  }
-	  catch (UnsupportedEncodingException ex) {
-	    /* ... */
-	  }
-	  catch (IOException ex) {
-	      /* ... */
-	  }
-	  return out.toString();
-}
 
-	
-public class Login{
-	private int status;
-
-	public int getStatus() {
-		return status;
+	public static String Slurp(final InputStream is, final int bufferSize) {
+		final char[] buffer = new char[bufferSize];
+		final StringBuilder out = new StringBuilder();
+		try {
+			final Reader in = new InputStreamReader(is, "UTF-8");
+			try {
+				for (;;) {
+					int rsz = in.read(buffer, 0, buffer.length);
+					if (rsz < 0)
+						break;
+					out.append(buffer, 0, rsz);
+				}
+			} finally {
+				in.close();
+			}
+		} catch (UnsupportedEncodingException ex) {
+			/* ... */
+		} catch (IOException ex) {
+			/* ... */
+		}
+		return out.toString();
 	}
 
-	public void setStatus(int status) {
-		this.status = status;
+	public static byte[] slurp(final InputStream is, final int bufferSize)
+			throws IOException {
+		// this dynamically extends to take the bytes you read
+		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+
+		// this is storage overwritten on each iteration with bytes
+		byte[] buffer = new byte[bufferSize];
+
+		// we need to know how may bytes were read to write them to the
+		// byteBuffer
+		int len = 0;
+		while ((len = is.read(buffer)) != -1) {
+			byteBuffer.write(buffer, 0, len);
+		}
+
+		// and then we can return your byte array.
+		return byteBuffer.toByteArray();
 	}
 
-
-	
 }
-
-}
-
-
-
-
-
