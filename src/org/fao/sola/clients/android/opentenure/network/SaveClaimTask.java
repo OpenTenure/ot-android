@@ -27,9 +27,11 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
@@ -44,105 +46,109 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse>{
+public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 
 	@Override
-	protected SaveClaimResponse doInBackground(String... params) {		
-		
+	protected SaveClaimResponse doInBackground(String... params) {
+
 		String json = FileSystemUtilities.getJsonClaim(params[0]);
-		SaveClaimResponse res =  CommunityServerAPI.saveClaim(json);
+		SaveClaimResponse res = CommunityServerAPI.saveClaim(json);
 		res.setClaimId(params[0]);
 		return res;
 	}
-	
-	
-	protected void onPostExecute(final SaveClaimResponse res){
-		
+
+	protected void onPostExecute(final SaveClaimResponse res) {
+
 		Toast toast;
-		
-		Claim claim = Claim.getClaim(res.getClaimId());	
-		
+
+		Claim claim = Claim.getClaim(res.getClaimId());
+
 		switch (res.getHttpStatusCode()) {
-		case 200:			
-					
-			claim.setStatus(ClaimStatus._UNMODERATED);			
-			claim.update();
-			
-			toast = Toast
-					.makeText(OpenTenureApplication.getContext(),
+		case 200:
+
+			try {
+
+				TimeZone tz = TimeZone.getTimeZone("UTC");
+				SimpleDateFormat sdf = new SimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss");
+				sdf.setTimeZone(tz);
+				Date date = sdf.parse(res.getChallengeExpiryDate());
+
+				claim.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
+
+				claim.setStatus(ClaimStatus._UNMODERATED);
+				claim.update();
+
+			} catch (Exception e) {
+				Log.d("CommunityServerAPI",
+						"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+				e.printStackTrace();
+			}
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_submitted, Toast.LENGTH_SHORT);
 			toast.show();
-			
+
 			break;
-			
-		case 403:		
-			
+
+		case 403:
+
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
 			toast.show();
-			
+
 			OpenTenureApplication.setLoggedin(false);
-			
+
 			break;
-			
-		case 452:	
-						
-			claim.setStatus(ClaimStatus._UPLOADING);		
-			claim.update();			
-			
-			toast = Toast
-					.makeText(OpenTenureApplication.getContext(),
+
+		case 452:
+
+			claim.setStatus(ClaimStatus._UPLOADING);
+			claim.update();
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_uploading, Toast.LENGTH_SHORT);
 			toast.show();
-			
-			
+
 			List<Attachment> list = res.getAttachments();
 
 			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
-				
+
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
 				saveAttachmentTask.execute(attachment.getId());
-				
+
 			}
-				
-			break;	
-			
-			
-		case 450:			
-			
-			toast = Toast
-			.makeText(OpenTenureApplication.getContext(),
-			R.string.message_submission_error + res.getMessage(), Toast.LENGTH_SHORT);
-			toast.show();
 
-				
 			break;
-			
-		case 400:			
-			
-			toast = Toast
-			.makeText(OpenTenureApplication.getContext(),
-			R.string.message_submission_error + res.getMessage(), Toast.LENGTH_SHORT);
+
+		case 450:
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + res.getMessage(),
+					Toast.LENGTH_SHORT);
 			toast.show();
 
-				
-			break;	
-	
+			break;
+
+		case 400:
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + res.getMessage(),
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+			break;
 
 		default:
 			break;
 		}
-		
+
 		return;
-		
-		
-		
-		
-		
+
 	}
 
 }

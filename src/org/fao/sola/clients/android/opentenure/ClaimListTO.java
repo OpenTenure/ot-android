@@ -31,23 +31,38 @@ public class ClaimListTO {
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getSlogan() {
 		return slogan;
 	}
+
 	public void setSlogan(String slogan) {
 		this.slogan = slogan;
 	}
+
+	public String getRemaingDays() {
+		return remaingDays;
+	}
+
+	public void setRemaingDays(String remaingDays) {
+		this.remaingDays = remaingDays;
+	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	private String id;
 	private String slogan;
 	private String status;
+	private String remaingDays;
+
 }

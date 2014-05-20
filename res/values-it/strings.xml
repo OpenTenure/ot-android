@@ -78,6 +78,7 @@
     <string name="attachment_removed">Allegato rimosso</string>
     <string name="additional_info_removed">Informazione rimossa</string>
     <string name="message_saved">Salvato</string>
+    <string name="message_remaining_days">Giorni che rimangono per sfidare il claim :  </string>
     <string name="message_map_snapshot_saved">Immagine della mappa salvata</string>
     <string name="message_invalid_url">URL non valido</string>
     <string name="message_unable_to_save">Impossibile salvare. Controllare i dati e riprovare</string>

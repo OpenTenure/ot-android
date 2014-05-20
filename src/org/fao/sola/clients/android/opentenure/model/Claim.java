@@ -3,7 +3,7 @@
  * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
+ * Redistribution and use in source and binary forms, with or without modification,281
  * are permitted provided that the following conditions are met:
  *
  *    1. Redistributions of source code must retain the above copyright notice,this list
@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,6 +72,7 @@ public class Claim {
 				+ ", vertices=" + Arrays.toString(vertices.toArray())
 				+ ", additionalInfo=" + Arrays.toString(additionalInfo.toArray())
 				+ ", challengedClaim=" + challengedClaim
+				+ ", challengeExpiryDate=" + challengeExpiryDate
 				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())+ "]";
 	}
@@ -110,6 +112,20 @@ public class Claim {
 	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getChallengeExpiryDate() {
+		return challengeExpiryDate;
+	}
+	public void setChallengeExpiryDate(Date challengeExpiryDate) {
+		this.challengeExpiryDate = challengeExpiryDate;
+	}
 
 	public static int createClaim(Claim claim){
 		int result = 0;
@@ -120,17 +136,19 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE) VALUES(?,?,?,?,?,?)");
 			statement.setString(1, claim.getClaimId());
 			statement.setString(2, claim.getStatus());
 			statement.setString(3, claim.getName());
 			statement.setString(4, claim.getPerson().getPersonId());
 			if(claim.getChallengedClaim() != null){
 				statement.setString(5, claim.getChallengedClaim().getClaimId());
+				
 			}else{
 				statement.setString(5, null);
 			}
-				
+			statement.setDate(6, claim.getChallengeExpiryDate());	
+			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -162,18 +180,18 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID) VALUES(?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE) VALUES(?,?,?,?,?,?)");
 			statement.setString(1, getClaimId());
 			statement.setString(2, getStatus());
 			statement.setString(3, getName());
 			statement.setString(4, getPerson().getPersonId());
 			if(getChallengedClaim() != null){
-				statement.setString(5, getChallengedClaim().getClaimId());
+				statement.setString(5, getChallengedClaim().getClaimId());				
 			}else{
 				statement.setString(5, null);
 			}
-				
-			result = statement.executeUpdate();
+			statement.setDate(6,getChallengeExpiryDate());			
+			result = statement.executeUpdate();			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -204,15 +222,16 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=? WHERE CLAIM_ID=?");
 			statement.setString(1, claim.getStatus());
 			statement.setString(2, claim.getName());
 			statement.setString(3, claim.getPerson().getPersonId());
 			if(claim.getChallengedClaim() != null){
-				statement.setString(4, claim.getChallengedClaim().getClaimId());
+				statement.setString(4, claim.getChallengedClaim().getClaimId());				
 			}else{
 				statement.setString(4, null);
 			}
+			statement.setDate(5, claim.getChallengeExpiryDate());
 			statement.setString(5, claim.getClaimId());
 				
 			result = statement.executeUpdate();
@@ -246,16 +265,18 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=? WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=? WHERE CLAIM_ID=?");
 			statement.setString(1, getStatus());
 			statement.setString(2, getName());
 			statement.setString(3, getPerson().getPersonId());
 			if(getChallengedClaim() != null){
 				statement.setString(4, getChallengedClaim().getClaimId());
+				
 			}else{
 				statement.setString(4, null);
 			}
-			statement.setString(5, getClaimId());
+			statement.setDate(5, getChallengeExpiryDate());
+			statement.setString(6, getClaimId());
 				
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -289,7 +310,7 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
@@ -299,6 +320,7 @@ public class Claim {
 				claim.setName(rs.getString(2));
 				claim.setPerson(Person.getPerson(rs.getString(3)));
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(4)));
+				claim.setChallengeExpiryDate(rs.getDate(5));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
@@ -447,7 +469,7 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID FROM CLAIM");
+					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE FROM CLAIM");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				String claimId = rs.getString(1);
@@ -457,6 +479,7 @@ public class Claim {
 				claim.setName(rs.getString(3));
 				claim.setPerson(Person.getPerson(rs.getString(4)));
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
+				claim.setChallengeExpiryDate(rs.getDate(6));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
@@ -489,12 +512,7 @@ public class Claim {
 		return claims;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
+	
 
 	String claimId;
 	String name;
@@ -505,5 +523,6 @@ public class Claim {
 	List<AdditionalInfo> additionalInfo;
 	List<Claim> challengingClaims;
 	List<Attachment> attachments;
+	Date challengeExpiryDate;
 
 }

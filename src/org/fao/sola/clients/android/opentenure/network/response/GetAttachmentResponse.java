@@ -27,35 +27,16 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-import java.util.List;
-
-
-public class SaveClaimResponse extends ApiResponse{	
-
-	String claimId;	
-	String challengeExpiryDate;
+public class GetAttachmentResponse extends ApiResponse{
 	
-	public String getChallengeExpiryDate() {
-		return challengeExpiryDate;
-	}
-	public void setChallengeExpiryDate(String challengeExpiryDate) {
-		this.challengeExpiryDate = challengeExpiryDate;
-	}
-	List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments;	
-	
+	byte[] array;
 
-	public List<org.fao.sola.clients.android.opentenure.network.response.Attachment> getAttachments() {
-		return attachments;
+	public byte[] getArray() {
+		return array;
 	}
-	public void setAttachments(List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments) {
-		this.attachments = attachments;
-	}
-	
-	public String getClaimId() {
-		return claimId;
-	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-	}
+
+	public void setArray(byte[] array) {
+		this.array = array;
+	}	
 
 }

@@ -31,11 +31,15 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 
@@ -49,7 +53,6 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 
 		Attachment att = Attachment.getAttachment(params[1]);
 
-		
 		File file = new File(
 				FileSystemUtilities.getAttachmentFolder(params[0]),
 				att.getFileName());
@@ -66,14 +69,44 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 			try {
 
 				file.createNewFile();
-				
-				byte[] array = CommunityServerAPI.getAttachment(att.getAttachmentId());
-				
-				FileOutputStream fos = new FileOutputStream(file);
-				fos.write(array);
-				fos.close();
+
+				/* Here I need a cycle */
+
+				GetAttachmentResponse res = CommunityServerAPI
+						.getAttachment(att.getAttachmentId());
+
+				if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
+					FileOutputStream fos = new FileOutputStream(file);
+					fos.write(res.getArray());
+					fos.close();
+
+				} else {
+
+					Log.d("CommunityServerAPI",
+							"ATTACHMENT DO NOT RETRIEVED : " + res.getMessage());
+				}
+
+				if (att.getSize() == file.length()) {
+
+					att.setPath(file.getAbsolutePath());
+
+					Attachment.updateAttachment(att);
+
+				} else {
+
+					att.setPath(file.getAbsolutePath());
+
+					Attachment.updateAttachment(att);
+
+				}
 
 			} catch (IOException e) {
+				
+				
+				Log.d("CommunityServerAPI",
+						"ATTACHMENT DO NOT RETRIEVED : " + e.getMessage());
+				
+				System.out.println("IL file sarebbe dovuto esser creato qui : "+file.getAbsolutePath());
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

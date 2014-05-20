@@ -27,7 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -55,248 +54,242 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Vertex;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonUtilities {
-	
-	
- public static boolean createClaimJson(String claimID){
-	 
-	Log.d("CreateClaimJson","Calling data2json");
-	 
-	 String json = data2Json(claimID);	 
-	 writeJsonTofile(claimID,json);
-	 return true;
- }
- 
- 
- 
- private static String data2Json(String claimId){
-	 
-	 org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim();
-	 
-	 Claim claim = Claim.getClaim(claimId); 
-	 
-	 
-	 if(claim != null){
-		 
-		 TimeZone tz = TimeZone.getTimeZone("UTC");
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-		 sdf.setTimeZone(tz);
-		 
-		 Calendar c = Calendar.getInstance();
-		 c.setTime(new Date());
-		   // number of days to add
-		 String lodgementDate = sdf.format(c.getTime());  
-		 
-		 c.add(Calendar.MONTH, 1);
-		   // number of days to add
-		 String challengeExpiryDate = sdf.format(c.getTime());
-		 
-		 
-		
-		 
-		 
-		 
-		// tempClaim.setChallengedClaim(null);
-		 tempClaim.setDescription(claim.getName());
-		 tempClaim.setChallenged_id_claim(claim.getChallengedClaim()!=null?claim.getChallengedClaim().getClaimId():null);
-		 tempClaim.setId(claimId);
-		 tempClaim.setStatusCode(claim.getStatus());
-		 tempClaim.setNr("0001");
-		 
-		 
-		 tempClaim.setLodgementDate(lodgementDate);
-		 tempClaim.setChallengeExpiryDate(challengeExpiryDate);
-		 
-		 Claimant person = new Claimant();
-		 
-		 
-		 person.setPhone(claim.getPerson().getContactPhoneNumber());
-		 person.setBirthDate(sdf.format(claim.getPerson().getDateOfBirth()));
-		 person.setEmail(claim.getPerson().getEmailAddress());
-		 person.setName(claim.getPerson().getFirstName());
-		 person.setId(claim.getPerson().getPersonId());
-		 person.setLastName(claim.getPerson().getLastName());
-		 person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
-		// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
-		 person.setAddress(claim.getPerson().getPostalAddress());
-		 person.setGenderCode(claim.getPerson().getGender());
-		 
-		 tempClaim.setPerson(person);
-		 
-//		 
-//		 List<Vertex> verteces = new ArrayList<Vertex>();
-//
-//		 for (Iterator iterator = claim.getVertices().iterator(); iterator.hasNext();) {
-//			org.fao.sola.clients.android.opentenure.model.Vertex vert = (org.fao.sola.clients.android.opentenure.model.Vertex) iterator.next();
-//			
-//			Vertex v = new Vertex();	 
-//
-//			v.setGPSPosition(vert.getGPSPosition());
-//			v.setMapPosition(vert.getMapPosition());
-//			v.setSequenceNumber(vert.getSequenceNumber());
-//			v.setVertexId(vert.getVertexId());
-//			
-//			
-//			verteces.add(v);
-//		}
-		 
-		 
 
-		 
-		 
-		 List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
-		 
-		 for (Iterator iterator = claim.getAttachments().iterator(); iterator.hasNext();) {
-			Attachment attachment = (Attachment) iterator.next();
-			
-			org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
-			
-			attach.setId(attachment.getAttachmentId());
-			attach.setDescription(attachment.getDescription());
-			attach.setFileName(attachment.getFileName());
-			attach.setFileExtension(attachment.getFileType());
-			attach.setTypeCode(attachment.getFileType());
-			//attach.setFileType(attachment.getFileType());
-			attach.setMd5(attachment.getMD5Sum());
-			attach.setSize(attachment.getSize());
-			attach.setMimeType(attachment.getMimeType());
-			
-			
-			attachments.add(attach);
-		}
-		 
-		 
-/*
- * TEmporary off the additional info on the claim submission
- * 
- * */		 
-		 
-//		 List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
-//		 
-//		 for (Iterator iterator = claim.getMetadata().iterator(); iterator.hasNext();) {
-//			Metadata metadataO = (Metadata) iterator.next();
-//			
-//			AdditionalInfo xm = new AdditionalInfo();
-//			
-//			xm.setMetadataId(metadataO.getMetadataId());
-//			xm.setName(metadataO.getName());
-//			xm.setValue(metadataO.getValue());
-//			
-//			xMetadata.add(xm);
-//		}
-		 
-		 tempClaim.setGpsGeometry(org.fao.sola.clients.android.opentenure.model.Vertex.gpsWKTFromVertices(claim.getVertices()));
-		 tempClaim.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex.mapWKTFromVertices(claim.getVertices()));
-		 tempClaim.setAttachments(attachments);
-//		 tempClaim.setAdditionaInfo(xMetadata);
-		
-		 
-		 try {
-			 Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
-			 
-			 String g = gson.toJson(tempClaim);			 
-			 Log.d("CreateClaimJson",g);
-			 
-			 return g;
-			
-		} catch (Throwable e) {			
-			
-			Log.d("CreateClaimJson","An error has occurred" + e.getMessage());
-			e.printStackTrace();
-			
-			return null;			
-		}		 
-	 }
-	 else{ 
-		 
-		 Log.d("CreateClaimJson","The claim is null");
-		 return null;		 
-	 }
-	 
- }
- 
- 
- 
- private static boolean writeJsonTofile(String claimID, String json){
-	 
-	 
-	 try {
-		 
-		// convert String into InputStream
-		InputStream is = new ByteArrayInputStream(json.getBytes());
-		 
-		// read it with BufferedReader
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
-		
-		
-		File jFile = new File(FileSystemUtilities.getClaimFolder(claimID),"claim.json");
-		
-		
-		if(jFile.exists())
-			jFile.delete();
-		
-		jFile.createNewFile();
-		
-		BufferedWriter writer = null;		
-		writer = new BufferedWriter( new FileWriter( jFile));
-		
-		char[] buffer = new char[1024];
-		int x;
-		while ((x = (br.read(buffer))) != -1) {
-			
-			
-			writer.write(buffer,0,x);
-			writer.flush();
-			
-		}
+	public static boolean createClaimJson(String claimID) {
 
-		writer.flush();
-		writer.close();
-		br.close();
-				
-		
-	} catch (Exception e) {
-		Log.d("CreateClaimJson","An error has occurred" + e.getMessage());
+		Log.d("CreateClaimJson", "Calling data2json");
+
+		String json = data2Json(claimID);
+		writeJsonTofile(claimID, json);
+		return true;
 	}
-	 
+
+	private static String data2Json(String claimId) {
+
+		org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim();
+
+		Claim claim = Claim.getClaim(claimId);
+
+		if (claim != null) {
+
+			TimeZone tz = TimeZone.getTimeZone("UTC");
+			SimpleDateFormat sdf = new SimpleDateFormat(
+					"yyyy-MM-dd'T'HH:mm:ss'Z'");
+			sdf.setTimeZone(tz);
+
+			Calendar c = Calendar.getInstance();
+			c.setTime(new Date());
+			// number of days to add
+			String lodgementDate = sdf.format(c.getTime());
+
+			c.add(Calendar.MONTH, 1);
+			// number of days to add
+			String challengeExpiryDate = sdf.format(c.getTime());
+
+			// tempClaim.setChallengedClaim(null);
+			tempClaim.setDescription(claim.getName());
+			tempClaim
+					.setChallenged_id_claim(claim.getChallengedClaim() != null ? claim
+							.getChallengedClaim().getClaimId() : null);
+			tempClaim.setId(claimId);
+			tempClaim.setStatusCode(claim.getStatus());
+			tempClaim.setNr("0001");
+
+			tempClaim.setLodgementDate(lodgementDate);
+			tempClaim.setChallengeExpiryDate(challengeExpiryDate);
+
+			Claimant person = new Claimant();
+
+			person.setPhone(claim.getPerson().getContactPhoneNumber());
+			person.setBirthDate(sdf.format(claim.getPerson().getDateOfBirth()));
+			person.setEmail(claim.getPerson().getEmailAddress());
+			person.setName(claim.getPerson().getFirstName());
+			person.setId(claim.getPerson().getPersonId());
+			person.setLastName(claim.getPerson().getLastName());
+			person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
+			// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
+			person.setAddress(claim.getPerson().getPostalAddress());
+			person.setGenderCode(claim.getPerson().getGender());
+
+			tempClaim.setPerson(person);
+
+			//
+			// List<Vertex> verteces = new ArrayList<Vertex>();
+			//
+			// for (Iterator iterator = claim.getVertices().iterator();
+			// iterator.hasNext();) {
+			// org.fao.sola.clients.android.opentenure.model.Vertex vert =
+			// (org.fao.sola.clients.android.opentenure.model.Vertex)
+			// iterator.next();
+			//
+			// Vertex v = new Vertex();
+			//
+			// v.setGPSPosition(vert.getGPSPosition());
+			// v.setMapPosition(vert.getMapPosition());
+			// v.setSequenceNumber(vert.getSequenceNumber());
+			// v.setVertexId(vert.getVertexId());
+			//
+			//
+			// verteces.add(v);
+			// }
+
+			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
+
+			for (Iterator iterator = claim.getAttachments().iterator(); iterator
+					.hasNext();) {
+				Attachment attachment = (Attachment) iterator.next();
+
+				org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
+
+				attach.setId(attachment.getAttachmentId());
+				attach.setDescription(attachment.getDescription());
+				attach.setFileName(attachment.getFileName());
+				attach.setFileExtension(attachment.getFileType());
+				attach.setTypeCode(attachment.getFileType());
+				// attach.setFileType(attachment.getFileType());
+				attach.setMd5(attachment.getMD5Sum());
+				attach.setSize(attachment.getSize());
+				attach.setMimeType(attachment.getMimeType());
+
+				attachments.add(attach);
+			}
+
+			/*
+			 * TEmporary off the additional info on the claim submission
+			 */
+
+			// List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
+			//
+			// for (Iterator iterator = claim.getMetadata().iterator();
+			// iterator.hasNext();) {
+			// Metadata metadataO = (Metadata) iterator.next();
+			//
+			// AdditionalInfo xm = new AdditionalInfo();
+			//
+			// xm.setMetadataId(metadataO.getMetadataId());
+			// xm.setName(metadataO.getName());
+			// xm.setValue(metadataO.getValue());
+			//
+			// xMetadata.add(xm);
+			// }
+
+			tempClaim
+					.setGpsGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
+							.gpsWKTFromVertices(claim.getVertices()));
+			tempClaim
+					.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
+							.mapWKTFromVertices(claim.getVertices()));
+			tempClaim.setAttachments(attachments);
+			// tempClaim.setAdditionaInfo(xMetadata);
+
+			try {
+				Gson gson = new GsonBuilder()
+						.setPrettyPrinting()
+						.serializeNulls()
+						.setFieldNamingPolicy(
+								FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+
+				String g = gson.toJson(tempClaim);
+				Log.d("CreateClaimJson", g);
+
+				return g;
+
+			} catch (Throwable e) {
+
+				Log.d("CreateClaimJson",
+						"An error has occurred" + e.getMessage());
+				e.printStackTrace();
+
+				return null;
+			}
+		} else {
+
+			Log.d("CreateClaimJson", "The claim is null");
+			return null;
+		}
+
+	}
+
+	private static boolean writeJsonTofile(String claimID, String json) {
+
+		try {
+
+			// convert String into InputStream
+			InputStream is = new ByteArrayInputStream(json.getBytes());
+
+			// read it with BufferedReader
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+			File jFile = new File(FileSystemUtilities.getClaimFolder(claimID),
+					"claim.json");
+
+			if (jFile.exists())
+				jFile.delete();
+
+			jFile.createNewFile();
+
+			BufferedWriter writer = null;
+			writer = new BufferedWriter(new FileWriter(jFile));
+
+			char[] buffer = new char[1024];
+			int x;
+			while ((x = (br.read(buffer))) != -1) {
+
+				writer.write(buffer, 0, x);
+				writer.flush();
+
+			}
+
+			writer.flush();
+			writer.close();
+			br.close();
+
+		} catch (Exception e) {
+			Log.d("CreateClaimJson", "An error has occurred" + e.getMessage());
+		}
+
 		return false;
-		 
- }
- 
- 
 
-	    /** Transform Calendar to ISO 8601 string. */
-	    public static String fromCalendar(final Calendar calendar) {
-	        Date date = calendar.getTime();
-	        String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-	            .format(date);
-	        return formatted.substring(0, 22) + ":" + formatted.substring(22);
-	    }
+	}
 
-	    /** Get current date and time formatted as ISO 8601 string. */
-	    public static String now() {
-	        return fromCalendar(GregorianCalendar.getInstance());
-	    }
+	/** Transform Calendar to ISO 8601 string. */
+	public static String fromCalendar(final Calendar calendar) {
+		Date date = calendar.getTime();
+		String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+				.format(date);
+		return formatted.substring(0, 22) + ":" + formatted.substring(22);
+	}
 
-	    /** Transform ISO 8601 string to Calendar. */
-	    public static Calendar toCalendar(final String iso8601string)
-	            throws ParseException {
-	        Calendar calendar = GregorianCalendar.getInstance();
-	        String s = iso8601string.replace("Z", "+00:00");
-	        try {
-	            s = s.substring(0, 22) + s.substring(23);  // to get rid of the ":"
-	        } catch (IndexOutOfBoundsException e) {
-	            throw new ParseException("Invalid length", 0);
-	        }
-	        Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(s);
-	        calendar.setTime(date);
-	        return calendar;
-	    }
-	
+	/** Get current date and time formatted as ISO 8601 string. */
+	public static String now() {
+		return fromCalendar(GregorianCalendar.getInstance());
+	}
+
+	/** Transform ISO 8601 string to Calendar. */
+	public static Calendar toCalendar(final String iso8601string)
+			throws ParseException {
+		Calendar calendar = GregorianCalendar.getInstance();
+		String s = iso8601string.replace("Z", "+00:00");
+		try {
+			s = s.substring(0, 22) + s.substring(23); // to get rid of the ":"
+		} catch (IndexOutOfBoundsException e) {
+			throw new ParseException("Invalid length", 0);
+		}
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(s);
+		calendar.setTime(date);
+		return calendar;
+	}
+
+	public static int remainingDays(java.sql.Date challengeExpiryDate) {
+		if (challengeExpiryDate == null)
+			return 0;
+		return (int) ((challengeExpiryDate.getTime() - new java.util.Date()
+				.getTime()) / (1000 * 60 * 60 * 24));
+	}
 
 }

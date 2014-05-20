@@ -27,8 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-
-
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 
 import android.os.AsyncTask;
@@ -38,42 +36,32 @@ import android.os.AsyncTask;
  * 
  * */
 
-public class UploadChunksTask extends AsyncTask<String, Void, UploadChunksResponse>{
+public class UploadChunksTask extends
+		AsyncTask<String, Void, UploadChunksResponse> {
 
 	@Override
 	protected UploadChunksResponse doInBackground(String... params) {
 
-			UploadChunks ulc = new UploadChunks();
-			UploadChunksResponse res = ulc.execute(params[0]);
-			
-			System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@ tornata la response dell'attachmentID " + res.getAttachmentId());
-			
-			return res;
+		UploadChunks ulc = new UploadChunks();
+		UploadChunksResponse res = ulc.execute(params[0]);
+
+		return res;
 	}
 
+	protected void onPostExecute(final UploadChunksResponse res) {
 
-		
-	protected void onPostExecute(final UploadChunksResponse res){
-		
-		
-		if(res.getSuccess()){
-			
-			System.out.println("Sono proprio in questo caso POSITIVISSIMO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			
+		if (res.getSuccess()) {
+
 			/**
-			 * All the Chunk of the claim are uploaded . Call SaveAttachment to close the flow.
-			 * There 's the risk of a infinite loop 
+			 * All the Chunk of the claim are uploaded . Call SaveAttachment to
+			 * close the flow. There 's the risk of a infinite loop
 			 ***/
-			
+
 			SaveAttachmentTask sat = new SaveAttachmentTask();
 			sat.execute(res.getAttachmentId());
-			
+
 		}
-		
-		
+
 	}
-		
-		
-	
 
 }

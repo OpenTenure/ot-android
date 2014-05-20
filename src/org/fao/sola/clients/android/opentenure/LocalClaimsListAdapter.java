@@ -109,6 +109,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		TextView id;
 		TextView slogan;
 		TextView status;
+		TextView challengeExpiryDate;
 		ImageView picture;
 	}
 
@@ -123,6 +124,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
 			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
+			vh.challengeExpiryDate = (TextView) convertView.findViewById(R.id.claim_challenging_time);
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.claimant_picture);
 			convertView.setTag(vh);
@@ -131,6 +133,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
 		vh.status.setText(claims.get(position).getStatus());
+		vh.challengeExpiryDate.setText(claims.get(position).getRemaingDays());
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
 		vh.picture.setImageBitmap(Person.getPersonPicture(

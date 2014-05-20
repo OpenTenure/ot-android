@@ -49,6 +49,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
+import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
@@ -62,6 +63,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import android.net.http.AndroidHttpClient;
+import android.preference.PreferenceActivity.Header;
 import android.util.Log;
 
 public class CommunityServerAPI {
@@ -272,14 +274,17 @@ public class CommunityServerAPI {
 		}
 
 	}
-	
-	public static List<org.fao.sola.clients.android.opentenure.network.response.Claim> getAllClaimsByBox(String[] coordinates) {
+
+	public static List<org.fao.sola.clients.android.opentenure.network.response.Claim> getAllClaimsByBox(
+			String[] coordinates) {
 
 		/*
 		 * Creating the url to call
 		 */
-		String url = String
-				.format(CommunityServerAPIUtilities.HTTPS_GETALLCLAIMSBYBOX,coordinates[0],coordinates[1],coordinates[2],coordinates[3],"100");
+		String url = String.format(
+				CommunityServerAPIUtilities.HTTPS_GETALLCLAIMSBYBOX,
+				coordinates[0], coordinates[1], coordinates[2], coordinates[3],
+				"100");
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -293,8 +298,8 @@ public class CommunityServerAPI {
 
 			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
 
-				Log.d("CommunityServerAPI", "GET ALL CLAIMS BY BOX JSON RESPONSE "
-						+ json);
+				Log.d("CommunityServerAPI",
+						"GET ALL CLAIMS BY BOX JSON RESPONSE " + json);
 
 				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.Claim>>() {
 				}.getType();
@@ -347,7 +352,7 @@ public class CommunityServerAPI {
 						.getEntity().getContent(), 1024);
 
 				Log.d("CommunityServerAPI", "CLAIM JSON STRING " + json);
-				
+
 				Gson gson = new Gson();
 				Claim claim = gson.fromJson(json, Claim.class);
 
@@ -370,17 +375,19 @@ public class CommunityServerAPI {
 		}
 
 	}
-	
-	
-	
-	public static byte[] getAttachment(String attachmentId) {
+
+	public static GetAttachmentResponse getAttachment(String attachmentId) {
+
+		GetAttachmentResponse methodResponse = new GetAttachmentResponse();
 
 		/*
 		 * Creating the url to call
 		 */
-		String url = String.format(CommunityServerAPIUtilities.HTTPS_GETATTACHMENT,
-				attachmentId);
+		String url = String.format(
+				CommunityServerAPIUtilities.HTTPS_GETATTACHMENT, attachmentId);
 		HttpGet request = new HttpGet(url);
+
+		request.setHeader("Range", "bytes=0-1000");
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
@@ -388,36 +395,57 @@ public class CommunityServerAPI {
 		try {
 			HttpResponse response = client.execute(request);
 
-			Log.d("CommunityServerAPI",
-					"GET Attachment status line " + response.getStatusLine());
+			Log.d("CommunityServerAPI", "GET Attachment status line "
+					+ response.getStatusLine());
 
 			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
 
 				byte[] byteArray = CommunityServerAPIUtilities.slurp(response
 						.getEntity().getContent(), 1024);
 
-				
-				Log.d("CommunityServerAPI",
-						"ATTACHMENT RETRIEVED SIZE" + byteArray.length);
+				Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED SIZE"
+						+ byteArray.length);
 
-				return byteArray;
+				org.apache.http.Header[] headers = response.getAllHeaders();
+
+				for (int i = 0; i < headers.length; i++) {
+
+					System.out.println("HEADER : " + headers[i].getName() + " "
+							+ headers[i].getValue());
+				}
+
+				methodResponse.setArray(byteArray);
+				methodResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+				methodResponse.setMessage(response.getStatusLine()
+						.getReasonPhrase());
+
+				return methodResponse;
 
 			} else {
 
 				Log.d("CommunityServerAPI", "ATTACHMENT not retrieved ");
-				return null;
+
+				methodResponse.setArray(null);
+				methodResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+				methodResponse.setMessage(response.getStatusLine()
+						.getReasonPhrase());
+				return methodResponse;
 			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 
-			return null;
+			methodResponse.setArray(null);
+			methodResponse.setHttpStatusCode(400);
+			methodResponse.setMessage("Error retrieving attachment");
+
+			return methodResponse;
 		}
 
 	}
-	
-	
 
 	public static SaveClaimResponse saveClaim(String claim) {
 

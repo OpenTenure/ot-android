@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
@@ -56,7 +57,7 @@ public class LocalClaimsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int CLAIM_RESULT = 100;
-	
+
 	private ModeDispatcher mainActivity;
 
 	@Override
@@ -80,7 +81,7 @@ public class LocalClaimsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.local_claims, menu);
 
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
 		}
 		super.onCreateOptionsMenu(menu, inflater);
@@ -93,8 +94,10 @@ public class LocalClaimsFragment extends ListFragment {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ClaimActivity.CREATE_CLAIM_ID);
-			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode().toString());
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY,
+					ClaimActivity.CREATE_CLAIM_ID);
+			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
+					.toString());
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		default:
@@ -117,40 +120,50 @@ public class LocalClaimsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.local_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
-	    EditText inputSearch = (EditText) rootView.findViewById(R.id.filter_input_field);
-	    inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-	    inputSearch.addTextChangedListener(new TextWatcher() {
+		EditText inputSearch = (EditText) rootView
+				.findViewById(R.id.filter_input_field);
+		inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		inputSearch.addTextChangedListener(new TextWatcher() {
 
-	        @Override
-	        public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-	        }
+			@Override
+			public void onTextChanged(CharSequence cs, int arg1, int arg2,
+					int arg3) {
+			}
 
-	        @Override
-	        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+			}
 
-	        @Override
-	        public void afterTextChanged(Editable arg0) {
-	            ((LocalClaimsListAdapter)getListAdapter()).getFilter().filter(arg0.toString());
-	        }
-	    });
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(
+						arg0.toString());
+			}
+		});
 
 		update();
 
 		return rootView;
 	}
-	
+
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
-			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode().toString());
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY,
+					((TextView) v.findViewById(R.id.claim_id)).getText());
+			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
+					.toString());
 			startActivityForResult(intent, CLAIM_RESULT);
-		}else{
+		} else {
 			Intent resultIntent = new Intent();
-			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY, ((TextView)v.findViewById(R.id.claim_id)).getText());
-			getActivity().setResult(SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT, resultIntent);
+			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY,
+					((TextView) v.findViewById(R.id.claim_id)).getText());
+			getActivity().setResult(
+					SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT,
+					resultIntent);
 			getActivity().finish();
 		}
 	}
@@ -159,19 +172,34 @@ public class LocalClaimsFragment extends ListFragment {
 		List<Claim> claims = Claim.getAllClaims();
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
-		for(Claim claim : claims){
+		for (Claim claim : claims) {
 			ClaimListTO cto = new ClaimListTO();
-			cto.setSlogan(claim.getName() + ", " + getResources().getString(R.string.by) + ": " + claim.getPerson().getFirstName()+ " " + claim.getPerson().getLastName());
+			cto.setSlogan(claim.getName() + ", "
+					+ getResources().getString(R.string.by) + ": "
+					+ claim.getPerson().getFirstName() + " "
+					+ claim.getPerson().getLastName());
 			cto.setId(claim.getClaimId());
-			if(claim.getStatus().equals(ClaimStatus._UPLOADING)) 
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING))
 				cto.setStatus(claim.getStatus());
-			else if(claim.getStatus().equals(ClaimStatus._UNMODERATED)){
+			else if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
 				cto.setStatus(claim.getStatus());
-				}
-			else cto.setStatus(claim.getStatus());
+			} else
+				cto.setStatus(claim.getStatus());
+
+			int days = JsonUtilities.remainingDays(claim
+					.getChallengeExpiryDate());
+
+			if (days != 0)
+				cto.setRemaingDays(getResources().getString(
+						R.string.message_remaining_days)
+						+ days);
+			else
+				cto.setRemaingDays("");
+
 			claimListTOs.add(cto);
 		}
-		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs);
+		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(
+				rootView.getContext(), claimListTOs);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

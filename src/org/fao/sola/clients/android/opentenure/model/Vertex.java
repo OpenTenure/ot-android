@@ -485,9 +485,7 @@ public class Vertex {
 		for (Vertex vertex : vertices) {
 			coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude,
 					vertex.getGPSPosition().latitude);
-			System.out.println("Le coordinate GPS : "
-					+ ((Coordinate) coordinates[i]).x
-					+ ((Coordinate) coordinates[i]).y);
+			
 			i++;
 		}
 		coordinates[i] = new Coordinate(

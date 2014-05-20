@@ -54,6 +54,10 @@ public class GetClaims {
 
 		boolean success = true;
 
+		TimeZone tz = TimeZone.getTimeZone("UTC");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+		sdf.setTimeZone(tz);
+
 		for (int i = 0; i < params.length; i++) {
 			org.fao.sola.clients.android.opentenure.network.response.Claim claim = (org.fao.sola.clients.android.opentenure.network.response.Claim) params[i];
 
@@ -70,7 +74,6 @@ public class GetClaims {
 
 			List<org.fao.sola.clients.android.opentenure.model.Attachment> attachmentsDB = new ArrayList<org.fao.sola.clients.android.opentenure.model.Attachment>();
 			List<org.fao.sola.clients.android.opentenure.model.AdditionalInfo> additionalInfoDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.AdditionalInfo>();
-
 
 			/*
 			 * Temporary disable
@@ -153,6 +156,10 @@ public class GetClaims {
 				claimDB.setClaimId(downloadedClaim.getId());
 				claimDB.setAdditionalInfo(additionalInfoDBList);
 				claimDB.setName(downloadedClaim.getDescription());
+
+				Date date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
+				claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
+
 				claimDB.setPerson(person);
 				claimDB.setStatus(downloadedClaim.getStatusCode());
 
@@ -169,8 +176,7 @@ public class GetClaims {
 					Vertex.storeWKT(claimDB.getClaimId(),
 							downloadedClaim.getMappedGeometry(),
 							downloadedClaim.getGpsGeometry());
-				
-				
+
 				List<Attachment> attachments = downloadedClaim.getAttachments();
 				for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 						.hasNext();) {
@@ -188,16 +194,17 @@ public class GetClaims {
 					attachmentDB.setPath("");
 					attachmentDB.setStatus(AttachmentStatus._UPLOADED);
 					attachmentDB.setSize(attachment.getSize());
-					
-					org.fao.sola.clients.android.opentenure.model.Attachment.createAttachment(attachmentDB);
+
+					org.fao.sola.clients.android.opentenure.model.Attachment
+							.createAttachment(attachmentDB);
 
 					/*
 					 * Here the creation of Folder for the claim
-					 * */
-					
+					 */
+
 					FileSystemUtilities.createClaimantFolder(claimant.getId());
-					FileSystemUtilities.createClaimFileSystem(downloadedClaim.getId());					
-					
+					FileSystemUtilities.createClaimFileSystem(downloadedClaim
+							.getId());
 
 				}
 
