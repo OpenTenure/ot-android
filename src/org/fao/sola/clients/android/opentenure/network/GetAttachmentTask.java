@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
+import org.apache.http.util.ByteArrayBuffer;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -68,22 +69,92 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 		else {
 			try {
 
+				System.out.println("Sto per creare questo File :"
+						+ file.getAbsolutePath());
+
+				System.out.println("La cartella in cui lo creo sarebbe "
+						+ FileSystemUtilities.getAttachmentFolder(params[0])
+								.getAbsolutePath()
+						+ " e soprattutto esiste : "
+						+ FileSystemUtilities.getAttachmentFolder(params[0])
+								.exists()
+						+ "ed e'una dir : "
+						+ FileSystemUtilities.getAttachmentFolder(params[0])
+								.isDirectory());
+
 				file.createNewFile();
 
 				/* Here I need a cycle */
+				boolean cycle = true;
 
-				GetAttachmentResponse res = CommunityServerAPI
-						.getAttachment(att.getAttachmentId());
+				int lenght = 1000;
+				int offSet = 0;
 
-				if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
-					FileOutputStream fos = new FileOutputStream(file);
-					fos.write(res.getArray());
-					fos.close();
+				ByteArrayBuffer wholeFile = new ByteArrayBuffer(offSet);
 
-				} else {
+				while (cycle) {
 
-					Log.d("CommunityServerAPI",
-							"ATTACHMENT DO NOT RETRIEVED : " + res.getMessage());
+					GetAttachmentResponse res = CommunityServerAPI
+							.getAttachment(att.getAttachmentId(), offSet,
+									lenght + offSet - 1);
+
+					if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
+						FileOutputStream fos = new FileOutputStream(file);
+						fos.write(res.getArray());
+						fos.close();
+
+						cycle = false;
+
+					} else if (res.getHttpStatusCode() == HttpStatus.SC_PARTIAL_CONTENT) {
+
+						Log.d("CommunityServerAPI",
+								"ATTACHMENT RETRIEVED PARTIALLY : "
+										+ res.getMessage());
+
+						wholeFile.append(res.getArray(), 0,
+								res.getArray().length);
+
+						Log.d("CommunityServerAPI",
+								"AL momento la lunghezza del wholefile e' "
+										+ wholeFile.length());
+
+						if ((att.getSize() - wholeFile.length()) < lenght) {
+
+							offSet = offSet + lenght;
+							Log.d("CommunityServerAPI",
+									"Stoppo il ciclo !!!!!!!! E scrivo il file"
+											+ file.getAbsolutePath());
+
+							res = CommunityServerAPI.getAttachment(
+									att.getAttachmentId(), offSet,
+									(int) (att.getSize() - 1));
+
+							wholeFile.append(res.getArray(), 0,
+									res.getArray().length);
+
+							Log.d("CommunityServerAPI",
+									"AL momento la lunghezza del wholefile e' "
+											+ wholeFile.length()
+											+ "Mentre la lunghezza del attach nel db e' "
+											+ att.getSize());
+
+							FileOutputStream fos = new FileOutputStream(file);
+							fos.write(wholeFile.toByteArray());
+							fos.close();
+
+							cycle = false;
+						}
+						else
+						offSet = offSet + lenght;
+
+					} else {
+
+						Log.d("CommunityServerAPI",
+								"ATTACHMENT NOT RETRIEVED : "
+										+ res.getMessage());
+
+					}
+
 				}
 
 				if (att.getSize() == file.length()) {
@@ -101,12 +172,12 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 				}
 
 			} catch (IOException e) {
-				
-				
-				Log.d("CommunityServerAPI",
-						"ATTACHMENT DO NOT RETRIEVED : " + e.getMessage());
-				
-				System.out.println("IL file sarebbe dovuto esser creato qui : "+file.getAbsolutePath());
+
+				Log.d("CommunityServerAPI", "ATTACHMENT DO NOT RETRIEVED : "
+						+ e.getMessage());
+
+				System.out.println("IL file sarebbe dovuto esser creato qui : "
+						+ file.getAbsolutePath());
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
