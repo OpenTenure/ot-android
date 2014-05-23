@@ -100,6 +100,10 @@
     <string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="up">Up</string>
+    <string name="down">Down</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="new_snapshot">New snapshot</string>

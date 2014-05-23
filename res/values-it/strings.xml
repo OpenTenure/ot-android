@@ -100,6 +100,10 @@
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="up">Su</string>
+    <string name="down">Giù</string>
+    <string name="left">Sinistra</string>
+    <string name="right">Destra</string>
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
     <string name="new_snapshot">Nuova immagine</string>

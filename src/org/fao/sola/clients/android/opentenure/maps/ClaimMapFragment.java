@@ -288,8 +288,10 @@ public class ClaimMapFragment extends Fragment implements
 			}
 
 		}
-
+		
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+			
+			this.map.setOnCameraChangeListener(this);
 			// Allow adding, removing and dragging markers
 
 			this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -384,18 +386,14 @@ public class ClaimMapFragment extends Fragment implements
 
 				@Override
 				public boolean onMarkerClick(final Marker mark) {
-					if (currentProperty.handleMarkerClick(mark, existingProperties)) {
-						return true;
-					} else {
-						return false;
-					}
+					return currentProperty.handleMarkerClick(mark, existingProperties);
 				}
 			});
 		}
 		return mapView;
 
 	}
-
+	
 	public void setMapType(int type) {
 
 		if (tiles != null) {
@@ -572,44 +570,6 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
-
-		Configuration zoom = Configuration
-				.getConfigurationByName(MainMapFragment.MAIN_MAP_ZOOM);
-
-		if (zoom != null) {
-			zoom.setValue("" + cameraPosition.zoom);
-			zoom.update();
-		} else {
-			zoom = new Configuration();
-			zoom.setName(MainMapFragment.MAIN_MAP_ZOOM);
-			zoom.setValue("" + cameraPosition.zoom);
-			zoom.create();
-		}
-
-		Configuration latitude = Configuration
-				.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
-
-		if (latitude != null) {
-			latitude.setValue("" + cameraPosition.target.latitude);
-			latitude.update();
-		} else {
-			latitude = new Configuration();
-			latitude.setName(MainMapFragment.MAIN_MAP_LATITUDE);
-			latitude.setValue("" + cameraPosition.target.latitude);
-			latitude.create();
-		}
-
-		Configuration longitude = Configuration
-				.getConfigurationByName(MainMapFragment.MAIN_MAP_LONGITUDE);
-
-		if (longitude != null) {
-			longitude.setValue("" + cameraPosition.target.longitude);
-			longitude.update();
-		} else {
-			longitude = new Configuration();
-			longitude.setName(MainMapFragment.MAIN_MAP_LONGITUDE);
-			longitude.setValue("" + cameraPosition.target.longitude);
-			longitude.create();
-		}
+		currentProperty.refreshMarkerEditControls();
 	}
 }

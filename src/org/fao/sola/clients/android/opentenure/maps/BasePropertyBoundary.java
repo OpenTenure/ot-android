@@ -144,14 +144,27 @@ public class BasePropertyBoundary {
 	}
 
 	protected void calculateGeometry() {
-
-		GeometryFactory gf = new GeometryFactory();
+		
+		int fakeCoords = 1;
 
 		if (vertices == null || vertices.size() <= 0) {
 			return;
 		}
+		if (vertices.size() <= 1) {
+			center = vertices.get(0).getMapPosition();
+			bounds = new LatLngBounds(center, center);
+			return;
+		}
 
-		Coordinate[] coords = new Coordinate[vertices.size() + 1];
+		GeometryFactory gf = new GeometryFactory();
+
+		if (vertices.size() <= 2) {
+			// need at least four coordinates for a closed polygon with three vertices
+			fakeCoords = 2;
+		}
+
+		Coordinate[] coords = new Coordinate[vertices.size() + fakeCoords];
+
 		int i = 0;
 
 		for (Vertex vertex : vertices) {
@@ -159,8 +172,14 @@ public class BasePropertyBoundary {
 					vertex.getMapPosition().latitude);
 		}
 
+		if (vertices.size() <= 2) {
+			coords[i++] = new Coordinate(vertices.get(1).getMapPosition().longitude,
+					vertices.get(1).getMapPosition().latitude);
+		}
+
 		coords[i] = new Coordinate(vertices.get(0).getMapPosition().longitude,
 				vertices.get(0).getMapPosition().latitude);
+
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(3857);
 
