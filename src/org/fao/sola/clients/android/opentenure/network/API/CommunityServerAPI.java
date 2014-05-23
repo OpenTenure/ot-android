@@ -376,7 +376,8 @@ public class CommunityServerAPI {
 
 	}
 
-	public static GetAttachmentResponse getAttachment(String attachmentId) {
+	public static GetAttachmentResponse getAttachment(String attachmentId,
+			int start, int offset) {
 
 		GetAttachmentResponse methodResponse = new GetAttachmentResponse();
 
@@ -387,7 +388,14 @@ public class CommunityServerAPI {
 				CommunityServerAPIUtilities.HTTPS_GETATTACHMENT, attachmentId);
 		HttpGet request = new HttpGet(url);
 
-		request.setHeader("Range", "bytes=0-1000");
+		/*Retrieve the attachment partially*/
+		if (offset > start)
+			request.setHeader("Range", "bytes=" + start + "-" + offset);
+		
+		Log.d("CommunityServerAPI", "bytes=" + start + "-" + offset);
+		
+		
+		System.out.println(request.toString());
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
@@ -422,9 +430,35 @@ public class CommunityServerAPI {
 
 				return methodResponse;
 
+			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_PARTIAL_CONTENT)) {
+
+				byte[] byteArray = CommunityServerAPIUtilities.slurp(response
+						.getEntity().getContent(), 1024);
+
+				Log.d("CommunityServerAPI",
+						"ATTACHMENT partially retrieved. Size : "
+								+ byteArray.length);
+
+				methodResponse.setArray(byteArray);
+				methodResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+				methodResponse.setMessage(response.getStatusLine()
+						.getReasonPhrase());
+				return methodResponse;
+			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_NOT_FOUND)) {
+
+				Log.d("CommunityServerAPI", "ATTACHMENT NOT FOUND. Size ");
+
+				methodResponse.setArray(null);
+				methodResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+				methodResponse.setMessage(response.getStatusLine()
+						.getReasonPhrase());
+				return methodResponse;
+
 			} else {
 
-				Log.d("CommunityServerAPI", "ATTACHMENT not retrieved ");
+				Log.d("CommunityServerAPI", "ATTACHMENT NOT RETRIEVED.");
 
 				methodResponse.setArray(null);
 				methodResponse.setHttpStatusCode(response.getStatusLine()
@@ -546,8 +580,7 @@ public class CommunityServerAPI {
 		} catch (Throwable ex) {
 
 			Log.d("CommunityServerAPI",
-					"saveAttachment Error quite huge !!!!!!!!! "
-							+ ex.getMessage());
+					"saveAttachment Error " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 		}

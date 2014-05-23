@@ -45,8 +45,8 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/en-us/claim/getClaim/%s";
 	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/en-us/claim/getClaim/%s";
 
-	public static final String HTTPS_GETATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/getAttachmentFile/%s";
-	public static final String HTTP_GETATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/getAttachmentFile/%s";
+	public static final String HTTPS_GETATTACHMENT = "https://ot.flossola.org/claim/getAttachment?id=%s";
+	public static final String HTTP_GETATTACHMENT = "http://ot.flossola.org/claim/getAttachment?id=%s";
 
 	public static final String HTTPS_SAVECLAIM = "https://ot.flossola.org/ws/en-us/claim/saveClaim";
 	public static final String HTTP_SAVECLAIM = "http://ot.flossola.org/ws/en-us/claim/saveClaim";
