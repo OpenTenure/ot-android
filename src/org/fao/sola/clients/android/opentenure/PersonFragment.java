@@ -68,6 +68,7 @@ public class PersonFragment extends Fragment {
 	File personPictureFile;
 	Menu menu;
 	ImageView claimantImageView;
+	boolean allowSave = true;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -94,7 +95,7 @@ public class PersonFragment extends Fragment {
 
 		inflater.inflate(R.menu.person, menu);
 
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || !allowSave){
 			menu.removeItem(R.id.action_save);
 		}
 
@@ -188,6 +189,35 @@ public class PersonFragment extends Fragment {
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(person.getContactPhoneNumber());
+
+		if (person.hasUploadedClaims()) {
+			((EditText) rootView.findViewById(R.id.first_name_input_field))
+					.setFocusable(false);
+			((EditText) rootView.findViewById(R.id.last_name_input_field))
+					.setFocusable(false);
+			((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
+					.setFocusable(false);
+			((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
+					.setOnClickListener(null);
+			((EditText) rootView.findViewById(R.id.place_of_birth_input_field))
+					.setFocusable(false);
+			((EditText) rootView.findViewById(R.id.postal_address_input_field))
+					.setFocusable(false);
+			((EditText) rootView.findViewById(R.id.email_address_input_field))
+					.setFocusable(false);
+			((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
+					.setClickable(false);
+			((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
+					.setClickable(false);
+			((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
+					.setFocusable(false);
+			((EditText) rootView
+					.findViewById(R.id.contact_phone_number_input_field))
+					.setFocusable(false);
+			allowSave = false;
+			getActivity().invalidateOptionsMenu();
+		}
+
 		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
 		claimantImageView.setImageBitmap(Person.getPersonPicture(
 				rootView.getContext(), personPictureFile, 128));

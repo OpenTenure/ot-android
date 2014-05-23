@@ -70,7 +70,7 @@ public class ClaimAdditionalInfoListAdapter extends ArrayAdapter<String> {
 	    id.setTextSize(8);
 	    id.setText(ids.get(position));
 
-	    if (mode.compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+	    if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
 	    	ImageView picture = (ImageView) rowView.findViewById(R.id.remove_icon);
 

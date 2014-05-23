@@ -86,7 +86,8 @@ public class ChallengingClaimsFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0){
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+			
 
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);

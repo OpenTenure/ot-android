@@ -116,11 +116,13 @@ public class ClaimDocumentsFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_documents, menu);
+		
+		//
 
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
-			menu.removeItem(R.id.action_new_picture);
-			menu.removeItem(R.id.action_new_attachment);
-		}
+//		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+//			menu.removeItem(R.id.action_new_picture);
+//			menu.removeItem(R.id.action_new_attachment);
+//		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}

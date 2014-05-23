@@ -97,7 +97,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 					R.color.status_uploading));
 		}
 
-		if (mode.compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
 			ImageView picture = (ImageView) rowView
 					.findViewById(R.id.remove_icon);

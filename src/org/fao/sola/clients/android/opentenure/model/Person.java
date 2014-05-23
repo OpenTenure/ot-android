@@ -63,6 +63,93 @@ public class Person {
 	public void setPlaceOfBirth(String placeOfBirth) {
 		this.placeOfBirth = placeOfBirth;
 	}
+	
+	public boolean hasUploadedClaims(){
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		boolean result = false;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created'");
+			statement.setString(1, personId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static boolean hasUploadedClaims(String personId){
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		boolean result = false;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created'");
+			statement.setString(1, personId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				result = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
 
 	public Person() {
 		this.personId = UUID.randomUUID().toString();

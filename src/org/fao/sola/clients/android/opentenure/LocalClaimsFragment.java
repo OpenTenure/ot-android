@@ -152,15 +152,20 @@ public class LocalClaimsFragment extends ListFragment {
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			intent.putExtra(ClaimActivity.CLAIM_ID_KEY,
-					((TextView) v.findViewById(R.id.claim_id)).getText());
-			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
-					.toString());
+			String claimId = ((TextView) v.findViewById(R.id.claim_id)).getText().toString();
+			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimId);
+			Claim claim = Claim.getClaim(claimId);
+			if(!claim.getStatus().equalsIgnoreCase(ClaimStatus._CREATED)){
+				intent.putExtra(ClaimActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
+			}else{
+				intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
+						.toString());
+			}
 			startActivityForResult(intent, CLAIM_RESULT);
 		} else {
 			Intent resultIntent = new Intent();
-			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY,
-					((TextView) v.findViewById(R.id.claim_id)).getText());
+			String claimId = ((TextView) v.findViewById(R.id.claim_id)).getText().toString();
+			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimId);
 			getActivity().setResult(
 					SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT,
 					resultIntent);

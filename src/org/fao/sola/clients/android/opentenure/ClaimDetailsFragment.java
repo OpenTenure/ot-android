@@ -97,7 +97,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0) {
+//		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			MenuItem itemIn;
 			MenuItem itemOut;
 
@@ -125,7 +125,7 @@ public class ClaimDetailsFragment extends Fragment {
 				itemOut.setVisible(false);
 			}
 
-		}
+//		}
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -134,14 +134,14 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.claim_details, menu);
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			menu.removeItem(R.id.action_save);
-			menu.removeItem(R.id.action_submit);
-			menu.removeItem(R.id.action_export);
-			menu.removeItem(R.id.action_login);
-			menu.removeItem(R.id.action_logout);
-			menu.removeItem(R.id.action_print);
-		}
+//		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+//			menu.removeItem(R.id.action_save);
+//			menu.removeItem(R.id.action_submit);
+//			menu.removeItem(R.id.action_export);
+//			menu.removeItem(R.id.action_login);
+//			menu.removeItem(R.id.action_logout);
+//			menu.removeItem(R.id.action_print);
+//		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -180,7 +180,7 @@ public class ClaimDetailsFragment extends Fragment {
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
 		preload();
-		loadClaim(Claim.getClaim(claimActivity.getClaimId()));
+		load(Claim.getClaim(claimActivity.getClaimId()));
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			((View) rootView.findViewById(R.id.claimant))
@@ -293,7 +293,7 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	private void loadClaim(Claim claim) {
+	private void load(Claim claim) {
 
 		if (claim != null) {
 
