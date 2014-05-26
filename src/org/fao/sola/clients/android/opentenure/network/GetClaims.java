@@ -75,6 +75,8 @@ public class GetClaims {
 			List<org.fao.sola.clients.android.opentenure.model.Attachment> attachmentsDB = new ArrayList<org.fao.sola.clients.android.opentenure.model.Attachment>();
 			List<org.fao.sola.clients.android.opentenure.model.AdditionalInfo> additionalInfoDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.AdditionalInfo>();
 
+			org.fao.sola.clients.android.opentenure.model.Claim claimDB = new org.fao.sola.clients.android.opentenure.model.Claim();
+
 			/*
 			 * Temporary disable
 			 */
@@ -99,6 +101,45 @@ public class GetClaims {
 			//
 			// }
 			// }
+
+			/*
+			 * First of all che if claim is challenged In case of challenge,
+			 * need to download ad save the claim challenging
+			 * 
+			 * 
+			 * 
+			 * 
+			 * We should set the challenged claim but if is not in the right
+			 * order it will be there a problem
+			 */
+
+			if (downloadedClaim.getChallengedClaimId() != null
+					&& !downloadedClaim.getChallengedClaimId().equals("")) {
+
+				/*
+				 * Check if the claim is already present locally
+				 */
+				org.fao.sola.clients.android.opentenure.model.Claim challenged = org.fao.sola.clients.android.opentenure.model.Claim
+						.getClaim(downloadedClaim.getChallengedClaimId());
+				if (challenged == null) {
+
+					/*
+					 * here the case in which the claim challenged is not
+					 * already present locally
+					 */
+					
+					//Claim downloadedClaim = CommunityServerAPI.getClaim(downloadedClaim.getChallengedClaimId());
+
+				} else {
+
+					claimDB.setChallengedClaim(org.fao.sola.clients.android.opentenure.model.Claim
+							.getClaim(downloadedClaim.getChallengedClaimId()));
+
+				}
+
+			}
+
+
 			Claimant claimant = downloadedClaim.getClaimant();
 
 			Person person = new Person();
@@ -142,17 +183,8 @@ public class GetClaims {
 				// person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 				person.setPostalAddress(claimant.getAddress());
 
-				org.fao.sola.clients.android.opentenure.model.Claim claimDB = new org.fao.sola.clients.android.opentenure.model.Claim();
-
 				claimDB.setAttachments(attachmentsDB);
 
-				/***
-				 * 
-				 * We should set the challenged claim but if is not in the right
-				 * order it will be there a problem
-				 * 
-				 **/
-				// claimDB.setChallengedClaim(org.fao.sola.clients.android.opentenure.model.Claim.getClaim(claim.getChallengedClaimId()));
 				claimDB.setClaimId(downloadedClaim.getId());
 				claimDB.setAdditionalInfo(additionalInfoDBList);
 				claimDB.setName(downloadedClaim.getDescription());

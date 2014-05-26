@@ -35,7 +35,10 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.util.ByteArrayBuffer;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.MD5;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 
@@ -51,6 +54,9 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 		/*
 		 * Check if the file already exists
 		 */
+		GetAttachmentResponse res = null;
+		int lenght = 100000; /* Should be setted by property */
+		long offSet = 0;
 
 		Attachment att = Attachment.getAttachment(params[1]);
 
@@ -58,128 +64,109 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 				FileSystemUtilities.getAttachmentFolder(params[0]),
 				att.getFileName());
 
-		if (file.exists()) {
+		try {
 
-			/*
-			 * Here will be the implementation in case of a partial file
-			 */
-
-		}
-
-		else {
-			try {
-
-				System.out.println("Sto per creare questo File :"
-						+ file.getAbsolutePath());
-
-				System.out.println("La cartella in cui lo creo sarebbe "
-						+ FileSystemUtilities.getAttachmentFolder(params[0])
-								.getAbsolutePath()
-						+ " e soprattutto esiste : "
-						+ FileSystemUtilities.getAttachmentFolder(params[0])
-								.exists()
-						+ "ed e'una dir : "
-						+ FileSystemUtilities.getAttachmentFolder(params[0])
-								.isDirectory());
-
+			if (file.exists()) {
+				offSet = file.length();
+			} else
 				file.createNewFile();
 
-				/* Here I need a cycle */
-				boolean cycle = true;
+			/* Here I need a cycle */
+			boolean cycle = true;
 
-				int lenght = 1000;
-				int offSet = 0;
+			while (file.length() < att.getSize()) {
 
-				ByteArrayBuffer wholeFile = new ByteArrayBuffer(offSet);
+				if ((att.getSize() - file.length()) < lenght)
+					lenght = (int) (att.getSize() - file.length());
 
-				while (cycle) {
+				res = CommunityServerAPI.getAttachment(att.getAttachmentId(),
+						offSet, lenght + offSet - 1);
 
-					GetAttachmentResponse res = CommunityServerAPI
-							.getAttachment(att.getAttachmentId(), offSet,
-									lenght + offSet - 1);
+				if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
 
-					if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
-						FileOutputStream fos = new FileOutputStream(file);
-						fos.write(res.getArray());
-						fos.close();
+					FileOutputStream fos = new FileOutputStream(file);
+					fos.write(res.getArray());
+					fos.close();
 
-						cycle = false;
+					cycle = false;
 
-					} else if (res.getHttpStatusCode() == HttpStatus.SC_PARTIAL_CONTENT) {
+				} else if (res.getHttpStatusCode() == HttpStatus.SC_PARTIAL_CONTENT) {
 
-						Log.d("CommunityServerAPI",
-								"ATTACHMENT RETRIEVED PARTIALLY : "
-										+ res.getMessage());
+					Log.d("CommunityServerAPI",
+							"ATTACHMENT RETRIEVED PARTIALLY : "
+									+ res.getMessage());
 
-						wholeFile.append(res.getArray(), 0,
-								res.getArray().length);
+					FileOutputStream fos = new FileOutputStream(file, true);
+					fos.write(res.getArray());
+					fos.close();
 
-						Log.d("CommunityServerAPI",
-								"AL momento la lunghezza del wholefile e' "
-										+ wholeFile.length());
+					Log.d("CommunityServerAPI",
+							"AL momento la lunghezza del file e' "
+									+ file.length());
+					offSet = offSet + lenght;
 
-						if ((att.getSize() - wholeFile.length()) < lenght) {
+				} else if (res.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 
-							offSet = offSet + lenght;
-							Log.d("CommunityServerAPI",
-									"Stoppo il ciclo !!!!!!!! E scrivo il file"
-											+ file.getAbsolutePath());
+					Log.d("CommunityServerAPI", "ATTACHMENT NOT RETRIEVED : "
+							+ res.getMessage());
 
-							res = CommunityServerAPI.getAttachment(
-									att.getAttachmentId(), offSet,
-									(int) (att.getSize() - 1));
-
-							wholeFile.append(res.getArray(), 0,
-									res.getArray().length);
-
-							Log.d("CommunityServerAPI",
-									"AL momento la lunghezza del wholefile e' "
-											+ wholeFile.length()
-											+ "Mentre la lunghezza del attach nel db e' "
-											+ att.getSize());
-
-							FileOutputStream fos = new FileOutputStream(file);
-							fos.write(wholeFile.toByteArray());
-							fos.close();
-
-							cycle = false;
-						}
-						else
-						offSet = offSet + lenght;
-
-					} else {
-
-						Log.d("CommunityServerAPI",
-								"ATTACHMENT NOT RETRIEVED : "
-										+ res.getMessage());
-
-					}
-
-				}
-
-				if (att.getSize() == file.length()) {
-
-					att.setPath(file.getAbsolutePath());
-
+					att.setStatus(AttachmentStatus._DOWNLOAD_FAILED);
 					Attachment.updateAttachment(att);
+
+					break;
 
 				} else {
 
-					att.setPath(file.getAbsolutePath());
+					Log.d("CommunityServerAPI", "ATTACHMENT NOT RETRIEVED : "
+							+ res.getMessage());
 
-					Attachment.updateAttachment(att);
+					if (file.length() >= lenght) {
 
+						att.setStatus(AttachmentStatus._DOWNLOAD_INCOMPLETE);
+						Attachment.updateAttachment(att);
+					} else {
+						att.setStatus(AttachmentStatus._DOWNLOAD_FAILED);
+						Attachment.updateAttachment(att);
+						file.delete();
+					}
+					break;
 				}
 
-			} catch (IOException e) {
+			}
 
-				Log.d("CommunityServerAPI", "ATTACHMENT DO NOT RETRIEVED : "
-						+ e.getMessage());
+			if (att.getSize() == file.length()
+					&& MD5.checkMD5(res.getMd5(), file)) {
 
-				System.out.println("IL file sarebbe dovuto esser creato qui : "
-						+ file.getAbsolutePath());
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				att.setPath(file.getAbsolutePath());
+				att.setStatus(AttachmentStatus._UPLOADED);
+				Attachment.updateAttachment(att);
+
+			} else if(! att.getStatus().equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
+
+				Log.d("CommunityServerAPI",
+						"ATTACHMENT DOES NOT MATCH SIZE OR MD5");
+				att.setStatus(AttachmentStatus._DOWNLOAD_FAILED);
+
+				Attachment.updateAttachment(att);
+				file.delete();
+
+			}
+
+		} catch (IOException e) {
+
+			Log.d("CommunityServerAPI",
+					"ATTACHMENT DO NOT RETRIEVED - ERROR OCCURRED : "
+							+ e.getMessage());
+
+			e.printStackTrace();
+
+			if (file.length() >= lenght) {
+
+				att.setStatus(AttachmentStatus._DOWNLOAD_FAILED);
+				Attachment.updateAttachment(att);
+
+				file.delete();
+
 			}
 
 		}

@@ -34,6 +34,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
+import android.util.Log;
+
 public class CommunityServerAPIUtilities {
 
 	public static final String HTTP_LOGIN = "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
@@ -88,6 +90,8 @@ public class CommunityServerAPIUtilities {
 
 	public static byte[] slurp(final InputStream is, final int bufferSize)
 			throws IOException {
+		
+				
 		// this dynamically extends to take the bytes you read
 		ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
 
@@ -100,8 +104,8 @@ public class CommunityServerAPIUtilities {
 		while ((len = is.read(buffer)) != -1) {
 			byteBuffer.write(buffer, 0, len);
 		}
-
 		// and then we can return your byte array.
+		System.out.println("SIZE BYTE BUFFER : " + byteBuffer.size());
 		return byteBuffer.toByteArray();
 	}
 
