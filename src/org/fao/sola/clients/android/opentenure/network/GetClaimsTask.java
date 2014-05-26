@@ -27,17 +27,11 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-import org.fao.sola.clients.android.opentenure.LocalClaimsFragment;
+
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
-
-import android.app.Activity;
 import android.os.AsyncTask;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
@@ -66,7 +60,7 @@ public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
 		} else {
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_claims_downloaded, Toast.LENGTH_SHORT);
+					R.string.message_error_downloading_claims, Toast.LENGTH_SHORT);
 			toast.show();
 		}
 

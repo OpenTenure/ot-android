@@ -48,345 +48,329 @@ import android.util.Log;
 
 public class FileSystemUtilities {
 
-
 	private static String _CLAIMS_FOLDER = "claims";
 	private static String _CLAIMANTS_FOLDER = "claimants";
 	private static String _CLAIM_PREFIX = "claim_";
 	private static String _CLAIMANT_PREFIX = "claimant_";
 	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
-	
-
-
 
 	/**
 	 * 
-	 * Create the folder that contains all the cliams under the application file system
+	 * Create the folder that contains all the cliams under the application file
+	 * system
 	 * 
 	 * */
 
-	public static boolean createClaimsFolder(){
+	public static boolean createClaimsFolder() {
 
-
-		if(isExternalStorageWritable()){		
+		if (isExternalStorageWritable()) {
 
 			try {
-				Context context = OpenTenureApplication.getContext();	
-				File appFolder = context.getExternalFilesDir(null);				
-				new File(appFolder, _CLAIMS_FOLDER).mkdir();				
-				File claimsFolder = new File(appFolder.getAbsoluteFile()+File.separator+_CLAIMS_FOLDER);
+				Context context = OpenTenureApplication.getContext();
+				File appFolder = context.getExternalFilesDir(null);
+				new File(appFolder, _CLAIMS_FOLDER).mkdir();
+				File claimsFolder = new File(appFolder.getAbsoluteFile()
+						+ File.separator + _CLAIMS_FOLDER);
 
-				if(claimsFolder.exists() && claimsFolder.isDirectory())
+				if (claimsFolder.exists() && claimsFolder.isDirectory())
 					return true;
 				else
 					return false;
 
-			} catch (Exception e) {					
+			} catch (Exception e) {
 				return false;
-			}			
+			}
+		} else {
+			return false;
 		}
-		else {
-			return false;			
-		}		
 
 	}
-
-
 
 	/**
 	 * 
-	 * Create the OpenTenure folder under the the public file system 
-	 * Here will be exported the compressed claim
+	 * Create the OpenTenure folder under the the public file system Here will
+	 * be exported the compressed claim
 	 * 
 	 * **/
 
-	public static boolean createOpenTenureFolder(){
+	public static boolean createOpenTenureFolder() {
 
+		if (isExternalStorageWritable()) {
 
-		if(isExternalStorageWritable()){
+			File path = Environment
+					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+			File ot = new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
 
-			File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);			
-			File ot = new File(path.getParentFile(),_OPEN_TENURE_FOLDER);		
+			if (ot.mkdir() && ot.isDirectory()) {
 
-			if (ot.mkdir() && ot.isDirectory()){
-				
-				Log.d("FileSystemUtilities","Created Open Tenure Folder");
+				Log.d("FileSystemUtilities", "Created Open Tenure Folder");
 				return true;
-			}		
-			return false;					
+			}
+			return false;
 		}
 
-		else return false;
+		else
+			return false;
 
 	}
 
+	public static boolean createClaimantsFolder() {
 
-
-	public static boolean createClaimantsFolder(){
-
-
-		if(isExternalStorageWritable()){		
+		if (isExternalStorageWritable()) {
 
 			try {
-				Context context = OpenTenureApplication.getContext();	
-				File appFolder = context.getExternalFilesDir(null);				
-				new File(appFolder, _CLAIMANTS_FOLDER).mkdir();				
-				File claimantsFolder = new File(appFolder.getAbsoluteFile()+File.separator+_CLAIMANTS_FOLDER);
+				Context context = OpenTenureApplication.getContext();
+				File appFolder = context.getExternalFilesDir(null);
+				new File(appFolder, _CLAIMANTS_FOLDER).mkdir();
+				File claimantsFolder = new File(appFolder.getAbsoluteFile()
+						+ File.separator + _CLAIMANTS_FOLDER);
 
-				if(claimantsFolder.exists() && claimantsFolder.isDirectory())
+				if (claimantsFolder.exists() && claimantsFolder.isDirectory())
 					return true;
 				else
 					return false;
 
-			} catch (Exception e) {					
+			} catch (Exception e) {
 				return false;
-			}			
+			}
+		} else {
+			return false;
 		}
-		else {
-			return false;			
-		}		
 
 	}
 
-
-
-	public static boolean createClaimFileSystem(String claimID){
+	public static boolean createClaimFileSystem(String claimID) {
 
 		File claimFolder = null;
-		File claimsFolder = null;		
+		File claimsFolder = null;
 
 		try {
 
 			claimsFolder = getClaimsFolder();
 
-			new File(claimsFolder,_CLAIM_PREFIX+claimID).mkdir();
+			new File(claimsFolder, _CLAIM_PREFIX + claimID).mkdir();
 
-			claimFolder = new File(claimsFolder,_CLAIM_PREFIX+claimID);
-					
+			claimFolder = new File(claimsFolder, _CLAIM_PREFIX + claimID);
+
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 
-			Log.d("FileSystemUtilities","Claim File System created " + claimFolder.getAbsolutePath());
+			Log.d("FileSystemUtilities", "Claim File System created "
+					+ claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities","Error creating the file system of the claim!!!");		
-			return false ;
+			Log.d("FileSystemUtilities",
+					"Error creating the file system of the claim!!!");
+			return false;
 		}
 
-		return( new File(claimFolder,_ATTACHMENT_FOLDER).
-				exists()
-				);		
+		return (new File(claimFolder, _ATTACHMENT_FOLDER).exists());
 	}
 
-
-	public static boolean createClaimantFolder(String personId){
+	public static boolean createClaimantFolder(String personId) {
 
 		try {
-			new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).mkdir();
+			new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId).mkdir();
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities","Error creating the file system of the claim: " + e.getMessage());
-			return false ;
+			Log.d("FileSystemUtilities",
+					"Error creating the file system of the claim: "
+							+ e.getMessage());
+			return false;
 		}
 
-		return new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId).exists();		
+		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId)
+				.exists();
 	}
 
-	public static void delete(File file)
-			throws IOException{
+	public static void delete(File file) throws IOException {
 
-		if(file.isDirectory()){
+		if (file.isDirectory()) {
 
-			//directory is empty, then delete it
-			if(file.list().length==0){
+			// directory is empty, then delete it
+			if (file.list().length == 0) {
 
 				file.delete();
-				Log.d("FileSystemUtilities","Directory is deleted : " 
-						+ file.getAbsolutePath());
+				Log.d("FileSystemUtilities",
+						"Directory is deleted : " + file.getAbsolutePath());
 
-			}else{
+			} else {
 
-				//list all the directory contents
+				// list all the directory contents
 				String files[] = file.list();
 
 				for (String temp : files) {
-					//construct the file structure
+					// construct the file structure
 					File fileDelete = new File(file, temp);
 
-					//recursive delete
+					// recursive delete
 					delete(fileDelete);
 				}
 
-				//check the directory again, if empty then delete it
-				if(file.list().length==0){
+				// check the directory again, if empty then delete it
+				if (file.list().length == 0) {
 					file.delete();
-					Log.d("FileSystemUtilities","Directory is deleted : " 
+					Log.d("FileSystemUtilities", "Directory is deleted : "
 							+ file.getAbsolutePath());
 				}
 			}
 
-		}else{
-			//if file, then delete it
+		} else {
+			// if file, then delete it
 			file.delete();
-			Log.d("FileSystemUtilities","File is deleted : " + file.getAbsolutePath());
+			Log.d("FileSystemUtilities",
+					"File is deleted : " + file.getAbsolutePath());
 		}
 	}
-	
-	
-	public static void deleteCompressedClaim(String claimID)
-			throws IOException{
-		
-		File oldZip = new File(FileSystemUtilities.getOpentenureFolder().getAbsolutePath()+File.separator+"Claim_"+claimID+".zip");		
-		delete(oldZip);		
+
+	public static void deleteCompressedClaim(String claimID) throws IOException {
+
+		File oldZip = new File(FileSystemUtilities.getOpentenureFolder()
+				.getAbsolutePath()
+				+ File.separator
+				+ "Claim_"
+				+ claimID
+				+ ".zip");
+		delete(oldZip);
 	}
 
-	public static boolean removeClaimantFolder(String personId){
+	public static boolean removeClaimantFolder(String personId) {
 
 		try {
-			delete(new File(getClaimantsFolder(),_CLAIMANT_PREFIX+personId));		
+			delete(new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId));
 		} catch (Exception e) {
 			return false;
 		}
-		return true;		
+		return true;
 	}
 
+	public static File getClaimsFolder() {
 
-	public static File getClaimsFolder(){
-
-		Context context = OpenTenureApplication.getContext();	
-		File appFolder = context.getExternalFilesDir(null);				
+		Context context = OpenTenureApplication.getContext();
+		File appFolder = context.getExternalFilesDir(null);
 		return new File(appFolder, _CLAIMS_FOLDER);
 
 	}
 
-	public static File getClaimantsFolder(){
+	public static File getClaimantsFolder() {
 
-		Context context = OpenTenureApplication.getContext();	
-		File appFolder = context.getExternalFilesDir(null);				
+		Context context = OpenTenureApplication.getContext();
+		File appFolder = context.getExternalFilesDir(null);
 		return new File(appFolder, _CLAIMANTS_FOLDER);
 
 	}
 
-
-	public static File getClaimFolder(String claimID){		
+	public static File getClaimFolder(String claimID) {
 		return new File(getClaimsFolder(), _CLAIM_PREFIX + claimID);
 	}
 
-
-	public static File getClaimantFolder(String personId){		
+	public static File getClaimantFolder(String personId) {
 		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId);
 	}
 
-
-	public static File getAttachmentFolder(String claimID){		
+	public static File getAttachmentFolder(String claimID) {
 		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);
 	}
-	
-	public static File getOpentenureFolder(){		
-		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);		
-		return new File(path.getParentFile(),_OPEN_TENURE_FOLDER);
+
+	public static File getOpentenureFolder() {
+		File path = Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		return new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
 	}
 
-
-
-	public static File copyFileInAttachFolder(String claimID,File source){
+	public static File copyFileInAttachFolder(String claimID, File source) {
 
 		File dest = null;
 
 		try {
 
-			dest = new File(getAttachmentFolder(claimID),source.getName());		
+			dest = new File(getAttachmentFolder(claimID), source.getName());
 			dest.createNewFile();
 
-			Log.d("FileSystemUtilities",dest.getAbsolutePath());
+			Log.d("FileSystemUtilities", dest.getAbsolutePath());
 			byte[] buffer = new byte[1024];
 
 			FileInputStream reader = new FileInputStream(source);
 			FileOutputStream writer = new FileOutputStream(dest);
 
-			BufferedInputStream br= new BufferedInputStream(reader);
+			BufferedInputStream br = new BufferedInputStream(reader);
 
-
-			while( (br.read(buffer) ) != -1 ) {
-				writer.write(buffer); 
+			while ((br.read(buffer)) != -1) {
+				writer.write(buffer);
 			}
 
-			reader.close(); 
+			reader.close();
 			writer.close();
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return dest;
 	}
-	
-	public static String getJsonClaim(String claimId){
+
+	public static String getJsonClaim(String claimId) {
 		try {
-			
-			File folder = getClaimFolder(claimId);			
-			FileInputStream fis = new FileInputStream(folder+File.separator+"claim.json");
+
+			File folder = getClaimFolder(claimId);
+			FileInputStream fis = new FileInputStream(folder + File.separator
+					+ "claim.json");
 			return CommunityServerAPIUtilities.Slurp(fis, 100);
-						
+
 		} catch (Exception e) {
-			System.out.println("Error reading claim.json :" + e.getStackTrace());
+			Log.d("FileSystemUtilities",
+					"Error reading claim.json :" + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
-	
-	public static String getJsonAttachment(String attachmentId){
+
+	public static String getJsonAttachment(String attachmentId) {
 		try {
-			
+
 			Attachment attach = Attachment.getAttachment(attachmentId);
 			org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attachment = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
-			
-			
+
 			String extension = "";
 
 			int i = attach.getPath().lastIndexOf('.');
 			if (i > 0) {
-			    extension = attach.getPath().substring(i+1);
+				extension = attach.getPath().substring(i + 1);
 			}
-			
+
 			attachment.setDescription(attach.getDescription());
-			
-			
+
 			/*
 			 * 
 			 * Temporary solution for typeCode
-			 * 
-			 * 
-			 * */			
+			 */
 			attachment.setTypeCode(matchTypeCode(extension));
-			
-								
+
 			attachment.setFileName(attach.getFileName());
 			attachment.setId(attachmentId);
 			attachment.setMd5(attach.getMD5Sum());
 			attachment.setMimeType(attach.getMimeType());
 			attachment.setSize(attach.getSize());
 			attachment.setFileExtension(extension);
-			
-			
-			Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+
+			Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
+					.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+					.create();
 			return gson.toJson(attachment);
-						
+
 		} catch (Exception e) {
-			System.out.println("Error reading creating Attachment json :" + e.getStackTrace());
+			Log.d("FileSystemUtilities",
+					"Error reading creating Attachment json :" + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
-	
-
-
-
 
 	protected static boolean isExternalStorageWritable() {
 		String state = Environment.getExternalStorageState();
@@ -395,25 +379,23 @@ public class FileSystemUtilities {
 		}
 		return false;
 	}
-	
-	protected static String matchTypeCode(String original){
-		
-		if(original.equals("pdf"))
+
+	protected static String matchTypeCode(String original) {
+
+		if (original.equals("pdf"))
 			return "pdf";
-		else if(original.equals("jpg") || original.equals("jpeg"))
+		else if (original.equals("jpg") || original.equals("jpeg"))
 			return "jpg";
-		else if(original.equals("tiff") || original.equals("tif"))
+		else if (original.equals("tiff") || original.equals("tif"))
 			return original;
-		else if(original.equals("mpeg") || original.equals("avi"))
+		else if (original.equals("mpeg") || original.equals("avi"))
 			return "standardDocument";
-		else if (original.equals("doc") || original.equals("docx") || original.equals("xlsb") || original.equals("xlsb") )
+		else if (original.equals("doc") || original.equals("docx")
+				|| original.equals("xlsb") || original.equals("xlsb"))
 			return "standardDocument";
-		
+
 		return "standardDocument";
-		
+
 	}
-
-
-
 
 }

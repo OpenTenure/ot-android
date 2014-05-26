@@ -94,7 +94,7 @@ public class JsonUtilities {
 			// tempClaim.setChallengedClaim(null);
 			tempClaim.setDescription(claim.getName());
 			tempClaim
-					.setChallenged_id_claim(claim.getChallengedClaim() != null ? claim
+					.setChallengedClaimId(claim.getChallengedClaim() != null ? claim
 							.getChallengedClaim().getClaimId() : null);
 			tempClaim.setId(claimId);
 			tempClaim.setStatusCode(claim.getStatus());

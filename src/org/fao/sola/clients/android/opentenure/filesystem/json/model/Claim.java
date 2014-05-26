@@ -73,13 +73,7 @@ public class Claim {
 		this.id = id;
 	}
 
-	public String getChallenged_id_claim() {
-		return challengedClaimId;
-	}
 
-	public void setChallenged_id_claim(String challengedClaimId) {
-		this.challengedClaimId = challengedClaimId;
-	}
 
 	public org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant getPerson() {
 		return claimant;
@@ -165,6 +159,8 @@ public class Claim {
 	public void setGpsGeometry(String gpsGeometry) {
 		this.gpsGeometry = gpsGeometry;
 	}
+
+
 
 	public String getChallengedClaimId() {
 		return challengedClaimId;

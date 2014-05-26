@@ -377,7 +377,7 @@ public class CommunityServerAPI {
 	}
 
 	public static GetAttachmentResponse getAttachment(String attachmentId,
-			int start, int offset) {
+			long start, long offset) {
 
 		GetAttachmentResponse methodResponse = new GetAttachmentResponse();
 
@@ -393,9 +393,6 @@ public class CommunityServerAPI {
 			request.setHeader("Range", "bytes=" + start + "-" + offset);
 		
 		Log.d("CommunityServerAPI", "bytes=" + start + "-" + offset);
-		
-		
-		System.out.println(request.toString());
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
@@ -427,11 +424,21 @@ public class CommunityServerAPI {
 						.getStatusCode());
 				methodResponse.setMessage(response.getStatusLine()
 						.getReasonPhrase());
+				methodResponse.setMd5(response.getHeaders("ETag")[0].getValue());
 
 				return methodResponse;
 
 			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_PARTIAL_CONTENT)) {
 
+				
+				org.apache.http.Header[] headers = response.getAllHeaders();
+
+				for (int i = 0; i < headers.length; i++) {
+
+					Log.d("CommunityServerAPI","HEADER : " + headers[i].getName() + " "
+							+ headers[i].getValue());
+				}
+				
 				byte[] byteArray = CommunityServerAPIUtilities.slurp(response
 						.getEntity().getContent(), 1024);
 
@@ -444,6 +451,7 @@ public class CommunityServerAPI {
 						.getStatusCode());
 				methodResponse.setMessage(response.getStatusLine()
 						.getReasonPhrase());
+				methodResponse.setMd5(response.getHeaders("ETag")[0].getValue());
 				return methodResponse;
 			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_NOT_FOUND)) {
 

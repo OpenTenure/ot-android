@@ -30,6 +30,15 @@ package org.fao.sola.clients.android.opentenure.network.response;
 public class GetAttachmentResponse extends ApiResponse{
 	
 	byte[] array;
+	String md5;
+
+	public String getMd5() {
+		return md5;
+	}
+
+	public void setMd5(String md5) {
+		this.md5 = md5;
+	}
 
 	public byte[] getArray() {
 		return array;

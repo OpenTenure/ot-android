@@ -95,7 +95,17 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
+		}else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
+			status.setText(att.getStatus());
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
 		}
+		else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
+			status.setText(att.getStatus());
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
+		}
+
 
 		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
