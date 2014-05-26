@@ -586,11 +586,18 @@ public class ClaimMapFragment extends Fragment implements
 			}
 			return true;
 		case R.id.action_rotate:
-			menu.findItem(R.id.action_rotate).setVisible(false);
-			menu.findItem(R.id.action_stop_rotating).setVisible(true);
-	        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
-	                SensorManager.SENSOR_DELAY_UI);
-			isRotating = true;
+
+			if(!isRotating && lh.getLatestLocation() != null) {
+				menu.findItem(R.id.action_rotate).setVisible(false);
+				menu.findItem(R.id.action_stop_rotating).setVisible(true);
+		        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+		                SensorManager.SENSOR_DELAY_UI);
+				isRotating = true;
+			}else{
+				Toast.makeText(getActivity().getBaseContext(),
+						R.string.check_location_service, Toast.LENGTH_LONG)
+						.show();
+			}
 			return true;
 		case R.id.action_stop_rotating:
 			menu.findItem(R.id.action_rotate).setVisible(true);
