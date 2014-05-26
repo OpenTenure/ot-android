@@ -44,6 +44,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -79,7 +85,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class ClaimMapFragment extends Fragment implements
-		OnCameraChangeListener {
+		OnCameraChangeListener, SensorEventListener {
 
 	private static final int MAP_LABEL_FONT_SIZE = 16;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -101,6 +107,12 @@ public class ClaimMapFragment extends Fragment implements
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
 	private double snapLon;
+	private Menu menu;
+	private boolean isRotating = false;
+
+    // device sensor manager
+    private SensorManager mSensorManager;
+
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -131,23 +143,31 @@ public class ClaimMapFragment extends Fragment implements
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_map, menu);
+		menu.findItem(R.id.action_stop_rotating).setVisible(false);
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
 			menu.removeItem(R.id.action_new_picture);
 		}
+		this.menu = menu;
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(isRotating){
+	        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+	                SensorManager.SENSOR_DELAY_UI);
+		}
 		lh.hurryUp();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		lh.slowDown();
+	     // to stop the listener and save battery
+        mSensorManager.unregisterListener(this);
+   		lh.slowDown();
 	}
 
 	@Override
@@ -390,6 +410,8 @@ public class ClaimMapFragment extends Fragment implements
 				}
 			});
 		}
+	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
+	       
 		return mapView;
 
 	}
@@ -563,6 +585,19 @@ public class ClaimMapFragment extends Fragment implements
 						.show();
 			}
 			return true;
+		case R.id.action_rotate:
+			menu.findItem(R.id.action_rotate).setVisible(false);
+			menu.findItem(R.id.action_stop_rotating).setVisible(true);
+	        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
+	                SensorManager.SENSOR_DELAY_UI);
+			isRotating = true;
+			return true;
+		case R.id.action_stop_rotating:
+			menu.findItem(R.id.action_rotate).setVisible(true);
+			menu.findItem(R.id.action_stop_rotating).setVisible(false);
+			mSensorManager.unregisterListener(this);
+			isRotating = false;
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -570,6 +605,43 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
-		currentProperty.refreshMarkerEditControls();
+		currentProperty.refreshMarkerEditControls(cameraPosition.bearing);
+	}
+
+	@Override
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// TODO Auto-generated method stub
+		// nothing to do as of now
+		
+	}
+
+	@Override
+	public void onSensorChanged(SensorEvent event) {
+		
+		Location latestLocation = lh.getLatestLocation();
+
+		if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR && latestLocation != null) {
+		    GeomagneticField field = new GeomagneticField(
+		            (float)latestLocation.getLatitude(),
+		            (float)latestLocation.getLongitude(),
+		            (float)latestLocation.getAltitude(),
+		            System.currentTimeMillis()
+		        );
+
+		    // getDeclination returns degrees
+		    float mDeclination = field.getDeclination();
+			float[] mRotationMatrix = new float[16];
+	        SensorManager.getRotationMatrixFromVector(
+	        		mRotationMatrix , event.values);
+	        float[] orientation = new float[3];
+	        SensorManager.getOrientation(mRotationMatrix, orientation);
+	        float bearing = (float) (Math.toDegrees(orientation[0]) + mDeclination);
+	        CameraPosition currentPosition = map.getCameraPosition();
+
+	        CameraPosition newPosition = new CameraPosition.Builder(currentPosition).bearing(bearing).build();
+	         
+	        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPosition));
+	    }
+		
 	}
 }

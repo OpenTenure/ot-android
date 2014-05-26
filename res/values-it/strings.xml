@@ -23,7 +23,9 @@
     <string name="action_new_additional_info">Aggiungi informazione</string>
     <string name="action_new_attachment">Aggiungi documento</string>
     <string name="action_lock_db">Configura la cifratura dei dati</string>
-    <string name="action_export">Export</string>
+    <string name="action_export">Esporta</string>
+    <string name="action_rotate">Ruota la mappa usando la bussola del dispositivo</string>
+    <string name="action_stop_rotating">Non ruotare la mappa</string>
     <string name="title_news">Notizie</string>
     <string name="title_map">Mappa</string>
     <string name="title_claims">Richieste</string>

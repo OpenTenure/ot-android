@@ -60,15 +60,14 @@ import android.widget.Toast;
 
 public class PersonFragment extends Fragment {
 
-	View rootView;
+	private View rootView;
 	private PersonDispatcher personActivity;
 	private ModeDispatcher mainActivity;
-	final Calendar localCalendar = Calendar.getInstance();
+	private final Calendar localCalendar = Calendar.getInstance();
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-	File personPictureFile;
-	Menu menu;
-	ImageView claimantImageView;
-	boolean allowSave = true;
+	private File personPictureFile;
+	private ImageView claimantImageView;
+	private boolean allowSave = true;
 
 	@Override
 	public void onAttach(Activity activity) {

@@ -3,6 +3,14 @@
           android:icon="@android:drawable/ic_input_add"
           android:title="@string/action_new"
           android:showAsAction="ifRoom" />    
+    <item android:id="@+id/action_rotate"
+          android:icon="@android:drawable/ic_menu_always_landscape_portrait"
+          android:title="@string/action_rotate"
+          android:showAsAction="ifRoom" />    
+	<item android:id="@+id/action_stop_rotating"
+          android:icon="@drawable/ic_menu_block"
+          android:title="@string/action_stop_rotating"
+          android:showAsAction="ifRoom" />    
     <item android:id="@+id/action_center"
           android:icon="@android:drawable/ic_menu_compass"
           android:title="@string/action_center"

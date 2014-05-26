@@ -44,12 +44,18 @@ public class LocationHelper {
 	private static final double HOME_LATITUDE = 41.8825;
 	private static final double HOME_LONGITUDE = 12.4882;
 
-	LocationManager locationManager;
+	private LocationManager locationManager;
+	private Location latestLocation = null;
+
+	public Location getLatestLocation() {
+		return latestLocation;
+	}
 
 	LocationListener gpsLL = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
 			Log.d(this.getClass().getName(), "onLocationChanged");
+			latestLocation = new Location (location);
 			if (OpenTenureApplication.getInstance().getDatabase().isOpen()) {
 				org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
 						.getLocation("CURRENT");

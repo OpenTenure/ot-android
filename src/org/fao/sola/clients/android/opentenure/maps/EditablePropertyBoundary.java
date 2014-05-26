@@ -80,6 +80,12 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private Marker target;
 	private Marker add;
 	private Marker selectedVertex;
+	
+	private static final float UP_INITIAL_ROTATION = 180.0f;
+	private static final float DOWN_INITIAL_ROTATION = 0.0f;
+	private static final float LEFT_INITIAL_ROTATION = 90.0f;
+	private static final float RIGHT_INITIAL_ROTATION = 270.0f;
+	private static final int PIXELS_PER_STEP = 5;
 
 	private boolean handleMarkerEditClick(Marker mark, final List<BasePropertyBoundary> existingProperties){
 		if(remove == null || relativeEdit == null || cancel == null){
@@ -91,7 +97,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			drawBoundary();
 			updateVertices();
 			resetAdjacency(existingProperties);
-			deselect();
+			hideMarkerEditControls();
+			selectedVertex = null;
 			return true;
 		}
 		if (mark.getId().equalsIgnoreCase(relativeEdit.getId())) {
@@ -110,37 +117,35 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return false;
 		}
 		
+		Projection projection = map.getProjection();
+		Point screenLocation = projection.toScreenLocation(target.getPosition());
+		
 		if (mark.getId().equalsIgnoreCase(up.getId())) {
 			Log.d(this.getClass().getName(),"up");
-			// TODO Move target up
-			double lat = target.getPosition().latitude+0.00001;
-			double lon = target.getPosition().longitude;
-			target.setPosition(new LatLng(lat,lon));
-			target.setTitle("Lat: " + lat + ", Lon: " + lon + ", Dist: " + getTargetDistance());
+			screenLocation.y -= PIXELS_PER_STEP;
+			target.setPosition(projection.fromScreenLocation(screenLocation));
+			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
 			target.showInfoWindow();
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(down.getId())) {
 			Log.d(this.getClass().getName(),"down");
-			double lat = target.getPosition().latitude-0.00001;
-			double lon = target.getPosition().longitude;
-			target.setPosition(new LatLng(lat,lon));
-			target.setTitle("Lat: " + lat + ", Lon: " + lon + ", Dist: " + getTargetDistance());
+			screenLocation.y += PIXELS_PER_STEP;
+			target.setPosition(projection.fromScreenLocation(screenLocation));
+			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
 			target.showInfoWindow();
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(left.getId())) {
 			Log.d(this.getClass().getName(),"left");
-			double lat = target.getPosition().latitude;
-			double lon = target.getPosition().longitude-0.00001;
-			target.setPosition(new LatLng(lat,lon));
-			target.setTitle("Lat: " + lat + ", Lon: " + lon + ", Dist: " + getTargetDistance());
+			screenLocation.x -= PIXELS_PER_STEP;
+			target.setPosition(projection.fromScreenLocation(screenLocation));
+			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
 			target.showInfoWindow();
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(right.getId())) {
 			Log.d(this.getClass().getName(),"right");
-			double lat = target.getPosition().latitude;
-			double lon = target.getPosition().longitude+0.00001;
-			target.setPosition(new LatLng(lat,lon));
-			target.setTitle("Lat: " + lat + ", Lon: " + lon + ", Dist: " + getTargetDistance());
+			screenLocation.x += PIXELS_PER_STEP;
+			target.setPosition(projection.fromScreenLocation(screenLocation));
+			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
 			target.showInfoWindow();
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(add.getId())) {
@@ -154,10 +159,11 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			// Click on 'Move to' marker: insert a marker at target position and remove the selected
 			insertVertex(target.getPosition());
 			removeVertex(selectedVertex);
+			hideMarkerEditControls();
+			selectedVertex = null;
 			drawBoundary();
 			updateVertices();
 			resetAdjacency(existingProperties);
-			deselect();
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(cancel.getId())) {
 			Log.d(this.getClass().getName(),"cancel");
@@ -173,7 +179,11 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	private void deselect(){
 		hideMarkerEditControls();
+		if(selectedVertex != null){
+			selectedVertex.setIcon(BitmapDescriptorFactory
+					.fromResource(R.drawable.ot_blue_marker));
 		selectedVertex = null;
+		}
 	}
 	
 	private void hideMarkerEditControls(){
@@ -271,7 +281,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return results[0];
 	}
 
-	public void refreshMarkerEditControls(){
+	public void refreshMarkerEditControls(float bearing){
 		
 		if(selectedVertex == null){
 			return;
@@ -288,15 +298,19 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		int iconWidth = bmp.getWidth();
 
 		if(up != null){
+			up.setRotation(UP_INITIAL_ROTATION);
 			up.setPosition(projection.fromScreenLocation(getControlUpPosition(screenPosition, iconWidth, iconHeight)));
 		}
 		if(down != null){
+			down.setRotation(DOWN_INITIAL_ROTATION);
 			down.setPosition(projection.fromScreenLocation(getControlDownPosition(screenPosition, iconWidth, iconHeight)));
 		}
 		if(left != null){
+			left.setRotation(LEFT_INITIAL_ROTATION);
 			left.setPosition(projection.fromScreenLocation(getControlLeftPosition(screenPosition, iconWidth, iconHeight)));
 		}
 		if(right != null){
+			right.setRotation(RIGHT_INITIAL_ROTATION);
 			right.setPosition(projection.fromScreenLocation(getControlRightPosition(screenPosition, iconWidth, iconHeight)));
 		}
 		if(relativeEdit != null){
@@ -364,26 +378,26 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.up))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(180.0f));
+				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(UP_INITIAL_ROTATION));
 		
 		down = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlDownPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.down))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(0.0f));
+				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(DOWN_INITIAL_ROTATION));
 		left = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlLeftPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.left))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(90.0f));
+				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(LEFT_INITIAL_ROTATION));
 		right = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlRightPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.right))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(270.0f));
+				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(RIGHT_INITIAL_ROTATION));
 		add = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlAddPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
@@ -459,6 +473,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private boolean handleVertexClick(final Marker mark){
 		if (verticesMap.containsKey(mark.getId())) {
 			selectedVertex = mark;
+			selectedVertex.setIcon(BitmapDescriptorFactory.defaultMarker());
 			selectedVertex.showInfoWindow();
 			showMarkerEditControls();
 			return true;

@@ -24,6 +24,8 @@
     <string name="action_new_attachment">New document</string>
     <string name="action_lock_db">Configure data encryption</string>
     <string name="action_export">Export</string>
+    <string name="action_rotate">Rotate map using device compass</string>
+    <string name="action_stop_rotating">Stop rotating the map</string>
     <string name="title_news">News</string>
     <string name="title_map">Map</string>
     <string name="title_claims">Claims</string>
