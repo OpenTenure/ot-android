@@ -58,7 +58,7 @@ public class UploadChunksTask extends
 			 ***/
 
 			SaveAttachmentTask sat = new SaveAttachmentTask();
-			sat.execute(res.getAttachmentId());
+			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, res.getAttachmentId());
 
 		}
 

@@ -35,5 +35,6 @@ public class AttachmentStatus {
 	public static String _MODERATED = "deleted";
 	public static String _DOWNLOAD_INCOMPLETE = "download_incomplete";
 	public static String _DOWNLOAD_FAILED = "download_failed";
+	public static String _DOWNLOADING = "downloading";
 	
 }

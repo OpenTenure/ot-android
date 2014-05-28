@@ -56,6 +56,16 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 		long offSet = 0;
 
 		Attachment att = Attachment.getAttachment(params[1]);
+		
+		if(att.getStatus().equals(AttachmentStatus._DOWNLOADING)){
+			
+			return true;
+		}else{
+			
+			att.setStatus(AttachmentStatus._DOWNLOADING);
+			Attachment.updateAttachment(att);
+			
+			}
 
 		File file = new File(
 				FileSystemUtilities.getAttachmentFolder(params[0]),
