@@ -96,22 +96,20 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
-		}else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
+		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
+			status.setText(att.getStatus());
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
+		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
+			status.setText(att.getStatus());
+			status.setTextColor(context.getResources().getColor(
+					R.color.status_uploading));
+		} else if (att.getStatus()
+				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
 			status.setText(att.getStatus());
 			status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		}
-		else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
-		}
-		else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
-		}
-
 
 		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
@@ -172,20 +170,21 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		Claim claim = Claim.getClaim(claimId);
 
 		if ((!claim.getStatus().equals(ClaimStatus._CREATED) && !claim
-				.getStatus().equals(ClaimStatus._UPLOADING)) && (att.getPath() == null || att.getPath().equals(""))) {
+				.getStatus().equals(ClaimStatus._UPLOADING))
+				&& (att.getPath() == null || att.getPath().equals(""))) {
 			downloadPic.setVisibility(View.VISIBLE);
 		}
 
 		downloadPic.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				
+
 				String[] params = new String[2];
 				params[0] = att.getClaimId();
 				params[1] = att.getAttachmentId();
-				
-				GetAttachmentTask task =  new GetAttachmentTask();
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);				
+
+				GetAttachmentTask task = new GetAttachmentTask();
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 
 				Toast toast = Toast.makeText(
 						OpenTenureApplication.getContext(),

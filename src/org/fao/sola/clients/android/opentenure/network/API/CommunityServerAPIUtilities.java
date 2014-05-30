@@ -64,6 +64,9 @@ public class CommunityServerAPIUtilities {
 
 	public static final String HTTPS_GETALLCLAIMSBYBOX = "https://ot.flossola.org/ws/en-us/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
 	public static final String HTTP_GETALLCLAIMSBYBOX = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
+	
+	public static final String HTTPS_GETCLAIMTYPES = "https://ot.flossola.org/ws/en-us/ref/getclaimtypes";
+	public static final String HTTP_GETCLAIMTYPES = "http://ot.flossola.org/ws/en-us/ref/getclaimtypes";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];

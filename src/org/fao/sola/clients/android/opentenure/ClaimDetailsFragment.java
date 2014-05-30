@@ -28,11 +28,13 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
@@ -47,6 +49,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -61,8 +64,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -97,35 +102,36 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-//		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
-			MenuItem itemIn;
-			MenuItem itemOut;
+		// if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) ==
+		// 0) {
+		MenuItem itemIn;
+		MenuItem itemOut;
 
-			try {
-				Thread.sleep(400);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
-			Log.d(this.getClass().getName(), "Is the user logged in ? : "
-					+ OpenTenureApplication.isLoggedin());
+		Log.d(this.getClass().getName(), "Is the user logged in ? : "
+				+ OpenTenureApplication.isLoggedin());
 
-			if (OpenTenureApplication.isLoggedin()) {
+		if (OpenTenureApplication.isLoggedin()) {
 
-				itemIn = menu.getItem(4);
-				itemIn.setVisible(false);
-				itemOut = menu.getItem(5);
-				itemOut.setVisible(true);
+			itemIn = menu.getItem(4);
+			itemIn.setVisible(false);
+			itemOut = menu.getItem(5);
+			itemOut.setVisible(true);
 
-			} else {
+		} else {
 
-				itemIn = menu.getItem(4);
-				itemIn.setVisible(true);
-				itemOut = menu.getItem(5);
-				itemOut.setVisible(false);
-			}
+			itemIn = menu.getItem(4);
+			itemIn.setVisible(true);
+			itemOut = menu.getItem(5);
+			itemOut.setVisible(false);
+		}
 
-//		}
+		// }
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -134,14 +140,15 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.claim_details, menu);
-//		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-//			menu.removeItem(R.id.action_save);
-//			menu.removeItem(R.id.action_submit);
-//			menu.removeItem(R.id.action_export);
-//			menu.removeItem(R.id.action_login);
-//			menu.removeItem(R.id.action_logout);
-//			menu.removeItem(R.id.action_print);
-//		}
+		// if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) ==
+		// 0) {
+		// menu.removeItem(R.id.action_save);
+		// menu.removeItem(R.id.action_submit);
+		// menu.removeItem(R.id.action_export);
+		// menu.removeItem(R.id.action_login);
+		// menu.removeItem(R.id.action_logout);
+		// menu.removeItem(R.id.action_print);
+		// }
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -217,6 +224,23 @@ public class ClaimDetailsFragment extends Fragment {
 		// Claim name
 		((EditText) rootView.findViewById(R.id.claim_name_input_field))
 				.setText(getResources().getString(R.string.na));
+
+		// Code Types Spinner
+		Spinner spinner = (Spinner) rootView
+				.findViewById(R.id.codeTypesSpinner);
+
+		ClaimType ct = new ClaimType();
+
+		List<String> list = ct.getClaimsTypesDispalyValues();
+
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+				OpenTenureApplication.getContext(),
+				android.R.layout.simple_spinner_item, list) {
+		};
+		dataAdapter
+				.setDropDownViewResource(R.layout.my_spinner);
+		
+		spinner.setAdapter(dataAdapter);
 
 		// Claimant
 		((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
@@ -299,14 +323,20 @@ public class ClaimDetailsFragment extends Fragment {
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
 					.setText(claim.getName());
+			((Spinner) rootView.findViewById(R.id.codeTypesSpinner))
+					.setSelection(new ClaimType().getIndexByCodeType(claim
+							.getType()));
+
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setFocusable(false);
+				((Spinner) rootView.findViewById(R.id.codeTypesSpinner)).setFocusable(false);
 			}
 
 			Person claimant = claim.getPerson();
 			loadClaimant(claimant);
 			loadChallengedClaim(claim.getChallengedClaim());
+
 		}
 	}
 
@@ -323,6 +353,11 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
+
+
+		String displayValue = (String) ((Spinner) rootView
+				.findViewById(R.id.codeTypesSpinner)).getSelectedItem();
+		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		if (claim.create() == 1) {
@@ -346,9 +381,13 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
+		String displayValue = (String) ((Spinner) rootView
+				.findViewById(R.id.codeTypesSpinner)).getSelectedItem();
+		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		claim.update();
+
 	}
 
 	@Override

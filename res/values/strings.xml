@@ -68,6 +68,7 @@
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>
+    <string name="claim_type">Claim type</string>
     <string name="default_claim_name">New</string>
     <string name="claim_notes">Notes</string>
     <string name="first_name">First name</string>

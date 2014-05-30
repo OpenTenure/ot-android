@@ -50,6 +50,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimTypesResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
@@ -388,10 +389,10 @@ public class CommunityServerAPI {
 				CommunityServerAPIUtilities.HTTPS_GETATTACHMENT, attachmentId);
 		HttpGet request = new HttpGet(url);
 
-		/*Retrieve the attachment partially*/
+		/* Retrieve the attachment partially */
 		if (offset > start)
 			request.setHeader("Range", "bytes=" + start + "-" + offset);
-		
+
 		Log.d("CommunityServerAPI", "bytes=" + start + "-" + offset);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -410,35 +411,28 @@ public class CommunityServerAPI {
 
 				Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED SIZE"
 						+ byteArray.length);
-
-				org.apache.http.Header[] headers = response.getAllHeaders();
-
-				for (int i = 0; i < headers.length; i++) {
-
-					System.out.println("HEADER : " + headers[i].getName() + " "
-							+ headers[i].getValue());
-				}
-
+				
 				methodResponse.setArray(byteArray);
 				methodResponse.setHttpStatusCode(response.getStatusLine()
 						.getStatusCode());
 				methodResponse.setMessage(response.getStatusLine()
 						.getReasonPhrase());
-				methodResponse.setMd5(response.getHeaders("ETag")[0].getValue());
+				methodResponse
+						.setMd5(response.getHeaders("ETag")[0].getValue());
 
 				return methodResponse;
 
 			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_PARTIAL_CONTENT)) {
 
-				
 				org.apache.http.Header[] headers = response.getAllHeaders();
 
 				for (int i = 0; i < headers.length; i++) {
 
-					Log.d("CommunityServerAPI","HEADER : " + headers[i].getName() + " "
-							+ headers[i].getValue());
+					Log.d("CommunityServerAPI",
+							"HEADER : " + headers[i].getName() + " "
+									+ headers[i].getValue());
 				}
-				
+
 				byte[] byteArray = CommunityServerAPIUtilities.slurp(response
 						.getEntity().getContent(), 1024);
 
@@ -451,7 +445,8 @@ public class CommunityServerAPI {
 						.getStatusCode());
 				methodResponse.setMessage(response.getStatusLine()
 						.getReasonPhrase());
-				methodResponse.setMd5(response.getHeaders("ETag")[0].getValue());
+				methodResponse
+						.setMd5(response.getHeaders("ETag")[0].getValue());
 				return methodResponse;
 			} else if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_NOT_FOUND)) {
 
@@ -485,6 +480,57 @@ public class CommunityServerAPI {
 			methodResponse.setMessage("Error retrieving attachment");
 
 			return methodResponse;
+		}
+
+	}
+
+	public static List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> getClaimTypes() {
+
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETCLAIMTYPES);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI",
+						"GET ALL CLAIM TYPES JSON RESPONSE " + json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.ClaimType>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> claimTypeList = new Gson()
+						.fromJson(json, listType);
+				
+				if(claimTypeList != null)
+					Log.d("CommunityServerAPI", "Ho recuperato la lista dei TYPES di dimensione" + claimTypeList.size());
+
+				return claimTypeList;
+
+			} else {
+
+				Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES NOT SUCCEDED : HTTP STATUS " + response.getStatusLine().getStatusCode() + "  " 
+						+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES ERROR "
+					+ ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
 		}
 
 	}

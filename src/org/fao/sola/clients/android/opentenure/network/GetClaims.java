@@ -207,6 +207,7 @@ public class GetClaims {
 
 				claimDB.setPerson(person);
 				claimDB.setStatus(downloadedClaim.getStatusCode());
+				claimDB.setType(downloadedClaim.getTypeCode());
 
 				Person.createPerson(person);
 

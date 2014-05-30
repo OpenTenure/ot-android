@@ -44,12 +44,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Vertex;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -98,6 +96,7 @@ public class JsonUtilities {
 							.getChallengedClaim().getClaimId() : null);
 			tempClaim.setId(claimId);
 			tempClaim.setStatusCode(claim.getStatus());
+			tempClaim.setTypeCode(claim.getType());
 			tempClaim.setNr("0001");
 
 			tempClaim.setLodgementDate(lodgementDate);
@@ -117,26 +116,6 @@ public class JsonUtilities {
 			person.setGenderCode(claim.getPerson().getGender());
 
 			tempClaim.setPerson(person);
-
-			//
-			// List<Vertex> verteces = new ArrayList<Vertex>();
-			//
-			// for (Iterator iterator = claim.getVertices().iterator();
-			// iterator.hasNext();) {
-			// org.fao.sola.clients.android.opentenure.model.Vertex vert =
-			// (org.fao.sola.clients.android.opentenure.model.Vertex)
-			// iterator.next();
-			//
-			// Vertex v = new Vertex();
-			//
-			// v.setGPSPosition(vert.getGPSPosition());
-			// v.setMapPosition(vert.getMapPosition());
-			// v.setSequenceNumber(vert.getSequenceNumber());
-			// v.setVertexId(vert.getVertexId());
-			//
-			//
-			// verteces.add(v);
-			// }
 
 			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 

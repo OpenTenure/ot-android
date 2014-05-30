@@ -25,65 +25,67 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network.response;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-
-public class SplashScreen extends Activity {
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_splash);
-		new PrefetchData().execute();
-
+public class ClaimType {
+	
+	
+    String code;        
+    String displayValue;    
+    String description;    
+    String status;    
+    String rrrGroupTypeCode;
+    
+    boolean primary;
+    boolean shareCheck;
+    boolean partyRequired;
+	public String getCode() {
+		return code;
 	}
-
-	private class PrefetchData extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-
-		}
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			try {
-				OpenTenureApplication.getInstance().getDatabase();
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
-			startActivity(i);
-
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
-
-			}
-
-			finish();
-		}
-
+	public void setCode(String code) {
+		this.code = code;
 	}
-
+	public String getDisplayValue() {
+		return displayValue;
+	}
+	public void setDisplayValue(String displayValue) {
+		this.displayValue = displayValue;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getRrrGroupTypeCode() {
+		return rrrGroupTypeCode;
+	}
+	public void setRrrGroupTypeCode(String rrrGroupTypeCode) {
+		this.rrrGroupTypeCode = rrrGroupTypeCode;
+	}
+	public boolean isPrimary() {
+		return primary;
+	}
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
+	}
+	public boolean isShareCheck() {
+		return shareCheck;
+	}
+	public void setShareCheck(boolean shareCheck) {
+		this.shareCheck = shareCheck;
+	}
+	public boolean isPartyRequired() {
+		return partyRequired;
+	}
+	public void setPartyRequired(boolean partyRequired) {
+		this.partyRequired = partyRequired;
+	}
+    
 }

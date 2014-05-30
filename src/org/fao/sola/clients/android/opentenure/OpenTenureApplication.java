@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.List;
+
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -34,7 +36,9 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Database;
+import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
 
 import android.app.Activity;
 import android.app.Application;
@@ -43,22 +47,25 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
-import android.view.View;
+
 
 public class OpenTenureApplication extends Application {
 
 	    private static OpenTenureApplication sInstance;
 	    private Database database;
 	    private static Context context;
+	    private boolean checkedTypes = false;
+	    
 	    
 	    private static boolean loggedin ;
 	    private static String username;
 	    private static Activity activity;
-		
+		private static List<ClaimType> claimTypes;
 		private static AndroidHttpClient mHttpClient;
 		private static CookieStore cookieStore;
 		private static HttpContext http_context;
 		private static MainMapFragment mapFragment;
+		
 		
 
 	    public static OpenTenureApplication getInstance() {
@@ -89,6 +96,9 @@ public class OpenTenureApplication extends Application {
 	      FileSystemUtilities.createClaimsFolder();
 		  FileSystemUtilities.createClaimantsFolder();
 		  FileSystemUtilities.createOpenTenureFolder();
+		  
+		 
+
 		  		  
 	    }
 
@@ -174,6 +184,22 @@ public class OpenTenureApplication extends Application {
 
 		public static void setMapFragment(MainMapFragment mapFragment) {
 			OpenTenureApplication.mapFragment = mapFragment;
+		}
+
+		public boolean isCheckedTypes() {
+			return checkedTypes;
+		}
+
+		public void setCheckedTypes(boolean checkedTypes) {
+			this.checkedTypes = checkedTypes;
+		}
+
+		public static List<ClaimType> getClaimTypes() {
+			return claimTypes;
+		}
+
+		public static void setClaimTypes(List<ClaimType> claimTypes) {
+			OpenTenureApplication.claimTypes = claimTypes;
 		}
 
 		/*

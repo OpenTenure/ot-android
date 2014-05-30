@@ -25,64 +25,53 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network;
 
 import java.util.Iterator;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
 
-public class SplashScreen extends Activity {
+public class UpdateClaimTypesTask extends
+		AsyncTask<String, Void, List<ClaimType>> {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected List<ClaimType> doInBackground(String... params) {
+		List<ClaimType> types = CommunityServerAPI.getClaimTypes();
 
-		setContentView(R.layout.activity_splash);
-		new PrefetchData().execute();
-
+		// TODO Auto-generated method stub
+		return types;
 	}
 
-	private class PrefetchData extends AsyncTask<Void, Void, Void> {
+	@Override
+	protected void onPostExecute(List<ClaimType> types) {
+		
+		
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
+		if (types != null && (types.size() > 0)) {
 
-		}
+			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+				ClaimType claimType = (ClaimType) iterator.next();
 
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			try {
-				OpenTenureApplication.getInstance().getDatabase();
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+				org.fao.sola.clients.android.opentenure.model.ClaimType type = new org.fao.sola.clients.android.opentenure.model.ClaimType();
 
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
-			startActivity(i);
-
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
+				
+				type.setDescription(claimType.getDescription());
+				type.setType(claimType.getCode());
+				type.setDisplayValue(claimType.getDisplayValue());
+				type.add();
 
 			}
+			
+			OpenTenureApplication.getInstance().setCheckedTypes(true);			
 
-			finish();
 		}
+		
 
 	}
 
