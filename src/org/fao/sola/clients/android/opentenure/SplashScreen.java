@@ -27,50 +27,63 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
- 
+import android.util.Log;
+
 public class SplashScreen extends Activity {
- 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        setContentView(R.layout.activity_splash);
-        new PrefetchData().execute();
- 
-    }
- 
-    private class PrefetchData extends AsyncTask<Void, Void, Void> {
- 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
- 
-        }
- 
-        @Override
-        protected Void doInBackground(Void... arg0) {
-        	try {
-            	OpenTenureApplication.getInstance().getDatabase();
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.activity_splash);
+		new PrefetchData().execute();
+
+	}
+
+	private class PrefetchData extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+
+		}
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			try {
+				OpenTenureApplication.getInstance().getDatabase();
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-            return null;
-        }
- 
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            Intent i = new Intent(SplashScreen.this, OpenTenure.class);
-            startActivity(i);
- 
-            finish();
-        }
- 
-    }
- 
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			super.onPostExecute(result);
+			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
+			startActivity(i);
+
+			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
+
+				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
+				updateCT.execute();
+
+			}
+
+			finish();
+		}
+
+	}
+
 }

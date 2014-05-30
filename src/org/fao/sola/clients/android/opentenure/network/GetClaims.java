@@ -127,8 +127,22 @@ public class GetClaims {
 					 * here the case in which the claim challenged is not
 					 * already present locally
 					 */
-					
-					//Claim downloadedClaim = CommunityServerAPI.getClaim(downloadedClaim.getChallengedClaimId());
+
+					org.fao.sola.clients.android.opentenure.network.response.Claim[] claimCarray = new org.fao.sola.clients.android.opentenure.network.response.Claim[1];
+
+					org.fao.sola.clients.android.opentenure.network.response.Claim toRetrieve = new org.fao.sola.clients.android.opentenure.network.response.Claim();
+
+					toRetrieve.setId(downloadedClaim.getChallengedClaimId());
+
+					claimCarray[0] = toRetrieve;
+
+					/*
+					 * Making a recoursive call
+					 */
+					GetClaims.execute(claimCarray);
+
+					claimDB.setChallengedClaim(org.fao.sola.clients.android.opentenure.model.Claim
+							.getClaim(downloadedClaim.getChallengedClaimId()));
 
 				} else {
 
@@ -138,7 +152,6 @@ public class GetClaims {
 				}
 
 			}
-
 
 			Claimant claimant = downloadedClaim.getClaimant();
 
@@ -194,6 +207,7 @@ public class GetClaims {
 
 				claimDB.setPerson(person);
 				claimDB.setStatus(downloadedClaim.getStatusCode());
+				claimDB.setType(downloadedClaim.getTypeCode());
 
 				Person.createPerson(person);
 

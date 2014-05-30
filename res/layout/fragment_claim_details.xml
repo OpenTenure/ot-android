@@ -15,6 +15,7 @@
         android:layout_weight="1"
         android:gravity="bottom"
         android:text="@string/claim_name" />
+    
 
     <EditText
         android:id="@+id/claim_name_input_field"
@@ -25,7 +26,25 @@
         android:hint="@string/claim_name"
         android:inputType="text" >
     </EditText>
+    
+     <TextView
+        android:id="@+id/claim_type_label"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:paddingTop="10dp"
+        android:text="@string/claim_type" />
+    
+    <Spinner
+    android:id="@+id/codeTypesSpinner"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/dark_background_opentenure"
+    android:gravity="bottom"     
+    />
 
+    
     <TextView
         android:id="@+id/claimant_label"
         android:layout_width="fill_parent"

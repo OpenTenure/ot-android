@@ -105,10 +105,10 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 452:
-
-			claim.setStatus(ClaimStatus._UPLOADING);
-			claim.update();
-
+			if (claim.getStatus().equals(ClaimStatus._CREATED)) {
+				claim.setStatus(ClaimStatus._UPLOADING);
+				claim.update();
+			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_uploading, Toast.LENGTH_SHORT);
 			toast.show();
@@ -119,7 +119,8 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 				Attachment attachment = (Attachment) iterator.next();
 
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
-				saveAttachmentTask.execute(attachment.getId());
+				saveAttachmentTask.executeOnExecutor(
+						AsyncTask.THREAD_POOL_EXECUTOR, attachment.getId());
 
 			}
 

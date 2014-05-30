@@ -32,10 +32,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.util.ByteArrayBuffer;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.MD5;
@@ -59,6 +56,16 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 		long offSet = 0;
 
 		Attachment att = Attachment.getAttachment(params[1]);
+		
+		if(att.getStatus().equals(AttachmentStatus._DOWNLOADING)){
+			
+			return true;
+		}else{
+			
+			att.setStatus(AttachmentStatus._DOWNLOADING);
+			Attachment.updateAttachment(att);
+			
+			}
 
 		File file = new File(
 				FileSystemUtilities.getAttachmentFolder(params[0]),
@@ -72,7 +79,6 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 				file.createNewFile();
 
 			/* Here I need a cycle */
-			boolean cycle = true;
 
 			while (file.length() < att.getSize()) {
 
@@ -88,13 +94,23 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 					fos.write(res.getArray());
 					fos.close();
 
-					cycle = false;
-
 				} else if (res.getHttpStatusCode() == HttpStatus.SC_PARTIAL_CONTENT) {
 
 					Log.d("CommunityServerAPI",
 							"ATTACHMENT RETRIEVED PARTIALLY : "
 									+ res.getMessage());
+
+					if (res.getArray().length != lenght) {
+
+						Log.d("CommunityServerAPI",
+								"RETRIEVED LESS BYTES THAN EXPECTED ");
+
+						att.setStatus(AttachmentStatus._DOWNLOAD_INCOMPLETE);
+						Attachment.updateAttachment(att);
+
+						break;
+
+					}
 
 					FileOutputStream fos = new FileOutputStream(file, true);
 					fos.write(res.getArray());
@@ -141,7 +157,8 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 				att.setStatus(AttachmentStatus._UPLOADED);
 				Attachment.updateAttachment(att);
 
-			} else if(! att.getStatus().equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
+			} else if (!att.getStatus().equals(
+					AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
 
 				Log.d("CommunityServerAPI",
 						"ATTACHMENT DOES NOT MATCH SIZE OR MD5");

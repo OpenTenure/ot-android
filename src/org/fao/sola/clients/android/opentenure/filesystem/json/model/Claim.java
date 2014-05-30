@@ -63,6 +63,8 @@ public class Claim {
 	
 	@SerializedName("claimant") Claimant claimant;
 	
+	@SerializedName("typeCode") String typeCode;
+	
 	
 
 	public String getId() {
@@ -176,6 +178,14 @@ public class Claim {
 
 	public void setClaimant(Claimant claimant) {
 		this.claimant = claimant;
+	}
+
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
 

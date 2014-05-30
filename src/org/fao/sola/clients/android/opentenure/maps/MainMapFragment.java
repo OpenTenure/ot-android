@@ -41,6 +41,7 @@ import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -316,7 +317,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
 			
 			GetAllClaimsTask task = new GetAllClaimsTask();
-			task.execute(bounds);				
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds);				
 			
 			return true;
 		default:
