@@ -80,8 +80,6 @@ public class PersonsFragment extends ListFragment {
 
 		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
 			menu.removeItem(R.id.action_new);
-		}else{
-			
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);

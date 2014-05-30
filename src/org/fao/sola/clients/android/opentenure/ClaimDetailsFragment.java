@@ -134,14 +134,6 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.claim_details, menu);
-//		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-//			menu.removeItem(R.id.action_save);
-//			menu.removeItem(R.id.action_submit);
-//			menu.removeItem(R.id.action_export);
-//			menu.removeItem(R.id.action_login);
-//			menu.removeItem(R.id.action_logout);
-//			menu.removeItem(R.id.action_print);
-//		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 

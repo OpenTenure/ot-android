@@ -11,6 +11,7 @@
     <string name="action_logout">Log Out</string>
     <string name="action_print">Stampa</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
+    <string name="action_remove_owner">Rimuovi quote</string>
     <string name="action_remove_additional_info">Rimuovi informazione</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
@@ -38,7 +39,7 @@
     <string name="title_claim_photos">Immagini della richiesta</string>
     <string name="title_claim_map">Mappa</string>
     <string name="title_claim_adjacencies">Adiacenze</string>
-    <string name="title_claim_owners">Proprietari</string>
+    <string name="title_claim_owners">Quote</string>
     <string name="title_claim_challenges">Opposizioni</string>
     <string name="title_export">Esportando il Claim come file compresso</string>
     <string name="title_section">Sezione</string>
@@ -78,9 +79,10 @@
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
     <string name="attachment_removed">Allegato rimosso</string>
+    <string name="owner_removed">Quota rimossa</string>
     <string name="additional_info_removed">Informazione rimossa</string>
     <string name="message_saved">Salvato</string>
-    <string name="message_remaining_days">Giorni che rimangono per sfidare il claim :  </string>
+    <string name="message_remaining_days">Giorni che rimangono per sfidare il claim:  </string>
     <string name="message_map_snapshot_saved">Immagine della mappa salvata</string>
     <string name="message_invalid_url">URL non valido</string>
     <string name="message_unable_to_save">Impossibile salvare. Controllare i dati e riprovare</string>
@@ -95,10 +97,12 @@
     <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>
     <string name="message_claims_downloaded">Claim correttamente scaricati</string>
     <string name="message_error_downloading_claims">Errore durante lo scaricamento dei Claim</string>
-    <string name="message_login_no_more_valid">Session scaduta. Fai login di nuovo</string>
+    <string name="message_login_no_more_valid">Sessione scaduta. Fai login di nuovo</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
+    <string name="message_no_available_shares">Occorre rilasciare delle quote su questa richiesta prima di aggiungere un nuovo avente diritto</string>
+	<string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
@@ -126,6 +130,7 @@
     <string name="message_add_marker">Aggiungere una posizione?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
+    <string name="message_remove_owner">Rimuovere la quota?</string>
     <string name="message_remove_additional_info">Rimuovere l\'informazione?</string>
     <string name="message_not_supported_on_this_device">Non supportato su questo dispositivo</string>
     <string name="draggable_marker">Segnalino mobile</string>
@@ -165,4 +170,6 @@
     <string name="south_east">Sud-Est</string>
     <string name="south_west">Sud-Ovest</string>
     <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
+    <string name="shares_prompt">Seleziona le quote</string>
+    
 </resources>

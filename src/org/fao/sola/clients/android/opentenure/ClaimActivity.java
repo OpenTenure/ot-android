@@ -138,13 +138,15 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 				return new AdjacentClaimsFragment();
 			case 5:
 				return new ChallengingClaimsFragment();
+			case 6:
+				return new OwnersFragment();
 			}
 			return null;
 		}
 
 		@Override
 		public int getCount() {
-			return 6;
+			return 7;
 		}
 
 		@Override
@@ -163,6 +165,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 				return getString(R.string.title_claim_adjacencies).toUpperCase(l);
 			case 5:
 				return getString(R.string.title_claim_challenges).toUpperCase(l);
+			case 6:
+				return getString(R.string.title_claim_owners).toUpperCase(l);
 			}
 			return null;
 		}

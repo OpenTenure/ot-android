@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 public class Claim {
 	
 	public enum Status{unmoderated, moderated, challenged, created, uploading};
+	public static final int MAX_SHARES_PER_CLAIM = 100;
 
 	public String getName() {
 		return name;
@@ -61,20 +62,13 @@ public class Claim {
 	public Claim(){
 		this.claimId = UUID.randomUUID().toString();
 		this.status = ClaimStatus._CREATED;
+		this.availableShares = MAX_SHARES_PER_CLAIM;
 	}
-
-	@Override
-	public String toString() {
-		return "Claim [claimId=" + claimId
-				+ ", status=" + status
-				+ ", name=" + name
-				+ ", person=" + person
-				+ ", vertices=" + Arrays.toString(vertices.toArray())
-				+ ", additionalInfo=" + Arrays.toString(additionalInfo.toArray())
-				+ ", challengedClaim=" + challengedClaim
-				+ ", challengeExpiryDate=" + challengeExpiryDate
-				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
-				+ ", attachments=" + Arrays.toString(attachments.toArray())+ "]";
+	public int getAvailableShares() {
+		return availableShares;
+	}
+	public void setAvailableShares(int availableShares) {
+		this.availableShares = availableShares;
 	}
 	public String getClaimId() {
 		return claimId;
@@ -112,7 +106,16 @@ public class Claim {
 	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
-	
+	public List<Owner> getOwners() {
+		return owners;
+	}
+	public void setOwners(List<Owner> owners) {
+		availableShares = MAX_SHARES_PER_CLAIM;
+		for(Owner owner : owners){
+			availableShares -= owner.getShares();
+		}
+		this.owners = owners;
+	}
 	public String getStatus() {
 		return status;
 	}
@@ -125,6 +128,24 @@ public class Claim {
 	}
 	public void setChallengeExpiryDate(Date challengeExpiryDate) {
 		this.challengeExpiryDate = challengeExpiryDate;
+	}
+
+	@Override
+	public String toString() {
+		return "Claim ["
+				+ "claimId=" + claimId
+				+ ", status=" + status
+				+ ", name=" + name
+				+ ", person=" + person
+				+ ", vertices=" + Arrays.toString(vertices.toArray())
+				+ ", additionalInfo=" + Arrays.toString(additionalInfo.toArray())
+				+ ", challengedClaim=" + challengedClaim
+				+ ", challengeExpiryDate=" + challengeExpiryDate
+				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
+				+ ", attachments=" + Arrays.toString(attachments.toArray())
+				+ ", owners=" + Arrays.toString(owners.toArray())
+				+ ", availableShares=" + availableShares
+				+ "]";
 	}
 
 	public static int createClaim(Claim claim){
@@ -323,6 +344,7 @@ public class Claim {
 				claim.setChallengeExpiryDate(rs.getDate(5));
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
+				claim.setOwners(Owner.getOwners(claimId));
 				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
 			}
 
@@ -360,24 +382,13 @@ public class Claim {
 		ResultSet rs = null;
 
 		try {
-
-			Claim challengedClaim = getClaim(claimId);
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				String challengingClaimId = rs.getString(1);
-				Claim challengingClaim = new Claim();
-				challengingClaim.setClaimId(challengingClaimId);
-				challengingClaim.setStatus(rs.getString(2));
-				challengingClaim.setName(rs.getString(3));
-				challengingClaim.setPerson(Person.getPerson(rs.getString(4)));
-				challengingClaim.setChallengedClaim(challengedClaim);
-				challengingClaim.setVertices(Vertex.getVertices(challengingClaimId));
-				challengingClaim.setAttachments(Attachment.getAttachments(challengingClaimId));
-				challengingClaim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(challengingClaimId));
+				Claim challengingClaim = Claim.getClaim(rs.getString(1));
 				challengingClaims.add(challengingClaim);
 			}
 		} catch (SQLException e) {
@@ -406,6 +417,44 @@ public class Claim {
 		}
 		return challengingClaims;
 	}
+	
+	public static int addOwner(String claimId, String personId, int shares){
+		return Claim.getClaim(claimId).addOwner(personId, shares);
+	}
+
+	public static int removeOwner(String claimId, String personId){
+		return Claim.getClaim(claimId).removeOwner(personId);
+	}
+
+	public int addOwner(String personId, int shares){
+
+		Owner own = new Owner();
+		own.setClaimId(claimId);
+		own.setPersonId(personId);
+		own.setShares(shares);
+
+		int result = own.create();
+		
+		if(result == 1)
+		{
+			availableShares -= shares;
+		}
+		return result;
+	}
+
+	public int removeOwner(String personId){
+
+		Owner own = Owner.getOwner(claimId, personId);
+		int shares = own.getShares();
+
+		int result = own.delete();
+		
+		if(result == 1)
+		{
+			availableShares += shares;
+		}
+		return result;
+	}
 
 	public static List<Claim> getAllClaims() {
 		List<Claim> claims = new ArrayList<Claim>();
@@ -417,20 +466,10 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID, STATUS, NAME, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE FROM CLAIM");
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM");
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				String claimId = rs.getString(1);
-				Claim claim = new Claim();
-				claim.setClaimId(claimId);
-				claim.setStatus(rs.getString(2));
-				claim.setName(rs.getString(3));
-				claim.setPerson(Person.getPerson(rs.getString(4)));
-				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
-				claim.setChallengeExpiryDate(rs.getDate(6));
-				claim.setVertices(Vertex.getVertices(claimId));
-				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
+				Claim claim = Claim.getClaim(rs.getString(1));
 				claims.add(claim);
 			}
 		} catch (SQLException e) {
@@ -460,17 +499,17 @@ public class Claim {
 		return claims;
 	}
 
-	
-
-	String claimId;
-	String name;
-	String status;
-	Person person;
-	Claim challengedClaim;
-	List<Vertex> vertices;
-	List<AdditionalInfo> additionalInfo;
-	List<Claim> challengingClaims;
-	List<Attachment> attachments;
-	Date challengeExpiryDate;
+	private String claimId;
+	private String name;
+	private String status;
+	private Person person;
+	private Claim challengedClaim;
+	private List<Vertex> vertices;
+	private List<AdditionalInfo> additionalInfo;
+	private List<Claim> challengingClaims;
+	private List<Attachment> attachments;
+	private List<Owner> owners;
+	private Date challengeExpiryDate;
+	private int availableShares;
 
 }

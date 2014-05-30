@@ -61,17 +61,17 @@ public class Owner {
 		this.personId = personId;
 	}
 
-	public BigDecimal getShares() {
+	public int getShares() {
 		return shares;
 	}
 
-	public void setShares(BigDecimal shares) {
+	public void setShares(int shares) {
 		this.shares = shares;
 	}
 
 	String claimId;
 	String personId;
-	BigDecimal shares;
+	int shares;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
@@ -88,7 +88,7 @@ public class Owner {
 					.prepareStatement("INSERT INTO OWNER(CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?)");
 			statement.setString(1, own.getClaimId());
 			statement.setString(2, own.getPersonId());
-			statement.setBigDecimal(3, own.getShares());
+			statement.setBigDecimal(3, new BigDecimal(own.getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -123,7 +123,7 @@ public class Owner {
 					.prepareStatement("INSERT INTO OWNER(CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?)");
 			statement.setString(1, getClaimId());
 			statement.setString(2, getPersonId());
-			statement.setBigDecimal(3, getShares());
+			statement.setBigDecimal(3, new BigDecimal(getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -146,6 +146,78 @@ public class Owner {
 		}
 		return result;
 	}
+
+	public static int updateOwner(Owner own) {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE OWNER SET SHARES=? WHERE CLAIM_ID=? AND PERSON_ID=?");
+			statement.setBigDecimal(1, new BigDecimal(own.getShares()));
+			statement.setString(2, own.getClaimId());
+			statement.setString(3, own.getPersonId());
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public int updateOwner() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE OWNER SET SHARES=? WHERE CLAIM_ID=? AND PERSON_ID=?");
+			statement.setBigDecimal(1, new BigDecimal(shares));
+			statement.setString(2, claimId);
+			statement.setString(3, personId);
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
 
 	public static int deleteOwner(Owner own) {
 		int result = 0;
@@ -263,14 +335,14 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWN.PERSON_ID, OWN.SHARES FROM OWNER OWN WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT OWN.PERSON_ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? ORDER BY OWN.PERSON_ID");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				Owner own = new Owner();
 				own.setClaimId(claimId);
 				own.setPersonId(rs.getString(1));
-				own.setShares(rs.getBigDecimal(2));
+				own.setShares(rs.getBigDecimal(2).intValue());
 				ownList.add(own);
 			}
 		} catch (SQLException e) {
@@ -298,5 +370,102 @@ public class Owner {
 			}
 		}
 		return ownList;
+	}
+
+	public static Owner getOwner(String claimId, String personId) {
+
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		Owner own = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
+			statement.setString(1, claimId);
+			statement.setString(2, personId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				own = new Owner();
+				own.setClaimId(claimId);
+				own.setPersonId(personId);
+				own.setShares(rs.getBigDecimal(1).intValue());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return own;
+	}
+
+	public Owner getOwner() {
+
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		Owner own = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
+			statement.setString(1, claimId);
+			statement.setString(2, personId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				own = new Owner();
+				own.setClaimId(claimId);
+				own.setPersonId(personId);
+				own.setShares(rs.getBigDecimal(1).intValue());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return own;
 	}
 }

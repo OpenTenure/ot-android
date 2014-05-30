@@ -8,6 +8,7 @@
     <string name="action_new">New</string>
     <string name="action_done">Done</string>
     <string name="action_remove_attachment">Remove attachment</string>
+    <string name="action_remove_owner">Remove rights owner</string>
     <string name="action_remove_additional_info">Remove information</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
@@ -38,7 +39,7 @@
     <string name="title_claim_photos">Claim photos</string>
     <string name="title_claim_map">Map</string>
     <string name="title_claim_adjacencies">Adjacencies</string>
-    <string name="title_claim_owners">Owners</string>
+    <string name="title_claim_owners">Shares</string>
     <string name="title_claim_challenges">Challenges</string>
     <string name="title_export">Exporting Claim as compressed file</string>
     <string name="title_section">Section</string>
@@ -78,6 +79,7 @@
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
     <string name="attachment_removed">The attachment has been removed</string>
+    <string name="owner_removed">The owner has been removed</string>
     <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
     <string name="message_remaining_days">Remaining days to challenge the claim :  </string>
@@ -99,6 +101,8 @@
     <string name="title_exit_dialog">Exit</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
+    <string name="message_no_available_shares">Free some shares on this claim before adding a right owner</string>
+	<string name="message_already_owner">The selected person already shares this claim</string>
     <string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -126,6 +130,7 @@
     <string name="message_add_marker">Add marker here?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
+    <string name="message_remove_owner">Remove owner?</string>
     <string name="message_remove_additional_info">Remove information?</string>
     <string name="message_not_supported_on_this_device">Not supported on this device</string>
     <string name="draggable_marker">Draggable marker</string>
@@ -165,4 +170,107 @@
     <string name="south_east">South-East</string>
     <string name="south_west">South-West</string>
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
+    <string name="shares_prompt">Select shares</string>
+    <string-array name="share_values">
+        <item >1</item>
+        <item >2</item>
+        <item >3</item>
+        <item >4</item>
+        <item >5</item>
+        <item >6</item>
+        <item >7</item>
+        <item >8</item>
+        <item >9</item>
+        <item >10</item>
+        <item >11</item>
+        <item >12</item>
+        <item >13</item>
+        <item >14</item>
+        <item >15</item>
+        <item >16</item>
+        <item >17</item>
+        <item >18</item>
+        <item >19</item>
+        <item >20</item>
+        <item >21</item>
+        <item >22</item>
+        <item >23</item>
+        <item >24</item>
+        <item >25</item>
+        <item >26</item>
+        <item >27</item>
+        <item >28</item>
+        <item >29</item>
+        <item >30</item>
+        <item >31</item>
+        <item >32</item>
+        <item >33</item>
+        <item >34</item>
+        <item >35</item>
+        <item >36</item>
+        <item >37</item>
+        <item >38</item>
+        <item >39</item>
+        <item >40</item>
+        <item >41</item>
+        <item >42</item>
+        <item >43</item>
+        <item >44</item>
+        <item >45</item>
+        <item >46</item>
+        <item >47</item>
+        <item >48</item>
+        <item >49</item>
+        <item >50</item>
+        <item >51</item>
+        <item >52</item>
+        <item >53</item>
+        <item >54</item>
+        <item >55</item>
+        <item >56</item>
+        <item >57</item>
+        <item >58</item>
+        <item >59</item>
+        <item >60</item>
+        <item >61</item>
+        <item >62</item>
+        <item >63</item>
+        <item >64</item>
+        <item >65</item>
+        <item >66</item>
+        <item >67</item>
+        <item >68</item>
+        <item >69</item>
+        <item >70</item>
+        <item >71</item>
+        <item >72</item>
+        <item >73</item>
+        <item >74</item>
+        <item >75</item>
+        <item >76</item>
+        <item >77</item>
+        <item >78</item>
+        <item >79</item>
+        <item >80</item>
+        <item >81</item>
+        <item >82</item>
+        <item >83</item>
+        <item >84</item>
+        <item >85</item>
+        <item >86</item>
+        <item >87</item>
+        <item >88</item>
+        <item >89</item>
+        <item >90</item>
+        <item >91</item>
+        <item >92</item>
+        <item >93</item>
+        <item >94</item>
+        <item >95</item>
+        <item >96</item>
+        <item >97</item>
+        <item >98</item>
+        <item >99</item>
+        <item >100</item>
+        </string-array>
 </resources>
