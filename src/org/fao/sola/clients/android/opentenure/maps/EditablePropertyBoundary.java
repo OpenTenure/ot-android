@@ -428,8 +428,9 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		this.allowDragging = allowDragging;
 
 		if (vertices != null && vertices.size() > 0) {
+			int i = 0;
 			for (Vertex vertex : vertices) {
-				Marker mark = createMarker(vertex.getMapPosition());
+				Marker mark = createMarker(i++, vertex.getMapPosition());
 				verticesMap.put(mark.getId(), vertex);
 			}
 		}
@@ -516,7 +517,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return;
 		}
 
-		Marker mark = createMarker(position);
+		Marker mark = createMarker(vertices.size(), position);
 		Vertex vert = new Vertex(position);
 		vert.setClaimId(claimActivity.getClaimId());
 		insertVertex(vert);
@@ -567,18 +568,18 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		drawBoundary();
 	}
 
-	private Marker createMarker(LatLng position) {
+	private Marker createMarker(int index, LatLng position) {
 		if(allowDragging){
 			return map.addMarker(new MarkerOptions()
 			.position(position)
-			.title(vertices.size() + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
+			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
 			.draggable(true)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}else{
 			return map.addMarker(new MarkerOptions()
 			.position(position)
-			.title(vertices.size() + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
+			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
