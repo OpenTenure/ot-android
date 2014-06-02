@@ -46,6 +46,7 @@ import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
 
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -180,7 +181,8 @@ public class LocalClaimsFragment extends ListFragment {
 
 		for (Claim claim : claims) {
 			ClaimListTO cto = new ClaimListTO();
-			cto.setSlogan(claim.getName() + ", "
+			String claimName = claim.getName().equalsIgnoreCase("")? rootView.getContext().getString(R.string.default_claim_name):claim.getName();
+			cto.setSlogan(claimName + ", "
 					+ getResources().getString(R.string.by) + ": "
 					+ claim.getPerson().getFirstName() + " "
 					+ claim.getPerson().getLastName());

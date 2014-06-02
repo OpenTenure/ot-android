@@ -259,7 +259,7 @@ public class NewsFragment extends ListFragment {
 				.getDefaultSharedPreferences(rootView.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "http://ot.flossola.org/sola/opentenure/index.xhtml");
+				OpenTenurePreferencesActivity.CS_URL_PREF, "http://ot.flossola.org");
 		urls.add(csUrl);
 		urls.add("http://www.flossola.org/home");
 		urls.add("http://www.flossola.org/home");

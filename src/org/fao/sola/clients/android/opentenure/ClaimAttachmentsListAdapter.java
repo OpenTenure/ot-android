@@ -29,8 +29,8 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
@@ -43,6 +43,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,72 +51,89 @@ import android.widget.Toast;
 
 public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	private final Context context;
+	private LayoutInflater inflater;
 	private final List<String> slogans;
 	private final List<String> ids;
 	private String claimId;
-	private ModeDispatcher.Mode mode;
+	private boolean readOnly;
 
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
-			List<String> ids, String claimId, ModeDispatcher.Mode mode) {
-		super(context, R.layout.claims_list_item, slogans);
+			List<String> ids, String claimId, boolean readOnly) {
+		super(context, R.layout.claim_attachments_list_item, slogans);
+		this.inflater = (LayoutInflater) context
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.context = context;
 		this.slogans = slogans;
 		this.ids = ids;
 		this.claimId = claimId;
-		this.mode = mode;
+		this.readOnly = readOnly;
+	}
+
+	static class ViewHolder {
+		TextView id;
+		TextView slogan;
+		TextView status;
+		ImageView downloadIcon;
+		ImageView removeIcon;
 	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.claim_attachments_list_item,
-				parent, false);
-		TextView slogan = (TextView) rowView
-				.findViewById(R.id.attachment_description);
+		ViewHolder vh;
+		
+		if (convertView == null) {
+			convertView = inflater.inflate(R.layout.claim_attachments_list_item,
+					parent, false);
+			vh = new ViewHolder();
 
-		TextView id = (TextView) rowView.findViewById(R.id.attachment_id);
-		slogan.setText(slogans.get(position));
-		id.setTextSize(8);
-		id.setText(ids.get(position));
+			vh.id = (TextView) convertView.findViewById(R.id.attachment_id);
+			vh.slogan = (TextView) convertView
+					.findViewById(R.id.attachment_description);
+			vh.status = (TextView) convertView
+					.findViewById(R.id.attachment_status);
+			vh.downloadIcon = (ImageView) convertView
+					.findViewById(R.id.download_file);
+			vh.removeIcon = (ImageView) convertView
+					.findViewById(R.id.remove_icon);
+			convertView.setTag(vh);
+		} else {
+			vh = (ViewHolder) convertView.getTag();
+		}
 
-		String attachmentId = id.getText().toString();
+		vh.slogan.setText(slogans.get(position));
+		vh.id.setTextSize(8);
+		vh.id.setText(ids.get(position));
+
+		String attachmentId = vh.id.getText().toString();
 		final Attachment att = Attachment.getAttachment(attachmentId);
-
-		TextView status = (TextView) rowView
-				.findViewById(R.id.attachment_status);
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploaded));
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		} else if (att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
-			status.setText(att.getStatus());
-			status.setTextColor(context.getResources().getColor(
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_uploading));
 		}
-
-		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
-
-			ImageView picture = (ImageView) rowView
-					.findViewById(R.id.remove_icon);
-			picture.setOnClickListener(new OnClickListener() {
+		if (!readOnly) {
+			vh.removeIcon.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
@@ -160,22 +178,17 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			});
 
 		} else {
-			rowView.findViewById(R.id.remove_icon)
-					.setVisibility(View.INVISIBLE);
-			;
+			((ViewManager)convertView).removeView(vh.removeIcon);
 		}
-		ImageView downloadPic = (ImageView) rowView
-				.findViewById(R.id.download_file);
-
 		Claim claim = Claim.getClaim(claimId);
 
 		if ((!claim.getStatus().equals(ClaimStatus._CREATED) && !claim
 				.getStatus().equals(ClaimStatus._UPLOADING))
 				&& (att.getPath() == null || att.getPath().equals(""))) {
-			downloadPic.setVisibility(View.VISIBLE);
+			vh.downloadIcon.setVisibility(View.VISIBLE);
 		}
 
-		downloadPic.setOnClickListener(new OnClickListener() {
+		vh.downloadIcon.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 
@@ -195,6 +208,6 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			}
 		});
 
-		return rowView;
+		return convertView;
 	}
 }

@@ -108,7 +108,7 @@ public class BasePropertyBoundary {
 		this.map = map;
 		if (claim != null) {
 			vertices = claim.getVertices();
-			name = claim.getName() == null ? context.getResources().getString(
+			name = claim.getName() == null || claim.getName().equalsIgnoreCase("") ? context.getResources().getString(
 					R.string.default_claim_name) : claim.getName();
 			String status = claim.getStatus();
 			claimId = claim.getClaimId();
@@ -136,7 +136,9 @@ public class BasePropertyBoundary {
 
 			if (vertices != null && vertices.size() > 0) {
 				calculateGeometry();
-				marker = createMarker(center, claim.getName() + "\n"
+				String claimName = claim.getName().equalsIgnoreCase("")? context.getString(R.string.default_claim_name):claim.getName();
+				marker = createMarker(center, claimName + ", "
+						+ context.getString(R.string.by) + ": "
 						+ claim.getPerson().getFirstName() + " "
 						+ claim.getPerson().getLastName());
 			}

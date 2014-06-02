@@ -50,6 +50,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
@@ -126,13 +127,14 @@ public class PersonFragment extends Fragment {
 
 		};
 
-		dateOfBirth.setOnClickListener(new OnClickListener() {
+		dateOfBirth.setOnLongClickListener(new OnLongClickListener() {
 
 			@Override
-			public void onClick(View v) {
+			public boolean onLongClick(View v) {
 				new DatePickerDialog(rootView.getContext(), date, localCalendar
 						.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
 						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
+				return true;
 			}
 		});
 

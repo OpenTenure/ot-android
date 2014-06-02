@@ -41,6 +41,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -156,49 +157,53 @@ public class OwnersListAdapter extends ArrayAdapter<OwnersListTO> {
 		vh.picture.setImageBitmap(Person.getPersonPicture(
 				context,
 				Person.getPersonPictureFile(personId), 96));
-		vh.removeIcon.setOnClickListener(new OnClickListener() {
+		if(!readOnly){
+			vh.removeIcon.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				AlertDialog.Builder removeOwnerDialog = new AlertDialog.Builder(
-						context);
-				removeOwnerDialog
-						.setTitle(R.string.action_remove_owner);
-				removeOwnerDialog.setMessage(owners.get(position).getSlogan()
-						+ ": "
-						+ context.getResources().getString(
-								R.string.message_remove_owner));
+				@Override
+				public void onClick(View v) {
+					AlertDialog.Builder removeOwnerDialog = new AlertDialog.Builder(
+							context);
+					removeOwnerDialog
+							.setTitle(R.string.action_remove_owner);
+					removeOwnerDialog.setMessage(owners.get(position).getSlogan()
+							+ ": "
+							+ context.getResources().getString(
+									R.string.message_remove_owner));
 
-				removeOwnerDialog.setPositiveButton(
-						R.string.confirm,
-						new DialogInterface.OnClickListener() {
+					removeOwnerDialog.setPositiveButton(
+							R.string.confirm,
+							new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Owner.getOwner(claimId, owners.get(position).getId())
-										.delete();
-								owners.remove(position);
-								Toast.makeText(context,
-										R.string.owner_removed,
-										Toast.LENGTH_SHORT).show();
-								setAvailableShares();
-								notifyDataSetChanged();
-							}
-						});
-				removeOwnerDialog.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Owner.getOwner(claimId, owners.get(position).getId())
+											.delete();
+									owners.remove(position);
+									Toast.makeText(context,
+											R.string.owner_removed,
+											Toast.LENGTH_SHORT).show();
+									setAvailableShares();
+									notifyDataSetChanged();
+								}
+							});
+					removeOwnerDialog.setNegativeButton(R.string.cancel,
+							new DialogInterface.OnClickListener() {
 
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
 
-				removeOwnerDialog.show();
+					removeOwnerDialog.show();
 
-			}
-		});
+				}
+			});
+		}else{
+			((ViewManager)convertView).removeView(vh.removeIcon);
+		}
 
 		return convertView;
 	}

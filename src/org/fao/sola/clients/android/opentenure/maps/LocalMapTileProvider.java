@@ -54,7 +54,7 @@ public class LocalMapTileProvider implements TileProvider {
     private byte[] readTileImage(int x, int y, int zoom) {
         InputStream in = null;
         ByteArrayOutputStream buffer = null;
-	String tileFileName = Environment.getExternalStorageDirectory()+"/opentenure/tiles/" + zoom + "/" + x + "/" + y + ".png";
+	String tileFileName = Environment.getExternalStorageDirectory()+"/Open Tenure/tiles/" + zoom + "/" + x + "/" + y + ".png";
 
         try {
             in = new FileInputStream(tileFileName);

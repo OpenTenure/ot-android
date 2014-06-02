@@ -210,10 +210,6 @@ public class ClaimDetailsFragment extends Fragment {
 	}
 
 	private void preload() {
-		// Claim name
-		((EditText) rootView.findViewById(R.id.claim_name_input_field))
-				.setText(getResources().getString(R.string.na));
-
 		// Code Types Spinner
 		Spinner spinner = (Spinner) rootView
 				.findViewById(R.id.codeTypesSpinner);
@@ -339,9 +335,12 @@ public class ClaimDetailsFragment extends Fragment {
 						.toString());
 
 		Claim claim = new Claim();
-		claim.setName(((EditText) rootView
+		String claimName = ((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
-				.toString());
+				.toString().equalsIgnoreCase("")? rootView.getContext().getString(R.string.default_claim_name):((EditText) rootView
+						.findViewById(R.id.claim_name_input_field)).getText()
+						.toString();
+		claim.setName(claimName);
 
 
 		String displayValue = (String) ((Spinner) rootView

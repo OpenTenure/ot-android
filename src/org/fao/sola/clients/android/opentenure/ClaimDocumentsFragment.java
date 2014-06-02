@@ -116,14 +116,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.claim_documents, menu);
-		
-		//
-
-//		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
-//			menu.removeItem(R.id.action_new_picture);
-//			menu.removeItem(R.id.action_new_attachment);
-//		}
-
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -394,8 +386,14 @@ public class ClaimDocumentsFragment extends ListFragment {
 				stati.add(attachment.getStatus());
 			}
 		}
-		ArrayAdapter<String> adapter = new ClaimAttachmentsListAdapter(
-				rootView.getContext(), slogans, ids, claimId, mainActivity.getMode());
+		ArrayAdapter<String> adapter = null;
+		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+			adapter = new ClaimAttachmentsListAdapter(
+					rootView.getContext(), slogans, ids, claimId, true);
+		}else{
+			adapter = new ClaimAttachmentsListAdapter(
+					rootView.getContext(), slogans, ids, claimId, false);
+		}
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
