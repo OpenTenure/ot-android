@@ -45,8 +45,6 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
-
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -59,7 +57,7 @@ public class LocalClaimsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int CLAIM_RESULT = 100;
-
+	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 
 	@Override
@@ -77,6 +75,10 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	public LocalClaimsFragment() {
+	}
+
+	public void setExcludeClaimIds(List<String> excludeClaimIds) {
+		this.excludeClaimIds = excludeClaimIds;
 	}
 
 	@Override
@@ -154,19 +156,22 @@ public class LocalClaimsFragment extends ListFragment {
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			String claimId = ((TextView) v.findViewById(R.id.claim_id)).getText().toString();
+			String claimId = ((TextView) v.findViewById(R.id.claim_id))
+					.getText().toString();
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimId);
 			Claim claim = Claim.getClaim(claimId);
-			if(!claim.getStatus().equalsIgnoreCase(ClaimStatus._CREATED)){
-				intent.putExtra(ClaimActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
-			}else{
+			if (!claim.getStatus().equalsIgnoreCase(ClaimStatus._CREATED)) {
+				intent.putExtra(ClaimActivity.MODE_KEY,
+						ModeDispatcher.Mode.MODE_RO.toString());
+			} else {
 				intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
 						.toString());
 			}
 			startActivityForResult(intent, CLAIM_RESULT);
 		} else {
 			Intent resultIntent = new Intent();
-			String claimId = ((TextView) v.findViewById(R.id.claim_id)).getText().toString();
+			String claimId = ((TextView) v.findViewById(R.id.claim_id))
+					.getText().toString();
 			resultIntent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimId);
 			getActivity().setResult(
 					SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT,
@@ -180,31 +185,36 @@ public class LocalClaimsFragment extends ListFragment {
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
 		for (Claim claim : claims) {
-			ClaimListTO cto = new ClaimListTO();
-			String claimName = claim.getName().equalsIgnoreCase("")? rootView.getContext().getString(R.string.default_claim_name):claim.getName();
-			cto.setSlogan(claimName + ", "
-					+ getResources().getString(R.string.by) + ": "
-					+ claim.getPerson().getFirstName() + " "
-					+ claim.getPerson().getLastName());
-			cto.setId(claim.getClaimId());
-			if (claim.getStatus().equals(ClaimStatus._UPLOADING))
-				cto.setStatus(claim.getStatus());
-			else if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
-				cto.setStatus(claim.getStatus());
-			} else
-				cto.setStatus(claim.getStatus());
+			if (!excludeClaimIds.contains(claim.getClaimId())) {
 
-			int days = JsonUtilities.remainingDays(claim
-					.getChallengeExpiryDate());
+				ClaimListTO cto = new ClaimListTO();
+				String claimName = claim.getName().equalsIgnoreCase("") ? rootView
+						.getContext().getString(R.string.default_claim_name)
+						: claim.getName();
+				cto.setSlogan(claimName + ", "
+						+ getResources().getString(R.string.by) + ": "
+						+ claim.getPerson().getFirstName() + " "
+						+ claim.getPerson().getLastName());
+				cto.setId(claim.getClaimId());
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING))
+					cto.setStatus(claim.getStatus());
+				else if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
+					cto.setStatus(claim.getStatus());
+				} else
+					cto.setStatus(claim.getStatus());
 
-			if (days != 0)
-				cto.setRemaingDays(getResources().getString(
-						R.string.message_remaining_days)
-						+ days);
-			else
-				cto.setRemaingDays("");
+				int days = JsonUtilities.remainingDays(claim
+						.getChallengeExpiryDate());
 
-			claimListTOs.add(cto);
+				if (days != 0)
+					cto.setRemaingDays(getResources().getString(
+							R.string.message_remaining_days)
+							+ days);
+				else
+					cto.setRemaingDays("");
+
+				claimListTOs.add(cto);
+			}
 		}
 		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(
 				rootView.getContext(), claimListTOs);

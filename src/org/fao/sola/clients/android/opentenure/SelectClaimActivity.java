@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -41,10 +42,12 @@ import com.astuetz.PagerSlidingTabStrip;
 public class SelectClaimActivity extends FragmentActivity implements ModeDispatcher {
 
 	public static final int SELECT_CLAIM_ACTIVITY_RESULT = 200;
+	public static final String EXCLUDE_CLAIM_IDS_KEY = "excludeClaimIds";
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
-	ViewPager mViewPager;
-	PagerSlidingTabStrip tabs;
+	private List<String> excludeClaimIds;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
+	private ViewPager mViewPager;
+	private PagerSlidingTabStrip tabs;
 
 	@Override
 	public void onDestroy() {
@@ -78,7 +81,7 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		
+		excludeClaimIds = getIntent().getStringArrayListExtra(EXCLUDE_CLAIM_IDS_KEY);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -92,7 +95,11 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 
 			switch (position) {
 			case 0:
-				return new LocalClaimsFragment();
+				LocalClaimsFragment lcf = new LocalClaimsFragment();
+				if(excludeClaimIds != null){
+					lcf.setExcludeClaimIds(excludeClaimIds);
+				}
+				return lcf;
 			}
 			return null;
 		}

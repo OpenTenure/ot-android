@@ -578,6 +578,49 @@ public class Person {
 		return persons;
 	}
 
+	public static ArrayList<String> getIdsWithUploadedClaims() {
+		ArrayList<String> ids = new ArrayList<String>();
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT PERSON_ID FROM CLAIM WHERE STATUS <> 'created'");
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				ids.add(rs.getString(1));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return ids;
+	}
+
 	public static File getPersonPictureFile(String personId) {
 		return new File(FileSystemUtilities.getClaimantFolder(personId)
 				+ File.separator + personId + ".jpg");

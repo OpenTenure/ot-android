@@ -54,6 +54,7 @@ public class PersonsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int PERSON_RESULT = 100;
+	private List<String> excludePersonIds = new ArrayList<String>();
 
 	private ModeDispatcher mainActivity;
 
@@ -73,12 +74,16 @@ public class PersonsFragment extends ListFragment {
 
 	public PersonsFragment() {
 	}
-	
+
+	public void setExcludePersonIds(List<String> excludePersonIds) {
+		this.excludePersonIds = excludePersonIds;
+	}
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.persons, menu);
 
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
 		}
 
@@ -91,8 +96,10 @@ public class PersonsFragment extends ListFragment {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
-			intent.putExtra(PersonActivity.PERSON_ID_KEY, PersonActivity.CREATE_PERSON_ID);
-			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode().toString());
+			intent.putExtra(PersonActivity.PERSON_ID_KEY,
+					PersonActivity.CREATE_PERSON_ID);
+			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
+					.toString());
 			startActivityForResult(intent, PERSON_RESULT);
 			return true;
 		default:
@@ -112,25 +119,29 @@ public class PersonsFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.persons_list, container,
-				false);
+		rootView = inflater.inflate(R.layout.persons_list, container, false);
 		setHasOptionsMenu(true);
-	    EditText inputSearch = (EditText) rootView.findViewById(R.id.filter_input_field);
-	    inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-	    inputSearch.addTextChangedListener(new TextWatcher() {
+		EditText inputSearch = (EditText) rootView
+				.findViewById(R.id.filter_input_field);
+		inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		inputSearch.addTextChangedListener(new TextWatcher() {
 
-	        @Override
-	        public void onTextChanged(CharSequence cs, int arg1, int arg2, int arg3) {
-	        }
+			@Override
+			public void onTextChanged(CharSequence cs, int arg1, int arg2,
+					int arg3) {
+			}
 
-	        @Override
-	        public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) { }
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+			}
 
-	        @Override
-	        public void afterTextChanged(Editable arg0) {
-	            ((PersonsListAdapter)getListAdapter()).getFilter().filter(arg0.toString());
-	        }
-	    });
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				((PersonsListAdapter) getListAdapter()).getFilter().filter(
+						arg0.toString());
+			}
+		});
 
 		update();
 
@@ -139,16 +150,21 @@ public class PersonsFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			Intent intent = new Intent(rootView.getContext(),
 					PersonActivity.class);
-			intent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
-			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode().toString());
+			intent.putExtra(PersonActivity.PERSON_ID_KEY,
+					((TextView) v.findViewById(R.id.person_id)).getText());
+			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
+					.toString());
 			startActivityForResult(intent, PERSON_RESULT);
-		}else{
+		} else {
 			Intent resultIntent = new Intent();
-			resultIntent.putExtra(PersonActivity.PERSON_ID_KEY, ((TextView)v.findViewById(R.id.person_id)).getText());
-			getActivity().setResult(SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT, resultIntent);
+			resultIntent.putExtra(PersonActivity.PERSON_ID_KEY,
+					((TextView) v.findViewById(R.id.person_id)).getText());
+			getActivity().setResult(
+					SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT,
+					resultIntent);
 			getActivity().finish();
 		}
 	}
@@ -157,13 +173,17 @@ public class PersonsFragment extends ListFragment {
 		List<Person> persons = Person.getAllPersons();
 		List<PersonListTO> personListTOs = new ArrayList<PersonListTO>();
 
-		for(Person person : persons){
-			PersonListTO pto = new PersonListTO();
-			pto.setId(person.getPersonId());
-			pto.setSlogan(person.getFirstName()+ " " + person.getLastName());
-			personListTOs.add(pto);
+		for (Person person : persons) {
+			if (!excludePersonIds.contains(person.getPersonId())) {
+				PersonListTO pto = new PersonListTO();
+				pto.setId(person.getPersonId());
+				pto.setSlogan(person.getFirstName() + " "
+						+ person.getLastName());
+				personListTOs.add(pto);
+			}
 		}
-		ArrayAdapter<PersonListTO> adapter = new PersonsListAdapter(rootView.getContext(), personListTOs);
+		ArrayAdapter<PersonListTO> adapter = new PersonsListAdapter(
+				rootView.getContext(), personListTOs);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

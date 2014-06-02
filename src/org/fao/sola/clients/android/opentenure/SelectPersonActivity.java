@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -41,10 +42,12 @@ import com.astuetz.PagerSlidingTabStrip;
 public class SelectPersonActivity extends FragmentActivity implements ModeDispatcher {
 
 	public static final int SELECT_PERSON_ACTIVITY_RESULT = 100;
+	public static final String EXCLUDE_PERSON_IDS_KEY = "excludePersonIds";
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
-	ViewPager mViewPager;
-	PagerSlidingTabStrip tabs;
+	private SectionsPagerAdapter mSectionsPagerAdapter;
+	private ViewPager mViewPager;
+	private PagerSlidingTabStrip tabs;
+	private List<String> excludePersonIds;
 
 	@Override
 	public void onDestroy() {
@@ -78,6 +81,7 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
+		excludePersonIds = getIntent().getStringArrayListExtra(EXCLUDE_PERSON_IDS_KEY);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -91,7 +95,12 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 
 			switch (position) {
 			case 0:
-				return new PersonsFragment();
+				
+				PersonsFragment pf = new PersonsFragment();
+				if(excludePersonIds != null){
+					pf.setExcludePersonIds(excludePersonIds);
+				}
+				return pf;
 			}
 			return null;
 		}

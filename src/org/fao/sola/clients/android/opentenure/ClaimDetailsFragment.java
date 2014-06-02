@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
@@ -186,6 +187,14 @@ public class ClaimDetailsFragment extends Fragment {
 						public void onClick(View v) {
 							Intent intent = new Intent(rootView.getContext(),
 									SelectPersonActivity.class);
+
+							ArrayList<String> idsWithUploadedClaims = Person.getIdsWithUploadedClaims();
+							
+							if(idsWithUploadedClaims != null){
+								// Excluding people with uploaded claims from the list possible claimants
+								intent.putStringArrayListExtra(SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY, idsWithUploadedClaims);
+							}
+							
 							startActivityForResult(
 									intent,
 									SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
@@ -199,6 +208,12 @@ public class ClaimDetailsFragment extends Fragment {
 						public void onClick(View v) {
 							Intent intent = new Intent(rootView.getContext(),
 									SelectClaimActivity.class);
+							if(claimActivity.getClaimId() != null){
+								// excluding current claim from the list of claims that can be challenged
+								ArrayList<String> excludeList = new ArrayList<String>();
+								excludeList.add(claimActivity.getClaimId());
+								intent.putStringArrayListExtra(SelectClaimActivity.EXCLUDE_CLAIM_IDS_KEY, excludeList);
+							}
 							startActivityForResult(
 									intent,
 									SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT);

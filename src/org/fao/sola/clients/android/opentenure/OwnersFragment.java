@@ -72,6 +72,15 @@ public class OwnersFragment extends ListFragment {
 			if(claim.getAvailableShares() > 0){
 				Intent intent = new Intent(rootView.getContext(),
 						SelectPersonActivity.class);
+
+				if(claim.getOwners() != null){
+					// Ecluding persons already holding a share of the claim
+					ArrayList<String> excludePersons = new ArrayList<String>();
+					for(Owner owner : claim.getOwners()){
+						excludePersons.add(owner.getPersonId());
+					}
+					intent.putStringArrayListExtra(SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY, excludePersons);
+				}
 				startActivityForResult(
 						intent,
 						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
