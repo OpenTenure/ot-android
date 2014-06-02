@@ -199,7 +199,7 @@ public class PersonFragment extends Fragment {
 			((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
 					.setFocusable(false);
 			((EditText) rootView.findViewById(R.id.date_of_birth_input_field))
-					.setOnClickListener(null);
+					.setOnLongClickListener(null);
 			((EditText) rootView.findViewById(R.id.place_of_birth_input_field))
 					.setFocusable(false);
 			((EditText) rootView.findViewById(R.id.postal_address_input_field))
