@@ -245,32 +245,29 @@ public class ClaimDetailsFragment extends Fragment {
 		// Claimant
 		((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 		((TextView) rootView.findViewById(R.id.claimant_id))
-				.setText(getResources().getString(R.string.na));
-		((TextView) rootView.findViewById(R.id.claimant_slogan))
-				.setText(getResources().getString(R.string.na));
+				.setText("");
 		ImageView claimantImageView = (ImageView) rootView
 				.findViewById(R.id.claimant_picture);
-		claimantImageView.setImageDrawable(getResources().getDrawable(
-				R.drawable.ic_contact_picture));
-
-		// Challenged claim
-		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
-				.setTextSize(8);
-		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
-				.setText(getResources().getString(R.string.na));
-		((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-				.setText(getResources().getString(R.string.na));
-		((TextView) rootView.findViewById(R.id.challenge_to_claim_status))
-				.setText(getResources().getString(R.string.na));
-
-		// Challenged claimant
-		ImageView challengedClaimantImageView = (ImageView) rootView
-				.findViewById(R.id.challenge_to_claimant_picture);
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.ic_contact_picture);
+
+		claimantImageView.setImageBitmap(Bitmap.createScaledBitmap(
+				bitmap, 128, 128, true));
+
+		// Challenged claim
+		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
+				.setTextSize(8);
+		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
+				.setText("");
+		((TextView) rootView.findViewById(R.id.challenge_to_claim_status))
+				.setText("");
+
+		// Challenged claimant
+		ImageView challengedClaimantImageView = (ImageView) rootView
+				.findViewById(R.id.challenge_to_claimant_picture);
 
 		challengedClaimantImageView.setImageBitmap(Bitmap.createScaledBitmap(
 				bitmap, 128, 128, true));
@@ -285,7 +282,9 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setText(challengedClaim.getClaimId());
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-					.setText(challengedClaim.getName() + ", "
+			.setBackgroundColor(getResources().getColor(R.color.light_background_opentenure));
+			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
+			.setText(challengedClaim.getName() + ", "
 							+ getResources().getString(R.string.by) + ": "
 							+ challengedPerson.getFirstName() + " "
 							+ challengedPerson.getLastName());
@@ -305,6 +304,8 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 			((TextView) rootView.findViewById(R.id.claimant_id))
 					.setText(claimant.getPersonId());
+			((TextView) rootView.findViewById(R.id.claimant_slogan))
+			.setBackgroundColor(getResources().getColor(R.color.light_background_opentenure));
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
 					.setText(claimant.getFirstName() + " "
 							+ claimant.getLastName());

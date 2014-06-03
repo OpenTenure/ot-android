@@ -12,7 +12,7 @@
         android:id="@+id/claim_name_label"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="bottom"
         android:text="@string/claim_name" />
     
@@ -21,7 +21,7 @@
         android:id="@+id/claim_name_input_field"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:background="@color/dark_background_opentenure"
         android:hint="@string/claim_name"
         android:inputType="text" >
@@ -31,7 +31,7 @@
         android:id="@+id/claim_type_label"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="bottom"
         android:paddingTop="10dp"
         android:text="@string/claim_type" />
@@ -39,7 +39,8 @@
     <Spinner
     android:id="@+id/codeTypesSpinner"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
     android:background="@color/dark_background_opentenure"
     android:gravity="bottom"     
     />
@@ -49,7 +50,7 @@
         android:id="@+id/claimant_label"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="bottom"
         android:text="@string/claimant" />
 
@@ -57,7 +58,7 @@
         android:id="@+id/claimant"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:background="@color/light_background_opentenure"
         android:orientation="horizontal"
         android:padding="10dp" >
@@ -65,7 +66,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="9"
+            android:layout_weight="8"
             android:background="@color/light_background_opentenure"
             android:orientation="vertical"
             android:padding="0dp" >
@@ -84,16 +85,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/item_color"
+                android:background="@color/dark_background_opentenure"
                 android:gravity="left|center"
-                android:text="@string/title_item" />
+                android:hint="@string/message_touch_to_select_a_person" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/claimant_picture"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:contentDescription="@string/person_picture"
             android:src="@drawable/ic_contact_picture" />
     </LinearLayout>
@@ -102,7 +103,7 @@
         android:id="@+id/challenge_to_label"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="bottom"
         android:text="@string/challenge_to" />
 
@@ -110,7 +111,7 @@
         android:id="@+id/challenge_to"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="4"
         android:background="@color/light_background_opentenure"
         android:orientation="horizontal"
         android:padding="10dp" >
@@ -118,7 +119,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="9"
+            android:layout_weight="8"
             android:background="@color/light_background_opentenure"
             android:orientation="vertical"
             android:padding="0dp" >
@@ -137,9 +138,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@drawable/item_color"
+                android:background="@color/dark_background_opentenure"
                 android:gravity="left|center"
-                android:text="@string/title_item" />
+                android:hint="@string/message_touch_to_select_a_claim" />
 
             <TextView
                 android:id="@+id/challenge_to_claim_status"
@@ -155,7 +156,7 @@
             android:id="@+id/challenge_to_claimant_picture"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:contentDescription="@string/person_picture"
             android:src="@drawable/ic_contact_picture" />
     </LinearLayout>
