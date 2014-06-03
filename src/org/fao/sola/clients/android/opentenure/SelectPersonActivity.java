@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -47,7 +47,7 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	private PagerSlidingTabStrip tabs;
-	private List<String> excludePersonIds;
+	private ArrayList<String> excludePersonIds;
 
 	@Override
 	public void onDestroy() {
@@ -81,7 +81,12 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		excludePersonIds = getIntent().getStringArrayListExtra(EXCLUDE_PERSON_IDS_KEY);
+		if (savedInstanceState != null
+				&& savedInstanceState.getStringArrayList(EXCLUDE_PERSON_IDS_KEY) != null) {
+			excludePersonIds = savedInstanceState.getStringArrayList(EXCLUDE_PERSON_IDS_KEY);
+		} else {
+			excludePersonIds = getIntent().getStringArrayListExtra(EXCLUDE_PERSON_IDS_KEY);
+		}
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -120,6 +125,11 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 			return null;
 		}
 	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putStringArrayList(EXCLUDE_PERSON_IDS_KEY, excludePersonIds);
+	};
 
 	@Override
 	public Mode getMode() {

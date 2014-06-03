@@ -188,13 +188,17 @@ public class ClaimDetailsFragment extends Fragment {
 							Intent intent = new Intent(rootView.getContext(),
 									SelectPersonActivity.class);
 
-							ArrayList<String> idsWithUploadedClaims = Person.getIdsWithUploadedClaims();
-							
-							if(idsWithUploadedClaims != null){
-								// Excluding people with uploaded claims from the list possible claimants
-								intent.putStringArrayListExtra(SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY, idsWithUploadedClaims);
+							ArrayList<String> idsWithUploadedClaims = Person
+									.getIdsWithUploadedClaims();
+
+							if (idsWithUploadedClaims != null) {
+								// Excluding people with uploaded claims from
+								// the list possible claimants
+								intent.putStringArrayListExtra(
+										SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+										idsWithUploadedClaims);
 							}
-							
+
 							startActivityForResult(
 									intent,
 									SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
@@ -208,12 +212,28 @@ public class ClaimDetailsFragment extends Fragment {
 						public void onClick(View v) {
 							Intent intent = new Intent(rootView.getContext(),
 									SelectClaimActivity.class);
-							if(claimActivity.getClaimId() != null){
-								// excluding current claim from the list of claims that can be challenged
-								ArrayList<String> excludeList = new ArrayList<String>();
-								excludeList.add(claimActivity.getClaimId());
-								intent.putStringArrayListExtra(SelectClaimActivity.EXCLUDE_CLAIM_IDS_KEY, excludeList);
+							// Excluding from the list of claims that can be
+							// challenged
+							ArrayList<String> excludeList = new ArrayList<String>();
+							List<Claim> claims = Claim.getAllClaims();
+							for (Claim claim : claims) {
+								// Challenges and local claims not yet
+								// uploaded
+								if (claim.getChallengedClaim() != null
+										|| claim.getStatus()
+												.equalsIgnoreCase(
+														Claim.Status.created
+																.toString())
+										|| claim.getStatus()
+												.equalsIgnoreCase(
+														Claim.Status.uploading
+																.toString())){
+									excludeList.add(claim.getClaimId());
+								}
 							}
+							intent.putStringArrayListExtra(
+									SelectClaimActivity.EXCLUDE_CLAIM_IDS_KEY,
+									excludeList);
 							startActivityForResult(
 									intent,
 									SelectClaimActivity.SELECT_CLAIM_ACTIVITY_RESULT);
@@ -237,15 +257,13 @@ public class ClaimDetailsFragment extends Fragment {
 				OpenTenureApplication.getContext(),
 				android.R.layout.simple_spinner_item, list) {
 		};
-		dataAdapter
-				.setDropDownViewResource(R.layout.my_spinner);
-		
+		dataAdapter.setDropDownViewResource(R.layout.my_spinner);
+
 		spinner.setAdapter(dataAdapter);
 
 		// Claimant
 		((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
-		((TextView) rootView.findViewById(R.id.claimant_id))
-				.setText("");
+		((TextView) rootView.findViewById(R.id.claimant_id)).setText("");
 		ImageView claimantImageView = (ImageView) rootView
 				.findViewById(R.id.claimant_picture);
 
@@ -254,8 +272,8 @@ public class ClaimDetailsFragment extends Fragment {
 		Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
 				R.drawable.ic_contact_picture);
 
-		claimantImageView.setImageBitmap(Bitmap.createScaledBitmap(
-				bitmap, 128, 128, true));
+		claimantImageView.setImageBitmap(Bitmap.createScaledBitmap(bitmap, 128,
+				128, true));
 
 		// Challenged claim
 		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
@@ -282,9 +300,10 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setText(challengedClaim.getClaimId());
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-			.setBackgroundColor(getResources().getColor(R.color.light_background_opentenure));
+					.setBackgroundColor(getResources().getColor(
+							R.color.light_background_opentenure));
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-			.setText(challengedClaim.getName() + ", "
+					.setText(challengedClaim.getName() + ", "
 							+ getResources().getString(R.string.by) + ": "
 							+ challengedPerson.getFirstName() + " "
 							+ challengedPerson.getLastName());
@@ -305,7 +324,8 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.claimant_id))
 					.setText(claimant.getPersonId());
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
-			.setBackgroundColor(getResources().getColor(R.color.light_background_opentenure));
+					.setBackgroundColor(getResources().getColor(
+							R.color.light_background_opentenure));
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
 					.setText(claimant.getFirstName() + " "
 							+ claimant.getLastName());
@@ -331,7 +351,8 @@ public class ClaimDetailsFragment extends Fragment {
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setFocusable(false);
-				((Spinner) rootView.findViewById(R.id.codeTypesSpinner)).setFocusable(false);
+				((Spinner) rootView.findViewById(R.id.codeTypesSpinner))
+						.setFocusable(false);
 			}
 
 			Person claimant = claim.getPerson();
@@ -353,11 +374,11 @@ public class ClaimDetailsFragment extends Fragment {
 		Claim claim = new Claim();
 		String claimName = ((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
-				.toString().equalsIgnoreCase("")? rootView.getContext().getString(R.string.default_claim_name):((EditText) rootView
-						.findViewById(R.id.claim_name_input_field)).getText()
-						.toString();
+				.toString().equalsIgnoreCase("") ? rootView.getContext()
+				.getString(R.string.default_claim_name) : ((EditText) rootView
+				.findViewById(R.id.claim_name_input_field)).getText()
+				.toString();
 		claim.setName(claimName);
-
 
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.codeTypesSpinner)).getSelectedItem();

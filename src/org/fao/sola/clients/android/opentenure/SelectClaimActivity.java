@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import android.os.Bundle;
@@ -44,7 +44,7 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 	public static final int SELECT_CLAIM_ACTIVITY_RESULT = 200;
 	public static final String EXCLUDE_CLAIM_IDS_KEY = "excludeClaimIds";
 
-	private List<String> excludeClaimIds;
+	private ArrayList<String> excludeClaimIds;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
 	private PagerSlidingTabStrip tabs;
@@ -81,7 +81,12 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		excludeClaimIds = getIntent().getStringArrayListExtra(EXCLUDE_CLAIM_IDS_KEY);
+		if (savedInstanceState != null
+				&& savedInstanceState.getStringArrayList(EXCLUDE_CLAIM_IDS_KEY) != null) {
+			excludeClaimIds = savedInstanceState.getStringArrayList(EXCLUDE_CLAIM_IDS_KEY);
+		} else {
+			excludeClaimIds = getIntent().getStringArrayListExtra(EXCLUDE_CLAIM_IDS_KEY);
+		}
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -119,6 +124,11 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 			return null;
 		}
 	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putStringArrayList(EXCLUDE_CLAIM_IDS_KEY, excludeClaimIds);
+	};
 
 	@Override
 	public Mode getMode() {
