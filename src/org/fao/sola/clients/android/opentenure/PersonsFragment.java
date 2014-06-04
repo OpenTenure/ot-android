@@ -54,7 +54,9 @@ public class PersonsFragment extends ListFragment {
 
 	private View rootView;
 	private static final int PERSON_RESULT = 100;
+	private static final String FILTER_KEY = "filter";
 	private List<String> excludePersonIds = new ArrayList<String>();
+	private String filter = null;
 
 	private ModeDispatcher mainActivity;
 
@@ -138,15 +140,30 @@ public class PersonsFragment extends ListFragment {
 
 			@Override
 			public void afterTextChanged(Editable arg0) {
+				filter = arg0.toString();
 				((PersonsListAdapter) getListAdapter()).getFilter().filter(
-						arg0.toString());
+						filter);
 			}
 		});
 
 		update();
 
+		if(savedInstanceState != null && savedInstanceState.getString(FILTER_KEY) != null){
+			filter = savedInstanceState.getString(FILTER_KEY);
+			((PersonsListAdapter) getListAdapter()).getFilter().filter(filter);
+		}
+
 		return rootView;
 	}
+
+	@Override
+	public void onResume() {
+		update();
+		if(filter != null){
+			((PersonsListAdapter) getListAdapter()).getFilter().filter(filter);
+		}
+		super.onResume();
+	};
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
@@ -187,5 +204,10 @@ public class PersonsFragment extends ListFragment {
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
+	}
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(FILTER_KEY, filter);
+		super.onSaveInstanceState(outState);
 	}
 }

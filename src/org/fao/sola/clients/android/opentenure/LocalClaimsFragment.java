@@ -55,10 +55,12 @@ import android.widget.TextView;
 
 public class LocalClaimsFragment extends ListFragment {
 
-	private View rootView;
 	private static final int CLAIM_RESULT = 100;
+	private static final String FILTER_KEY = "filter";
+	private View rootView;
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
+	private String filter = null;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -141,15 +143,29 @@ public class LocalClaimsFragment extends ListFragment {
 
 			@Override
 			public void afterTextChanged(Editable arg0) {
-				((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(
-						arg0.toString());
+				filter = arg0.toString();
+				((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
 			}
 		});
 
 		update();
 
+		if(savedInstanceState != null && savedInstanceState.getString(FILTER_KEY) != null){
+			filter = savedInstanceState.getString(FILTER_KEY);
+			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
+		}
+
 		return rootView;
 	}
+	
+	@Override
+	public void onResume() {
+		update();
+		if(filter != null){
+			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
+		}
+		super.onResume();
+	};
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
@@ -221,5 +237,11 @@ public class LocalClaimsFragment extends ListFragment {
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(FILTER_KEY, filter);
+		super.onSaveInstanceState(outState);
 	}
 }
