@@ -445,8 +445,8 @@ public class Person {
 			statement.setString(6, getPostalAddress());
 			statement.setString(7, getMobilePhoneNumber());
 			statement.setString(8, getContactPhoneNumber());
-			statement.setString(9, getPersonId());
-			statement.setString(10, getGender());
+			statement.setString(9, getGender());
+			statement.setString(10, getPersonId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

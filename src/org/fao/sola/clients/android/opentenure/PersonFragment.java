@@ -250,7 +250,7 @@ public class PersonFragment extends Fragment {
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
 
-	public void savePerson() {
+	public int savePerson() {
 		Person person = new Person();
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
@@ -295,11 +295,13 @@ public class PersonFragment extends Fragment {
 			personActivity.setPersonId(person.getPersonId());
 			personPictureFile = Person.getPersonPictureFile(person
 					.getPersonId());
+			return 1;
 		}
+		return 0;
 
 	}
 
-	public void updatePerson() {
+	public int updatePerson() {
 
 		Person person = Person.getPerson(personActivity.getPersonId());
 		person.setFirstName(((EditText) rootView
@@ -339,7 +341,7 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
-		person.update();
+		return person.update();
 	}
 
 	@Override
@@ -351,8 +353,8 @@ public class PersonFragment extends Fragment {
 		case R.id.action_save:
 
 			if (personActivity.getPersonId() == null) {
-				savePerson();
-				if (personActivity.getPersonId() != null) {
+				
+				if (savePerson() == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
@@ -364,8 +366,8 @@ public class PersonFragment extends Fragment {
 					toast.show();
 				}
 			} else {
-				updatePerson();
-				if (personActivity.getPersonId() != null) {
+				
+				if (updatePerson() == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
