@@ -55,6 +55,7 @@ public class OpenTenureApplication extends Application {
 	    private Database database;
 	    private static Context context;
 	    private boolean checkedTypes = false;
+	    private boolean checkedDocTypes = false;
 	    
 	    
 	    private static boolean loggedin ;
@@ -65,6 +66,7 @@ public class OpenTenureApplication extends Application {
 		private static CookieStore cookieStore;
 		private static HttpContext http_context;
 		private static MainMapFragment mapFragment;
+		private static PersonsFragment personsFragment;
 		
 		
 
@@ -156,7 +158,16 @@ public class OpenTenureApplication extends Application {
 			OpenTenureApplication.context = context;
 		}
 
-		
+
+
+		public boolean isCheckedDocTypes() {
+			return checkedDocTypes;
+		}
+
+		public void setCheckedDocTypes(boolean checkedDocTypes) {
+			this.checkedDocTypes = checkedDocTypes;
+		}
+
 		/*
 		 * Return the single instance of the inizialized HttpClient
 		 * that handle connection and session to the server 
@@ -200,6 +211,14 @@ public class OpenTenureApplication extends Application {
 
 		public static void setClaimTypes(List<ClaimType> claimTypes) {
 			OpenTenureApplication.claimTypes = claimTypes;
+		}
+
+		public static PersonsFragment getPersonsFragment() {
+			return personsFragment;
+		}
+
+		public static void setPersonsFragment(PersonsFragment personsFragment) {
+			OpenTenureApplication.personsFragment = personsFragment;
 		}
 
 		/*

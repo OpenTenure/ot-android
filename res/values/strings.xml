@@ -84,6 +84,10 @@
     <string name="owner_removed">The owner has been removed</string>
     <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
+    <string name="message_attachment_downloaded">Downloaded the attachment %s</string>
+    <string name="message_attachment_downloading">Attachment %s already downloading </string>
+    <string name="message_attachment_download_failed">Download of attachment %s failed </string>    
+    <string name="message_attachment_download_not_complete">Download of attachment %s not completed </string>
     <string name="message_remaining_days">Remaining days to challenge the claim :  </string>
     <string name="message_map_snapshot_saved">Map snapshot saved</string>
     <string name="message_downloading_attachment">Downloading the attachment</string>

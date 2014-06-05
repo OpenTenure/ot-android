@@ -411,7 +411,7 @@ public class CommunityServerAPI {
 
 				Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED SIZE"
 						+ byteArray.length);
-				
+
 				methodResponse.setArray(byteArray);
 				methodResponse.setHttpStatusCode(response.getStatusLine()
 						.getStatusCode());
@@ -509,16 +509,21 @@ public class CommunityServerAPI {
 				}.getType();
 				List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> claimTypeList = new Gson()
 						.fromJson(json, listType);
-				
-				if(claimTypeList != null)
-					Log.d("CommunityServerAPI", "Ho recuperato la lista dei TYPES di dimensione" + claimTypeList.size());
+
+				if (claimTypeList != null)
+					Log.d("CommunityServerAPI",
+							"Ho recuperato la lista dei TYPES di dimensione"
+									+ claimTypeList.size());
 
 				return claimTypeList;
 
 			} else {
 
-				Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES NOT SUCCEDED : HTTP STATUS " + response.getStatusLine().getStatusCode() + "  " 
-						+ response.getStatusLine().getReasonPhrase());
+				Log.d("CommunityServerAPI",
+						"GET ALL CLAIM TYPES NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
 
 				return null;
 
@@ -526,13 +531,68 @@ public class CommunityServerAPI {
 
 		} catch (Exception ex) {
 
-			Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES ERROR "
-					+ ex.getMessage());
+			Log.d("CommunityServerAPI",
+					"GET ALL CLAIM TYPES ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 
 		}
 
+	}
+
+	public static List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> getdocumentTypes() {
+
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI",
+						"GET ALL DOCUMENT TYPES JSON RESPONSE " + json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.ClaimType>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> claimTypeList = new Gson()
+						.fromJson(json, listType);
+
+				if (claimTypeList != null)
+					Log.d("CommunityServerAPI",
+							"Ho recuperato la lista dei TYPES di dimensione"
+									+ claimTypeList.size());
+
+				return claimTypeList;
+
+			} else {
+
+				Log.d("CommunityServerAPI",
+						"GET ALL DOCUMENT TYPES NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI",
+					"GET ALL CLAIM TYPES ERROR " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
+		}
 	}
 
 	public static SaveClaimResponse saveClaim(String claim) {

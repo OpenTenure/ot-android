@@ -1,13 +1,7 @@
 package org.fao.sola.clients.android.opentenure.network;
 
-
-
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.R.id;
-import org.fao.sola.clients.android.opentenure.R.layout;
-import org.fao.sola.clients.android.opentenure.R.menu;
-import org.fao.sola.clients.android.opentenure.R.string;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.animation.Animator;
@@ -27,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 //import com.abblasio.login.LoginPlainGet;
 
 /**
@@ -34,8 +29,6 @@ import android.widget.Toast;
  * well.
  */
 public class LoginActivity extends Activity {
-	
-	
 
 	/**
 	 * The default email to populate the email field with.
@@ -62,12 +55,11 @@ public class LoginActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 
 		setContentView(R.layout.activity_login);
 
 		// Set up the login form.
-		
+
 		mUsernameView = (EditText) findViewById(R.id.username);
 		mUsernameView.setText(mUsername);
 
@@ -158,7 +150,7 @@ public class LoginActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			mAuthTask = new UserLoginTask();
-			mAuthTask.execute(mUsername,mPassword);
+			mAuthTask.execute(mUsername, mPassword);
 		}
 	}
 
@@ -207,76 +199,79 @@ public class LoginActivity extends Activity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<String, Void, Integer > {
-		
+	public class UserLoginTask extends AsyncTask<String, Void, Integer> {
+
 		protected Integer doInBackground(String... params) {
 			// TODO: attempt authentication against a network service.
 
 			try {
-				
-			   return CommunityServerAPI.login(params[0], params[1]);
-			   
-				
+
+				return CommunityServerAPI.login(params[0], params[1]);
+
 			} catch (Throwable ex) {
-				
-				Log.d("LoginActivity","Ok, An error has occurred during login:" + ex.getMessage());
+
+				Log.d("LoginActivity",
+						"Ok, An error has occurred during login:"
+								+ ex.getMessage());
 				ex.printStackTrace();
 				return 0;
 			}
-			
+
 		}
+
 		@Override
 		protected void onPostExecute(final Integer status) {
 			mAuthTask = null;
 			showProgress(false);
-			
+
 			Toast toast;
-			
+
 			switch (status) {
 			case 200:
 				OpenTenureApplication.setLoggedin(true);
 				OpenTenureApplication.setUsername(mUsername);
-				
-				FragmentActivity fa = (FragmentActivity) OpenTenureApplication.getActivity();
+
+				FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+						.getActivity();
 				fa.invalidateOptionsMenu();
-				
-				toast = Toast
-						.makeText(OpenTenureApplication.getContext(),
-								R.string.message_login_ok,
-								Toast.LENGTH_SHORT);
-				toast.show();	
-				
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						R.string.message_login_ok, Toast.LENGTH_SHORT);
+				toast.show();
+
 				finish();
-				
+
 				break;
 			case 401:
-				mPasswordView.setError(getString(R.string.error_incorrect_password));
+				mPasswordView
+						.setError(getString(R.string.error_incorrect_password));
 				mPasswordView.requestFocus();
-				
+
 				break;
-				
+
 			case 404:
 				mPasswordView.setError(getString(R.string.error_generic_login));
 				mPasswordView.requestFocus();
-				
-				break;	
-				
+
+				break;
+
 			case 80:
-				mPasswordView.setError(getString(R.string.error_generic_conection));
+				mPasswordView
+						.setError(getString(R.string.error_generic_conection));
 				mPasswordView.requestFocus();
-				
-				break;	
-				
+
+				break;
+
 			case 0:
 				mPasswordView.setError(getString(R.string.error_generic_login));
 				mPasswordView.requestFocus();
-				
-				break;	
+
+				break;
 
 			default:
 				break;
 			}
-			
+
 		}
 
 		@Override
@@ -284,7 +279,6 @@ public class LoginActivity extends Activity {
 			mAuthTask = null;
 			showProgress(false);
 		}
-
 
 	}
 }

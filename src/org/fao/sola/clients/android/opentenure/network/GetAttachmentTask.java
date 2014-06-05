@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
@@ -41,11 +43,17 @@ import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentRes
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
-public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
+/**
+ * Get the requested attachment, downloading from the community server.
+ * Implements the resume of partial download.
+ * 
+ * */
+public class GetAttachmentTask extends AsyncTask<String, Void, String[]> {
 
 	@Override
-	protected Boolean doInBackground(String... params) {
+	protected String[] doInBackground(String... params) {
 		// TODO Auto-generated method stub
 
 		/*
@@ -54,18 +62,22 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 		GetAttachmentResponse res = null;
 		int lenght = 100000; /* Should be setted by property */
 		long offSet = 0;
+		String[] sentences = new String[2];
 
 		Attachment att = Attachment.getAttachment(params[1]);
-		
-		if(att.getStatus().equals(AttachmentStatus._DOWNLOADING)){
-			
-			return true;
-		}else{
-			
+
+		if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
+
+			sentences[0] = att.getStatus();
+			sentences[1] = att.getFileName();
+
+			return sentences;
+		} else {
+
 			att.setStatus(AttachmentStatus._DOWNLOADING);
 			Attachment.updateAttachment(att);
-			
-			}
+
+		}
 
 		File file = new File(
 				FileSystemUtilities.getAttachmentFolder(params[0]),
@@ -116,9 +128,6 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 					fos.write(res.getArray());
 					fos.close();
 
-					Log.d("CommunityServerAPI",
-							"AL momento la lunghezza del file e' "
-									+ file.length());
 					offSet = offSet + lenght;
 
 				} else if (res.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
@@ -150,7 +159,7 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 
 			}
 
-			if (att.getSize() == file.length()
+			if (file != null && att.getSize() == file.length()
 					&& MD5.checkMD5(res.getMd5(), file)) {
 
 				att.setPath(file.getAbsolutePath());
@@ -188,7 +197,65 @@ public class GetAttachmentTask extends AsyncTask<String, Void, Boolean> {
 
 		}
 
-		return null;
+		sentences[0] = att.getStatus();
+		sentences[1] = att.getFileName();
+
+		return sentences;
+	}
+
+	@Override
+	protected void onPostExecute(String[] sentences) {
+
+		if (sentences[0].equals(AttachmentStatus._UPLOADED)) {
+
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(R.string.message_attachment_downloaded,
+							sentences[1]));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+		} else if (sentences[0].equals(AttachmentStatus._DOWNLOAD_FAILED)) {
+
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(R.string.message_attachment_download_failed,
+							sentences[1]));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+		} else if (sentences[0].equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
+
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(
+							R.string.message_attachment_download_not_complete,
+							sentences[1]));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+		} else if (sentences[0].equals(AttachmentStatus._DOWNLOADING)) {
+
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(R.string.message_attachment_downloading,
+							sentences[1]));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+		}
+
 	}
 
 }

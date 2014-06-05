@@ -37,6 +37,11 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+
+/**
+ * Task which performs the logout request and update the status 
+ * 
+ * */
 public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 	
 	FragmentActivity fa;

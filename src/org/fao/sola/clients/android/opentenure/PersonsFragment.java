@@ -152,6 +152,9 @@ public class PersonsFragment extends ListFragment {
 			filter = savedInstanceState.getString(FILTER_KEY);
 			((PersonsListAdapter) getListAdapter()).getFilter().filter(filter);
 		}
+		
+		// Setted this reference  at Application level to refresh 
+		OpenTenureApplication.setPersonsFragment(this);
 
 		return rootView;
 	}
@@ -209,5 +212,10 @@ public class PersonsFragment extends ListFragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(FILTER_KEY, filter);
 		super.onSaveInstanceState(outState);
+	}
+	
+	public void refresh(){
+		
+		update();
 	}
 }

@@ -41,12 +41,18 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import android.util.Log;
 
+/**
+ * Loop on the list of Claims to download, retrieving them once for time and
+ * adding them on the local DB. The necessary file system is created indeed
+ * */
 public class GetClaims {
 
 	public static boolean execute(
@@ -251,6 +257,58 @@ public class GetClaims {
 					FileSystemUtilities.createClaimantFolder(claimant.getId());
 					FileSystemUtilities.createClaimFileSystem(downloadedClaim
 							.getId());
+
+				}
+
+				List<Share> shares = downloadedClaim.getShares();
+
+				for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
+					Share share = (Share) iterator.next();
+
+					List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Person> sharePersons = share
+							.getOwners();
+
+					for (Iterator iterator2 = sharePersons.iterator(); iterator2
+							.hasNext();) {
+						org.fao.sola.clients.android.opentenure.filesystem.json.model.Person person2 = (org.fao.sola.clients.android.opentenure.filesystem.json.model.Person) iterator2.next();
+
+						Person personDB2 = new Person();
+
+						personDB2.setContactPhoneNumber(person2
+								.getPhone());
+						
+						
+						Calendar cal = JsonUtilities
+								.toCalendar(claimant.getBirthDate());
+						birth = cal.getTime();
+
+						if (birth != null)
+							personDB2.setDateOfBirth(new java.sql.Date(birth.getTime()));
+						else
+							personDB2.setDateOfBirth(new java.sql.Date(2000, 2, 3));
+						
+						personDB2.setEmailAddress(person2.getEmail());
+						personDB2.setFirstName(person2.getName());
+						personDB2.setGender(person2.getGenderCode());
+						personDB2.setLastName(person2.getLastName());
+						personDB2.setMobilePhoneNumber(person2
+								.getMobilePhone());
+						personDB2.setPersonId(person2.getId());
+						//personDB2.setPlaceOfBirth(person2.get);
+						personDB2.setPostalAddress(person2.getAddress());
+
+						Person.createPerson(personDB2);
+
+					}
+					
+					Owner owner = new Owner();
+					
+					owner.setClaimId(downloadedClaim.getId());
+					owner.setId(share.getId());
+					owner.setPersonId(sharePersons.get(0).getId());
+					owner.setShares(share.getNominator());
+					
+					Owner.createOwner(owner);
 
 				}
 

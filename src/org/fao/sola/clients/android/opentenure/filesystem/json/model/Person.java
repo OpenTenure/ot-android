@@ -27,24 +27,9 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
-import java.util.Date;
-
 import com.google.gson.annotations.SerializedName;
 
-public class Claimant {
-
-	@SerializedName("id")          private String id;
-	@SerializedName("name")        private String name;
-	@SerializedName("lastName")    private String lastName;
-	@SerializedName("idTypeCode")  private String idTypeCode;
-	@SerializedName("idNumber")    private String idNumber;
-	//@SerializedName("placeOfBirth")private String placeOfBirth;
-	@SerializedName("address")     private String address;
-	@SerializedName("mobilePhone") private String mobilePhone;
-	@SerializedName("phone")       private String phone;
-	@SerializedName("email")       private String email;
-	@SerializedName("birthDate")   private String birthDate;
-	@SerializedName("genderCode")  private String genderCode;
+public class Person {
 	
 	
 	public String getId() {
@@ -77,12 +62,6 @@ public class Claimant {
 	public void setIdNumber(String idNumber) {
 		this.idNumber = idNumber;
 	}
-//	public String getPlaceOfBirth() {
-//		return placeOfBirth;
-//	}
-//	public void setPlaceOfBirth(String placeOfBirth) {
-//		this.placeOfBirth = placeOfBirth;
-//	}
 	public String getAddress() {
 		return address;
 	}
@@ -107,13 +86,12 @@ public class Claimant {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 	public String getBirthDate() {
 		return birthDate;
 	}
 	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
-	}
+	}	
 	public String getGenderCode() {
 		if (genderCode.equals("male"))
 				return "M";
@@ -128,5 +106,18 @@ public class Claimant {
 		if(genderCode.equals("F"))		
 			this.genderCode = "female";		
 	}
+	
+	@SerializedName("id")          private String id;
+	@SerializedName("name")        private String name;
+	@SerializedName("lastName")    private String lastName;
+	@SerializedName("idTypeCode")  private String idTypeCode;
+	@SerializedName("idNumber")    private String idNumber;
+	//@SerializedName("placeOfBirth")private String placeOfBirth;
+	@SerializedName("address")     private String address;
+	@SerializedName("mobilePhone") private String mobilePhone;
+	@SerializedName("phone")       private String phone;
+	@SerializedName("email")       private String email;
+	@SerializedName("birthDate")   private String birthDate;
+	@SerializedName("genderCode")  private String genderCode;
 
 }

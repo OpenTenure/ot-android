@@ -27,7 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -41,8 +40,14 @@ import android.os.AsyncTask;
 
 import android.widget.Toast;
 
+/**
+ * Get the list of all claims within the current map box
+ * 
+ * */
 public class GetAllClaimsTask extends
 		AsyncTask<LatLngBounds, Void, List<Claim>> {
+
+	
 
 	@Override
 	protected List<Claim> doInBackground(LatLngBounds... params) {

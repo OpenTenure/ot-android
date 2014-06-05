@@ -46,6 +46,13 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+
+/**
+ * The save Claim upload all the meta data about the Claim
+ *  to the community server, sending the claim.json . 
+ *  If the server is missing some claims for that claim ,   
+ * 
+ * **/
 public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 
 	@Override
@@ -65,6 +72,8 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 
 		switch (res.getHttpStatusCode()) {
 		case 200:
+			
+			/* OK */
 
 			try {
 
@@ -92,6 +101,8 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 403:
+			
+			/*Error Login*/
 
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
@@ -105,6 +116,9 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 452:
+			
+			/*Missing Attachments */
+			
 			if (claim.getStatus().equals(ClaimStatus._CREATED)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();

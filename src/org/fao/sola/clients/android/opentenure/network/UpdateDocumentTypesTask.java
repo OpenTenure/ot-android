@@ -27,39 +27,52 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
+import java.util.Iterator;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.DocumentType;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
-/** Here transfers one chunk at time. Return true if all the chunks of an attachment are correctly transferred . */ 
-
-
-public class UploadChunksTask extends
-		AsyncTask<String, Void, UploadChunksResponse> {
-
+public class UpdateDocumentTypesTask extends
+AsyncTask<String, Void, List<ClaimType>>{
+	
+	
 	@Override
-	protected UploadChunksResponse doInBackground(String... params) {
+	protected List<ClaimType> doInBackground(String... params) {
+		List<ClaimType> types = CommunityServerAPI.getdocumentTypes();
 
-		UploadChunks ulc = new UploadChunks();
-		UploadChunksResponse res = ulc.execute(params[0]);
-
-		return res;
+		// TODO Auto-generated method stub
+		return types;
 	}
+	
+	@Override
+	protected void onPostExecute(List<ClaimType> types) {
+		
+		
 
-	protected void onPostExecute(final UploadChunksResponse res) {
+		if (types != null && (types.size() > 0)) {
 
-		if (res.getSuccess()) {
+			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+				ClaimType documentType = (ClaimType) iterator.next();
 
-			/**
-			 * All the Chunk of the claim are uploaded . Call SaveAttachment to
-			 * close the flow. There 's the risk of a infinite loop
-			 ***/
+				org.fao.sola.clients.android.opentenure.model.DocumentType type = new org.fao.sola.clients.android.opentenure.model.DocumentType();
 
-			SaveAttachmentTask sat = new SaveAttachmentTask();
-			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, res.getAttachmentId());
+				
+				type.setDescription(documentType.getDescription());
+				type.setCode(documentType.getCode());
+				type.setDisplayValue(documentType.getDisplayValue());
+				type.add();
+
+			}
+			
+			OpenTenureApplication.getInstance().setCheckedDocTypes(true);	
 
 		}
-
 	}
 
 }

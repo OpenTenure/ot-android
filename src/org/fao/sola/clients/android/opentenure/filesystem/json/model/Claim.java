@@ -65,6 +65,8 @@ public class Claim {
 	
 	@SerializedName("typeCode") String typeCode;
 	
+	@SerializedName("shares") List<Share> shares;
+	
 	
 
 	public String getId() {
@@ -75,16 +77,6 @@ public class Claim {
 		this.id = id;
 	}
 
-
-
-	public org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant getPerson() {
-		return claimant;
-	}
-
-	public void setPerson(
-			org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant claimant) {
-		this.claimant = claimant;
-	}
 
 
 
@@ -186,6 +178,14 @@ public class Claim {
 
 	public void setTypeCode(String typeCode) {
 		this.typeCode = typeCode;
+	}
+
+	public List<Share> getShares() {
+		return shares;
+	}
+
+	public void setShares(List<Share> shares) {
+		this.shares = shares;
 	}
 
 

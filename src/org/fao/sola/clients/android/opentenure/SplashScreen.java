@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -77,6 +78,13 @@ public class SplashScreen extends Activity {
 			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
 
 				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
+				updateCT.execute();
+
+			}
+			
+			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
+
+				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
 				updateCT.execute();
 
 			}

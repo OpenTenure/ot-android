@@ -84,6 +84,10 @@
     <string name="owner_removed">Quota rimossa</string>
     <string name="additional_info_removed">Informazione rimossa</string>
     <string name="message_saved">Salvato</string>
+    <string name="message_attachment_downloaded">Scaricato l\'attachment %s</string>        
+    <string name="message_attachment_downloading">L\'Attachment %s e\' gia\' in download </string>
+    <string name="message_attachment_download_failed">Fallito il download dell\'attachment %s</string>
+    <string name="message_attachment_download_not_complete">IL download dell\' attachment %s non e\' completo </string>
     <string name="message_remaining_days">Giorni che rimangono per sfidare il claim:  </string>
     <string name="message_map_snapshot_saved">Immagine della mappa salvata</string>
     <string name="message_invalid_url">URL non valido</string>

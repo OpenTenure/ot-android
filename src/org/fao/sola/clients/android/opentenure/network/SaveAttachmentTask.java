@@ -44,6 +44,14 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+
+/**
+ * Task which perform the upload of the meta data of the uploading file
+ * If the response is OK , the task check if all attachments are uploaded
+ * and in case close the uploading of the claims  
+ * 
+ * */
+
 public class SaveAttachmentTask extends
 		AsyncTask<String, Void, SaveAttachmentResponse> {
 
@@ -52,11 +60,11 @@ public class SaveAttachmentTask extends
 		// TODO Auto-generated method stub
 
 		String json = FileSystemUtilities.getJsonAttachment(params[0]);
-		
+
 		Attachment toUpdate = Attachment.getAttachment(params[0]);
 		toUpdate.setStatus(AttachmentStatus._UPLOADING);
 		Attachment.updateAttachment(toUpdate);
-		
+
 		SaveAttachmentResponse res = CommunityServerAPI.saveAttachment(json,
 				params[0]);
 
@@ -77,53 +85,54 @@ public class SaveAttachmentTask extends
 
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-			Attachment toUpdate = Attachment.getAttachment(res.getAttachmentId());
-						toUpdate.setStatus(AttachmentStatus._UPLOADED);
-				
-						Attachment.updateAttachment(toUpdate);
+			Attachment toUpdate = Attachment.getAttachment(res
+					.getAttachmentId());
+			toUpdate.setStatus(AttachmentStatus._UPLOADED);
 
+			Attachment.updateAttachment(toUpdate);
 
 			/*
 			 * Now check the list of attachment for that Claim . If all the
-			 * attachments are uploaded I can call saveClaim. 
-			 * 
-			 */			
-			String claimId =  Attachment.getAttachment(res.getAttachmentId()).getClaimId();
-			
-			List<Attachment> attachments = Claim.getClaim(claimId).getAttachments();
-			
+			 * attachments are uploaded I can call saveClaim.
+			 */
+			String claimId = Attachment.getAttachment(res.getAttachmentId())
+					.getClaimId();
+
+			List<Attachment> attachments = Claim.getClaim(claimId)
+					.getAttachments();
+
 			boolean action = true;
 			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
-				if(! attachment.getStatus().equals(AttachmentStatus._UPLOADED)){					
+				if (!attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
 					action = false;
-					}
+				}
 			}
-			
-			if(action){
-				
+
+			if (action) {
+
 				SaveClaimTask saveClaim = new SaveClaimTask();
 				saveClaim.execute(claimId);
 			}
-			
+
 			break;
 		case 403:
 
 			/*
-			 * "Bad Request ."
+			 * "Login Error."
 			 */
 
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-			
+
 			Toast toast;
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
 			toast.show();
-			
+
 			OpenTenureApplication.setLoggedin(false);
 
-			break;	
+			break;
 
 		case 400:
 
@@ -181,8 +190,9 @@ public class SaveAttachmentTask extends
 			Attachment.getAttachment(res.getAttachmentId()).setStatus(
 					AttachmentStatus._UPLOADING);
 			Attachment.getAttachment(res.getAttachmentId()).update();
-			
-			Attachment toUpdate2 = Attachment.getAttachment(res.getAttachmentId());
+
+			Attachment toUpdate2 = Attachment.getAttachment(res
+					.getAttachmentId());
 			toUpdate2.setStatus(AttachmentStatus._UPLOADING);
 			Attachment.updateAttachment(toUpdate2);
 

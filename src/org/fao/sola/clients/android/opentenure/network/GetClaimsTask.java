@@ -54,6 +54,7 @@ public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
 			toast.show();
 
 		OpenTenureApplication.getMapFragment().refreshMap();
+		OpenTenureApplication.getPersonsFragment().refresh();
 			
 			
 

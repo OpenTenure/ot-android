@@ -67,6 +67,9 @@ public class CommunityServerAPIUtilities {
 	
 	public static final String HTTPS_GETCLAIMTYPES = "https://ot.flossola.org/ws/en-us/ref/getclaimtypes";
 	public static final String HTTP_GETCLAIMTYPES = "http://ot.flossola.org/ws/en-us/ref/getclaimtypes";
+	
+	public static final String HTTPS_GETDOCUMENTYPES = "https://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
+	public static final String HTTP_GETDOCUMENTYPES = "http://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];

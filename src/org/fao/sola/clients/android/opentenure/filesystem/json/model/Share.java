@@ -13,6 +13,7 @@
  *       materials provided with the distribution.
  *    3. Neither the name of FAO nor the names of its contributors may be used to endorse or
  *       promote products derived from this software without specific prior written permission.
+ *       .
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
  * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
@@ -25,41 +26,51 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network;
+package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
-import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
+import java.util.List;
 
-import android.os.AsyncTask;
+import com.google.gson.annotations.SerializedName;
 
-/** Here transfers one chunk at time. Return true if all the chunks of an attachment are correctly transferred . */ 
+public class Share {
 
+	@SerializedName("id") String id;
+	@SerializedName("nominator") int nominator;
+	@SerializedName("denominator") int denominator;
 
-public class UploadChunksTask extends
-		AsyncTask<String, Void, UploadChunksResponse> {
+	@SerializedName("owners") List<Person> owners;
 
-	@Override
-	protected UploadChunksResponse doInBackground(String... params) {
-
-		UploadChunks ulc = new UploadChunks();
-		UploadChunksResponse res = ulc.execute(params[0]);
-
-		return res;
+	public String getId() {
+		return id;
 	}
 
-	protected void onPostExecute(final UploadChunksResponse res) {
-
-		if (res.getSuccess()) {
-
-			/**
-			 * All the Chunk of the claim are uploaded . Call SaveAttachment to
-			 * close the flow. There 's the risk of a infinite loop
-			 ***/
-
-			SaveAttachmentTask sat = new SaveAttachmentTask();
-			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, res.getAttachmentId());
-
-		}
-
+	public void setId(String id) {
+		this.id = id;
 	}
+
+	public int getNominator() {
+		return nominator;
+	}
+
+	public void setNominator(int nominator) {
+		this.nominator = nominator;
+	}
+
+	public int getDenominator() {
+		return denominator;
+	}
+
+	public void setDenominator(int denominator) {
+		this.denominator = denominator;
+	}
+
+	public List<Person> getOwners() {
+		return owners;
+	}
+
+	public void setOwners(List<Person> owners) {
+		this.owners = owners;
+	}
+
 
 }

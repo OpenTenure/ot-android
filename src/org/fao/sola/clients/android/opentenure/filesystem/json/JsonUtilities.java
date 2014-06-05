@@ -48,9 +48,12 @@ import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Person;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Owner;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -115,7 +118,7 @@ public class JsonUtilities {
 			person.setAddress(claim.getPerson().getPostalAddress());
 			person.setGenderCode(claim.getPerson().getGender());
 
-			tempClaim.setPerson(person);
+			tempClaim.setClaimant(person);
 
 			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
@@ -136,6 +139,42 @@ public class JsonUtilities {
 				attach.setMimeType(attachment.getMimeType());
 
 				attachments.add(attach);
+			}
+
+			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
+
+			List<Owner> owners = Owner.getOwners(claimId);
+
+			for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
+				Owner owner = (Owner) iterator.next();
+
+				Share share = new Share();
+
+				Person personJson = new Person();
+				org.fao.sola.clients.android.opentenure.model.Person personDB = org.fao.sola.clients.android.opentenure.model.Person
+						.getPerson(owner.getPersonId());
+
+				personJson.setAddress(personDB.getPostalAddress());
+				personJson.setBirthDate(sdf.format(personDB.getDateOfBirth()));
+				personJson.setEmail(personDB.getEmailAddress());
+				personJson.setGenderCode(personDB.getGender());
+				personJson.setId(personDB.getPersonId());
+				personJson.setMobilePhone(personDB.getMobilePhoneNumber());
+				personJson.setLastName(personDB.getLastName());
+				personJson.setName(personDB.getFirstName());
+				personJson.setPhone(personDB.getContactPhoneNumber());
+				
+				List<Person> ownersJson = new ArrayList<Person>();
+				ownersJson.add(personJson);
+
+				share.setOwners(ownersJson);
+				share.setId(""+owner.getId());
+
+				share.setNominator(owner.getShares());
+				share.setDenominator(100);
+
+				shares.add(share);
+
 			}
 
 			/*
@@ -164,6 +203,8 @@ public class JsonUtilities {
 					.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
 							.mapWKTFromVertices(claim.getVertices()));
 			tempClaim.setAttachments(attachments);
+
+			tempClaim.setShares(shares);
 			// tempClaim.setAdditionaInfo(xMetadata);
 
 			try {

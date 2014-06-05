@@ -37,6 +37,11 @@ import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 import android.os.AsyncTask;
 import android.util.Log;
 
+
+/**
+ * Task called to initialize the Application with the values of Types of claim
+ * Retrieve all the types from the server
+ * **/
 public class UpdateClaimTypesTask extends
 		AsyncTask<String, Void, List<ClaimType>> {
 

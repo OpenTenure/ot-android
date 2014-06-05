@@ -247,7 +247,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private void preload() {
 		// Code Types Spinner
 		Spinner spinner = (Spinner) rootView
-				.findViewById(R.id.codeTypesSpinner);
+				.findViewById(R.id.claimTypesSpinner);
 
 		ClaimType ct = new ClaimType();
 
@@ -344,15 +344,17 @@ public class ClaimDetailsFragment extends Fragment {
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
 					.setText(claim.getName());
-			((Spinner) rootView.findViewById(R.id.codeTypesSpinner))
+			((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
 					.setSelection(new ClaimType().getIndexByCodeType(claim
 							.getType()));
 
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setFocusable(false);
-				((Spinner) rootView.findViewById(R.id.codeTypesSpinner))
+				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
 						.setFocusable(false);
+				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
+				.setClickable(false);
 			}
 
 			Person claimant = claim.getPerson();
@@ -381,7 +383,7 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setName(claimName);
 
 		String displayValue = (String) ((Spinner) rootView
-				.findViewById(R.id.codeTypesSpinner)).getSelectedItem();
+				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
 		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
@@ -407,7 +409,7 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
 		String displayValue = (String) ((Spinner) rootView
-				.findViewById(R.id.codeTypesSpinner)).getSelectedItem();
+				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
 		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);

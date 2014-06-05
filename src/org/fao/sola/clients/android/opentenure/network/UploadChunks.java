@@ -56,6 +56,11 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+/**
+ * task that uploads the  attachment file in chunks
+ * 
+ * */
 public class UploadChunks {
 
 	public UploadChunksResponse execute(String attachmentId) {
