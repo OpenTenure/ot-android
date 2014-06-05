@@ -449,6 +449,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	}
 
+	@Override
 	public void resetAdjacency(List<BasePropertyBoundary> existingProperties){
 
 		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);

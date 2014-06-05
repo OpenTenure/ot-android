@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
+import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -145,6 +146,24 @@ public class BasePropertyBoundary {
 						+ claim.getPerson().getLastName() + ", "
 						+ context.getString(R.string.type) + ": "
 						+ ct.getDisplayValueByType(claim.getType()));
+			}
+		}
+	}
+
+	protected void resetAdjacency(List<BasePropertyBoundary> existingProperties){
+
+		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
+		Adjacency.deleteAdjacencies(claimId);
+
+		if(adjacentProperties != null){
+
+			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
+				
+				Adjacency adj = new Adjacency();
+				adj.setSourceClaimId(claimId);
+				adj.setDestClaimId(adjacentProperty.getClaimId());
+				adj.setCardinalDirection(getCardinalDirection(adjacentProperty));
+				adj.create();
 			}
 		}
 	}

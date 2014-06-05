@@ -391,6 +391,10 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
 						claim));
 		}
+		
+		for(BasePropertyBoundary property : existingProperties){
+			property.resetAdjacency(existingProperties);
+		}
 
 		drawProperties();
 
