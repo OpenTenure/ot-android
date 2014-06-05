@@ -33,6 +33,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.content.Context;
@@ -136,11 +137,14 @@ public class BasePropertyBoundary {
 
 			if (vertices != null && vertices.size() > 0) {
 				calculateGeometry();
+				ClaimType ct = new ClaimType();
 				String claimName = claim.getName().equalsIgnoreCase("")? context.getString(R.string.default_claim_name):claim.getName();
 				marker = createMarker(center, claimName + ", "
 						+ context.getString(R.string.by) + ": "
 						+ claim.getPerson().getFirstName() + " "
-						+ claim.getPerson().getLastName());
+						+ claim.getPerson().getLastName() + ", "
+						+ context.getString(R.string.type) + ": "
+						+ ct.getDisplayValueByType(claim.getType()));
 			}
 		}
 	}

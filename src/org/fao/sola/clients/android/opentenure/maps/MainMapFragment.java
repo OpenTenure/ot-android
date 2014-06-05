@@ -52,8 +52,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -106,6 +104,25 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		for(Claim claim : claims){
 				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
 						claim));
+		}
+
+		String zoom = Configuration
+				.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
+		String latitude = Configuration
+				.getConfigurationValue(MainMapFragment.MAIN_MAP_LATITUDE);
+		String longitude = Configuration
+				.getConfigurationValue(MainMapFragment.MAIN_MAP_LONGITUDE);
+
+		// If we previously used the map
+		if (zoom != null && latitude != null && longitude != null) {
+			try {
+				// Let's start from where we left it
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+						new LatLng(Double.parseDouble(latitude), Double
+								.parseDouble(longitude)), Float
+								.parseFloat(zoom)));
+			} catch (Exception e) {
+			}
 		}
 
 		drawProperties();
