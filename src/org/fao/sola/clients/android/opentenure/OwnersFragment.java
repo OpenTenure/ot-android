@@ -73,18 +73,23 @@ public class OwnersFragment extends ListFragment {
 				Intent intent = new Intent(rootView.getContext(),
 						SelectPersonActivity.class);
 
-				ArrayList<String> excludePersons = new ArrayList<String>();
-				if(claim.getOwners() != null){
-					// Excluding persons already holding a share of the claim
-					for(Owner owner : claim.getOwners()){
-						excludePersons.add(owner.getPersonId());
-					}
-				}
-				// Excluding persons who already claimed since SOLA
-				// is not able to handle two claims for the same person
-				excludePersons.addAll(Person.getIdsWithClaims());
+				// SOLA DB cannot store the same person twice
+				
+				ArrayList<String> idsWithClaims = Person
+						.getIdsWithClaims();
 
-				intent.putStringArrayListExtra(SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY, excludePersons);
+				ArrayList<String> idsWithShares = Person
+						.getIdsWithShares();
+				
+				ArrayList<String> excludeList = new ArrayList<String>();
+
+				excludeList.addAll(idsWithClaims);
+				excludeList.addAll(idsWithShares);
+
+				intent.putStringArrayListExtra(
+						SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+						excludeList);
+
 				startActivityForResult(
 						intent,
 						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);

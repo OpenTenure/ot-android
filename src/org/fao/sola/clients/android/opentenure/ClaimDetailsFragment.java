@@ -188,16 +188,22 @@ public class ClaimDetailsFragment extends Fragment {
 							Intent intent = new Intent(rootView.getContext(),
 									SelectPersonActivity.class);
 
-							ArrayList<String> idsWithUploadedClaims = Person
-									.getIdsWithUploadedClaims();
+							// SOLA DB cannot store the same person twice
+							
+							ArrayList<String> idsWithClaims = Person
+									.getIdsWithClaims();
 
-							if (idsWithUploadedClaims != null) {
-								// Excluding people with uploaded claims from
-								// the list possible claimants
-								intent.putStringArrayListExtra(
-										SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-										idsWithUploadedClaims);
-							}
+							ArrayList<String> idsWithShares = Person
+									.getIdsWithShares();
+							
+							ArrayList<String> excludeList = new ArrayList<String>();
+
+							excludeList.addAll(idsWithClaims);
+							excludeList.addAll(idsWithShares);
+
+							intent.putStringArrayListExtra(
+									SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+									excludeList);
 
 							startActivityForResult(
 									intent,
