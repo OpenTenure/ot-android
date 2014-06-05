@@ -66,6 +66,7 @@
     <string name="adjacency">Adiacenza</string>
     <string name="cardinal_direction">Direzione</string>
     <string name="by">Di</string>
+    <string name="type">Tipo</string>
     <string name="na">N.A.</string>
     <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>

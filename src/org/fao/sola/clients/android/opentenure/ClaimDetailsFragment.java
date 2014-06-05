@@ -390,7 +390,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
-		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
+		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		if (claim.create() == 1) {
@@ -416,7 +416,7 @@ public class ClaimDetailsFragment extends Fragment {
 				.toString());
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
-		claim.setType(new ClaimType().getTypebyDisplayVaue(displayValue));
+		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		claim.update();

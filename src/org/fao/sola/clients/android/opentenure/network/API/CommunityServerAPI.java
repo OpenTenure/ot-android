@@ -616,22 +616,59 @@ public class CommunityServerAPI {
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
-			Log.d("CommunityServerAPI",
-					"saveClaim status line " + response.getStatusLine());
 
-			String json = CommunityServerAPIUtilities.Slurp(response
-					.getEntity().getContent(), 1024);
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+				Log.d("CommunityServerAPI",
+						"saveClaim status line " + response.getStatusLine());
 
-			Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
+				String json = CommunityServerAPIUtilities.Slurp(response
+						.getEntity().getContent(), 1024);
 
-			Gson gson = new Gson();
-			SaveClaimResponse saveResponse = gson.fromJson(json,
-					SaveClaimResponse.class);
+				Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
 
-			saveResponse.setHttpStatusCode(response.getStatusLine()
-					.getStatusCode());
+				Gson gson = new Gson();
+				SaveClaimResponse saveResponse = gson.fromJson(json,
+						SaveClaimResponse.class);
 
-			return saveResponse;
+				saveResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+
+				return saveResponse;
+			} else if (response.getStatusLine().getStatusCode() == 452) {
+				Log.d("CommunityServerAPI",
+						"saveClaim status line " + response.getStatusLine());
+
+				String json = CommunityServerAPIUtilities.Slurp(response
+						.getEntity().getContent(), 1024);
+
+				Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
+
+				Gson gson = new Gson();
+				SaveClaimResponse saveResponse = gson.fromJson(json,
+						SaveClaimResponse.class);
+
+				saveResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+
+				return saveResponse;
+			}
+
+			else {
+
+				Log.d("CommunityServerAPI", "Error saving Claim :  "
+						+ response.getStatusLine().getStatusCode());
+
+				Log.d("CommunityServerAPI",
+						"saveClaim status line " + response.getStatusLine());
+
+				SaveClaimResponse saveResponse = new SaveClaimResponse();
+				saveResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+				saveResponse.setMessage("Error saving claim : "
+						+ CommunityServerAPIUtilities.Slurp(response
+								.getEntity().getContent(), 1024));
+				return saveResponse;
+			}
 
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block

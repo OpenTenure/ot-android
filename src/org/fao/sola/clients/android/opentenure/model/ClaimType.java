@@ -242,7 +242,7 @@ public class ClaimType {
 
 	}
 
-	public String getTypebyDisplayVaue(String value) {
+	public String getTypebyDisplayValue(String value) {
 
 		ResultSet rs = null;
 		Connection localConnection = null;
@@ -253,6 +253,53 @@ public class ClaimType {
 			localConnection = db.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT TYPE FROM CLAIM_TYPE CT WHERE DISPLAY_VALUE = ?");
+			statement.setString(1, value);
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+			return null;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+
+	}
+	
+	public String getDisplayValueByType(String value) {
+
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT DISPLAY_VALUE FROM CLAIM_TYPE CT WHERE TYPE = ?");
 			statement.setString(1, value);
 			rs = statement.executeQuery();
 

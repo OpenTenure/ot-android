@@ -66,6 +66,7 @@
     <string name="adjacency">Adjacency</string>
     <string name="cardinal_direction">Cardinal direction</string>
     <string name="by">By</string>
+    <string name="type">Type</string>
     <string name="na">N.A.</string>
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>

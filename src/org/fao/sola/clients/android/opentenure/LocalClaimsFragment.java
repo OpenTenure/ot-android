@@ -44,6 +44,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
 
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -210,7 +211,9 @@ public class LocalClaimsFragment extends ListFragment {
 				cto.setSlogan(claimName + ", "
 						+ getResources().getString(R.string.by) + ": "
 						+ claim.getPerson().getFirstName() + " "
-						+ claim.getPerson().getLastName());
+						+ claim.getPerson().getLastName() + " "
+						+ getResources().getString(R.string.type) + ": "
+						+ new ClaimType().getDisplayValueByType(claim.getType()) );
 				cto.setId(claim.getClaimId());
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING))
 					cto.setStatus(claim.getStatus());
