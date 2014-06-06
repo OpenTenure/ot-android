@@ -137,7 +137,7 @@ public class Owner {
 			localConnection = db.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO OWNER(ID, CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?,?)");
-			statement.setString(1, getClaimId());
+			statement.setString(1, getId());
 			statement.setString(2, getClaimId());
 			statement.setString(3, getPersonId());
 			statement.setBigDecimal(4, new BigDecimal(getShares()));
