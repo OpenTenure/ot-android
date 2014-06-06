@@ -114,12 +114,8 @@ public class AdjacentClaimsFragment extends ListFragment {
 				acto.setSlogan(adjacentClaim.getName() + ", " + getResources().getString(R.string.by) + ": " + adjacentClaim.getPerson().getFirstName()+ " " + adjacentClaim.getPerson().getLastName());
 				acto.setId(adjacentClaim.getClaimId());
 				acto.setCardinalDirection(Adjacency.getCardinalDirection(rootView.getContext(),adjacency.getCardinalDirection()));
-				if(adjacentClaim.getStatus().equals(ClaimStatus._UPLOADING)) 
-					acto.setStatus(adjacentClaim.getStatus());
-				else if(adjacentClaim.getStatus().equals(ClaimStatus._UNMODERATED)){
-					acto.setStatus("uploaded");
-					}
-				else acto.setStatus(" ");
+				acto.setStatus(adjacentClaim.getStatus());							
+				
 				claimListTOs.add(acto);
 			}
 			ArrayAdapter<AdjacentClaimListTO> adapter = new AdjacentClaimsListAdapter(rootView.getContext(), claimListTOs);

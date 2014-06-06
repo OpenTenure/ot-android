@@ -141,6 +141,9 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 450:
+			
+			claim.setStatus(ClaimStatus._CREATED);
+			claim.update();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_submission_error + res.getMessage(),
@@ -150,6 +153,9 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 400:
+			
+			claim.setStatus(ClaimStatus._CREATED);
+			claim.update();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					R.string.message_submission_error + res.getMessage(),
