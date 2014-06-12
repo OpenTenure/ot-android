@@ -190,6 +190,8 @@ public class SaveAttachmentTask extends
 			}
 
 			}
+
+			break;
 		case 403:
 
 			/*
@@ -200,8 +202,11 @@ public class SaveAttachmentTask extends
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
 			Toast toast;
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
+			toast = Toast.makeText(
+					OpenTenureApplication.getContext(),
+					R.string.message_login_no_more_valid + " "
+							+ res.getHttpStatusCode() + " " + res.getMessage(),
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
@@ -227,6 +232,25 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
 			}
+			break;
+
+		case 404:
+
+			/* Error Login */
+
+			Log.d("CommunityServerAPI", "SAVE SAVE ATTACHMENT JSON RESPONSE "
+					+ R.string.message_service_not_available);
+
+			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + " "
+							+ R.string.message_service_not_available,
+					Toast.LENGTH_SHORT);
+			toast.show();
 			break;
 
 		case 450:

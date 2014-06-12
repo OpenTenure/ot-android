@@ -46,11 +46,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-
 /**
- * The save Claim upload all the meta data about the Claim
- *  to the community server, sending the claim.json . 
- *  If the server is missing some claims for that claim ,   
+ * The save Claim upload all the meta data about the Claim to the community
+ * server, sending the claim.json . If the server is missing some claims for
+ * that claim ,
  * 
  * **/
 public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
@@ -71,45 +70,44 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 		Claim claim = Claim.getClaim(res.getClaimId());
 
 		switch (res.getHttpStatusCode()) {
-		
-		case 100:{
-			/* UnknownHostException:*/
-			
-			if(claim.getStatus().equals(ClaimStatus._UPLOADING)){
+
+		case 100: {
+			/* UnknownHostException: */
+
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_submission_error + res.getMessage(),
+					R.string.message_submission_error + "  "
+							+ R.string.message_connection_error,
 					Toast.LENGTH_SHORT);
 			toast.show();
 
 			break;
-			
-			
+
 		}
-		
-		case 105:{
-			/* IOException:*/
-			
-			if(claim.getStatus().equals(ClaimStatus._UPLOADING)){
+
+		case 105: {
+			/* IOException: */
+
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_submission_error + res.getMessage(),
+					R.string.message_submission_error + " " + res.getMessage(),
 					Toast.LENGTH_SHORT);
 			toast.show();
 
 			break;
-			
-			
+
 		}
-		
+
 		case 200:
-			
+
 			/* OK */
 
 			try {
@@ -138,24 +136,44 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 403:
-			
-			/*Error Login*/
+
+			/* Error Login */
 
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_login_no_more_valid, Toast.LENGTH_SHORT);
+					R.string.message_login_no_more_valid + "  " + res.getHttpStatusCode() + "  " + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
+			
+			System.out.println("LOGIN FALSE QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
 
 			OpenTenureApplication.setLoggedin(false);
 
 			break;
 
+		case 404:
+
+			/* Error Login */
+
+			Log.d("CommunityServerAPI",
+					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + " "
+							+ R.string.message_service_not_available,
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+			claim.update();
+
+			break;
+
 		case 452:
-			
-			/*Missing Attachments */
-			
+
+			/* Missing Attachments */
+
 			if (claim.getStatus().equals(ClaimStatus._CREATED)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
@@ -178,25 +196,33 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 			break;
 
 		case 450:
-			
-			claim.setStatus(ClaimStatus._CREATED);
+
+			Log.d("CommunityServerAPI",
+					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+
+			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 			claim.update();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_submission_error + res.getMessage(),
-					Toast.LENGTH_SHORT);
+					R.string.message_submission_error + " ,"
+							+ R.string.message_server_error_saving_claim + " "
+							+ res.getMessage(), Toast.LENGTH_SHORT);
 			toast.show();
 
 			break;
 
 		case 400:
-			
-			claim.setStatus(ClaimStatus._CREATED);
+
+			Log.d("CommunityServerAPI",
+					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+
+			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 			claim.update();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_submission_error + res.getMessage(),
-					Toast.LENGTH_SHORT);
+					R.string.message_submission_error + " ,"
+							+ R.string.message_server_error_saving_claim + " "
+							+ res.getMessage(), Toast.LENGTH_SHORT);
 			toast.show();
 
 			break;

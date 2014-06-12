@@ -250,7 +250,7 @@ public class LoginActivity extends Activity {
 				break;
 
 			case 404:
-				mPasswordView.setError(getString(R.string.error_generic_login));
+				mPasswordView.setError(getString(R.string.message_service_not_available));
 				mPasswordView.requestFocus();
 
 				break;

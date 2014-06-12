@@ -85,6 +85,9 @@
     <string name="owner_removed">Quota rimossa</string>
     <string name="additional_info_removed">Informazione rimossa</string>
     <string name="message_saved">Salvato</string>
+    <string name="message_service_not_available">Servizio non disponibile</string>
+    <string name="message_connection_error">Connessione non disponibile</string>
+    <string name="message_server_error_saving_claim">Server Internal Error</string>
     <string name="message_attachment_downloaded">Scaricato l\'attachment %s</string>        
     <string name="message_attachment_downloading">L\'Attachment %s e\' gia\' in download </string>
     <string name="message_attachment_download_failed">Fallito il download dell\'attachment %s</string>

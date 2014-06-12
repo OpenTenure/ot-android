@@ -46,6 +46,7 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
@@ -512,7 +513,7 @@ public class CommunityServerAPI {
 
 				if (claimTypeList != null)
 					Log.d("CommunityServerAPI",
-							"Ho recuperato la lista dei TYPES di dimensione"
+							"RETRIEVED CLAIM TYPES LIST"
 									+ claimTypeList.size());
 
 				return claimTypeList;
@@ -652,6 +653,24 @@ public class CommunityServerAPI {
 
 				return saveResponse;
 			}
+			
+			
+			else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
+				Log.d("CommunityServerAPI",
+						"saveClaim status line " + response.getStatusLine());
+
+				String json = CommunityServerAPIUtilities.Slurp(response
+						.getEntity().getContent(), 1024);
+
+				
+
+				SaveClaimResponse saveResponse = new SaveClaimResponse(); 
+
+				saveResponse.setHttpStatusCode(response.getStatusLine()
+						.getStatusCode());
+
+				return saveResponse;
+			}
 
 			else {
 
@@ -736,7 +755,8 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI", "saveAttachment HTTP status line "
 					+ response.getStatusLine());
-
+			
+			
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 

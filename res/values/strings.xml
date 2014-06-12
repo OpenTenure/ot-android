@@ -85,6 +85,9 @@
     <string name="owner_removed">The owner has been removed</string>
     <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
+    <string name="message_server_error_saving_claim">Service Not Available</string>
+    <string name="message_service_not_available">Server Internal Error</string>
+    <string name="message_connection_error">Connection not available</string>
     <string name="message_attachment_downloaded">Downloaded the attachment %s</string>
     <string name="message_attachment_downloading">Attachment %s already downloading </string>
     <string name="message_attachment_download_failed">Download of attachment %s failed </string>    
