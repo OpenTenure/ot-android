@@ -109,28 +109,40 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploaded));
+					R.color.status_unmoderated));
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
+					R.color.status_created));
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
+					R.color.status_created));
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
+					R.color.status_challenged));
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
+					R.color.status_created));
 		} else if (att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_uploading));
+					R.color.status_created));
+		}
+		else if (att.getStatus()
+				.equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+		}
+		else if (att.getStatus()
+				.equals(AttachmentStatus._UPLOAD_ERROR)) {
+			vh.status.setText(att.getStatus());
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_challenged));
 		}
 		if (!readOnly) {
 			vh.removeIcon.setOnClickListener(new OnClickListener() {

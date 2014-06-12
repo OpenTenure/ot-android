@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.content.Context;
@@ -42,9 +43,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements Filterable {
+public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
+		Filterable {
 	private final Context context;
 	private final List<ClaimListTO> originalClaims;
 	private List<ClaimListTO> filteredClaims;
@@ -70,11 +73,13 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			protected FilterResults performFiltering(CharSequence constraint) {
 
 				String filterString = constraint.toString();
-				
+
 				filteredClaims = new ArrayList<ClaimListTO>();
 				for (ClaimListTO cto : originalClaims) {
-					String lcase = cto.getSlogan().toLowerCase(Locale.getDefault());
-					if (lcase.contains(filterString.toLowerCase(Locale.getDefault()))) {
+					String lcase = cto.getSlogan().toLowerCase(
+							Locale.getDefault());
+					if (lcase.contains(filterString.toLowerCase(Locale
+							.getDefault()))) {
 						filteredClaims.add(cto);
 					}
 				}
@@ -109,6 +114,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		TextView id;
 		TextView slogan;
 		TextView status;
+		ProgressBar bar;
 		TextView challengeExpiryDate;
 		ImageView picture;
 	}
@@ -117,14 +123,18 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
 
+		Claim claim = Claim.getClaim(claims.get(position).getId());
+
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.claims_list_item,
-					parent, false);
+			convertView = inflater.inflate(R.layout.claims_list_item, parent,
+					false);
 			vh = new ViewHolder();
 			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
 			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
-			vh.challengeExpiryDate = (TextView) convertView.findViewById(R.id.claim_challenging_time);
+
+			vh.challengeExpiryDate = (TextView) convertView
+					.findViewById(R.id.claim_challenging_time);
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.claimant_picture);
 			convertView.setTag(vh);
@@ -132,14 +142,54 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh = (ViewHolder) convertView.getTag();
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
+
 		vh.status.setText(claims.get(position).getStatus());
+		if (vh.status.getText().equals(ClaimStatus._CREATED))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+		if (vh.status.getText().equals(ClaimStatus._UPLOADING))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+		if (vh.status.getText().equals(ClaimStatus._UNMODERATED))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_unmoderated));
+		if (vh.status.getText().equals(ClaimStatus._MODERATED))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_moderated));
+		if (vh.status.getText().equals(ClaimStatus._CHALLENGED))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_challenged));
+		if (vh.status.getText().equals(ClaimStatus._UPLOAD_INCOMPLETE))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+		if (vh.status.getText().equals(ClaimStatus._UPLOAD_ERROR))
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+
 		vh.challengeExpiryDate.setText(claims.get(position).getRemaingDays());
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
+		vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+
+		if (!claim.getStatus().equals(ClaimStatus._UPLOADING)
+				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+			vh.bar.setVisibility(View.GONE);
+
+		} else {
+
+			int progress = claim.getUploadProgress();
+			// Setting the update value in the progress bar
+			vh.bar.setVisibility(View.VISIBLE);
+			vh.bar.setProgress(progress);
+
+			vh.status.setText(claims.get(position).getStatus() + " " + progress
+					+ " %");
+
+		}
+
 		vh.picture.setImageBitmap(Person.getPersonPicture(
 				context,
-				Person.getPersonPictureFile(Claim
-						.getClaim(claims.get(position).getId()).getPerson()
+				Person.getPersonPictureFile(claim.getPerson()
 						.getPersonId()), 96));
 
 		return convertView;

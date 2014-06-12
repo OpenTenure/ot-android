@@ -117,7 +117,7 @@ public class UploadChunks {
 					
 					if( res.getHttpStatusCode() == 200) 
 						success = true;
-					else 
+					if (res.getHttpStatusCode() == 100)
 						success = false;
 					
 

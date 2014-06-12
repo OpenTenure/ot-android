@@ -71,6 +71,43 @@ public class SaveClaimTask extends AsyncTask<String, Void, SaveClaimResponse> {
 		Claim claim = Claim.getClaim(res.getClaimId());
 
 		switch (res.getHttpStatusCode()) {
+		
+		case 100:{
+			/* UnknownHostException:*/
+			
+			if(claim.getStatus().equals(ClaimStatus._UPLOADING)){
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + res.getMessage(),
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+			break;
+			
+			
+		}
+		
+		case 105:{
+			/* IOException:*/
+			
+			if(claim.getStatus().equals(ClaimStatus._UPLOADING)){
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_submission_error + res.getMessage(),
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+			break;
+			
+			
+		}
+		
 		case 200:
 			
 			/* OK */

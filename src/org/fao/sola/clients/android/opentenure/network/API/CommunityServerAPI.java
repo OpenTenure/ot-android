@@ -673,12 +673,35 @@ public class CommunityServerAPI {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
+			
+			
+			SaveClaimResponse saveResponse = new SaveClaimResponse();
+			saveResponse.setHttpStatusCode(110);
+			saveResponse.setMessage("Error saving claim " + e.getMessage());
+			
+			return saveResponse;
+			
+		}catch(UnknownHostException uhe){
+			
+			uhe.printStackTrace();
+			
+			SaveClaimResponse saveResponse = new SaveClaimResponse();
+			saveResponse.setHttpStatusCode(100);
+			saveResponse.setMessage("UnknownHostException");
+			
+			return saveResponse;			
+		} 	
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			
+			SaveClaimResponse saveResponse = new SaveClaimResponse();
+			saveResponse.setHttpStatusCode(105);
+			saveResponse.setMessage("Error saving claim " + e.getMessage());
+			
+			return saveResponse;
 		}
+		
 
 	}
 
@@ -728,12 +751,28 @@ public class CommunityServerAPI {
 
 			saveAttachmentResponse.setAttachmentId(attachmentId);
 
-		} catch (Throwable ex) {
+		} catch (UnknownHostException ex) {
+			
+			SaveAttachmentResponse sar = new SaveAttachmentResponse();
+			sar.setHttpStatusCode(100);
+			sar.setAttachmentId(attachmentId);
+			sar.setMessage(ex.getMessage());
+
+			Log.d("CommunityServerAPI",
+					"saveAttachment UnknownHostException " + ex.getMessage());
+			ex.printStackTrace();
+			return sar;
+		}catch (Throwable ex) {
+			
+			SaveAttachmentResponse sar = new SaveAttachmentResponse();
+			sar.setHttpStatusCode(105);
+			sar.setAttachmentId(attachmentId);
+			sar.setMessage(ex.getMessage());
 
 			Log.d("CommunityServerAPI",
 					"saveAttachment Error " + ex.getMessage());
 			ex.printStackTrace();
-			return null;
+			return sar;
 		}
 
 		return saveAttachmentResponse;
@@ -779,11 +818,14 @@ public class CommunityServerAPI {
 					.getStatusCode());
 
 		} catch (Throwable ex) {
+			apiResponse = new ApiResponse();
+			apiResponse.setHttpStatusCode(100);
+			apiResponse.setMessage("uploadChunk error :" + ex.getMessage());
 
 			Log.d("CommunityServerAPI",
 					"uploadChunk error : " + ex.getMessage());
 			ex.printStackTrace();
-			return null;
+			return apiResponse;
 		}
 
 		return apiResponse;

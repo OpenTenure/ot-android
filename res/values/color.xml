@@ -7,7 +7,8 @@
     <color name="light_background_opentenure">#E6EDDF</color>
     <color name="dark_background_opentenure">#B7CBA4</color>
     <color name="background_tab_pressed">#6633B5E5</color>
-    <color name="status_uploading">#C6B246</color>
-    <color name="status_uploaded">#FF9D36</color>
-    <color name="status_moderated">#1FE700</color>   
+    <color name="status_created">#217C95</color>
+    <color name="status_unmoderated">#FF9D36</color>   
+    <color name="status_challenged">#CC0000</color>   
+    <color name="status_moderated">#00DB00</color>   
 </resources>

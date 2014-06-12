@@ -27,12 +27,18 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 
 import android.os.AsyncTask;
 
-/** Here transfers one chunk at time. Return true if all the chunks of an attachment are correctly transferred . */ 
-
+/**
+ * Here transfers one chunk at time. Return true if all the chunks of an
+ * attachment are correctly transferred .
+ */
 
 public class UploadChunksTask extends
 		AsyncTask<String, Void, UploadChunksResponse> {
@@ -56,7 +62,23 @@ public class UploadChunksTask extends
 			 ***/
 
 			SaveAttachmentTask sat = new SaveAttachmentTask();
-			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, res.getAttachmentId());
+			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					res.getAttachmentId());
+
+		} else {
+
+			Attachment att = Attachment.getAttachment(res.getAttachmentId());
+
+			if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+				att.update();
+				
+				Claim claim = Claim.getClaim(att.getClaimId());
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+
+			}
 
 		}
 

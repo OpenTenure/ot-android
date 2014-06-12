@@ -121,17 +121,19 @@ public class BasePropertyBoundary {
 
 				case unmoderated:
 					color = context.getResources().getColor(
-							R.color.status_uploaded);
+							R.color.status_unmoderated);
 					break;
 				case moderated:
 					color = context.getResources().getColor(
 							R.color.status_moderated);
 					break;
 				case challenged:
-					color = Color.RED;
+					color = context.getResources().getColor(
+							R.color.status_challenged);
 					break;
 				default:
-					color = Color.BLUE;
+					color =context.getResources().getColor(
+							R.color.status_created);
 					break;
 				}
 			}

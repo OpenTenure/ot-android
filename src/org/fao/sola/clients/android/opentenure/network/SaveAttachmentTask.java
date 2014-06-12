@@ -37,6 +37,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 
@@ -44,11 +45,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-
 /**
- * Task which perform the upload of the meta data of the uploading file
- * If the response is OK , the task check if all attachments are uploaded
- * and in case close the uploading of the claims  
+ * Task which perform the upload of the meta data of the uploading file If the
+ * response is OK , the task check if all attachments are uploaded and in case
+ * close the uploading of the claims
  * 
  * */
 
@@ -76,7 +76,55 @@ public class SaveAttachmentTask extends
 
 	protected void onPostExecute(final SaveAttachmentResponse res) {
 
+		Claim claim = null;
+		Attachment toUpdate = null;
+
 		switch (res.getHttpStatusCode()) {
+
+		case 100:
+			/*
+			 * 
+			 * Unknownhost exception
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
+
+			if (toUpdate.getStatus().equals(AttachmentStatus._UPLOADING))
+				toUpdate.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+
+			Attachment.updateAttachment(toUpdate);
+
+			claim = Claim.getClaim(toUpdate.getClaimId());
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
+
+			break;
+
+		case 105:
+			/*
+			 * 
+			 * Unknownhost exception
+			 */
+
+			Log.d("CommunityServerAPI",
+					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
+
+			if (toUpdate.getStatus().equals(AttachmentStatus._UPLOADING))
+				toUpdate.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+
+			Attachment.updateAttachment(toUpdate);
+
+			claim = Claim.getClaim(toUpdate.getClaimId());
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
+			break;
 
 		case 200:
 			/*
@@ -85,11 +133,17 @@ public class SaveAttachmentTask extends
 
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-			Attachment toUpdate = Attachment.getAttachment(res
-					.getAttachmentId());
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
 			toUpdate.setStatus(AttachmentStatus._UPLOADED);
 
 			Attachment.updateAttachment(toUpdate);
+
+			claim = Claim.getClaim(toUpdate.getClaimId());
+
+			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
 
 			/*
 			 * Now check the list of attachment for that Claim . If all the
@@ -101,21 +155,41 @@ public class SaveAttachmentTask extends
 			List<Attachment> attachments = Claim.getClaim(claimId)
 					.getAttachments();
 
-			boolean action = true;
+			int action = 0;
 			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 				if (!attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
-					action = false;
+					action = 1;
+				}
+				if (attachment.getStatus().equals(
+						AttachmentStatus._UPLOAD_INCOMPLETE)) {
+					action = 2;
+					break;
 				}
 			}
 
-			if (action) {
+			switch (action) {
+			case 1:
+
+				break;
+			case 2:
+
+				Claim claim2 = Claim.getClaim(claimId);
+				if (!claim2.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+					claim2.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+					claim2.update();
+				}
+
+				break;
+
+			default: {
 
 				SaveClaimTask saveClaim = new SaveClaimTask();
 				saveClaim.execute(claimId);
+				break;
 			}
 
-			break;
+			}
 		case 403:
 
 			/*
@@ -143,6 +217,16 @@ public class SaveAttachmentTask extends
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
+			toUpdate.setStatus(AttachmentStatus._UPLOAD_ERROR);
+
+			Attachment.updateAttachment(toUpdate);
+
+			claim = Claim.getClaim(toUpdate.getClaimId());
+			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
 			break;
 
 		case 450:
@@ -150,10 +234,19 @@ public class SaveAttachmentTask extends
 			/*
 			 * "Malformed JSON input. Failed to convert."
 			 */
-
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
+			toUpdate.setStatus(AttachmentStatus._UPLOAD_ERROR);
+
+			Attachment.updateAttachment(toUpdate);
+
+			claim = Claim.getClaim(toUpdate.getClaimId());
+			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
 			break;
 
 		case 454:
@@ -191,10 +284,9 @@ public class SaveAttachmentTask extends
 					AttachmentStatus._UPLOADING);
 			Attachment.getAttachment(res.getAttachmentId()).update();
 
-			Attachment toUpdate2 = Attachment.getAttachment(res
-					.getAttachmentId());
-			toUpdate2.setStatus(AttachmentStatus._UPLOADING);
-			Attachment.updateAttachment(toUpdate2);
+			toUpdate = Attachment.getAttachment(res.getAttachmentId());
+			toUpdate.setStatus(AttachmentStatus._UPLOADING);
+			Attachment.updateAttachment(toUpdate);
 
 			UploadChunksTask uploadTask = new UploadChunksTask();
 			uploadTask.execute(res.getAttachmentId());

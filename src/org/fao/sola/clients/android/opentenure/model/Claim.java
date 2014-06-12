@@ -33,6 +33,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
@@ -40,26 +41,32 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Claim {
-	
-	public enum Status{unmoderated, moderated, challenged, created, uploading};
+
+	public enum Status {
+		unmoderated, moderated, challenged, created, uploading, upload_incomplete, upload_error
+	};
+
 	public static final int MAX_SHARES_PER_CLAIM = 100;
 
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public List<AdditionalInfo> getAdditionalInfo() {
 		return additionalInfo;
 	}
+
 	public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Claim(){
+	public Claim() {
 		this.claimId = UUID.randomUUID().toString();
 		this.status = ClaimStatus._CREATED;
 		this.availableShares = MAX_SHARES_PER_CLAIM;
@@ -68,84 +75,99 @@ public class Claim {
 	public int getAvailableShares() {
 		return availableShares;
 	}
+
 	public void setAvailableShares(int availableShares) {
 		this.availableShares = availableShares;
 	}
 
 	@Override
 	public String toString() {
-		return "Claim ["
-				+ "claimId=" + claimId
-				+ ", status=" + status
-				+ ", type=" + type
-				+ ", name=" + name
-				+ ", person=" + person
+		return "Claim [" + "claimId=" + claimId + ", status=" + status
+				+ ", type=" + type + ", name=" + name + ", person=" + person
 				+ ", vertices=" + Arrays.toString(vertices.toArray())
-				+ ", additionalInfo=" + Arrays.toString(additionalInfo.toArray())
+				+ ", additionalInfo="
+				+ Arrays.toString(additionalInfo.toArray())
 				+ ", challengedClaim=" + challengedClaim
 				+ ", challengeExpiryDate=" + challengeExpiryDate
-				+ ", challengingClaims=" + Arrays.toString(challengingClaims.toArray())
+				+ ", challengingClaims="
+				+ Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())
 				+ ", owners=" + Arrays.toString(owners.toArray())
-				+ ", availableShares=" + availableShares
-				+ "]";
+				+ ", availableShares=" + availableShares + "]";
 	}
 
 	public String getType() {
 		return type;
 	}
+
 	public void setType(String type) {
 		this.type = type;
 	}
+
 	public String getClaimId() {
 		return claimId;
 	}
+
 	public void setClaimId(String claimId) {
 		this.claimId = claimId;
 	}
+
 	public Person getPerson() {
 		return person;
 	}
+
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+
 	public List<Vertex> getVertices() {
 		return vertices;
 	}
+
 	public void setVertices(List<Vertex> vertices) {
 		this.vertices = vertices;
 	}
+
 	public Claim getChallengedClaim() {
 		return challengedClaim;
 	}
+
 	public void setChallengedClaim(Claim challengedClaim) {
 		this.challengedClaim = challengedClaim;
 	}
+
 	public List<Claim> getChallengingClaims() {
 		return challengingClaims;
 	}
+
 	public void setChallengingClaims(List<Claim> challengingClaims) {
 		this.challengingClaims = challengingClaims;
 	}
+
 	public List<Attachment> getAttachments() {
 		return attachments;
 	}
+
 	public void setAttachments(List<Attachment> attachments) {
 		this.attachments = attachments;
 	}
+
 	public List<Owner> getOwners() {
 		return owners;
 	}
+
 	public void setOwners(List<Owner> owners) {
 		availableShares = MAX_SHARES_PER_CLAIM;
-		for(Owner owner : owners){
+		for (Owner owner : owners) {
 			availableShares -= owner.getShares();
 		}
 		this.owners = owners;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
@@ -153,18 +175,20 @@ public class Claim {
 	public Date getChallengeExpiryDate() {
 		return challengeExpiryDate;
 	}
+
 	public void setChallengeExpiryDate(Date challengeExpiryDate) {
 		this.challengeExpiryDate = challengeExpiryDate;
 	}
 
-	public static int createClaim(Claim claim){
+	public static int createClaim(Claim claim) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, NAME, TYPE, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE) VALUES(?,?,?,?,?,?,?)");
 			statement.setString(1, claim.getClaimId());
@@ -172,14 +196,14 @@ public class Claim {
 			statement.setString(3, claim.getName());
 			statement.setString(4, claim.getType());
 			statement.setString(5, claim.getPerson().getPersonId());
-			if(claim.getChallengedClaim() != null){
+			if (claim.getChallengedClaim() != null) {
 				statement.setString(6, claim.getChallengedClaim().getClaimId());
-				
-			}else{
+
+			} else {
 				statement.setString(6, null);
 			}
-			statement.setDate(7, claim.getChallengeExpiryDate());	
-			
+			statement.setDate(7, claim.getChallengeExpiryDate());
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -202,7 +226,7 @@ public class Claim {
 		return result;
 	}
 
-	public int create(){
+	public int create() {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -217,56 +241,12 @@ public class Claim {
 			statement.setString(3, getName());
 			statement.setString(4, getType());
 			statement.setString(5, getPerson().getPersonId());
-			if(getChallengedClaim() != null){
-				statement.setString(6, getChallengedClaim().getClaimId());				
-			}else{
+			if (getChallengedClaim() != null) {
+				statement.setString(6, getChallengedClaim().getClaimId());
+			} else {
 				statement.setString(6, null);
 			}
-			statement.setDate(7,getChallengeExpiryDate());			
-			result = statement.executeUpdate();			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return result;
-	}
-
-	public static int updateClaim(Claim claim){
-		int result = 0;
-		Connection localConnection = null;
-		PreparedStatement statement = null;
-
-		try {
-
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
-			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, TYPE=?,CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=? WHERE CLAIM_ID=?");
-			statement.setString(1, claim.getStatus());
-			statement.setString(2, claim.getName());
-			statement.setString(3, claim.getPerson().getPersonId());
-			statement.setString(4, claim.getType());
-			if(claim.getChallengedClaim() != null){
-				statement.setString(5, claim.getChallengedClaim().getClaimId());				
-			}else{
-				statement.setString(5, null);
-			}
-			statement.setDate(6, claim.getChallengeExpiryDate());
-			statement.setString(7, claim.getClaimId());
-				
+			statement.setDate(7, getChallengeExpiryDate());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -289,7 +269,52 @@ public class Claim {
 		return result;
 	}
 
-	public int update(){
+	public static int updateClaim(Claim claim) {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, NAME=?, PERSON_ID=?, TYPE=?,CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=? WHERE CLAIM_ID=?");
+			statement.setString(1, claim.getStatus());
+			statement.setString(2, claim.getName());
+			statement.setString(3, claim.getPerson().getPersonId());
+			statement.setString(4, claim.getType());
+			if (claim.getChallengedClaim() != null) {
+				statement.setString(5, claim.getChallengedClaim().getClaimId());
+			} else {
+				statement.setString(5, null);
+			}
+			statement.setDate(6, claim.getChallengeExpiryDate());
+			statement.setString(7, claim.getClaimId());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public int update() {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -303,15 +328,15 @@ public class Claim {
 			statement.setString(2, getName());
 			statement.setString(3, getPerson().getPersonId());
 			statement.setString(4, getType());
-			if(getChallengedClaim() != null){
+			if (getChallengedClaim() != null) {
 				statement.setString(5, getChallengedClaim().getClaimId());
-				
-			}else{
+
+			} else {
 				statement.setString(5, null);
 			}
 			statement.setDate(6, getChallengeExpiryDate());
 			statement.setString(7, getClaimId());
-				
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -334,7 +359,7 @@ public class Claim {
 		return result;
 	}
 
-	public static Claim getClaim(String claimId){
+	public static Claim getClaim(String claimId) {
 		Claim claim = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -342,7 +367,8 @@ public class Claim {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT STATUS, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
@@ -359,7 +385,8 @@ public class Claim {
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setOwners(Owner.getOwners(claimId));
-				claim.setAdditionalInfo(AdditionalInfo.getClaimAdditionalInfo(claimId));
+				claim.setAdditionalInfo(AdditionalInfo
+						.getClaimAdditionalInfo(claimId));
 			}
 
 		} catch (SQLException e) {
@@ -396,7 +423,8 @@ public class Claim {
 		ResultSet rs = null;
 
 		try {
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE CHALLENGED_CLAIM_ID=?");
 			statement.setString(1, claimId);
@@ -431,16 +459,16 @@ public class Claim {
 		}
 		return challengingClaims;
 	}
-	
-	public static int addOwner(String claimId, String personId, int shares){
+
+	public static int addOwner(String claimId, String personId, int shares) {
 		return Claim.getClaim(claimId).addOwner(personId, shares);
 	}
 
-	public static int removeOwner(String claimId, String personId){
+	public static int removeOwner(String claimId, String personId) {
 		return Claim.getClaim(claimId).removeOwner(personId);
 	}
 
-	public int addOwner(String personId, int shares){
+	public int addOwner(String personId, int shares) {
 
 		Owner own = new Owner();
 		own.setClaimId(claimId);
@@ -448,23 +476,21 @@ public class Claim {
 		own.setShares(shares);
 
 		int result = own.create();
-		
-		if(result == 1)
-		{
+
+		if (result == 1) {
 			availableShares -= shares;
 		}
 		return result;
 	}
 
-	public int removeOwner(String personId){
+	public int removeOwner(String personId) {
 
 		Owner own = Owner.getOwner(claimId, personId);
 		int shares = own.getShares();
 
 		int result = own.delete();
-		
-		if(result == 1)
-		{
+
+		if (result == 1) {
 			availableShares += shares;
 		}
 		return result;
@@ -478,7 +504,8 @@ public class Claim {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT CLAIM_ID FROM CLAIM");
 			rs = statement.executeQuery();
@@ -511,6 +538,42 @@ public class Claim {
 			}
 		}
 		return claims;
+	}
+
+	public int getUploadProgress() {
+
+		int progress = 0;
+
+		if (this.getAttachments().size() == 0)
+			progress = 100;
+		else {
+			long totalSize = 0;
+			long uploadedSize = 0;
+			List<Attachment> attachments = this.getAttachments();
+			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+				Attachment attachment = (Attachment) iterator.next();
+				totalSize = totalSize + attachment.getSize();
+
+				if (attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
+
+					uploadedSize = uploadedSize + attachment.getSize();
+
+				}
+
+			}
+
+			float factor = (float) uploadedSize / totalSize;
+			
+			System.out.println("uploadedSize :" + uploadedSize + "totalSize :" + totalSize + "factor :" + factor);
+
+			progress = (int) (factor * 100);
+
+			if (progress == 0)
+				progress = 5;
+		}
+
+		return progress;
+
 	}
 
 	private String claimId;
