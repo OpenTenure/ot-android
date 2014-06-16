@@ -41,7 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
 
-
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 
 import org.fao.sola.clients.android.opentenure.model.MD5;
@@ -51,28 +50,25 @@ import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPaylo
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 import org.h2.util.New;
 
-
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
 /**
- * task that uploads the  attachment file in chunks
+ * task that uploads the attachment file in chunks
  * 
  * */
 public class UploadChunks {
 
 	public UploadChunksResponse execute(String attachmentId) {
-		
+
 		boolean success = false;
 		DataInputStream dis = null;
-		
+
 		UploadChunksResponse upResponse = new UploadChunksResponse();
-		
+
 		try {
-			
-			
+
 			Attachment attachment = Attachment.getAttachment(attachmentId);
 
 			File toTransfer = new File(attachment.getPath());
@@ -84,18 +80,17 @@ public class UploadChunks {
 
 			Integer startPosition = 0;
 
-
 			for (;;) {
 
 				byte[] chunk = new byte[500000];
-				
+
 				int rsz = dis.read(chunk, 0, chunk.length);
 				if (rsz > 0) {
 					UploadChunkPayload payload = new UploadChunkPayload();
-					
-					if(rsz<500000)
+
+					if (rsz < 500000)
 						chunk = Arrays.copyOfRange(chunk, 0, rsz);
-					
+
 					payload.setMd5(MD5.calculateMD5(chunk));
 
 					payload.setAttachmentId(attachmentId);
@@ -105,30 +100,34 @@ public class UploadChunks {
 					payload.setStartPosition(startPosition);
 
 					startPosition = startPosition + rsz;
-					
-					Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+
+					Gson gson = new GsonBuilder()
+							.setPrettyPrinting()
+							.serializeNulls()
+							.setFieldNamingPolicy(
+									FieldNamingPolicy.UPPER_CAMEL_CASE)
+							.create();
 					String json = gson.toJson(payload);
-					
+
 					/***
-					 * Calling the server..... 
-					 * ***/				
-					
-					ApiResponse res = CommunityServerAPI.uploadChunk(json, chunk);
-					
-					if( res.getHttpStatusCode() == 200) 
+					 * Calling the server.....
+					 * ***/
+
+					ApiResponse res = CommunityServerAPI.uploadChunk(json,
+							chunk);
+
+					if (res.getHttpStatusCode() == 200)
 						success = true;
 					if (res.getHttpStatusCode() == 100)
 						success = false;
-					
 
 				} else
 					break;
 			}
-			
-			
+
 			upResponse.setAttachmentId(attachmentId);
 			upResponse.setSuccess(success);
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

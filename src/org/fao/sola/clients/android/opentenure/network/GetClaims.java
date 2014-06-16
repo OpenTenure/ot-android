@@ -240,7 +240,7 @@ public class GetClaims {
 					attachmentDB.setClaimId(claim.getId());
 					attachmentDB.setDescription(attachment.getDescription());
 					attachmentDB.setFileName(attachment.getFileName());
-					attachmentDB.setFileType(attachment.getMimeType());
+					attachmentDB.setFileType(attachment.getTypeCode());
 					attachmentDB.setMD5Sum(attachment.getMd5());
 					attachmentDB.setMimeType(attachment.getMimeType());
 					attachmentDB.setPath("");

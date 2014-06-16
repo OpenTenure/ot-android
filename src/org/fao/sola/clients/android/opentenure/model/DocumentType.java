@@ -38,17 +38,16 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class DocumentType {
-	
-	
+
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
 	String code;
 	String description;
 	String displayValue;
-	
+
 	@Override
 	public String toString() {
-		return "ClaimType [code=" + code + ", description=" + description
+		return "DocumentType [code=" + code + ", description=" + description
 				+ ", displayValue=" + displayValue + "]";
 	}
 
@@ -113,7 +112,7 @@ public class DocumentType {
 		}
 		return result;
 	}
-	
+
 	public int addType(DocumentType docType) {
 
 		int result = 0;
@@ -152,7 +151,7 @@ public class DocumentType {
 		return result;
 
 	}
-	
+
 	public List<DocumentType> getDocumentTypes() {
 
 		List<DocumentType> types = new ArrayList<DocumentType>();
@@ -205,9 +204,8 @@ public class DocumentType {
 		return types;
 
 	}
-	
-	
-	public List<String> getClaimsTypesDispalyValues() {
+
+	public List<String> getDocumentTypesDispalyValues() {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
 
@@ -221,8 +219,7 @@ public class DocumentType {
 		}
 		return displayList;
 	}
-	
-	
+
 	public int getIndexByCodeType(String code) {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
@@ -244,7 +241,7 @@ public class DocumentType {
 		return 0;
 
 	}
-	
+
 	public String getTypebyDisplayVaue(String value) {
 
 		ResultSet rs = null;
@@ -252,10 +249,10 @@ public class DocumentType {
 		PreparedStatement statement = null;
 
 		try {
-
+			
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT TYPE FROM DOCUMENT_TYPE CT WHERE DISPLAY_VALUE = ?");
+					.prepareStatement("SELECT CODE FROM DOCUMENT_TYPE CT WHERE DISPLAY_VALUE = ?");
 			statement.setString(1, value);
 			rs = statement.executeQuery();
 
@@ -293,4 +290,51 @@ public class DocumentType {
 	}
 	
 	
+	public String getDisplayVauebyType(String value) {
+
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT DISPLAY_VALUE FROM DOCUMENT_TYPE CT WHERE CODE = ?");
+			statement.setString(1, value);
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				return rs.getString(1);
+			}
+			return null;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+
+	}
+
 }

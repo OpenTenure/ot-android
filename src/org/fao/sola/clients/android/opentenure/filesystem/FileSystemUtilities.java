@@ -349,7 +349,7 @@ public class FileSystemUtilities {
 			 * 
 			 * Temporary solution for typeCode
 			 */
-			attachment.setTypeCode(matchTypeCode(extension));
+			attachment.setTypeCode(attach.getFileType());
 
 			attachment.setFileName(attach.getFileName());
 			attachment.setId(attachmentId);

@@ -35,6 +35,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
@@ -397,6 +398,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
+			
+			//createPersonAsOwner(person);
+			
 		}
 
 	}
@@ -599,6 +603,47 @@ public class ClaimDetailsFragment extends Fragment {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	
+public int createPersonAsOwner(Person claimant){
+		try {
+			
+			Person person = new Person();
+			person.setContactPhoneNumber(claimant.getContactPhoneNumber());
+			person.setDateOfBirth(claimant.getDateOfBirth());
+			person.setEmailAddress(claimant.getEmailAddress());
+			person.setFirstName(claimant.getFirstName());
+			person.setGender(claimant.getGender());
+			person.setLastName(claimant.getLastName());
+			person.setMobilePhoneNumber(claimant.getMobilePhoneNumber());
+			person.setPlaceOfBirth(claimant.getPlaceOfBirth());
+			person.setPostalAddress(claimant.getPostalAddress());
+			
+			person.create();
+			
+			Owner owner = new Owner();
+			owner.setClaimId(claimActivity.getClaimId());	
+			owner.setPersonId(person.getPersonId());
+			owner.setShares(100);
+			
+			owner.create();
+			
+			return 1;
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			
+			Log.d("Details", "An error " + e.getMessage());
+
+			e.printStackTrace();
+			
+			return 0;
+		}
+		
+			
+		
+		
 	}
 
 }

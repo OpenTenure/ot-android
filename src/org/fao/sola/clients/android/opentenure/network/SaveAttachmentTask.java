@@ -304,9 +304,9 @@ public class SaveAttachmentTask extends
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
-			Attachment.getAttachment(res.getAttachmentId()).setStatus(
-					AttachmentStatus._UPLOADING);
-			Attachment.getAttachment(res.getAttachmentId()).update();
+//			Attachment.getAttachment(res.getAttachmentId()).setStatus(
+//					AttachmentStatus._UPLOADING);
+//			Attachment.getAttachment(res.getAttachmentId()).update();
 
 			toUpdate = Attachment.getAttachment(res.getAttachmentId());
 			toUpdate.setStatus(AttachmentStatus._UPLOADING);

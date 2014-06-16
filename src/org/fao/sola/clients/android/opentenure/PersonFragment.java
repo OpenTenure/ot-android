@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
@@ -385,5 +386,8 @@ public class PersonFragment extends Fragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	
+	
 
 }
