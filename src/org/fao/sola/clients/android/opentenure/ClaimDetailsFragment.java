@@ -34,6 +34,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
@@ -67,6 +68,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -178,7 +180,35 @@ public class ClaimDetailsFragment extends Fragment {
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
 		preload();
-		load(Claim.getClaim(claimActivity.getClaimId()));
+
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		load(claim);
+
+		ProgressBar bar = (ProgressBar) rootView
+				.findViewById(R.id.progress_bar);
+		TextView status = (TextView) rootView.findViewById(R.id.claim_status);
+
+		if (claim != null) {
+
+			if (!claim.getStatus().equals(ClaimStatus._UPLOADING)
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				bar.setVisibility(View.GONE);
+				status.setVisibility(View.GONE);
+
+			} else {
+
+				status = (TextView) rootView.findViewById(R.id.claim_status);
+
+				int progress = claim.getUploadProgress();
+				// Setting the update value in the progress bar
+				bar.setVisibility(View.VISIBLE);
+				bar.setProgress(progress);
+
+				status.setText(claim.getStatus() + " " + progress + " %");
+
+			}
+		}
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			((View) rootView.findViewById(R.id.claimant))
@@ -190,13 +220,13 @@ public class ClaimDetailsFragment extends Fragment {
 									SelectPersonActivity.class);
 
 							// SOLA DB cannot store the same person twice
-							
+
 							ArrayList<String> idsWithClaims = Person
 									.getIdsWithClaims();
 
 							ArrayList<String> idsWithShares = Person
 									.getIdsWithShares();
-							
+
 							ArrayList<String> excludeList = new ArrayList<String>();
 
 							excludeList.addAll(idsWithClaims);
@@ -231,10 +261,9 @@ public class ClaimDetailsFragment extends Fragment {
 												.equalsIgnoreCase(
 														Claim.Status.created
 																.toString())
-										|| claim.getStatus()
-												.equalsIgnoreCase(
-														Claim.Status.uploading
-																.toString())){
+										|| claim.getStatus().equalsIgnoreCase(
+												Claim.Status.uploading
+														.toString())) {
 									excludeList.add(claim.getClaimId());
 								}
 							}
@@ -361,7 +390,7 @@ public class ClaimDetailsFragment extends Fragment {
 				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
 						.setFocusable(false);
 				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
-				.setClickable(false);
+						.setClickable(false);
 			}
 
 			Person claimant = claim.getPerson();
@@ -398,9 +427,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
-			
+
 			createPersonAsOwner(person);
-			
+
 		}
 
 	}
@@ -604,35 +633,29 @@ public class ClaimDetailsFragment extends Fragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	
-public int createPersonAsOwner(Person claimant){
-		try {
-			
 
-			
+	public int createPersonAsOwner(Person claimant) {
+		try {
+
 			Owner owner = new Owner(true);
-			owner.setClaimId(claimActivity.getClaimId());	
+			owner.setClaimId(claimActivity.getClaimId());
 			owner.setPersonId(claimant.getPersonId());
 			owner.setShares(100);
-			
+
 			owner.create();
-			
+
 			return 1;
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
-			
+
 			Log.d("Details", "An error " + e.getMessage());
 
 			e.printStackTrace();
-			
+
 			return 0;
 		}
-		
-			
-		
-		
+
 	}
 
 }

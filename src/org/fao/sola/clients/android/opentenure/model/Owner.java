@@ -43,7 +43,7 @@ public class Owner {
 	@Override
 	public String toString() {
 		return "Owner [id=" + id + "claimId=" + claimId + ", personId="
-				+ personId + ", shares=" + shares + "]";
+				+ personId + ", ownerId=" + ownerId+ ", shares=" + shares + "]";
 	}
 
 	public String getClaimId() {

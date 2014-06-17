@@ -7,6 +7,28 @@
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp" >
+    
+    <TextView
+            android:id="@+id/claim_status"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/item_color"
+            android:gravity="left|bottom"            
+            android:text="@string/title_item"
+            android:textColor="@color/status_created"
+            android:textSize="20sp" />
+    
+    <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="10sp"
+            android:minHeight="10sp"
+            android:paddingTop="5sp"
+            android:visibility="gone" />
+    
 
     <TextView
         android:id="@+id/claim_name_label"
