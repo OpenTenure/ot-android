@@ -470,9 +470,10 @@ public class Claim {
 
 	public int addOwner(String personId, int shares) {
 
-		Owner own = new Owner();
+		Owner own = new Owner(false);
 		own.setClaimId(claimId);
 		own.setPersonId(personId);
+		own.setOwnerId(personId);
 		own.setShares(shares);
 
 		int result = own.create();

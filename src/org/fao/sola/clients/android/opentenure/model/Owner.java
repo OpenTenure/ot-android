@@ -39,11 +39,11 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Owner {
-	
+
 	@Override
 	public String toString() {
-		return "Owner [id=" + id + "claimId=" + claimId + ", personId=" + personId
-				+ ", shares=" + shares + "]";
+		return "Owner [id=" + id + "claimId=" + claimId + ", personId="
+				+ personId + ", shares=" + shares + "]";
 	}
 
 	public String getClaimId() {
@@ -73,21 +73,33 @@ public class Owner {
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
 
+	public String getOwnerId() {
+		return ownerId;
+	}
 
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
+	}
 
 	String claimId;
 	String personId;
+	String ownerId;
 	int shares;
 	String id;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
-	
-	public Owner() {
-		this.id = UUID.randomUUID().toString();
+
+	public Owner(boolean isClaimant) {
+		if (isClaimant) {
+			this.id = UUID.randomUUID().toString();
+			this.ownerId = UUID.randomUUID().toString();
+		} else
+			this.id = UUID.randomUUID().toString();
 	}
 
 	public static int createOwner(Owner own) {
@@ -100,11 +112,12 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO OWNER(ID,CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?,?)");
+					.prepareStatement("INSERT INTO OWNER(ID,CLAIM_ID, PERSON_ID, OWNER_ID, SHARES) VALUES (?,?,?,?,?)");
 			statement.setString(1, own.getId());
 			statement.setString(2, own.getClaimId());
 			statement.setString(3, own.getPersonId());
-			statement.setBigDecimal(4, new BigDecimal(own.getShares()));
+			statement.setString(4, own.getOwnerId());
+			statement.setBigDecimal(5, new BigDecimal(own.getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -136,11 +149,12 @@ public class Owner {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO OWNER(ID, CLAIM_ID, PERSON_ID, SHARES) VALUES (?,?,?,?)");
+					.prepareStatement("INSERT INTO OWNER(ID, CLAIM_ID, PERSON_ID, OWNER_ID, SHARES) VALUES (?,?,?,?,?)");
 			statement.setString(1, getId());
 			statement.setString(2, getClaimId());
 			statement.setString(3, getPersonId());
-			statement.setBigDecimal(4, new BigDecimal(getShares()));
+			statement.setString(4, getOwnerId());
+			statement.setBigDecimal(5, new BigDecimal(getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -234,7 +248,6 @@ public class Owner {
 		}
 		return result;
 	}
-
 
 	public static int deleteOwner(Owner own) {
 		int result = 0;
@@ -352,15 +365,16 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWN.ID, OWN.PERSON_ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? ORDER BY OWN.PERSON_ID");
+					.prepareStatement("SELECT OWN.ID, OWN.PERSON_ID, OWN.OWNER_ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? ORDER BY OWN.PERSON_ID");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				Owner own = new Owner();
+				Owner own = new Owner(false);
 				own.setId(rs.getString(1));
 				own.setClaimId(claimId);
 				own.setPersonId(rs.getString(2));
-				own.setShares(rs.getBigDecimal(3).intValue());
+				own.setOwnerId(rs.getString(3));
+				own.setShares(rs.getBigDecimal(4).intValue());
 				ownList.add(own);
 			}
 		} catch (SQLException e) {
@@ -402,16 +416,17 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWN.ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
+					.prepareStatement("SELECT OWN.ID, OWN.OWNER_ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
 			statement.setString(1, claimId);
 			statement.setString(2, personId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				own = new Owner();
+				own = new Owner(false);
 				own.setId(rs.getString(1));
 				own.setClaimId(claimId);
 				own.setPersonId(personId);
-				own.setShares(rs.getBigDecimal(2).intValue());
+				own.setOwnerId(rs.getString(2));
+				own.setShares(rs.getBigDecimal(3).intValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -451,16 +466,17 @@ public class Owner {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWN.ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
+					.prepareStatement("SELECT OWN.ID, OWN.OWNER_ID, OWN.SHARES FROM OWNER OWN WHERE OWN.CLAIM_ID=? AND OWN.PERSON_ID=?");
 			statement.setString(1, claimId);
 			statement.setString(2, personId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				own = new Owner();
+				own = new Owner(false);
 				own.setId(rs.getString(1));
 				own.setClaimId(claimId);
 				own.setPersonId(personId);
-				own.setShares(rs.getBigDecimal(2).intValue());
+				own.setOwnerId(rs.getString(2));
+				own.setShares(rs.getBigDecimal(3).intValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

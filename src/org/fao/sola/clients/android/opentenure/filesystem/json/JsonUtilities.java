@@ -158,9 +158,9 @@ public class JsonUtilities {
 				personJson.setBirthDate(sdf.format(personDB.getDateOfBirth()));
 				personJson.setEmail(personDB.getEmailAddress());
 				personJson.setGenderCode(personDB.getGender());
-				personJson.setId(personDB.getPersonId());
+				personJson.setId(owner.getOwnerId());    // This trick is to permit a claimant to be also owner . When the issue will be resolved on SOLA -----> personJson.setId(personDB.getPersonId());
 				personJson.setMobilePhone(personDB.getMobilePhoneNumber());
-				personJson.setLastName(personDB.getLastName());
+				personJson.setLastName(personDB.getLastName()); 
 				personJson.setName(personDB.getFirstName());
 				personJson.setPhone(personDB.getContactPhoneNumber());
 				

@@ -301,11 +301,12 @@ public class GetClaims {
 
 					}
 					
-					Owner owner = new Owner();
+					Owner owner = new Owner(false);
 					
 					owner.setClaimId(downloadedClaim.getId());
 					owner.setId(share.getId());
 					owner.setPersonId(sharePersons.get(0).getId());
+					owner.setOwnerId(sharePersons.get(0).getId());
 					owner.setShares(share.getNominator());
 					
 					Owner.createOwner(owner);

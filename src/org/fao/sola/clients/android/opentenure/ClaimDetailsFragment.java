@@ -399,7 +399,7 @@ public class ClaimDetailsFragment extends Fragment {
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
 			
-			//createPersonAsOwner(person);
+			createPersonAsOwner(person);
 			
 		}
 
@@ -609,22 +609,11 @@ public class ClaimDetailsFragment extends Fragment {
 public int createPersonAsOwner(Person claimant){
 		try {
 			
-			Person person = new Person();
-			person.setContactPhoneNumber(claimant.getContactPhoneNumber());
-			person.setDateOfBirth(claimant.getDateOfBirth());
-			person.setEmailAddress(claimant.getEmailAddress());
-			person.setFirstName(claimant.getFirstName());
-			person.setGender(claimant.getGender());
-			person.setLastName(claimant.getLastName());
-			person.setMobilePhoneNumber(claimant.getMobilePhoneNumber());
-			person.setPlaceOfBirth(claimant.getPlaceOfBirth());
-			person.setPostalAddress(claimant.getPostalAddress());
+
 			
-			person.create();
-			
-			Owner owner = new Owner();
+			Owner owner = new Owner(true);
 			owner.setClaimId(claimActivity.getClaimId());	
-			owner.setPersonId(person.getPersonId());
+			owner.setPersonId(claimant.getPersonId());
 			owner.setShares(100);
 			
 			owner.create();
