@@ -59,7 +59,7 @@
     <string name="email_address">Indirizzo Email</string>
     <string name="gender_masculine">Maschio</string>
     <string name="gender_feminine">Femmina</string>
-    <string name="gender">Genere</string>
+    <string name="gender">Genere *</string>
     <string name="claim">Richiesta</string>
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
@@ -71,13 +71,18 @@
     <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>
-    <string name="claim_type">Tipo della richiesta</string>
+    <string name="claim_name_label">Nome della richiesta *</string>
+    <string name="claim_type">Tipo della richiesta *</string>
     <string name="default_claim_name">Nuova richiesta</string>
     <string name="claim_notes">Annotazioni</string>
     <string name="first_name">Nome</string>
+    <string name="first_name_label">Nome *</string>
     <string name="last_name">Cognome</string>
+    <string name="last_name_label">Cognome *</string>
     <string name="date_of_birth">Data di nascita (AAAA-MM-GG)</string>
+    <string name="date_of_birth_label">Data di nascita * (AAAA-MM-GG)</string>
     <string name="place_of_birth">Luogo di nascita</string>
+    <string name="place_of_birth_label">Luogo di nascita *</string>
     <string name="mobile_phone_number">Telefono mobile</string>
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
@@ -129,6 +134,8 @@
 	<string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
     <string name="message_touch_to_select_a_person">Tocca per selezionare una persona</string>
     <string name="message_touch_to_select_a_claim">Tocca per seleziona una richiesta</string>
+    <string name="message_error_mandatory_fields">Riempire tutti i campi obbligatori prima di salvare</string>
+    <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
 	<string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
     <string name="yes">Si</string>
     <string name="no">No</string>
@@ -147,7 +154,7 @@
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
     <string name="claimant_picture">Immagine del richiedente</string>
-    <string name="claimant">Richiedente</string>
+    <string name="claimant">Richiedente *</string>
     <string name="owner">Proprietario</string>
     <string name="owners">Proprietari</string>
     <string name="challenge_to">Opposizione a</string>

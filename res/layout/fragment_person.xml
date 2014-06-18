@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="bottom"
             android:layout_weight="1"
-            android:text="@string/first_name" />
+            android:text="@string/first_name_label" />
 
         <EditText
             android:id="@+id/first_name_input_field"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
             android:background="@color/dark_background_opentenure"
-            android:hint="@string/first_name"
+            android:hint="@string/first_name" 
             android:inputType="text" >
         </EditText>
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
-            android:text="@string/last_name" />
+            android:text="@string/last_name_label" />
 
         <EditText
             android:id="@+id/last_name_input_field"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
-            android:text="@string/date_of_birth" />
+            android:text="@string/date_of_birth_label" />
 
         <EditText
             android:id="@+id/date_of_birth_input_field"
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
 	        android:layout_weight="1"
 			android:gravity="bottom"
-            android:text="@string/place_of_birth" />
+            android:text="@string/place_of_birth_label" />
 
         <EditText
             android:id="@+id/place_of_birth_input_field"

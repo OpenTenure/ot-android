@@ -204,7 +204,7 @@ public class ClaimDetailsFragment extends Fragment {
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
 				bar.setProgress(progress);
-
+				status.setVisibility(View.VISIBLE);
 				status.setText(claim.getStatus() + " " + progress + " %");
 
 			}
@@ -412,10 +412,10 @@ public class ClaimDetailsFragment extends Fragment {
 		Claim claim = new Claim();
 		String claimName = ((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
-				.toString().equalsIgnoreCase("") ? rootView.getContext()
-				.getString(R.string.default_claim_name) : ((EditText) rootView
-				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString();
+
+		if (claimName == null || claimName.trim().equals(""))
+			return;
 		claim.setName(claimName);
 
 		String displayValue = (String) ((Spinner) rootView
@@ -434,7 +434,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 	}
 
-	public void updateClaim() {
+	public int updateClaim() {
 
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
@@ -443,16 +443,26 @@ public class ClaimDetailsFragment extends Fragment {
 						.findViewById(R.id.challenge_to_claim_id)).getText()
 						.toString());
 
-		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		// Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		Claim claim = new Claim();
+		claim.setClaimId(claimActivity.getClaimId());
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
+
+		System.out
+				.println("DDDDDDIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIICCCCCCCCCCCCCCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : "
+						+ claim.getName());
+
+		if (claim.getName() == null || claim.getName().trim().equals(""))
+			return 0;
+
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
 		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
-		claim.update();
+		return claim.update();
 
 	}
 
@@ -478,8 +488,9 @@ public class ClaimDetailsFragment extends Fragment {
 					toast.show();
 				}
 			} else {
-				updateClaim();
-				if (claimActivity.getClaimId() != null) {
+				int updated = updateClaim();
+
+				if (updated == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();

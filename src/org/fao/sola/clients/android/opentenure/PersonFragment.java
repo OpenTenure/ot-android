@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.R.string;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -90,13 +91,14 @@ public class PersonFragment extends Fragment {
 					+ " must implement ModeDispatcher");
 		}
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.person, menu);
 
-		if(mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || !allowSave){
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0
+				|| !allowSave) {
 			menu.removeItem(R.id.action_save);
 		}
 
@@ -207,11 +209,14 @@ public class PersonFragment extends Fragment {
 					.setFocusable(false);
 			((EditText) rootView.findViewById(R.id.email_address_input_field))
 					.setFocusable(false);
-			((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
+			((RadioButton) rootView
+					.findViewById(R.id.gender_feminine_input_field))
 					.setClickable(false);
-			((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
+			((RadioButton) rootView
+					.findViewById(R.id.gender_masculine_input_field))
 					.setClickable(false);
-			((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
+			((EditText) rootView
+					.findViewById(R.id.mobile_phone_number_input_field))
 					.setFocusable(false);
 			((EditText) rootView
 					.findViewById(R.id.contact_phone_number_input_field))
@@ -266,7 +271,8 @@ public class PersonFragment extends Fragment {
 							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			dob = new java.util.Date();
+			//dob = new java.util.Date();
+			return 3;
 		}
 		person.setDateOfBirth(new Date(dob.getTime()));
 		person.setPlaceOfBirth(((EditText) rootView
@@ -290,6 +296,13 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
+
+		if (person.getDateOfBirth() == null 
+				|| person.getFirstName() == null
+				|| person.getLastName() == null				
+				|| person.getGender() == null
+				|| person.getPlaceOfBirth() == null)
+			return 2;
 
 		if (person.create() == 1) {
 
@@ -304,21 +317,26 @@ public class PersonFragment extends Fragment {
 
 	public int updatePerson() {
 
-		Person person = Person.getPerson(personActivity.getPersonId());
+		
+		
+		//Person person = Person.getPerson(personActivity.getPersonId());
+		Person person = new Person();
+		person.setPersonId(personActivity.getPersonId());
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
 				.toString());
 		person.setLastName(((EditText) rootView
 				.findViewById(R.id.last_name_input_field)).getText().toString());
 		java.util.Date dob;
-		try {
-			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_birth_input_field))
-							.getText().toString());
+		try {			
+			
+			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(((EditText) rootView
+					.findViewById(R.id.date_of_birth_input_field))
+					.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			dob = new java.util.Date();
+			//dob = new java.util.Date();
+			return 3;
 		}
 		person.setDateOfBirth(new Date(dob.getTime()));
 		person.setPlaceOfBirth(((EditText) rootView
@@ -342,6 +360,22 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
+
+		if (person.getDateOfBirth() == null
+				|| person.getDateOfBirth().equals("")
+				|| person.getFirstName() == null
+				|| person.getFirstName().trim().equals("")
+				|| person.getLastName() == null
+				|| person.getLastName().trim().equals("")				
+				|| person.getGender() == null
+				|| person.getGender().trim().equals("")
+				|| person.getPlaceOfBirth() == null
+				|| person.getPlaceOfBirth().trim().equals("")
+				)
+			return 2;
+		
+		System.out.println("LAAAAAAAAAA DATA : " + person.getDateOfBirth());
+
 		return person.update();
 	}
 
@@ -354,10 +388,21 @@ public class PersonFragment extends Fragment {
 		case R.id.action_save:
 
 			if (personActivity.getPersonId() == null) {
-				
-				if (savePerson() == 1) {
+
+				int saved = savePerson();
+				if (saved == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (saved == 2) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_fields,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				}else if (saved == 3) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_birthdate,
+							Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
 					toast = Toast
@@ -367,10 +412,22 @@ public class PersonFragment extends Fragment {
 					toast.show();
 				}
 			} else {
+
+				int updated = updatePerson();
 				
-				if (updatePerson() == 1) {
+				if (updated == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (updated == 2) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_fields,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (updated == 3) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_birthdate,
+							Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
 					toast = Toast
@@ -386,8 +443,5 @@ public class PersonFragment extends Fragment {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	
-	
 
 }

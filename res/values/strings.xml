@@ -59,7 +59,7 @@
     <string name="email_address">Email Address</string>
     <string name="gender_masculine">Male</string>
     <string name="gender_feminine">Female</string>
-    <string name="gender">Gender</string>
+    <string name="gender">Gender *</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
     <string name="additional_info">Additional information</string>
@@ -71,13 +71,18 @@
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>
-    <string name="claim_type">Claim type</string>
+    <string name="claim_name_label">Claim name *</string>
+    <string name="claim_type">Claim type *</string>
     <string name="default_claim_name">New claim</string>
     <string name="claim_notes">Notes</string>
     <string name="first_name">First name</string>
+    <string name="first_name_label">First name *</string>
     <string name="last_name">Last name</string>
+    <string name="last_name_label">Last name *</string>    
     <string name="date_of_birth">Date of birth (YYYY-MM-DD)</string>
+    <string name="date_of_birth_label">Date of birth * (YYYY-MM-DD)</string>
     <string name="place_of_birth">Place of birth</string>
+    <string name="place_of_birth_label">Place of birth *</string>
     <string name="mobile_phone_number">Mobile phone number</string>
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
@@ -129,6 +134,8 @@
 	<string name="message_already_owner">The selected person already shares this claim</string>
     <string name="message_touch_to_select_a_person">Touch to select a person</string>
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>
+    <string name="message_error_mandatory_fields">Fulfill all the mandatory fields before to save</string>
+    <string name="message_error_mandatory_birthdate">Date of birth not in the right format or empty</string>
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -147,7 +154,7 @@
     <string name="draggable_marker">Draggable marker</string>
     <string name="sticky_marker">Sticky marker</string>
     <string name="claimant_picture">Claimant picture</string>
-    <string name="claimant">Claimant</string>
+    <string name="claimant">Claimant *</string>
     <string name="owner">Owner</string>
     <string name="challenge_to">Challenge to</string>
     <string name="challenged_by">Challenged by</string>
