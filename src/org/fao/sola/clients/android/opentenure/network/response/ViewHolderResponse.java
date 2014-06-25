@@ -27,34 +27,25 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-public class ApiResponse {
+import org.fao.sola.clients.android.opentenure.ViewHolder;
 
-	int httpStatusCode;
-	String message;
-	String claimId;
-
-	public int getHttpStatusCode() {
-		return httpStatusCode;
+public class ViewHolderResponse {
+	
+	ViewHolder vh;
+	public ViewHolder getVh() {
+		return vh;
 	}
-
-	public void setHttpStatusCode(int httpStatusCode) {
-		this.httpStatusCode = httpStatusCode;
+	public void setVh(ViewHolder vh) {
+		this.vh = vh;
 	}
-
-	public String getMessage() {
-		return message;
+	public ApiResponse getRes() {
+		return res;
 	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	public void setRes(ApiResponse res) {
+		this.res = res;
 	}
-
-	public String getClaimId() {
-		return claimId;
-	}
-
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-	}
+	ApiResponse res;
+	
+	
 
 }

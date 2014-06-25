@@ -50,7 +50,7 @@ public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
 		if (result) {
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_claims_downloaded, Toast.LENGTH_SHORT);
+					OpenTenureApplication.getContext().getResources().getString(R.string.message_claims_downloaded), Toast.LENGTH_SHORT);
 			toast.show();
 
 		OpenTenureApplication.getMapFragment().refreshMap();
@@ -61,7 +61,7 @@ public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
 		} else {
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_error_downloading_claims, Toast.LENGTH_SHORT);
+					OpenTenureApplication.getContext().getResources().getString(R.string.message_error_downloading_claims), Toast.LENGTH_SHORT);
 			toast.show();
 		}
 

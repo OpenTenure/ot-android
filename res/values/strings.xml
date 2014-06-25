@@ -10,6 +10,7 @@
     <string name="action_remove_attachment">Remove attachment</string>
     <string name="action_remove_owner">Remove rights owner</string>
     <string name="action_remove_additional_info">Remove information</string>
+    <string name="action_remove_claim">Remove claim</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
@@ -130,12 +131,16 @@
     <string name="message_not_supported_on_this_device">Not supported on this device</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
+    <string name="message_map_not_yet_draw">The map of the claim is not yet complete</string>
     <string name="message_no_available_shares">Free some shares on this claim before adding a right owner</string>
 	<string name="message_already_owner">The selected person already shares this claim</string>
     <string name="message_touch_to_select_a_person">Touch to select a person</string>
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>
     <string name="message_error_mandatory_fields">Fulfill all the mandatory fields before to save</string>
     <string name="message_error_mandatory_birthdate">Date of birth not in the right format or empty</string>
+    <string name="message_remove_quest">Do you really want withdraw the Claim ?</string>
+    <string name="message_remove_claim">Do you really want remove the Claim ?</string>
+    <string name="message_error_withdraw_claim">Error withdrawing claim : </string>
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -155,6 +160,7 @@
     <string name="sticky_marker">Sticky marker</string>
     <string name="claimant_picture">Claimant picture</string>
     <string name="claimant">Claimant *</string>
+    <string name="delete_locally">Delete locally</string>
     <string name="owner">Owner</string>
     <string name="challenge_to">Challenge to</string>
     <string name="challenged_by">Challenged by</string>
@@ -187,6 +193,7 @@
     <string name="north_west">North-West</string>
     <string name="south_east">South-East</string>
     <string name="south_west">South-West</string>
+    
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>
     <string-array name="share_values">

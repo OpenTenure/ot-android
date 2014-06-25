@@ -80,10 +80,10 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
-		
+
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.claim_attachments_list_item,
-					parent, false);
+			convertView = inflater.inflate(
+					R.layout.claim_attachments_list_item, parent, false);
 			vh = new ViewHolder();
 
 			vh.id = (TextView) convertView.findViewById(R.id.attachment_id);
@@ -131,20 +131,17 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-		}
-		else if (att.getStatus()
-				.equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
+		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-		}
-		else if (att.getStatus()
-				.equals(AttachmentStatus._UPLOAD_ERROR)) {
+		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 		}
-		if (!readOnly) {
+		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
+
 			vh.removeIcon.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -190,7 +187,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			});
 
 		} else {
-			((ViewManager)convertView).removeView(vh.removeIcon);
+
+			((ViewManager) convertView).removeView(vh.removeIcon);
 		}
 		Claim claim = Claim.getClaim(claimId);
 

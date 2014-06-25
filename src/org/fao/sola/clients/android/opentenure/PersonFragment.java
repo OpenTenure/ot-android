@@ -374,7 +374,7 @@ public class PersonFragment extends Fragment {
 				)
 			return 2;
 		
-		System.out.println("LAAAAAAAAAA DATA : " + person.getDateOfBirth());
+
 
 		return person.update();
 	}

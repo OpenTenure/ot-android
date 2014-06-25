@@ -4,21 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/fileDocumentDescription"
+    <TextView
+        android:id="@+id/remove_quest"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text" >
-    </EditText>
-
-    <Spinner
-        android:id="@+id/documentTypesSpinner"        
-        android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/spinnerselectedcolor"
-        style="@drawable/spinnerselectedcolor"
-        android:gravity="bottom" />
+        android:gravity="center"
+        android:text="@string/message_remove_quest" />
 
     <View
         android:layout_width="fill_parent"
@@ -29,25 +21,37 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        >
 
         <Button
-            android:id="@+id/fileDocumentConfirm"
+            android:id="@+id/ClaimWithdrawnConfirm"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:layout_weight="1" />
-        
-        
+
         <View
-        android:layout_width="1dip"
-        android:layout_height="fill_parent"
-        android:background="#BCBEC6"
-        />
+            android:layout_width="1dip"
+            android:layout_height="fill_parent"
+            android:background="#BCBEC6" />
+        
+         <Button
+            android:id="@+id/ClaimDeleteLocally"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_weight="1" />
+         
+         <View
+            android:layout_width="1dip"
+            android:layout_height="fill_parent"
+            android:background="#BCBEC6" />
 
         <Button
-            android:id="@+id/fileDocumentConfirmCancel"
+            android:id="@+id/ClaimWithdrawnDelete"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

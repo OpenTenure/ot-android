@@ -330,6 +330,63 @@ public class CommunityServerAPI {
 
 	}
 
+	public static ApiResponse withdrawClaim(String claimId) {
+
+		/*
+		 * Creating the url to call
+		 */
+		String url = String.format(
+				CommunityServerAPIUtilities.HTTPS_WITHDRAWCLAIM, claimId);
+		HttpGet request = new HttpGet(url);
+		
+		Log.d("CommunityServerAPI", "WITHDRAW request : "
+				+ request.getRequestLine());
+		
+		Log.d("CommunityServerAPI"," ");
+		
+		CookieStore CS = OpenTenureApplication.getCoockieStore();
+		HttpContext context = new BasicHttpContext();
+		context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+		
+		
+
+		/* Calling the Server.... */
+		try {
+			HttpResponse response = client.execute(request,context);
+
+			Log.d("CommunityServerAPI", "WITHDRAW Claim status line "
+					+ response.getStatusLine());
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			Log.d("CommunityServerAPI", "CLAIM JSON STRING " + json);
+
+			Gson gson = new Gson();
+			ApiResponse apiResponse = gson.fromJson(json, ApiResponse.class);
+			apiResponse.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
+			apiResponse.setClaimId(claimId);
+
+			return apiResponse;
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			ApiResponse apiResponse = new ApiResponse();
+
+			apiResponse.setHttpStatusCode(100);
+			apiResponse.setMessage(e.getMessage());
+			apiResponse.setClaimId(claimId);
+
+			return apiResponse;
+		}
+
+	}
+
 	public static Claim getClaim(String claimId) {
 
 		/*
@@ -512,9 +569,8 @@ public class CommunityServerAPI {
 						.fromJson(json, listType);
 
 				if (claimTypeList != null)
-					Log.d("CommunityServerAPI",
-							"RETRIEVED CLAIM TYPES LIST"
-									+ claimTypeList.size());
+					Log.d("CommunityServerAPI", "RETRIEVED CLAIM TYPES LIST"
+							+ claimTypeList.size());
 
 				return claimTypeList;
 
@@ -653,8 +709,7 @@ public class CommunityServerAPI {
 
 				return saveResponse;
 			}
-			
-			
+
 			else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
 				Log.d("CommunityServerAPI",
 						"saveClaim status line " + response.getStatusLine());
@@ -662,9 +717,7 @@ public class CommunityServerAPI {
 				String json = CommunityServerAPIUtilities.Slurp(response
 						.getEntity().getContent(), 1024);
 
-				
-
-				SaveClaimResponse saveResponse = new SaveClaimResponse(); 
+				SaveClaimResponse saveResponse = new SaveClaimResponse();
 
 				saveResponse.setHttpStatusCode(response.getStatusLine()
 						.getStatusCode());
@@ -692,35 +745,32 @@ public class CommunityServerAPI {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-			
+
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(110);
 			saveResponse.setMessage("Error saving claim " + e.getMessage());
-			
+
 			return saveResponse;
-			
-		}catch(UnknownHostException uhe){
-			
+
+		} catch (UnknownHostException uhe) {
+
 			uhe.printStackTrace();
-			
+
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(100);
 			saveResponse.setMessage("UnknownHostException");
-			
-			return saveResponse;			
-		} 	
-		catch (IOException e) {
+
+			return saveResponse;
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(105);
 			saveResponse.setMessage("Error saving claim " + e.getMessage());
-			
+
 			return saveResponse;
 		}
-		
 
 	}
 
@@ -755,8 +805,7 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI", "saveAttachment HTTP status line "
 					+ response.getStatusLine());
-			
-			
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -772,18 +821,18 @@ public class CommunityServerAPI {
 			saveAttachmentResponse.setAttachmentId(attachmentId);
 
 		} catch (UnknownHostException ex) {
-			
+
 			SaveAttachmentResponse sar = new SaveAttachmentResponse();
 			sar.setHttpStatusCode(100);
 			sar.setAttachmentId(attachmentId);
 			sar.setMessage(ex.getMessage());
 
-			Log.d("CommunityServerAPI",
-					"saveAttachment UnknownHostException " + ex.getMessage());
+			Log.d("CommunityServerAPI", "saveAttachment UnknownHostException "
+					+ ex.getMessage());
 			ex.printStackTrace();
 			return sar;
-		}catch (Throwable ex) {
-			
+		} catch (Throwable ex) {
+
 			SaveAttachmentResponse sar = new SaveAttachmentResponse();
 			sar.setHttpStatusCode(105);
 			sar.setAttachmentId(attachmentId);
@@ -837,9 +886,18 @@ public class CommunityServerAPI {
 			apiResponse.setHttpStatusCode(response.getStatusLine()
 					.getStatusCode());
 
-		} catch (Throwable ex) {
+		} catch (UnknownHostException uhe) {
 			apiResponse = new ApiResponse();
 			apiResponse.setHttpStatusCode(100);
+			apiResponse.setMessage("uploadChunk error :" + uhe.getMessage());
+
+			Log.d("CommunityServerAPI",
+					"uploadChunk error : " + uhe.getMessage());
+			uhe.printStackTrace();
+			return apiResponse;
+		} catch (Throwable ex) {
+			apiResponse = new ApiResponse();
+			apiResponse.setHttpStatusCode(105);
 			apiResponse.setMessage("uploadChunk error :" + ex.getMessage());
 
 			Log.d("CommunityServerAPI",
@@ -847,7 +905,6 @@ public class CommunityServerAPI {
 			ex.printStackTrace();
 			return apiResponse;
 		}
-
 		return apiResponse;
 
 	}

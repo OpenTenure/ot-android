@@ -13,6 +13,7 @@
     <string name="action_remove_attachment">Rimuovi allegato</string>
     <string name="action_remove_owner">Rimuovi quote</string>
     <string name="action_remove_additional_info">Rimuovi informazione</string>
+    <string name="action_remove_claim">Rimuovi claim</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
     <string name="action_save">Salva</string>
@@ -132,11 +133,15 @@
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
     <string name="message_no_available_shares">Occorre rilasciare delle quote su questa richiesta prima di aggiungere un nuovo avente diritto</string>
 	<string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
+	<string name="message_map_not_yet_draw">La mappa del claim non e\' ancora completata</string>
     <string name="message_touch_to_select_a_person">Tocca per selezionare una persona</string>
     <string name="message_touch_to_select_a_claim">Tocca per seleziona una richiesta</string>
     <string name="message_error_mandatory_fields">Riempire tutti i campi obbligatori prima di salvare</string>
     <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
+    <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
+    <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
 	<string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+	<string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="up">Su</string>
@@ -153,6 +158,7 @@
     <string name="add_value">Valore?</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
+    <string name="delete_locally">Cancella localmente</string>
     <string name="claimant_picture">Immagine del richiedente</string>
     <string name="claimant">Richiedente *</string>
     <string name="owner">Proprietario</string>

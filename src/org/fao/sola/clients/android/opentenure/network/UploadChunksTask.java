@@ -27,13 +27,20 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.ViewHolder;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
+import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
 import android.os.AsyncTask;
+import android.view.View;
 
 /**
  * Here transfers one chunk at time. Return true if all the chunks of an
@@ -41,18 +48,26 @@ import android.os.AsyncTask;
  */
 
 public class UploadChunksTask extends
-		AsyncTask<String, Void, UploadChunksResponse> {
+		AsyncTask<Object, Void, ViewHolderResponse> {
 
 	@Override
-	protected UploadChunksResponse doInBackground(String... params) {
+	protected ViewHolderResponse doInBackground(Object... params) {
 
 		UploadChunks ulc = new UploadChunks();
-		UploadChunksResponse res = ulc.execute(params[0]);
+		UploadChunksResponse res = ulc.execute((String) params[0]);
 
-		return res;
+		ViewHolderResponse vhr = new ViewHolderResponse();
+
+		vhr.setRes(res);
+		vhr.setVh((ViewHolder) params[1]);
+
+		return vhr;
 	}
 
-	protected void onPostExecute(final UploadChunksResponse res) {
+	protected void onPostExecute(final ViewHolderResponse vhr) {
+
+		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
+		ViewHolder vh = (ViewHolder) vhr.getVh();
 
 		if (res.getSuccess()) {
 
@@ -63,21 +78,156 @@ public class UploadChunksTask extends
 
 			SaveAttachmentTask sat = new SaveAttachmentTask();
 			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					res.getAttachmentId());
+					res.getAttachmentId(), vhr.getVh());
 
 		} else {
 
-			Attachment att = Attachment.getAttachment(res.getAttachmentId());
+			int progress;
+			Attachment att;
 
-			if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+			switch (res.getHttpStatusCode()) {
+			case 100:
 
-				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
-				att.update();
-				
-				Claim claim = Claim.getClaim(att.getClaimId());
-				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
-				claim.update();
+				/*
+				 * 
+				 * UnknowHostException
+				 */
 
+				att = Attachment.getAttachment(res.getAttachmentId());
+
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+					att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+					att.update();
+
+					Claim claim = Claim.getClaim(att.getClaimId());
+					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+					claim.update();
+
+					progress = FileSystemUtilities.getUploadProgress(claim);
+					vh.getBar().setProgress(progress);
+
+					vh.getStatus().setText(
+							ClaimStatus._UPLOADING + ": " + progress + " %");
+					vh.getStatus().setTextColor(
+							OpenTenureApplication.getContext().getResources()
+									.getColor(R.color.status_created));
+					vh.getStatus().setVisibility(View.VISIBLE);
+
+					vh.getIconLocal().setVisibility(View.VISIBLE);
+					vh.getIconUnmoderated().setVisibility(View.GONE);
+
+				}
+
+				break;
+
+			case 105:
+
+				att = Attachment.getAttachment(res.getAttachmentId());
+
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+					att.update();
+
+					Claim claim = Claim.getClaim(att.getClaimId());
+					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+					claim.update();
+
+					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+					vh.getStatus().setTextColor(
+							OpenTenureApplication.getContext().getResources()
+									.getColor(R.color.status_created));
+					vh.getStatus().setVisibility(View.VISIBLE);
+
+					vh.getIconLocal().setVisibility(View.VISIBLE);
+					vh.getIconUnmoderated().setVisibility(View.GONE);
+
+				}
+
+				break;
+
+			case 400:
+
+				att = Attachment.getAttachment(res.getAttachmentId());
+
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+					att.update();
+
+					Claim claim = Claim.getClaim(att.getClaimId());
+					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+					claim.update();
+
+					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+					vh.getStatus().setTextColor(
+							OpenTenureApplication.getContext().getResources()
+									.getColor(R.color.status_created));
+					vh.getStatus().setVisibility(View.VISIBLE);
+
+					vh.getIconLocal().setVisibility(View.VISIBLE);
+					vh.getIconUnmoderated().setVisibility(View.GONE);
+
+				}
+
+				break;
+
+			case 404:
+
+				att = Attachment.getAttachment(res.getAttachmentId());
+
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+					att.update();
+
+					Claim claim = Claim.getClaim(att.getClaimId());
+					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+					claim.update();
+
+					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+					vh.getStatus().setTextColor(
+							OpenTenureApplication.getContext().getResources()
+									.getColor(R.color.status_created));
+					vh.getStatus().setVisibility(View.VISIBLE);
+
+					vh.getIconLocal().setVisibility(View.VISIBLE);
+					vh.getIconUnmoderated().setVisibility(View.GONE);
+
+				}
+
+				break;
+
+			default:
+
+				att = Attachment.getAttachment(res.getAttachmentId());
+
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+
+					att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+					att.update();
+
+					Claim claim = Claim.getClaim(att.getClaimId());
+					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+					claim.update();
+
+					progress = FileSystemUtilities.getUploadProgress(claim);
+					vh.getBar().setProgress(progress);
+
+					vh.getStatus().setText(
+							ClaimStatus._UPLOADING + ": " + progress + " %");
+					vh.getStatus().setTextColor(
+							OpenTenureApplication.getContext().getResources()
+									.getColor(R.color.status_created));
+					vh.getStatus().setVisibility(View.VISIBLE);
+
+					vh.getIconLocal().setVisibility(View.VISIBLE);
+					vh.getIconUnmoderated().setVisibility(View.GONE);
+
+				}
+
+				break;
 			}
 
 		}
