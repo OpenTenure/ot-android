@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -108,12 +107,21 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 			for(Adjacency adjacency : adjacencies){
 				
-				Claim adjacentClaim = Claim.getClaim(adjacency.getDestClaimId());
+				Claim adjacentClaim;
+				String direction;
+				
+				if(claimActivity.getClaimId().equalsIgnoreCase(adjacency.getSourceClaimId())){
+					adjacentClaim = Claim.getClaim(adjacency.getDestClaimId());
+					direction = Adjacency.getCardinalDirection(rootView.getContext(),adjacency.getCardinalDirection());
+				}else{
+					adjacentClaim = Claim.getClaim(adjacency.getSourceClaimId());
+					direction = Adjacency.getCardinalDirection(rootView.getContext(),Adjacency.getReverseCardinalDirection(adjacency.getCardinalDirection()));
+				}
 				
 				AdjacentClaimListTO acto = new AdjacentClaimListTO();
 				acto.setSlogan(adjacentClaim.getName() + ", " + getResources().getString(R.string.by) + ": " + adjacentClaim.getPerson().getFirstName()+ " " + adjacentClaim.getPerson().getLastName());
 				acto.setId(adjacentClaim.getClaimId());
-				acto.setCardinalDirection(Adjacency.getCardinalDirection(rootView.getContext(),adjacency.getCardinalDirection()));
+				acto.setCardinalDirection(direction);
 				acto.setStatus(adjacentClaim.getStatus());							
 				
 				claimListTOs.add(acto);

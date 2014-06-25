@@ -299,17 +299,9 @@ public class Adjacency {
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				Adjacency adj = new Adjacency();
-				String sourceClaimId = rs.getString(1);
-				if (sourceClaimId.equalsIgnoreCase(claimId)) {
-					adj.setSourceClaimId(sourceClaimId);
-					adj.setDestClaimId(rs.getString(2));
-					adj.setCardinalDirection(CardinalDirection.valueOf(rs.getString(3)));
-				} else {
-					// Reversing actual direction for consistency
-					adj.setSourceClaimId(rs.getString(2));
-					adj.setDestClaimId(sourceClaimId);
-					adj.setCardinalDirection(Adjacency.getReverseCardinalDirection(CardinalDirection.valueOf(rs.getString(3))));
-				}
+				adj.setSourceClaimId(rs.getString(1));
+				adj.setDestClaimId(rs.getString(2));
+				adj.setCardinalDirection(CardinalDirection.valueOf(rs.getString(3)));
 				adjList.add(adj);
 			}
 		} catch (SQLException e) {

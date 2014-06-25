@@ -137,14 +137,23 @@ public class PDFClaimExporter {
 			drawHorizontalLine();
 			List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
 			for (Adjacency adj : adjList) {
-				Claim adjacentClaim = Claim.getClaim(adj.getDestClaimId());
+				Claim adjacentClaim;
+				String direction;
+				if(adj.getSourceClaimId().equalsIgnoreCase(claimId)){
+					adjacentClaim = Claim.getClaim(adj.getDestClaimId());
+					direction = Adjacency.getCardinalDirection(context,
+							adj.getCardinalDirection());
+				}else{
+					adjacentClaim = Claim.getClaim(adj.getSourceClaimId());
+					direction = Adjacency.getCardinalDirection(context,
+							Adjacency.getReverseCardinalDirection(adj.getCardinalDirection()));
+				}
 				newLine();
 				newLine();
 				writeText(context.getResources().getString(
 						R.string.cardinal_direction)
 						+ ": "
-						+ Adjacency.getCardinalDirection(context,
-								adj.getCardinalDirection())
+						+ direction
 						+ ", "
 						+ context.getResources().getString(R.string.property)
 						+ ": "
