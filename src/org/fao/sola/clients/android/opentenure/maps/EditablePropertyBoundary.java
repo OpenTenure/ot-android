@@ -36,18 +36,28 @@ import java.util.Map;
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.maps.markers.ActiveMarkerRegistrar;
+import org.fao.sola.clients.android.opentenure.maps.markers.DownMarker;
+import org.fao.sola.clients.android.opentenure.maps.markers.LeftMarker;
+import org.fao.sola.clients.android.opentenure.maps.markers.RightMarker;
+import org.fao.sola.clients.android.opentenure.maps.markers.UpMarker;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.MD5;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.location.Location;
+import android.text.InputType;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -66,40 +76,30 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
 	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
+	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
+	private ActiveMarkerRegistrar amr;
 	private boolean allowDragging;
 
-	private Marker up;
-	private Marker down;
-	private Marker left;
-	private Marker right;
+	private UpMarker up;
+	private DownMarker down;
+	private LeftMarker left;
+	private RightMarker right;
 	private Marker remove;
 	private Marker moveTo;
 	private Marker relativeEdit;
 	private Marker cancel;
 	private Marker target;
 	private Marker add;
-	private Marker selectedVertex;
+	private Marker selectedMarker;
 	
-	private static final float UP_INITIAL_ROTATION = 180.0f;
-	private static final float DOWN_INITIAL_ROTATION = 0.0f;
-	private static final float LEFT_INITIAL_ROTATION = 90.0f;
-	private static final float RIGHT_INITIAL_ROTATION = 270.0f;
-	private static final int PIXELS_PER_STEP = 5;
-
-	private boolean handleMarkerEditClick(Marker mark, final List<BasePropertyBoundary> existingProperties){
+	private boolean handleMarkerEditClick(Marker mark){
 		if(remove == null || relativeEdit == null || cancel == null){
 			return false;
 		}
 
 		if (mark.getId().equalsIgnoreCase(remove.getId())) {
-			removeVertex(selectedVertex);
-			drawBoundary();
-			updateVertices();
-			resetAdjacency(existingProperties);
-			hideMarkerEditControls();
-			selectedVertex = null;
-			return true;
+			return removeSelectedMarker();
 		}
 		if (mark.getId().equalsIgnoreCase(relativeEdit.getId())) {
 			showRelativeMarkerEditControls();
@@ -112,59 +112,19 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return false;
 	}
 
-	private boolean handleRelativeMarkerEditClick(Marker mark, final List<BasePropertyBoundary> existingProperties){
+	private boolean handleRelativeMarkerEditClick(Marker mark){
 		if(up == null || down == null || left == null || right == null || add == null || moveTo == null || cancel == null || target == null){
 			return false;
 		}
 		
-		Projection projection = map.getProjection();
-		Point screenLocation = projection.toScreenLocation(target.getPosition());
-		
-		if (mark.getId().equalsIgnoreCase(up.getId())) {
-			Log.d(this.getClass().getName(),"up");
-			screenLocation.y -= PIXELS_PER_STEP;
-			target.setPosition(projection.fromScreenLocation(screenLocation));
-			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
-			target.showInfoWindow();
-			return true;
-		}else if (mark.getId().equalsIgnoreCase(down.getId())) {
-			Log.d(this.getClass().getName(),"down");
-			screenLocation.y += PIXELS_PER_STEP;
-			target.setPosition(projection.fromScreenLocation(screenLocation));
-			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
-			target.showInfoWindow();
-			return true;
-		}else if (mark.getId().equalsIgnoreCase(left.getId())) {
-			Log.d(this.getClass().getName(),"left");
-			screenLocation.x -= PIXELS_PER_STEP;
-			target.setPosition(projection.fromScreenLocation(screenLocation));
-			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
-			target.showInfoWindow();
-			return true;
-		}else if (mark.getId().equalsIgnoreCase(right.getId())) {
-			Log.d(this.getClass().getName(),"right");
-			screenLocation.x += PIXELS_PER_STEP;
-			target.setPosition(projection.fromScreenLocation(screenLocation));
-			target.setTitle("Lat: " + target.getPosition().latitude + ", Lon: " + target.getPosition().longitude + ", Dist: " + getTargetDistance());
-			target.showInfoWindow();
+		if (amr.onClick(mark)) {
 			return true;
 		}else if (mark.getId().equalsIgnoreCase(add.getId())) {
 			Log.d(this.getClass().getName(),"add");
-			insertVertex(target.getPosition());
-			resetAdjacency(existingProperties);
-			deselect();
-			return true;
+			return addMarker();
 		}else if (mark.getId().equalsIgnoreCase(moveTo.getId())) {
 			Log.d(this.getClass().getName(),"moveTo");
-			// Click on 'Move to' marker: insert a marker at target position and remove the selected
-			insertVertex(target.getPosition());
-			removeVertex(selectedVertex);
-			hideMarkerEditControls();
-			selectedVertex = null;
-			drawBoundary();
-			updateVertices();
-			resetAdjacency(existingProperties);
-			return true;
+			return moveMarker();
 		}else if (mark.getId().equalsIgnoreCase(cancel.getId())) {
 			Log.d(this.getClass().getName(),"cancel");
 			deselect();
@@ -176,32 +136,107 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return false;
 		}
 	}
+	
+	private boolean removeSelectedPropertyLocation(){
+		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker.getId());
+		removePropertyLocationMarker(selectedMarker);
+		loc.delete();
+		hideMarkerEditControls();
+		selectedMarker = null;
+		return true;
+	}
+	
+	private boolean removeSelectedPropertyBoundaryVertex(){
+		removePropertyBoundaryMarker(selectedMarker);
+		drawBoundary();
+		updateVertices();
+		resetAdjacency(otherProperties);
+		hideMarkerEditControls();
+		selectedMarker = null;
+		return true;
+	}
+	
+	private boolean removeSelectedMarker(){
+
+		if (verticesMap.containsKey(selectedMarker.getId())) {
+			return removeSelectedPropertyBoundaryVertex();
+		}else if (propertyLocationMarkersMap.containsKey(selectedMarker.getId())) {
+			return removeSelectedPropertyLocation();
+		}
+		return false;
+		
+	}
+	
+	private boolean addMarker(){
+		
+		addMarker(target.getPosition());
+		deselect();
+		return true;
+	}
+
+	private boolean movePropertyLocationMarker(){
+		Marker newMark = createLocationMarker(target.getPosition(), selectedMarker.getTitle());
+		Marker oldMark = propertyLocationMarkersMap.remove(selectedMarker.getId());
+		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker.getId());
+		loc.setMapPosition(target.getPosition());
+		loc.update();
+		oldMark.remove();
+		propertyLocationMarkersMap.put(newMark.getId(), newMark);
+		propertyLocationsMap.put(newMark.getId(), loc);
+		hideMarkerEditControls();
+		selectedMarker = null;
+		return true;
+	}
+	
+	private boolean movePropertyBoundaryMarker(){
+		insertVertex(target.getPosition());
+		removePropertyBoundaryMarker(selectedMarker);
+		hideMarkerEditControls();
+		selectedMarker = null;
+		drawBoundary();
+		updateVertices();
+		resetAdjacency(otherProperties);
+		return true;
+	}
+	
+	private boolean moveMarker(){
+
+		// Insert a marker at target position and remove the selected
+
+		if (verticesMap.containsKey(selectedMarker.getId())) {
+			return movePropertyBoundaryMarker();
+		}else if (propertyLocationsMap.containsKey(selectedMarker.getId())) {
+			return movePropertyLocationMarker();
+		}
+		return false;
+		
+	}
 
 	private void deselect(){
 		hideMarkerEditControls();
-		if(selectedVertex != null){
-			selectedVertex.setIcon(BitmapDescriptorFactory
+		if(selectedMarker != null){
+			selectedMarker.setIcon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker));
-		selectedVertex = null;
+		selectedMarker = null;
 		}
 	}
 	
 	private void hideMarkerEditControls(){
-		if(up != null){
-			up.remove();
-			up = null;
+		if(up!=null){
+			up.hide();
+			amr.remove(up);
 		}
 		if(down != null){
-			down.remove();
-			down = null;
+			down.hide();
+			amr.remove(down);
 		}
 		if(left != null){
-			left.remove();
-			left = null;
+			left.hide();
+			amr.remove(left);
 		}
 		if(right != null){
-			right.remove();
-			right = null;
+			right.hide();
+			amr.remove(right);
 		}
 		if(target != null){
 			target.remove();
@@ -230,22 +265,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	}
 
-	private Point getControlUpPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
-		return new Point(markerScreenPosition.x, markerScreenPosition.y + 4*markerHeight);
-	}
-
-	private Point getControlDownPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
-		return new Point(markerScreenPosition.x, markerScreenPosition.y + 8*markerHeight);
-	}
-
-	private Point getControlLeftPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
-		return new Point(markerScreenPosition.x - 2*markerWidth, markerScreenPosition.y + 6*markerHeight);
-	}
-
-	private Point getControlRightPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
-		return new Point(markerScreenPosition.x + 2*markerWidth, markerScreenPosition.y + 6*markerHeight);
-	}
-
 	private Point getControlRelativeEditPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
 		return new Point(markerScreenPosition.x, markerScreenPosition.y + 2*markerHeight);
 	}
@@ -270,48 +289,34 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return new Point(markerScreenPosition.x, markerScreenPosition.y);
 	}
 	
-	private float getTargetDistance() {
-		if(selectedVertex == null || target == null){
-			return 0.0f;
-		}
+	public void refreshMarkerEditControls(){
 		
-		float[] results = new float[1];
-		Location.distanceBetween(target.getPosition().latitude, target.getPosition().longitude,
-				selectedVertex.getPosition().latitude, selectedVertex.getPosition().longitude, results);
-		return results[0];
-	}
-
-	public void refreshMarkerEditControls(float bearing){
-		
-		if(selectedVertex == null){
+		if(selectedMarker == null){
 			return;
 		}
 
 		// Reposition visible edit controls (excluding target)
 		
 		Projection projection = map.getProjection();
-		Point screenPosition = projection.toScreenLocation(selectedVertex.getPosition());
+		Point screenPosition = projection.toScreenLocation(selectedMarker.getPosition());
 
 		Bitmap bmp = BitmapFactory
 				.decodeResource(context.getResources(), R.drawable.ot_blue_marker);
 		int iconHeight = bmp.getHeight();
 		int iconWidth = bmp.getWidth();
 
-		if(up != null){
-			up.setRotation(UP_INITIAL_ROTATION);
-			up.setPosition(projection.fromScreenLocation(getControlUpPosition(screenPosition, iconWidth, iconHeight)));
+		if(up!=null){
+			up.refresh(screenPosition, iconWidth, iconHeight);
 		}
+
 		if(down != null){
-			down.setRotation(DOWN_INITIAL_ROTATION);
-			down.setPosition(projection.fromScreenLocation(getControlDownPosition(screenPosition, iconWidth, iconHeight)));
+			down.refresh(screenPosition, iconWidth, iconHeight);
 		}
 		if(left != null){
-			left.setRotation(LEFT_INITIAL_ROTATION);
-			left.setPosition(projection.fromScreenLocation(getControlLeftPosition(screenPosition, iconWidth, iconHeight)));
+			left.refresh(screenPosition, iconWidth, iconHeight);
 		}
 		if(right != null){
-			right.setRotation(RIGHT_INITIAL_ROTATION);
-			right.setPosition(projection.fromScreenLocation(getControlRightPosition(screenPosition, iconWidth, iconHeight)));
+			right.refresh(screenPosition, iconWidth, iconHeight);
 		}
 		if(relativeEdit != null){
 			relativeEdit.setPosition(projection.fromScreenLocation(getControlRelativeEditPosition(screenPosition, iconWidth, iconHeight)));
@@ -336,7 +341,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		hideMarkerEditControls();
 		
 		Projection projection = map.getProjection();
-		Point markerScreenPosition = projection.toScreenLocation(selectedVertex.getPosition());
+		Point markerScreenPosition = projection.toScreenLocation(selectedMarker.getPosition());
 
 		Bitmap bmp = BitmapFactory
 				.decodeResource(context.getResources(), R.drawable.ot_blue_marker);
@@ -364,7 +369,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private void showRelativeMarkerEditControls() {
 		
 		Projection projection = map.getProjection();
-		Point markerScreenPosition = projection.toScreenLocation(selectedVertex.getPosition());
+		Point markerScreenPosition = projection.toScreenLocation(selectedMarker.getPosition());
 
 		Bitmap bmp = BitmapFactory
 				.decodeResource(context.getResources(), R.drawable.ot_blue_marker);
@@ -372,32 +377,14 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		int markerWidth = bmp.getWidth();
 
 		hideMarkerEditControls();
-
-		up = map.addMarker(new MarkerOptions()
-		.position(projection.fromScreenLocation(getControlUpPosition(markerScreenPosition, markerWidth, markerHeight)))
-		.anchor(0.5f, 0.5f)
-		.title(context.getString(R.string.up))
-		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(UP_INITIAL_ROTATION));
 		
-		down = map.addMarker(new MarkerOptions()
-		.position(projection.fromScreenLocation(getControlDownPosition(markerScreenPosition, markerWidth, markerHeight)))
+		target = map.addMarker(new MarkerOptions()
+		.position(projection.fromScreenLocation(getControlTargetPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
-		.title(context.getString(R.string.down))
+		.title("0.0 m")
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(DOWN_INITIAL_ROTATION));
-		left = map.addMarker(new MarkerOptions()
-		.position(projection.fromScreenLocation(getControlLeftPosition(markerScreenPosition, markerWidth, markerHeight)))
-		.anchor(0.5f, 0.5f)
-		.title(context.getString(R.string.left))
-		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(LEFT_INITIAL_ROTATION));
-		right = map.addMarker(new MarkerOptions()
-		.position(projection.fromScreenLocation(getControlRightPosition(markerScreenPosition, markerWidth, markerHeight)))
-		.anchor(0.5f, 0.5f)
-		.title(context.getString(R.string.right))
-		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(RIGHT_INITIAL_ROTATION));
+				.fromResource(R.drawable.ic_menu_mylocation)));
+
 		add = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlAddPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
@@ -413,19 +400,33 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_block)));
-		target = map.addMarker(new MarkerOptions()
-		.position(projection.fromScreenLocation(getControlTargetPosition(markerScreenPosition, markerWidth, markerHeight)))
-		.anchor(0.5f, 0.5f)
-		.title("0.0 m")
-		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_menu_mylocation)));
+
+		up = new UpMarker(context,selectedMarker,target, map);
+		up.show(projection, markerScreenPosition, markerWidth, markerHeight);
+		amr.add(up);
+		
+		down = new DownMarker(context,selectedMarker,target, map);
+		down.show(projection, markerScreenPosition, markerWidth, markerHeight);
+		amr.add(down);
+
+		left = new LeftMarker(context,selectedMarker,target, map);
+		left.show(projection, markerScreenPosition, markerWidth, markerHeight);
+		amr.add(left);
+
+		right = new RightMarker(context,selectedMarker,target, map);
+		right.show(projection, markerScreenPosition, markerWidth, markerHeight);
+		amr.add(right);
+
 	}
 
 	public EditablePropertyBoundary(final Context context, final GoogleMap map, final Claim claim,
-			final ClaimDispatcher claimActivity, boolean allowDragging) {
+			final ClaimDispatcher claimActivity, final List<BasePropertyBoundary> existingProperties, boolean allowDragging) {
 		super(context, map, claim);
 		this.claimActivity = claimActivity;
 		this.allowDragging = allowDragging;
+		this.selectedMarker = null;
+		this.otherProperties = existingProperties;
+		this.amr = new ActiveMarkerRegistrar();
 
 		if (vertices != null && vertices.size() > 0) {
 			int i = 0;
@@ -434,6 +435,18 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 				verticesMap.put(mark.getId(), vertex);
 			}
 		}
+	}
+	
+	public void onDragStart(Marker mark){
+		
+	}
+
+	public void onDrag(Marker mark){
+		
+	}
+
+	public void onDragEnd(Marker mark){
+		
 	}
 
 	public void updateVertices() {
@@ -446,6 +459,16 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			Vertex.createVertex(vertex);
 		}
 		calculateGeometry();
+
+	}
+
+	public void updatePropertyLocations() {
+
+		PropertyLocation.deletePropertyLocations(claimActivity.getClaimId());
+
+		for (PropertyLocation location : propertyLocationsMap.values()) {
+			location.create();
+		}
 
 	}
 
@@ -467,16 +490,81 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			}
 		}
 	}
-
-	public void moveMarker(Marker mark) {
-		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
+	
+	public void onPropertyLocationMarkerDragStart(Marker mark) {
+		dragMarker(mark);
 	}
 
-	private boolean handleVertexClick(final Marker mark){
+	public void onPropertyLocationMarkerDragEnd(Marker mark) {
+		dragMarker(mark);
+		updatePropertyLocations();
+	}
+
+	public void onPropertyLocationMarkerDrag(Marker mark) {
+		dragMarker(mark);
+	}
+
+	public void onPropertyBoundaryMarkerDragStart(Marker mark) {
+		dragMarker(mark);
+	}
+
+	public void onPropertyBoundaryMarkerDragEnd(Marker mark) {
+		dragMarker(mark);
+		updateVertices();
+		resetAdjacency(otherProperties);
+	}
+
+	public void onPropertyBoundaryMarkerDrag(Marker mark) {
+		dragMarker(mark);
+	}
+
+	public void onMarkerDragStart(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDragStart(mark);
+		}else if(propertyLocationsMap.containsKey(mark.getId())){
+			onPropertyLocationMarkerDragStart(mark);
+		}
+	}
+
+	public void onMarkerDragEnd(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDragEnd(mark);
+		}else if(propertyLocationsMap.containsKey(mark.getId())){
+			onPropertyLocationMarkerDragEnd(mark);
+		}
+	}
+
+	public void onMarkerDrag(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDrag(mark);
+		}else if(propertyLocationsMap.containsKey(mark.getId())){
+			onPropertyLocationMarkerDrag(mark);
+		}
+	}
+
+	public void dragPropertyBoundaryMarker(Marker mark) {
+		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
+		drawBoundary();
+	}
+
+	public void dragPropertyLocationMarker(Marker mark) {
+		propertyLocationsMap.get(mark.getId()).setMapPosition(mark.getPosition());
+	}
+
+	public void dragMarker(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			dragPropertyBoundaryMarker(mark);
+		}else if(propertyLocationsMap.containsKey(mark.getId())){
+			dragPropertyLocationMarker(mark);
+		}
+	}
+
+	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
 		if (verticesMap.containsKey(mark.getId())) {
-			selectedVertex = mark;
-			selectedVertex.setIcon(BitmapDescriptorFactory.defaultMarker());
-			selectedVertex.showInfoWindow();
+			deselect();
+			selectedMarker = mark;
+			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+			selectedMarker.showInfoWindow();
 			showMarkerEditControls();
 			return true;
 		}
@@ -484,27 +572,64 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		
 	}
 
-	private boolean handleClick(){
+	private boolean handlePropertyLocationMarkerClick(final Marker mark){
+		if (propertyLocationsMap.containsKey(mark.getId())) {
+			deselect();
+			selectedMarker = mark;
+			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+			selectedMarker.showInfoWindow();
+			showMarkerEditControls();
+			return true;
+		}
+		return false;
+		
+	}
+
+	private boolean handleClick(Marker mark){
 		// Can only be a click on the property name, deselect and let the event flow
 		deselect();
+		if(mark.getId().equalsIgnoreCase(propertyMarker.getId())){
+			if(isPropertyLocationsVisible()){
+				hidePropertyLocations();
+			}else{
+				showPropertyLocations();
+			}
+		}
+		// Let the flow continue in order to center the map around selected marker and display info window
 		return false;
 	}
 
-	public boolean handleMarkerClick(final Marker mark, final List<BasePropertyBoundary> existingProperties){
-		if(handleMarkerEditClick(mark, existingProperties)){
+	public boolean handleMarkerClick(final Marker mark){
+		if(handleMarkerEditClick(mark)){
 			return true;
-		}else if(handleRelativeMarkerEditClick(mark, existingProperties)){
+		}else if(handleRelativeMarkerEditClick(mark)){
 			return true;
-		}else if(handleVertexClick(mark)){
+		}else if(handlePropertyBoundaryMarkerClick(mark)){
+			return true;
+		}else if(handlePropertyLocationMarkerClick(mark)){
 			return true;
 		}else{
-			return handleClick();
+			return handleClick(mark);
 		}
 	}
 
-	public void removeVertex(Marker mark) {
+	public void removePropertyLocationMarker(Marker mark) {
+		propertyLocationsMap.remove(mark.getId());
+		propertyLocationMarkersMap.remove(mark.getId());
+		mark.remove();
+	}
+
+	public void removePropertyBoundaryMarker(Marker mark) {
 		vertices.remove(verticesMap.remove(mark.getId()));
 		mark.remove();
+	}
+
+	public void removeMarker(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			removePropertyBoundaryMarker(mark);
+		}else if(propertyLocationsMap.containsKey(mark.getId())){
+			removePropertyLocationMarker(mark);
+		}
 	}
 
 	public void insertVertex(LatLng position) {
@@ -523,6 +648,120 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		vert.setClaimId(claimActivity.getClaimId());
 		insertVertex(vert);
 		verticesMap.put(mark.getId(), vert);
+	}
+	
+	public void addMarker(final LatLng position){
+
+		if (claimActivity.getClaimId() == null) {
+			// Useless to add markers without a claim
+			Toast toast = Toast.makeText(
+					context,
+					R.string.message_save_claim_before_adding_content,
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return;
+		}
+
+		AlertDialog.Builder dialog = new AlertDialog.Builder(
+				context);
+		dialog.setTitle(R.string.message_add_marker);
+		dialog.setMessage("Lon: " + position.longitude + ", lat: "
+				+ position.latitude);
+
+		dialog.setNeutralButton(R.string.not_boundary,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						AlertDialog.Builder locationDescriptionDialog = new AlertDialog.Builder(
+								context);
+						locationDescriptionDialog
+								.setTitle(R.string.title_add_non_boundary);
+						final EditText locationDescriptionInput = new EditText(
+								context);
+						locationDescriptionInput
+								.setInputType(InputType.TYPE_CLASS_TEXT);
+						locationDescriptionDialog
+								.setView(locationDescriptionInput);
+						locationDescriptionDialog
+								.setMessage(context.getResources()
+										.getString(
+												R.string.message_enter_description));
+
+						locationDescriptionDialog
+								.setPositiveButton(
+										R.string.confirm,
+										new OnClickListener() {
+
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												String locationDescription = locationDescriptionInput
+														.getText()
+														.toString();
+												addPropertyLocation(position, locationDescription);
+											}
+										});
+						locationDescriptionDialog
+								.setNegativeButton(
+										R.string.cancel,
+										new OnClickListener() {
+
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+											}
+										});
+
+						locationDescriptionDialog.show();
+
+					}
+				});
+		dialog.setPositiveButton(R.string.confirm,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+
+						insertVertex(position);
+						resetAdjacency(otherProperties);
+					}
+				});
+		dialog.setNegativeButton(R.string.cancel,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+					}
+				});
+
+		dialog.show();
+	
+	}
+
+	public void addPropertyLocation(LatLng position, String description) {
+
+		if (claimActivity.getClaimId() == null) {
+			// Useless to add markers without a claim
+			Toast toast = Toast.makeText(context,
+					R.string.message_save_claim_before_adding_content,
+					Toast.LENGTH_SHORT);
+			toast.show();
+			return;
+		}
+
+		Marker mark = createLocationMarker(position, description);
+		PropertyLocation loc = new PropertyLocation(position);
+		loc.setClaimId(claimActivity.getClaimId());
+		loc.setDescription(description);
+		loc.create();
+		propertyLocationMarkersMap.put(mark.getId(), mark);
+		propertyLocationsMap.put(mark.getId(), loc);
 	}
 
 	private void insertVertex(Vertex newVertex) {
@@ -581,6 +820,24 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
+			.icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.ot_blue_marker)));
+		}
+	}
+
+	@Override
+	protected Marker createLocationMarker(LatLng position, String description) {
+		if(allowDragging){
+			return map.addMarker(new MarkerOptions()
+			.position(position)
+			.title(description)
+			.draggable(true)
+			.icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.ot_blue_marker)));
+		}else{
+			return map.addMarker(new MarkerOptions()
+			.position(position)
+			.title(description)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}

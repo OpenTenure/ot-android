@@ -51,6 +51,7 @@
     <string name="title_activity_select_person">Open Tenure: Select person</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>
+    <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="choose_file">Choose a file</string>
     <string name="person_name">Person Name</string>
@@ -122,7 +123,8 @@
     <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>
     <string name="message_encryption_failed">Unable to encrypt local data</string>
     <string name="message_confirm_new_db_password">Confirm new password</string>
-    <string name="message_add_marker">Add marker here?</string>
+    <string name="message_enter_description">Enter description</string>
+    <string name="message_add_marker">Add marker to the boundary?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
     <string name="message_remove_owner">Remove owner?</string>
@@ -145,6 +147,7 @@
     <string name="right">Right</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="not_boundary">Not boundary</string>
     <string name="new_snapshot">New snapshot</string>
     <string name="new_file">New file</string>
     <string name="new_additional_info">Add information</string>
@@ -189,6 +192,12 @@
     <string name="south_west">South-West</string>
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>
+    <string-array name="claim_statuses">
+        <item >Unmoderated</item>
+        <item >Moderated</item>
+        <item >Rejected</item>
+        <item >Local</item>
+        </string-array>
     <string-array name="share_values">
         <item >1</item>
         <item >2</item>

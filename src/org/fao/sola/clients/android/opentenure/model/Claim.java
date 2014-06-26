@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+
+import android.content.Context;
 
 public class Claim {
 
@@ -84,6 +87,7 @@ public class Claim {
 	public String toString() {
 		return "Claim [" + "claimId=" + claimId + ", status=" + status
 				+ ", type=" + type + ", name=" + name + ", person=" + person
+				+ ", propertyLocations=" + Arrays.toString(propertyLocations.toArray())
 				+ ", vertices=" + Arrays.toString(vertices.toArray())
 				+ ", additionalInfo="
 				+ Arrays.toString(additionalInfo.toArray())
@@ -126,6 +130,14 @@ public class Claim {
 
 	public void setVertices(List<Vertex> vertices) {
 		this.vertices = vertices;
+	}
+
+	public List<PropertyLocation> getPropertyLocations() {
+		return propertyLocations;
+	}
+
+	public void setPropertyLocations(List<PropertyLocation> propertyLocations) {
+		this.propertyLocations = propertyLocations;
 	}
 
 	public Claim getChallengedClaim() {
@@ -383,6 +395,7 @@ public class Claim {
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
 				claim.setChallengeExpiryDate(rs.getDate(6));
 				claim.setVertices(Vertex.getVertices(claimId));
+				claim.setPropertyLocations(PropertyLocation.getPropertyLocations(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
 				claim.setOwners(Owner.getOwners(claimId));
 				claim.setAdditionalInfo(AdditionalInfo
@@ -551,7 +564,7 @@ public class Claim {
 			long totalSize = 0;
 			long uploadedSize = 0;
 			List<Attachment> attachments = this.getAttachments();
-			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+			for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 
@@ -576,6 +589,14 @@ public class Claim {
 		return progress;
 
 	}
+	
+	public String getSlogan(Context context){
+		String claimName = getName().equalsIgnoreCase("")? context.getString(R.string.default_claim_name):getName();
+		return claimName + ", "
+				+ context.getString(R.string.by) + ": "
+				+ getPerson().getFirstName() + " "
+				+ getPerson().getLastName();
+	}
 
 	private String claimId;
 	private String name;
@@ -584,6 +605,7 @@ public class Claim {
 	private Person person;
 	private Claim challengedClaim;
 	private List<Vertex> vertices;
+	private List<PropertyLocation> propertyLocations;
 	private List<AdditionalInfo> additionalInfo;
 	private List<Claim> challengingClaims;
 	private List<Attachment> attachments;

@@ -28,13 +28,16 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
+import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.content.Context;
@@ -66,6 +69,13 @@ public class BasePropertyBoundary {
 	protected String name;
 	protected String claimId;
 	protected List<Vertex> vertices = new ArrayList<Vertex>();
+	protected Map<String, Marker> propertyLocationMarkersMap = new HashMap<String, Marker>();
+	protected Map<String, PropertyLocation> propertyLocationsMap = new HashMap<String, PropertyLocation>();
+	protected boolean propertyLocationsVisible = false;
+
+	public boolean isPropertyLocationsVisible() {
+		return propertyLocationsVisible;
+	}
 
 	public List<Vertex> getVertices() {
 		return vertices;
@@ -76,7 +86,7 @@ public class BasePropertyBoundary {
 	protected Polygon polygon = null;
 	protected GoogleMap map;
 	protected LatLng center = null;
-	protected Marker marker = null;
+	protected Marker propertyMarker = null;
 	protected LatLngBounds bounds = null;
 	protected int color = Color.BLUE;
 
@@ -97,7 +107,7 @@ public class BasePropertyBoundary {
 	}
 
 	public Marker getMarker() {
-		return marker;
+		return propertyMarker;
 	}
 
 	public LatLngBounds getBounds() {
@@ -110,8 +120,10 @@ public class BasePropertyBoundary {
 		this.map = map;
 		if (claim != null) {
 			vertices = claim.getVertices();
-			name = claim.getName() == null || claim.getName().equalsIgnoreCase("") ? context.getResources().getString(
-					R.string.default_claim_name) : claim.getName();
+			name = claim.getName() == null
+					|| claim.getName().equalsIgnoreCase("") ? context
+					.getResources().getString(R.string.default_claim_name)
+					: claim.getName();
 			String status = claim.getStatus();
 			claimId = claim.getClaimId();
 
@@ -132,7 +144,7 @@ public class BasePropertyBoundary {
 							R.color.status_challenged);
 					break;
 				default:
-					color =context.getResources().getColor(
+					color = context.getResources().getColor(
 							R.color.status_created);
 					break;
 				}
@@ -141,26 +153,24 @@ public class BasePropertyBoundary {
 			if (vertices != null && vertices.size() > 0) {
 				calculateGeometry();
 				ClaimType ct = new ClaimType();
-				String claimName = claim.getName().equalsIgnoreCase("")? context.getString(R.string.default_claim_name):claim.getName();
-				marker = createMarker(center, claimName + ", "
-						+ context.getString(R.string.by) + ": "
-						+ claim.getPerson().getFirstName() + " "
-						+ claim.getPerson().getLastName() + ", "
-						+ context.getString(R.string.type) + ": "
-						+ ct.getDisplayValueByType(claim.getType()));
+				propertyMarker = createPropertyMarker(
+						center,
+						claim.getSlogan(context) + ", "
+								+ context.getString(R.string.type) + ": "
+								+ ct.getDisplayValueByType(claim.getType()));
 			}
 		}
 	}
 
-	protected void resetAdjacency(List<BasePropertyBoundary> existingProperties){
+	protected void resetAdjacency(List<BasePropertyBoundary> existingProperties) {
 
 		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
 		Adjacency.deleteAdjacencies(claimId);
 
-		if(adjacentProperties != null){
+		if (adjacentProperties != null) {
 
 			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
-				
+
 				Adjacency adj = new Adjacency();
 				adj.setSourceClaimId(claimId);
 				adj.setDestClaimId(adjacentProperty.getClaimId());
@@ -171,7 +181,7 @@ public class BasePropertyBoundary {
 	}
 
 	protected void calculateGeometry() {
-		
+
 		int fakeCoords = 1;
 
 		if (vertices == null || vertices.size() <= 0) {
@@ -186,7 +196,8 @@ public class BasePropertyBoundary {
 		GeometryFactory gf = new GeometryFactory();
 
 		if (vertices.size() <= 2) {
-			// need at least four coordinates for a closed polygon with three vertices
+			// need at least four coordinates for a closed polygon with three
+			// vertices
 			fakeCoords = 2;
 		}
 
@@ -200,8 +211,9 @@ public class BasePropertyBoundary {
 		}
 
 		if (vertices.size() <= 2) {
-			coords[i++] = new Coordinate(vertices.get(1).getMapPosition().longitude,
-					vertices.get(1).getMapPosition().latitude);
+			coords[i++] = new Coordinate(
+					vertices.get(1).getMapPosition().longitude, vertices.get(1)
+							.getMapPosition().latitude);
 		}
 
 		coords[i] = new Coordinate(vertices.get(0).getMapPosition().longitude,
@@ -210,15 +222,16 @@ public class BasePropertyBoundary {
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(3857);
 
-		bounds = new LatLngBounds(new LatLng(polygon.getEnvelope().getCoordinates()[0].y,
-						polygon.getEnvelope().getCoordinates()[0].x),
-				new LatLng(polygon.getEnvelope().getCoordinates()[2].y,
-						polygon.getEnvelope().getCoordinates()[2].x));
+		bounds = new LatLngBounds(new LatLng(polygon.getEnvelope()
+				.getCoordinates()[0].y,
+				polygon.getEnvelope().getCoordinates()[0].x), new LatLng(
+				polygon.getEnvelope().getCoordinates()[2].y, polygon
+						.getEnvelope().getCoordinates()[2].x));
 		center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
 				.getCentroid().getCoordinate().x);
 	}
 
-	private Marker createMarker(LatLng position, String title) {
+	protected Marker createPropertyMarker(LatLng position, String title) {
 		Rect boundsText = new Rect();
 		Paint tf = new Paint();
 		tf.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
@@ -257,16 +270,58 @@ public class BasePropertyBoundary {
 																// close the
 																// polyline
 		polylineOptions.zIndex(BOUNDARY_Z_INDEX);
-		polylineOptions.width(5);
+		polylineOptions.width(4);
 		polylineOptions.color(color);
 		polyline = map.addPolyline(polylineOptions);
 	}
-	
-	public List<BasePropertyBoundary> findAdjacentProperties(List<BasePropertyBoundary> properties){
+
+	public void showPropertyLocations() {
+
+		if (claimId == null) {
+			return;
+		}
+
+		for (PropertyLocation location : PropertyLocation.getPropertyLocations(claimId)) {
+			Marker marker = createLocationMarker(location.getMapPosition(),
+					location.getDescription());
+			propertyLocationMarkersMap.put(marker.getId(), marker);
+			propertyLocationsMap.put(marker.getId(), location);
+		}
+		propertyLocationsVisible = true;
+	}
+
+	protected Marker createLocationMarker(LatLng position, String description) {
+		return map.addMarker(new MarkerOptions()
+				.position(position)
+				.title(description)
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ot_blue_marker)));
+	}
+
+	public void hidePropertyLocations() {
+
+		if (propertyLocationMarkersMap != null) {
+			for (String markerId : propertyLocationMarkersMap.keySet()) {
+				Marker marker = propertyLocationMarkersMap.get(markerId);
+				if (marker != null) {
+					marker.remove();
+				}
+				// Just hiding the marker, no need to delete the location from DB
+				propertyLocationsMap.remove(markerId);
+			}
+			propertyLocationMarkersMap = new HashMap<String, Marker>();
+			propertyLocationsMap = new HashMap<String, PropertyLocation>();
+		}
+		propertyLocationsVisible = false;
+	}
+
+	public List<BasePropertyBoundary> findAdjacentProperties(
+			List<BasePropertyBoundary> properties) {
 		List<BasePropertyBoundary> adjacentProperties = null;
-		for(BasePropertyBoundary property : properties){
-			if(polygon != null && property.getPolygon() != null && polygon.distance(property.getPolygon()) < SNAP_THRESHOLD){
-				if(adjacentProperties == null){
+		for (BasePropertyBoundary property : properties) {
+			if (polygon != null && property.getPolygon() != null
+					&& polygon.distance(property.getPolygon()) < SNAP_THRESHOLD) {
+				if (adjacentProperties == null) {
 					adjacentProperties = new ArrayList<BasePropertyBoundary>();
 				}
 				adjacentProperties.add(property);
@@ -275,21 +330,25 @@ public class BasePropertyBoundary {
 		return adjacentProperties;
 	}
 
-	public CardinalDirection getCardinalDirection(BasePropertyBoundary dest){
+	public CardinalDirection getCardinalDirection(BasePropertyBoundary dest) {
 		double deltaX = dest.getCenter().longitude - center.longitude;
 		double deltaY = dest.getCenter().latitude - center.latitude;
-		if(deltaX == 0){
-			return deltaY > 0 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
+		if (deltaX == 0) {
+			return deltaY > 0 ? CardinalDirection.NORTH
+					: CardinalDirection.SOUTH;
 		}
-		double slope = deltaY/deltaX;
-		if(slope >= -1.0/3.0 && slope < 1.0/3.0){
+		double slope = deltaY / deltaX;
+		if (slope >= -1.0 / 3.0 && slope < 1.0 / 3.0) {
 			return deltaX > 0 ? CardinalDirection.EAST : CardinalDirection.WEST;
-		}else if(slope >= 1.0/3.0 && slope < 3.0){
-			return deltaY > 0 ? CardinalDirection.NORTHEAST : CardinalDirection.SOUTHWEST;
-		}else if(slope >= 3.0 || slope <= -3.0){
-			return deltaY > 0 ? CardinalDirection.NORTH : CardinalDirection.SOUTH;
-		}else{
-			return deltaY > 0 ? CardinalDirection.NORTHWEST : CardinalDirection.SOUTHEAST;
+		} else if (slope >= 1.0 / 3.0 && slope < 3.0) {
+			return deltaY > 0 ? CardinalDirection.NORTHEAST
+					: CardinalDirection.SOUTHWEST;
+		} else if (slope >= 3.0 || slope <= -3.0) {
+			return deltaY > 0 ? CardinalDirection.NORTH
+					: CardinalDirection.SOUTH;
+		} else {
+			return deltaY > 0 ? CardinalDirection.NORTHWEST
+					: CardinalDirection.SOUTHEAST;
 		}
 	}
 
