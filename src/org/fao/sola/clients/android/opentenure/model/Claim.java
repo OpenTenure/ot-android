@@ -33,7 +33,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.sql.Date;
 import java.util.List;
 import java.util.UUID;
@@ -553,41 +552,41 @@ public class Claim {
 		}
 		return claims;
 	}
+	
+	public int delete() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
-	public int getUploadProgress() {
+		try {
 
-		int progress = 0;
-
-		if (this.getAttachments().size() == 0)
-			progress = 100;
-		else {
-			long totalSize = 0;
-			long uploadedSize = 0;
-			List<Attachment> attachments = this.getAttachments();
-			for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
-				Attachment attachment = (Attachment) iterator.next();
-				totalSize = totalSize + attachment.getSize();
-
-				if (attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
-
-					uploadedSize = uploadedSize + attachment.getSize();
-
-				}
-
-			}
-
-			float factor = (float) uploadedSize / totalSize;
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("DELETE CLAIM WHERE CLAIM_ID=?");
+			statement.setString(1, getClaimId());
 			
-			System.out.println("uploadedSize :" + uploadedSize + "totalSize :" + totalSize + "factor :" + factor);
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
 
-			progress = (int) (factor * 100);
-
-			if (progress == 0)
-				progress = 5;
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
 		}
-
-		return progress;
-
+		return result;
 	}
 	
 	public String getSlogan(Context context){

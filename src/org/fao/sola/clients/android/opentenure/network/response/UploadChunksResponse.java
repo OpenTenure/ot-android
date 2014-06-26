@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.network.response;
 
-public class UploadChunksResponse {
+public class UploadChunksResponse extends ApiResponse{
 	
 	String attachmentId;
 	Boolean success;

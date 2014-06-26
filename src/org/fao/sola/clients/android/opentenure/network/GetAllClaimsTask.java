@@ -71,7 +71,7 @@ public class GetAllClaimsTask extends
 
 		if (listClaim == null) {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					R.string.message_no_claim_to_download, Toast.LENGTH_SHORT);
+					OpenTenureApplication.getContext().getResources().getString(R.string.message_no_claim_to_download), Toast.LENGTH_SHORT);
 			toast.show();
 			return;
 		}

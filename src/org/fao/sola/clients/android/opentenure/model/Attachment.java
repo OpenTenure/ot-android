@@ -38,7 +38,7 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Attachment {
-	
+
 	public String getDescription() {
 		return description;
 	}
@@ -48,7 +48,7 @@ public class Attachment {
 	}
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
-	
+
 	public String getClaimId() {
 		return claimId;
 	}
@@ -57,41 +57,48 @@ public class Attachment {
 		this.claimId = claimId;
 	}
 
-	public Attachment(){
+	public Attachment() {
 		this.attachmentId = UUID.randomUUID().toString();
 		this.status = AttachmentStatus._CREATED;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Attachment [attachmentId=" + attachmentId
-				+ ", claimId=" + claimId
-				+ ", status=" + status
-				+ ", description=" + description + ", fileName="
-				+ fileName + ", fileType=" + fileType + ", mimeType="
-				+ mimeType + ", MD5Sum=" + MD5Sum + ", path=" + path + ", size=" + size +"]";
+		return "Attachment [attachmentId=" + attachmentId + ", claimId="
+				+ claimId + ", status=" + status + ", description="
+				+ description + ", fileName=" + fileName + ", fileType="
+				+ fileType + ", mimeType=" + mimeType + ", MD5Sum=" + MD5Sum
+				+ ", path=" + path + ", size=" + size + "]";
 	}
+
 	public String getAttachmentId() {
 		return attachmentId;
 	}
+
 	public void setAttachmentId(String attachmentId) {
 		this.attachmentId = attachmentId;
 	}
+
 	public String getFileName() {
 		return fileName;
 	}
+
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+
 	public String getMD5Sum() {
 		return MD5Sum;
 	}
+
 	public void setMD5Sum(String mD5Sum) {
 		MD5Sum = mD5Sum;
 	}
+
 	public String getPath() {
 		return path;
 	}
+
 	public void setPath(String path) {
 		this.path = path;
 	}
@@ -104,7 +111,8 @@ public class Attachment {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE) VALUES (?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, attachment.getAttachmentId());
@@ -117,7 +125,7 @@ public class Attachment {
 			statement.setString(8, attachment.getMD5Sum());
 			statement.setString(9, attachment.getPath());
 			statement.setLong(10, attachment.getSize());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -161,7 +169,7 @@ public class Attachment {
 			statement.setString(8, getMD5Sum());
 			statement.setString(9, getPath());
 			statement.setLong(10, getSize());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -192,7 +200,8 @@ public class Attachment {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE ATTACHMENT SET STATUS=?, CLAIM_ID=?, DESCRIPTION=?, FILE_NAME=?, FILE_TYPE=?, MIME_TYPE=?, MD5SUM=?, PATH=?, SIZE=? WHERE ATTACHMENT_ID=?");
 			statement.setString(1, attachment.getStatus());
@@ -205,7 +214,7 @@ public class Attachment {
 			statement.setString(8, attachment.getPath());
 			statement.setLong(9, attachment.getSize());
 			statement.setString(10, attachment.getAttachmentId());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -249,7 +258,7 @@ public class Attachment {
 			statement.setString(8, getPath());
 			statement.setLong(9, getSize());
 			statement.setString(10, getAttachmentId());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -280,11 +289,12 @@ public class Attachment {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE ATTACHMENT WHERE ATTACHMENT_ID=?");
 			statement.setString(1, attachment.getAttachmentId());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -319,7 +329,7 @@ public class Attachment {
 			statement = localConnection
 					.prepareStatement("DELETE ATTACHMENT WHERE ATTACHMENT_ID=?");
 			statement.setString(1, getAttachmentId());
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -351,7 +361,8 @@ public class Attachment {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
 			statement.setString(1, attachmentId);
@@ -404,7 +415,8 @@ public class Attachment {
 		PreparedStatement statement = null;
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT ATTACHMENT_ID, STATUS, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE FROM ATTACHMENT ATT WHERE ATT.CLAIM_ID=?");
 			statement.setString(1, claimId);

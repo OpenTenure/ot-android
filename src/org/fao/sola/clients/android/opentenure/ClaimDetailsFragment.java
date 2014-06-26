@@ -200,7 +200,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
-				int progress = claim.getUploadProgress();
+				int progress = FileSystemUtilities.getUploadProgress(claim);
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
 				bar.setProgress(progress);
@@ -449,10 +449,6 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
 				.toString());
-
-		System.out
-				.println("DDDDDDIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIICCCCCCCCCCCCCCCCCCCCCCCCCCCCCAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : "
-						+ claim.getName());
 
 		if (claim.getName() == null || claim.getName().trim().equals(""))
 			return 0;

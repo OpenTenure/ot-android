@@ -33,9 +33,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import com.google.gson.FieldNamingPolicy;
@@ -395,6 +399,66 @@ public class FileSystemUtilities {
 			return "standardDocument";
 
 		return "standardDocument";
+
+	}
+
+	public static boolean deleteClaim(String claimId) {
+
+		File attachFold = getAttachmentFolder(claimId);
+
+		File claimFold = getClaimFolder(claimId);
+
+		File[] files = attachFold.listFiles();
+		for (int i = 0; i < files.length; i++) {
+
+			files[i].delete();
+		}
+
+		files = claimFold.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			files[i].delete();
+
+		}
+		
+		return claimFold.delete();
+
+	
+
+	}
+
+	public static int getUploadProgress(Claim claim) {
+
+		int progress = 0;
+
+		if (claim.getAttachments().size() == 0)
+			progress = 100;
+		else {
+			long totalSize = 0;
+			long uploadedSize = 0;
+			List<Attachment> attachments = claim.getAttachments();
+			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+				Attachment attachment = (Attachment) iterator.next();
+				totalSize = totalSize + attachment.getSize();
+
+				if (attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
+
+					uploadedSize = uploadedSize + attachment.getSize();
+
+				}
+
+			}
+
+			File claimfolder = getClaimFolder(claim.getClaimId());
+			File json = new File(claimfolder, "claim.json");
+			uploadedSize = uploadedSize + json.length();
+
+			float factor = (float) uploadedSize / totalSize;
+
+			progress = (int) (factor * 100);
+
+		}
+
+		return progress;
 
 	}
 

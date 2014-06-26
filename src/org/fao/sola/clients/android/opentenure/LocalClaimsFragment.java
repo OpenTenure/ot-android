@@ -28,12 +28,14 @@
 package org.fao.sola.clients.android.opentenure;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +47,8 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
+import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,6 +87,43 @@ public class LocalClaimsFragment extends ListFragment {
 	public void setExcludeClaimIds(List<String> excludeClaimIds) {
 		this.excludeClaimIds = excludeClaimIds;
 	}
+	
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		// if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) ==
+		// 0) {
+		MenuItem itemIn;
+		MenuItem itemOut;
+
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Log.d(this.getClass().getName(), "Is the user logged in ? : "
+				+ OpenTenureApplication.isLoggedin());
+
+		if (OpenTenureApplication.isLoggedin()) {
+
+			itemIn = menu.getItem(2); //////////////////////////////////// Here needs some kind of controls !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			itemIn.setVisible(false);
+			itemOut = menu.getItem(3);
+			itemOut.setVisible(true);
+
+		} else {
+
+			itemIn = menu.getItem(2);    //////////////////////////////////// Here needs some kind of controls !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			itemIn.setVisible(true);
+			itemOut = menu.getItem(3);
+			itemOut.setVisible(false);
+		}
+
+		// }
+		super.onPrepareOptionsMenu(menu);
+
+	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -97,15 +138,45 @@ public class LocalClaimsFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
+		
+		
 		switch (item.getItemId()) {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
+			
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY,
 					ClaimActivity.CREATE_CLAIM_ID);
 			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
 					.toString());
 			startActivityForResult(intent, CLAIM_RESULT);
+			return true;
+		case R.id.action_login:
+
+			OpenTenureApplication.setActivity(getActivity());
+
+			Context context = getActivity().getApplicationContext();
+			Intent intent2 = new Intent(context, LoginActivity.class);
+			startActivity(intent2);
+
+			OpenTenureApplication.setActivity(getActivity());
+
+			return false;
+
+		case R.id.action_logout:
+
+			try {
+
+				LogoutTask logoutTask = new LogoutTask();
+
+				logoutTask.execute(getActivity());
+
+			} catch (Exception e) {
+				Log.d("Details", "An error ");
+
+				e.printStackTrace();
+			}
+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -155,6 +226,9 @@ public class LocalClaimsFragment extends ListFragment {
 			filter = savedInstanceState.getString(FILTER_KEY);
 			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
 		}
+		
+		OpenTenureApplication.setLocalClaimsFragment(this);
+		
 
 		return rootView;
 	}
@@ -247,4 +321,10 @@ public class LocalClaimsFragment extends ListFragment {
 		outState.putString(FILTER_KEY, filter);
 		super.onSaveInstanceState(outState);
 	}
+	
+public void refresh(){
+		
+		update();
+	}
+	
 }

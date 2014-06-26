@@ -29,12 +29,21 @@ package org.fao.sola.clients.android.opentenure.network.response;
 
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.ViewHolder;
+
 
 public class SaveClaimResponse extends ApiResponse{	
 
-	String claimId;	
+
 	String challengeExpiryDate;
-	
+//	ViewHolder vh;
+//	
+//	public ViewHolder getVh() {
+//		return vh;
+//	}
+//	public void setVh(ViewHolder vh) {
+//		this.vh = vh;
+//	}
 	public String getChallengeExpiryDate() {
 		return challengeExpiryDate;
 	}
@@ -51,11 +60,6 @@ public class SaveClaimResponse extends ApiResponse{
 		this.attachments = attachments;
 	}
 	
-	public String getClaimId() {
-		return claimId;
-	}
-	public void setClaimId(String claimId) {
-		this.claimId = claimId;
-	}
+
 
 }

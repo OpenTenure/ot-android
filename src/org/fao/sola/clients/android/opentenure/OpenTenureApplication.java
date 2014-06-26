@@ -67,6 +67,7 @@ public class OpenTenureApplication extends Application {
 		private static HttpContext http_context;
 		private static MainMapFragment mapFragment;
 		private static PersonsFragment personsFragment;
+		private static LocalClaimsFragment localClaimsFragment;
 		
 		
 
@@ -219,6 +220,15 @@ public class OpenTenureApplication extends Application {
 
 		public static void setPersonsFragment(PersonsFragment personsFragment) {
 			OpenTenureApplication.personsFragment = personsFragment;
+		}
+
+		public static LocalClaimsFragment getLocalClaimsFragment() {
+			return localClaimsFragment;
+		}
+
+		public static void setLocalClaimsFragment(
+				LocalClaimsFragment localClaimsFragment) {
+			OpenTenureApplication.localClaimsFragment = localClaimsFragment;
 		}
 
 		/*
