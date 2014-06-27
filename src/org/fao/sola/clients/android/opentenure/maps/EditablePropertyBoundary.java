@@ -92,6 +92,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private Marker target;
 	private Marker add;
 	private Marker selectedMarker;
+
+	public boolean handleMarkerClick(final Marker mark){
+		if(handleMarkerEditClick(mark)){
+			return true;
+		}else if(handleRelativeMarkerEditClick(mark)){
+			return true;
+		}else if(handlePropertyBoundaryMarkerClick(mark)){
+			return true;
+		}else if(handlePropertyLocationMarkerClick(mark)){
+			return true;
+		}else{
+			return handleClick(mark);
+		}
+	}
 	
 	private boolean handleMarkerEditClick(Marker mark){
 		if(remove == null || relativeEdit == null || cancel == null){
@@ -137,8 +151,91 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 	}
 	
+	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
+		if (verticesMap.containsKey(mark.getId())) {
+			deselect();
+			selectedMarker = mark;
+			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+			selectedMarker.showInfoWindow();
+			showMarkerEditControls();
+			return true;
+		}
+		return false;
+		
+	}
+
+	private boolean handlePropertyLocationMarkerClick(final Marker mark){
+		if (propertyLocationsMap.containsKey(mark)) {
+			deselect();
+			selectedMarker = mark;
+			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+			selectedMarker.showInfoWindow();
+			showMarkerEditControls();
+			return true;
+		}
+		return false;
+		
+	}
+
+	private boolean handleClick(Marker mark){
+		// Can only be a click on the property name, deselect and let the event flow
+		deselect();
+		if(mark.getId().equalsIgnoreCase(propertyMarker.getId())){
+			if(isPropertyLocationsVisible()){
+				hidePropertyLocations();
+			}else{
+				showPropertyLocations();
+			}
+		}
+		// Let the flow continue in order to center the map around selected marker and display info window
+		return false;
+	}
+
+	public void onMarkerDragStart(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDragStart(mark);
+		}else if(propertyLocationsMap.containsKey(mark)){
+			onPropertyLocationMarkerDragStart(mark);
+		}
+	}
+
+	public void onMarkerDragEnd(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDragEnd(mark);
+		}else if(propertyLocationsMap.containsKey(mark)){
+			onPropertyLocationMarkerDragEnd(mark);
+		}
+	}
+
+	public void onMarkerDrag(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			onPropertyBoundaryMarkerDrag(mark);
+		}else if(propertyLocationsMap.containsKey(mark)){
+			onPropertyLocationMarkerDrag(mark);
+		}
+	}
+
+	public void dragMarker(Marker mark) {
+		if(verticesMap.containsKey(mark.getId())){
+			dragPropertyBoundaryMarker(mark);
+		}else if(propertyLocationsMap.containsKey(mark)){
+			dragPropertyLocationMarker(mark);
+		}
+	}
+
+	private boolean removeSelectedMarker(){
+
+		if (verticesMap.containsKey(selectedMarker.getId())) {
+			return removeSelectedPropertyBoundaryVertex();
+		}else if (propertyLocationsMap.containsKey(selectedMarker)) {
+			return removeSelectedPropertyLocation();
+		}
+		return false;
+		
+	}
+	
 	private boolean removeSelectedPropertyLocation(){
-		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker.getId());
+		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker);
 		removePropertyLocationMarker(selectedMarker);
 		loc.delete();
 		hideMarkerEditControls();
@@ -156,17 +253,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return true;
 	}
 	
-	private boolean removeSelectedMarker(){
-
-		if (verticesMap.containsKey(selectedMarker.getId())) {
-			return removeSelectedPropertyBoundaryVertex();
-		}else if (propertyLocationMarkersMap.containsKey(selectedMarker.getId())) {
-			return removeSelectedPropertyLocation();
-		}
-		return false;
-		
-	}
-	
 	private boolean addMarker(){
 		
 		addMarker(target.getPosition());
@@ -176,15 +262,13 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	private boolean movePropertyLocationMarker(){
 		Marker newMark = createLocationMarker(target.getPosition(), selectedMarker.getTitle());
-		Marker oldMark = propertyLocationMarkersMap.remove(selectedMarker.getId());
-		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker.getId());
+		PropertyLocation loc = propertyLocationsMap.remove(selectedMarker);
 		loc.setMapPosition(target.getPosition());
 		loc.update();
-		oldMark.remove();
-		propertyLocationMarkersMap.put(newMark.getId(), newMark);
-		propertyLocationsMap.put(newMark.getId(), loc);
 		hideMarkerEditControls();
+		selectedMarker.remove();
 		selectedMarker = null;
+		propertyLocationsMap.put(newMark, loc);
 		return true;
 	}
 	
@@ -205,7 +289,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 		if (verticesMap.containsKey(selectedMarker.getId())) {
 			return movePropertyBoundaryMarker();
-		}else if (propertyLocationsMap.containsKey(selectedMarker.getId())) {
+		}else if (propertyLocationsMap.containsKey(selectedMarker)) {
 			return movePropertyLocationMarker();
 		}
 		return false;
@@ -308,7 +392,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		if(up!=null){
 			up.refresh(screenPosition, iconWidth, iconHeight);
 		}
-
 		if(down != null){
 			down.refresh(screenPosition, iconWidth, iconHeight);
 		}
@@ -437,18 +520,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 	}
 	
-	public void onDragStart(Marker mark){
-		
-	}
-
-	public void onDrag(Marker mark){
-		
-	}
-
-	public void onDragEnd(Marker mark){
-		
-	}
-
 	public void updateVertices() {
 
 		Vertex.deleteVertices(claimActivity.getClaimId());
@@ -518,118 +589,23 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		dragMarker(mark);
 	}
 
-	public void onMarkerDragStart(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			onPropertyBoundaryMarkerDragStart(mark);
-		}else if(propertyLocationsMap.containsKey(mark.getId())){
-			onPropertyLocationMarkerDragStart(mark);
-		}
-	}
-
-	public void onMarkerDragEnd(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			onPropertyBoundaryMarkerDragEnd(mark);
-		}else if(propertyLocationsMap.containsKey(mark.getId())){
-			onPropertyLocationMarkerDragEnd(mark);
-		}
-	}
-
-	public void onMarkerDrag(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			onPropertyBoundaryMarkerDrag(mark);
-		}else if(propertyLocationsMap.containsKey(mark.getId())){
-			onPropertyLocationMarkerDrag(mark);
-		}
-	}
-
 	public void dragPropertyBoundaryMarker(Marker mark) {
 		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
 		drawBoundary();
 	}
 
 	public void dragPropertyLocationMarker(Marker mark) {
-		propertyLocationsMap.get(mark.getId()).setMapPosition(mark.getPosition());
-	}
-
-	public void dragMarker(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			dragPropertyBoundaryMarker(mark);
-		}else if(propertyLocationsMap.containsKey(mark.getId())){
-			dragPropertyLocationMarker(mark);
-		}
-	}
-
-	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
-		if (verticesMap.containsKey(mark.getId())) {
-			deselect();
-			selectedMarker = mark;
-			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
-			selectedMarker.showInfoWindow();
-			showMarkerEditControls();
-			return true;
-		}
-		return false;
-		
-	}
-
-	private boolean handlePropertyLocationMarkerClick(final Marker mark){
-		if (propertyLocationsMap.containsKey(mark.getId())) {
-			deselect();
-			selectedMarker = mark;
-			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
-			selectedMarker.showInfoWindow();
-			showMarkerEditControls();
-			return true;
-		}
-		return false;
-		
-	}
-
-	private boolean handleClick(Marker mark){
-		// Can only be a click on the property name, deselect and let the event flow
-		deselect();
-		if(mark.getId().equalsIgnoreCase(propertyMarker.getId())){
-			if(isPropertyLocationsVisible()){
-				hidePropertyLocations();
-			}else{
-				showPropertyLocations();
-			}
-		}
-		// Let the flow continue in order to center the map around selected marker and display info window
-		return false;
-	}
-
-	public boolean handleMarkerClick(final Marker mark){
-		if(handleMarkerEditClick(mark)){
-			return true;
-		}else if(handleRelativeMarkerEditClick(mark)){
-			return true;
-		}else if(handlePropertyBoundaryMarkerClick(mark)){
-			return true;
-		}else if(handlePropertyLocationMarkerClick(mark)){
-			return true;
-		}else{
-			return handleClick(mark);
-		}
+		propertyLocationsMap.get(mark).setMapPosition(mark.getPosition());
 	}
 
 	public void removePropertyLocationMarker(Marker mark) {
-		propertyLocationsMap.remove(mark.getId());
-		propertyLocationMarkersMap.remove(mark.getId());
+		propertyLocationsMap.remove(mark);
 		mark.remove();
 	}
 
 	public void removePropertyBoundaryMarker(Marker mark) {
 		vertices.remove(verticesMap.remove(mark.getId()));
 		mark.remove();
-	}
-
-	public void removeMarker(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			removePropertyBoundaryMarker(mark);
-		}else if(propertyLocationsMap.containsKey(mark.getId())){
-			removePropertyLocationMarker(mark);
-		}
 	}
 
 	public void insertVertex(LatLng position) {
@@ -644,10 +620,49 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 
 		Marker mark = createMarker(vertices.size(), position);
-		Vertex vert = new Vertex(position);
-		vert.setClaimId(claimActivity.getClaimId());
-		insertVertex(vert);
-		verticesMap.put(mark.getId(), vert);
+		Vertex newVertex = new Vertex(position);
+		newVertex.setClaimId(claimActivity.getClaimId());
+		double minDistance = Double.MAX_VALUE;
+		int insertIndex = 0;
+
+		if (vertices.size() < 2) {
+
+			vertices.add(newVertex);
+			return;
+		}
+
+		for (int i = 0; i < vertices.size(); i++) {
+
+			Vertex from = vertices.get(i);
+			Vertex to = null;
+
+			if (i == vertices.size() - 1) {
+				to = vertices.get(0);
+			} else {
+				to = vertices.get(i + 1);
+			}
+
+			PointPairDistance ppd = new PointPairDistance();
+			DistanceToPoint.computeDistance(
+					new LineSegment(from.getMapPosition().longitude, from
+							.getMapPosition().latitude,
+							to.getMapPosition().longitude,
+							to.getMapPosition().latitude),
+					new Coordinate(newVertex.getMapPosition().longitude,
+							newVertex.getMapPosition().latitude), ppd);
+
+			double currDistance = ppd.getDistance();
+
+			if (currDistance < minDistance) {
+				minDistance = currDistance;
+				insertIndex = i + 1;
+			}
+
+		}
+		vertices.add(insertIndex, newVertex);
+		updateVertices();
+		drawBoundary();
+		verticesMap.put(mark.getId(), newVertex);
 	}
 	
 	public void addMarker(final LatLng position){
@@ -760,52 +775,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		loc.setClaimId(claimActivity.getClaimId());
 		loc.setDescription(description);
 		loc.create();
-		propertyLocationMarkersMap.put(mark.getId(), mark);
-		propertyLocationsMap.put(mark.getId(), loc);
-	}
-
-	private void insertVertex(Vertex newVertex) {
-
-		double minDistance = Double.MAX_VALUE;
-		int insertIndex = 0;
-
-		if (vertices.size() < 2) {
-
-			vertices.add(newVertex);
-			return;
-		}
-
-		for (int i = 0; i < vertices.size(); i++) {
-
-			Vertex from = vertices.get(i);
-			Vertex to = null;
-
-			if (i == vertices.size() - 1) {
-				to = vertices.get(0);
-			} else {
-				to = vertices.get(i + 1);
-			}
-
-			PointPairDistance ppd = new PointPairDistance();
-			DistanceToPoint.computeDistance(
-					new LineSegment(from.getMapPosition().longitude, from
-							.getMapPosition().latitude,
-							to.getMapPosition().longitude,
-							to.getMapPosition().latitude),
-					new Coordinate(newVertex.getMapPosition().longitude,
-							newVertex.getMapPosition().latitude), ppd);
-
-			double currDistance = ppd.getDistance();
-
-			if (currDistance < minDistance) {
-				minDistance = currDistance;
-				insertIndex = i + 1;
-			}
-
-		}
-		vertices.add(insertIndex, newVertex);
-		updateVertices();
-		drawBoundary();
+		propertyLocationsMap.put(mark, loc);
 	}
 
 	private Marker createMarker(int index, LatLng position) {

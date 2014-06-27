@@ -69,8 +69,7 @@ public class BasePropertyBoundary {
 	protected String name;
 	protected String claimId;
 	protected List<Vertex> vertices = new ArrayList<Vertex>();
-	protected Map<String, Marker> propertyLocationMarkersMap = new HashMap<String, Marker>();
-	protected Map<String, PropertyLocation> propertyLocationsMap = new HashMap<String, PropertyLocation>();
+	protected Map<Marker, PropertyLocation> propertyLocationsMap = new HashMap<Marker, PropertyLocation>();
 	protected boolean propertyLocationsVisible = false;
 
 	public boolean isPropertyLocationsVisible() {
@@ -284,8 +283,7 @@ public class BasePropertyBoundary {
 		for (PropertyLocation location : PropertyLocation.getPropertyLocations(claimId)) {
 			Marker marker = createLocationMarker(location.getMapPosition(),
 					location.getDescription());
-			propertyLocationMarkersMap.put(marker.getId(), marker);
-			propertyLocationsMap.put(marker.getId(), location);
+			propertyLocationsMap.put(marker, location);
 		}
 		propertyLocationsVisible = true;
 	}
@@ -300,17 +298,12 @@ public class BasePropertyBoundary {
 
 	public void hidePropertyLocations() {
 
-		if (propertyLocationMarkersMap != null) {
-			for (String markerId : propertyLocationMarkersMap.keySet()) {
-				Marker marker = propertyLocationMarkersMap.get(markerId);
-				if (marker != null) {
-					marker.remove();
-				}
+		if (propertyLocationsMap != null) {
+			for (Marker marker : propertyLocationsMap.keySet()) {
 				// Just hiding the marker, no need to delete the location from DB
-				propertyLocationsMap.remove(markerId);
+				marker.remove();
 			}
-			propertyLocationMarkersMap = new HashMap<String, Marker>();
-			propertyLocationsMap = new HashMap<String, PropertyLocation>();
+			propertyLocationsMap = new HashMap<Marker, PropertyLocation>();
 		}
 		propertyLocationsVisible = false;
 	}

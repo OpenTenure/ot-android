@@ -27,41 +27,24 @@
  */
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
-import android.location.Location;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
-public abstract class TargetMoverMarker extends RelativeClickableMarker implements Hideable {
+public abstract class RelativeClickableMarker extends ClickableMarker implements Clickable {
 	
-	protected Marker target;
-	protected static final float UP_INITIAL_ROTATION = 180.0f;
-	protected static final float DOWN_INITIAL_ROTATION = 0.0f;
-	protected static final float LEFT_INITIAL_ROTATION = 90.0f;
-	protected static final float RIGHT_INITIAL_ROTATION = 270.0f;
-	protected static final int PIXELS_PER_STEP = 5;
+	protected Marker referenceMarker;
 
-	protected TargetMoverMarker(Marker selectedMarker, Marker target, GoogleMap  map) {
-		super(selectedMarker, map);
-		this.target = target;
+	public Marker getReferenceMarker() {
+		return referenceMarker;
 	}
 
-	public void hide(){
-		if(marker!=null){
-			marker.remove();
-			marker=null;
-		}
+	public void setReferenceMarker(Marker referenceMarker) {
+		this.referenceMarker = referenceMarker;
 	}
-	
-	protected float getTargetDistance() {
-		if(referenceMarker == null || target == null){
-			return 0.0f;
-		}
-		
-		float[] results = new float[1];
-		Location.distanceBetween(target.getPosition().latitude, target.getPosition().longitude,
-				referenceMarker.getPosition().latitude, referenceMarker.getPosition().longitude, results);
-		return results[0];
+
+	protected RelativeClickableMarker(Marker referenceMarker, GoogleMap map) {
+		super(map);
+		this.referenceMarker = referenceMarker;
 	}
 
 }

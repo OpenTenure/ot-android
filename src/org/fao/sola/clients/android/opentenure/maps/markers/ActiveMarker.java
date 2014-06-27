@@ -27,11 +27,25 @@
  */
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
 public abstract class ActiveMarker {
 	protected Marker marker;
+	protected GoogleMap map;
 	
+	protected ActiveMarker(GoogleMap map){
+		this.map = map;
+	}
+	
+	public GoogleMap getMap() {
+		return map;
+	}
+
+	public void setMap(GoogleMap map) {
+		this.map = map;
+	}
+
 	public Marker getMarker() {
 		return marker;
 	}

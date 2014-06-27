@@ -33,6 +33,12 @@ import java.util.Map;
 import com.google.android.gms.maps.model.Marker;
 
 
+/**
+ * @author Antonio Toma
+ * 
+ * Dispatches map events (drag/drop, click etc.) to markers
+ *
+ */
 public class ActiveMarkerRegistrar {
 	
 	private Map<Marker, ActiveMarker> markers = new HashMap<Marker, ActiveMarker>();

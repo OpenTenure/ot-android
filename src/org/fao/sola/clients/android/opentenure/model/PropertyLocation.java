@@ -422,15 +422,6 @@ public class PropertyLocation {
 		return propertyLocation;
 	}
 
-	public static void storeWKT(String claimId, String description, String mapWKT, String gpsWKT) {
-		deletePropertyLocations(claimId);
-
-		PropertyLocation propertyLocation = propertyLocationFromWKT(mapWKT, gpsWKT);
-		propertyLocation.setClaimId(claimId);
-		propertyLocation.setDescription(description);
-		propertyLocation.create();
-	}
-
 	public static String mapWKTFromPropertyLocation(PropertyLocation propertyLocation) {
 		if (propertyLocation == null) {
 			return null;

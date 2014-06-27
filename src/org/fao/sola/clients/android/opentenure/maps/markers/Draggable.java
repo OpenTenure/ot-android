@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.Marker;
 
 public interface Draggable {
 
-	public void setOnDragListener(OnDragListener listener);
 	public void onDragStart(Marker marker);
 	public void onDragEnd(Marker marker);
 	public void onDrag(Marker marker);

@@ -47,14 +47,7 @@ public class RightMarker extends TargetMoverMarker {
 		this.context = context;
 	}
 	
-	public void hide(){
-		if(marker!=null){
-			marker.remove();
-			marker=null;
-		}
-	}
-	
-	public void refresh(Point screenPosition, int iconHeight, int iconWidth){
+	public void refresh(Point screenPosition, int iconWidth, int iconHeight){
 		if(marker != null){
 			Projection projection = map.getProjection();
 			marker.setRotation(RIGHT_INITIAL_ROTATION);
@@ -72,7 +65,7 @@ public class RightMarker extends TargetMoverMarker {
 		return true;
 	}
 
-	public void show(Projection projection, Point screenPosition, int iconHeight, int iconWidth){
+	public void show(Projection projection, Point screenPosition, int iconWidth, int iconHeight){
 		marker = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlRightPosition(screenPosition, iconWidth, iconHeight)))
 		.anchor(0.5f, 0.5f)
