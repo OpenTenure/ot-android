@@ -71,6 +71,12 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETDOCUMENTYPES = "https://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
 	public static final String HTTP_GETDOCUMENTYPES = "http://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
 	
+	public static final String HTTPS_GETIDTYPES = "https://ot.flossola.org/ws/en-us/ref/getidtypes";
+	public static final String HTTP_GETIDTYPES = "http://ot.flossola.org/ws/en-us/ref/getidtypes";
+	
+	public static final String HTTPS_GETLANDUSE = "https://ot.flossola.org/ws/en-us/ref/getlanduses";
+	public static final String HTTP_GETLANDUSE = "http://ot.flossola.org/ws/en-us/ref/getlanduses";
+	
 	public static final String HTTPS_WITHDRAWCLAIM = "https://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
 	public static final String HTTP_WITHDRAWCLAIM = "http://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
 

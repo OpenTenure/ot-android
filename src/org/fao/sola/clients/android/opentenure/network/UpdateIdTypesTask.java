@@ -25,85 +25,54 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.network;
 
+import java.util.Iterator;
+import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
+import org.fao.sola.clients.android.opentenure.network.response.IdType;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Bundle;
 
-
-public class SplashScreen extends Activity {
-
+public class UpdateIdTypesTask extends
+AsyncTask<String, Void, List<IdType>>{
+	
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	protected List<IdType> doInBackground(String... params) {
+		List<IdType> types = CommunityServerAPI.getIdTypes();
 
-		setContentView(R.layout.activity_splash);
-		new PrefetchData().execute();
-
+		// TODO Auto-generated method stub
+		return types;
 	}
+	
+	@Override
+	protected void onPostExecute(List<IdType> types) {
+		
+		
 
-	private class PrefetchData extends AsyncTask<Void, Void, Void> {
+		if (types != null && (types.size() > 0)) {
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
+			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+				IdType idType = (IdType) iterator.next();
+
+				org.fao.sola.clients.android.opentenure.model.IdType type = new org.fao.sola.clients.android.opentenure.model.IdType();
+
+				
+				type.setDescription(idType.getDescription());
+				type.setCode(idType.getCode());
+				type.setDisplayValue(idType.getDisplayValue());
+				type.add();
+
+			}
+			
+			OpenTenureApplication.getInstance().setCheckedIdTypes(true);		
 
 		}
-
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			try {
-				OpenTenureApplication.getInstance().getDatabase();
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
-			startActivity(i);
-
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
-
-				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
-
-				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-				updateIdType.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
-
-				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-				updateLu.execute();
-			}
-
-			finish();
-		}
+		
 
 	}
 

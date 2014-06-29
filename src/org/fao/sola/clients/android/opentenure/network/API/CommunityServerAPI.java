@@ -540,6 +540,119 @@ public class CommunityServerAPI {
 			return methodResponse;
 		}
 
+		
+	}
+	
+	
+	public static List<org.fao.sola.clients.android.opentenure.network.response.LandUse> getLandUses() {
+		
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETLANDUSE);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+		
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI",
+						"GET LAND USES JSON RESPONSE " + json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.LandUse>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.LandUse> landUseList = new Gson()
+						.fromJson(json, listType);
+
+				if (landUseList != null)
+					Log.d("CommunityServerAPI", "RETRIEVED LAND USE LIST"
+							+ landUseList.size());
+
+				return landUseList;
+
+			} else {
+
+				Log.d("CommunityServerAPI",
+						"GET LAND USES NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {		
+		
+			Log.d("CommunityServerAPI",
+					"GET LAND USES ERROR " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
+		}
+		
+	}
+	
+	
+	public static List<org.fao.sola.clients.android.opentenure.network.response.IdType> getIdTypes() {
+		
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETIDTYPES);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+		
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI",
+						"GET ALL ID TYPES JSON RESPONSE " + json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.IdType>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.IdType> idTypesList = new Gson()
+						.fromJson(json, listType);
+
+				if (idTypesList != null)
+					Log.d("CommunityServerAPI", "RETRIEVED ID TYPES LIST"
+							+ idTypesList.size());
+
+				return idTypesList;
+
+			} else {
+
+				Log.d("CommunityServerAPI",
+						"GET ALL ID TYPES NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {		
+		
+			Log.d("CommunityServerAPI",
+					"GET ALL ID TYPES ERROR " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
+		}
+		
 	}
 
 	public static List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> getClaimTypes() {

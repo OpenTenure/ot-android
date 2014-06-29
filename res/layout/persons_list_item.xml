@@ -40,5 +40,13 @@
         android:layout_weight="1"
         android:contentDescription="@string/person_picture"
         android:src="@drawable/ic_contact_picture" />
+    
+    <ImageView
+            android:id="@+id/remove_person"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/action_remove_additional_info"
+            android:src="@android:drawable/ic_delete" />
 
 </LinearLayout>

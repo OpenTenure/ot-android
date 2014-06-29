@@ -38,7 +38,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Database;
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+
 
 import android.app.Activity;
 import android.app.Application;
@@ -56,6 +56,8 @@ public class OpenTenureApplication extends Application {
 	    private static Context context;
 	    private boolean checkedTypes = false;
 	    private boolean checkedDocTypes = false;
+	    private boolean checkedIdTypes = false;
+	    private boolean checkedLandUses = false;
 	    
 	    
 	    private static boolean loggedin ;
@@ -200,6 +202,22 @@ public class OpenTenureApplication extends Application {
 
 		public boolean isCheckedTypes() {
 			return checkedTypes;
+		}
+
+		public boolean isCheckedIdTypes() {
+			return checkedIdTypes;
+		}
+
+		public void setCheckedIdTypes(boolean checkedIdTypes) {
+			this.checkedIdTypes = checkedIdTypes;
+		}
+
+		public boolean isCheckedLandUses() {
+			return checkedLandUses;
+		}
+
+		public void setCheckedLandUses(boolean checkedLandUses) {
+			this.checkedLandUses = checkedLandUses;
 		}
 
 		public void setCheckedTypes(boolean checkedTypes) {

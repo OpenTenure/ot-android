@@ -27,84 +27,67 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import org.fao.sola.clients.android.opentenure.model.Person;
 
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
+public class DeletePersonListener implements OnClickListener {
 
+	String personId;
+	
+	public DeletePersonListener(String personId) {
 
-public class SplashScreen extends Activity {
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_splash);
-		new PrefetchData().execute();
-
+		this.personId = personId;
+		
 	}
+	
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		
+		Person person = Person.getPerson(personId);
+		
 
-	private class PrefetchData extends AsyncTask<Void, Void, Void> {
+		Toast toast;
+	
+		System.out.println("Sto cercando di cancellare " + person.getLastName() + " "  + person.getFirstName());
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
+		int result = Person.deletePerson(person);
+
+		if (result > 0) {
+
+			String message = String.format(OpenTenureApplication
+					.getContext().getString(
+							R.string.message_remove_person,
+							person.getFirstName()+ " "  + person.getLastName()));
+
+			toast = Toast.makeText(
+					OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+
+			OpenTenureApplication.getPersonsFragment().refresh();
 
 		}
 
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			try {
-				OpenTenureApplication.getInstance().getDatabase();
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
+		else {
+
+			String message = String.format(OpenTenureApplication
+					.getContext().getString(
+							R.string.message_error_remove_person,
+							person.getFirstName() + " " + person.getLastName()));
+
+			toast = Toast.makeText(
+					OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_SHORT);
+			toast.show();
+			
+
+
 		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			super.onPostExecute(result);
-			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
-			startActivity(i);
-
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
-
-				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
-
-				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-				updateIdType.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
-
-				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-				updateLu.execute();
-			}
-
-			finish();
-		}
-
+		
 	}
 
 }

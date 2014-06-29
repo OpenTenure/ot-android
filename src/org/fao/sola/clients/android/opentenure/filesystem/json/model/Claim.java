@@ -32,42 +32,54 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-
-
-
 public class Claim {
-	
-	@SerializedName("id") String id;
-	
-	@SerializedName("nr") String nr;	
-	
-	@SerializedName("decisionDate") String decisionDate;
-	
-	@SerializedName("statusCode") String statusCode;
-	
-	@SerializedName("description") String description;
-	
-	@SerializedName("challengeExpiryDate") String challengeExpiryDate;
-	
-	@SerializedName("lodgementDate") String lodgementDate;
-	
-	@SerializedName("mappedGeometry") String mappedGeometry;
-	
-	@SerializedName("gpsGeometry") String gpsGeometry;	
-	
-	@SerializedName("challengedClaimId") String challengedClaimId;
-	
-	@SerializedName("attachments") List<Attachment> attachments;
-	
-	//@SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
-	
-	@SerializedName("claimant") Claimant claimant;
-	
-	@SerializedName("typeCode") String typeCode;
-	
-	@SerializedName("shares") List<Share> shares;
-	
-	
+
+	@SerializedName("id")
+	String id;
+
+	@SerializedName("nr")
+	String nr;
+
+	@SerializedName("decisionDate")
+	String decisionDate;
+
+	@SerializedName("statusCode")
+	String statusCode;
+
+	@SerializedName("landUseCode")
+	String landUseCode;
+
+	@SerializedName("description")
+	String description;
+
+	@SerializedName("challengeExpiryDate")
+	String challengeExpiryDate;
+
+	@SerializedName("lodgementDate")
+	String lodgementDate;
+
+	@SerializedName("mappedGeometry")
+	String mappedGeometry;
+
+	@SerializedName("gpsGeometry")
+	String gpsGeometry;
+
+	@SerializedName("challengedClaimId")
+	String challengedClaimId;
+
+	@SerializedName("attachments")
+	List<Attachment> attachments;
+
+	// @SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
+
+	@SerializedName("claimant")
+	Claimant claimant;
+
+	@SerializedName("typeCode")
+	String typeCode;
+
+	@SerializedName("shares")
+	List<Share> shares;
 
 	public String getId() {
 		return id;
@@ -77,18 +89,13 @@ public class Claim {
 		this.id = id;
 	}
 
-
-
-
-//	public List<AdditionalInfo> getAdditionaInfo() {
-//		return additionaInfo;
-//	}
-//
-//	public void setAdditionaInfo(List<AdditionalInfo> additionaInfo) {
-//		this.additionaInfo = additionaInfo;
-//	}
-
-
+	// public List<AdditionalInfo> getAdditionaInfo() {
+	// return additionaInfo;
+	// }
+	//
+	// public void setAdditionaInfo(List<AdditionalInfo> additionaInfo) {
+	// this.additionaInfo = additionaInfo;
+	// }
 
 	public String getNr() {
 		return nr;
@@ -154,8 +161,6 @@ public class Claim {
 		this.gpsGeometry = gpsGeometry;
 	}
 
-
-
 	public String getChallengedClaimId() {
 		return challengedClaimId;
 	}
@@ -188,7 +193,12 @@ public class Claim {
 		this.shares = shares;
 	}
 
+	public String getLandUseCode() {
+		return landUseCode;
+	}
 
-	
+	public void setLandUseCode(String landUseCode) {
+		this.landUseCode = landUseCode;
+	}
 
 }
