@@ -108,6 +108,8 @@
     <string name="message_save_claim_before_submit">Salvare la richiesta prima di inviarla</string>
     <string name="message_save_claim_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
     <string name="message_save_person_before_adding_content">Salvare la persona prima di aggiungere contenuti</string>
+    <string name="message_remove_person">Persona %s rimossa </string>
+    <string name="message_error_remove_person">Persona %s non rimossa </string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
     <string name="message_export">Esportando</string>
     <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>
@@ -156,6 +158,9 @@
     <string name="add_description">Descrizione?</string>
     <string name="add_key">Nome?</string>
     <string name="add_value">Valore?</string>
+    <string name="id_type">Tipo Documento</string>
+    <string name="land_use">Uso del suolo</string>
+    <string name="id_number">Numero Documento</string>
     <string name="draggable_marker">Segnalino mobile</string>
     <string name="sticky_marker">Segnalino fisso</string>
     <string name="delete_locally">Cancella localmente</string>
