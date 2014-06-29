@@ -52,6 +52,7 @@
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
     <string name="title_lock_db">Cifratura dei dati locali</string>
+    <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="choose_file">Scegli un file</string>
     <string name="person_name">Nome della Persona</string>
@@ -123,9 +124,10 @@
     <string name="message_old_db_password">Password attuale?</string>
     <string name="message_new_db_password">Nuova password?</string>
     <string name="message_confirm_new_db_password">Conferma la nuova password</string>
+    <string name="message_enter_description">Immetti una descrizione</string>
     <string name="message_password_dont_match">Nuova password non confermata. Riprovare</string>
     <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
-    <string name="message_add_marker">Aggiungere una posizione?</string>
+    <string name="message_add_marker">Aggiungere una posizione al perimetro?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
@@ -152,6 +154,7 @@
     <string name="right">Destra</string>
     <string name="confirm">Conferma</string>
     <string name="cancel">Annulla</string>
+    <string name="not_boundary">Non al perimetro</string>
     <string name="new_snapshot">Nuova immagine</string>
     <string name="new_additional_info">Nuova informazione</string>
     <string name="new_file">Nuovo file</string>
@@ -200,5 +203,10 @@
     <string name="south_west">Sud-Ovest</string>
     <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
     <string name="shares_prompt">Seleziona le quote</string>
-    
+    <string-array name="claim_statuses">
+        <item >Da moderare</item>
+        <item >Moderati</item>
+        <item >Respinti</item>
+        <item >Locali</item>
+        </string-array>
 </resources>

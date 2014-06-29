@@ -39,10 +39,7 @@ import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -252,10 +249,10 @@ public class ClaimMapFragment extends Fragment implements
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, false);
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, existingProperties, false);
 		}else{
 			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, true);
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, existingProperties, true);
 		}
 
 		drawProperties();
@@ -318,45 +315,8 @@ public class ClaimMapFragment extends Fragment implements
 
 				@Override
 				public void onMapLongClick(final LatLng position) {
-
-					if (claimActivity.getClaimId() == null) {
-						// Useless to add markers without a claim
-						Toast toast = Toast.makeText(
-								mapView.getContext(),
-								R.string.message_save_claim_before_adding_content,
-								Toast.LENGTH_SHORT);
-						toast.show();
-						return;
-					}
-
-					AlertDialog.Builder dialog = new AlertDialog.Builder(
-							mapView.getContext());
-					dialog.setTitle(R.string.message_add_marker);
-					dialog.setMessage("Lon: " + position.longitude + ", lat: "
-							+ position.latitude);
-
-					dialog.setPositiveButton(R.string.confirm,
-							new OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-
-									currentProperty.insertVertex(position);
-									currentProperty
-											.resetAdjacency(existingProperties);
-								}
-							});
-					dialog.setNegativeButton(R.string.cancel,
-							new OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
-
-					dialog.show();
+					
+					currentProperty.addMarker(position);
 
 				}
 			});
@@ -377,8 +337,7 @@ public class ClaimMapFragment extends Fragment implements
 						snapLat = 0.0;
 						snapLon = 0.0;
 					}
-					currentProperty.moveMarker(mark);
-					currentProperty.drawBoundary();
+					currentProperty.onMarkerDrag(mark);
 
 				}
 
@@ -388,16 +347,12 @@ public class ClaimMapFragment extends Fragment implements
 					if (snapLat != 0.0 && snapLon != 0.0) {
 						mark.setPosition(new LatLng(snapLat, snapLon));
 					}
-					currentProperty.moveMarker(mark);
-					currentProperty.updateVertices();
-					currentProperty.resetAdjacency(existingProperties);
-					currentProperty.drawBoundary();
+					currentProperty.onMarkerDragEnd(mark);
 				}
 
 				@Override
 				public void onMarkerDragStart(Marker mark) {
-					currentProperty.moveMarker(mark);
-					currentProperty.drawBoundary();
+					currentProperty.onMarkerDragStart(mark);
 				}
 
 			});
@@ -406,7 +361,7 @@ public class ClaimMapFragment extends Fragment implements
 
 				@Override
 				public boolean onMarkerClick(final Marker mark) {
-					return currentProperty.handleMarkerClick(mark, existingProperties);
+					return currentProperty.handleMarkerClick(mark);
 				}
 			});
 		}
@@ -612,7 +567,7 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
-		currentProperty.refreshMarkerEditControls(cameraPosition.bearing);
+		currentProperty.refreshMarkerEditControls();
 	}
 
 	@Override
