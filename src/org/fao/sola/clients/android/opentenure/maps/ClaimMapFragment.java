@@ -47,6 +47,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -69,9 +70,11 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
@@ -106,7 +109,27 @@ public class ClaimMapFragment extends Fragment implements
 	private double snapLon;
 	private Menu menu;
 	private boolean isRotating = false;
+	private boolean isFollowing = false;
+	private Marker myLocation;
+	private LocationListener myLocationListener = new LocationListener() {
 
+		public void onLocationChanged(Location location) {
+			if (isFollowing && myLocation != null) {
+				myLocation.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+			}
+		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			Log.d(this.getClass().getName(), "onStatusChanged");
+		}
+
+		public void onProviderEnabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderEnabled");
+		}
+
+		public void onProviderDisabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderDisabled");
+		}
+	};
     // device sensor manager
     private SensorManager mSensorManager;
 
@@ -503,24 +526,33 @@ public class ClaimMapFragment extends Fragment implements
 				toast.show();
 			}
 			return true;
-		case R.id.action_center:
-			LatLng currentLocation = lh.getCurrentLocation();
+		case R.id.action_center_and_follow:
+			if(isFollowing){
+				isFollowing = false;
+				myLocation.remove();
+				myLocation = null;
+				lh.setCustomListener(null);
+			}else{
+				LatLng currentLocation = lh.getCurrentLocation();
 
-			if (currentLocation != null && currentLocation.latitude != 0.0
-					&& currentLocation.longitude != 0.0) {
-				Toast.makeText(getActivity().getBaseContext(),
-						"onOptionsItemSelected - " + currentLocation,
-						Toast.LENGTH_SHORT).show();
+				if (currentLocation != null && currentLocation.latitude != 0.0
+						&& currentLocation.longitude != 0.0) {
+					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+							currentLocation, 18), 1000, null);
+					myLocation = map.addMarker(new MarkerOptions()
+					.position(currentLocation)
+					.anchor(0.5f, 0.5f)
+					.title(mapView.getContext().getResources().getString(R.string.title_i_m_here))
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.ic_menu_mylocation)));
+					lh.setCustomListener(myLocationListener);
+					isFollowing = true;
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-						currentLocation, 12));
-
-				map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
-
-			} else {
-				Toast.makeText(getActivity().getBaseContext(),
-						R.string.check_location_service, Toast.LENGTH_LONG)
-						.show();
+				} else {
+					Toast.makeText(getActivity().getBaseContext(),
+							R.string.check_location_service, Toast.LENGTH_LONG)
+							.show();
+				}
 			}
 			return true;
 		case R.id.action_new:
@@ -572,7 +604,6 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
 		// nothing to do as of now
 		
 	}

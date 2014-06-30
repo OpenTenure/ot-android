@@ -11,8 +11,8 @@
           android:icon="@drawable/ic_menu_block"
           android:title="@string/action_stop_rotating"
           android:showAsAction="ifRoom" />    
-    <item android:id="@+id/action_center"
-          android:icon="@android:drawable/ic_menu_compass"
+    <item android:id="@+id/action_center_and_follow"
+          android:icon="@android:drawable/ic_menu_mylocation"
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />    
     <item android:id="@+id/action_new_picture"

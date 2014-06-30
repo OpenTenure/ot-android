@@ -51,10 +51,15 @@ public class LocationHelper {
 		return latestLocation;
 	}
 
+	LocationListener customListener;
+
+	public void setCustomListener(LocationListener customListener) {
+		this.customListener = customListener;
+	}
+
 	LocationListener gpsLL = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
-			Log.d(this.getClass().getName(), "onLocationChanged");
 			latestLocation = new Location (location);
 			if (OpenTenureApplication.getInstance().getDatabase().isOpen()) {
 				org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
@@ -62,6 +67,9 @@ public class LocationHelper {
 				loc.setLat(location.getLatitude());
 				loc.setLon(location.getLongitude());
 				loc.update();
+			}
+			if(customListener != null){
+				customListener.onLocationChanged(location);
 			}
 		}
 
@@ -140,12 +148,17 @@ public class LocationHelper {
 	}
 
 	public LatLng getCurrentLocation() {
-		org.fao.sola.clients.android.opentenure.model.Location loc = org.fao.sola.clients.android.opentenure.model.Location
-				.getLocation("CURRENT");
-		if (loc != null) {
-			return new LatLng(loc.getLat(), loc.getLon());
-		} else {
-			return new LatLng(HOME_LATITUDE, HOME_LONGITUDE);
+		Location deviceLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(deviceLocation != null){
+			return new LatLng(deviceLocation.getLatitude(), deviceLocation.getLongitude());
+		}else{
+			org.fao.sola.clients.android.opentenure.model.Location otLocation = org.fao.sola.clients.android.opentenure.model.Location
+					.getLocation("CURRENT");
+			if (otLocation != null) {
+				return new LatLng(otLocation.getLat(), otLocation.getLon());
+			} else {
+				return new LatLng(HOME_LATITUDE, HOME_LONGITUDE);
+			}
 		}
 	}
 

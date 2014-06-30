@@ -40,12 +40,15 @@ import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,9 +62,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 
@@ -81,6 +87,27 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
 	private List<BasePropertyBoundary> existingProperties;
+	private boolean isFollowing = false;
+	private Marker myLocation;
+	private LocationListener myLocationListener = new LocationListener() {
+
+		public void onLocationChanged(Location location) {
+			if (isFollowing && myLocation != null) {
+				myLocation.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+			}
+		}
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			Log.d(this.getClass().getName(), "onStatusChanged");
+		}
+
+		public void onProviderEnabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderEnabled");
+		}
+
+		public void onProviderDisabled(String provider) {
+			Log.d(this.getClass().getName(), "onProviderDisabled");
+		}
+	};
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -304,25 +331,33 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		case R.id.map_provider_geoserver:
 			setMapType(item.getItemId());
 			return true;
-		case R.id.action_center:
-			LatLng location = lh.getCurrentLocation();
+		case R.id.action_center_and_follow:
+			if(isFollowing){
+				isFollowing = false;
+				myLocation.remove();
+				myLocation = null;
+				lh.setCustomListener(null);
+			}else{
+				LatLng currentLocation = lh.getCurrentLocation();
 
-			if (location != null && location.latitude != 0.0
-					&& location.longitude != 0.0) {
-				Toast.makeText(
-						getActivity().getBaseContext(),
-						"onOptionsItemSelected - "
-								+ location, Toast.LENGTH_SHORT)
-						.show();
+				if (currentLocation != null && currentLocation.latitude != 0.0
+						&& currentLocation.longitude != 0.0) {
+					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
+							currentLocation, 18), 1000, null);
+					myLocation = map.addMarker(new MarkerOptions()
+					.position(currentLocation)
+					.anchor(0.5f, 0.5f)
+					.title(mapView.getContext().getResources().getString(R.string.title_i_m_here))
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.ic_menu_mylocation)));
+					lh.setCustomListener(myLocationListener);
+					isFollowing = true;
 
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12));
-
-				map.animateCamera(CameraUpdateFactory.zoomTo(16), 1000, null);
-
-			} else {
-				Toast.makeText(getActivity().getBaseContext(),
-						R.string.check_location_service, Toast.LENGTH_LONG)
-						.show();
+				} else {
+					Toast.makeText(getActivity().getBaseContext(),
+							R.string.check_location_service, Toast.LENGTH_LONG)
+							.show();
+				}
 			}
 			return true;
 			

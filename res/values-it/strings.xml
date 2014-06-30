@@ -47,6 +47,7 @@
     <string name="title_item">Elemento</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>
+    <string name="title_i_m_here">La tua posizione</string>
     <string name="title_activity_person">Open Tenure: Nuova persona</string>
     <string name="title_activity_select_claim">Open Tenure: Selezione richiesta</string>
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
