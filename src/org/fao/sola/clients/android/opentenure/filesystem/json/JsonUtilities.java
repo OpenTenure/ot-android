@@ -101,6 +101,7 @@ public class JsonUtilities {
 			tempClaim.setStatusCode(claim.getStatus());
 			tempClaim.setLandUseCode(claim.getLandUse());
 			tempClaim.setTypeCode(claim.getType());
+			tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
 			tempClaim.setNr("0001");
 
 			tempClaim.setLodgementDate(lodgementDate);

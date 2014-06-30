@@ -28,8 +28,13 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.io.File;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
@@ -47,6 +52,7 @@ import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,9 +70,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -79,6 +87,7 @@ public class ClaimDetailsFragment extends Fragment {
 	View rootView;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
+	private final Calendar localCalendar = Calendar.getInstance();
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -342,6 +351,33 @@ public class ClaimDetailsFragment extends Fragment {
 
 		challengedClaimantImageView.setImageBitmap(Bitmap.createScaledBitmap(
 				bitmap, 128, 128, true));
+
+		EditText dateOfStart = (EditText) rootView
+				.findViewById(R.id.date_of_start_input_field);
+
+		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear,
+					int dayOfMonth) {
+				localCalendar.set(Calendar.YEAR, year);
+				localCalendar.set(Calendar.MONTH, monthOfYear);
+				localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+				updateDoB();
+			}
+
+		};
+
+		dateOfStart.setOnLongClickListener(new OnLongClickListener() {
+
+			@Override
+			public boolean onLongClick(View v) {
+				new DatePickerDialog(rootView.getContext(), date, localCalendar
+						.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
+						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
+				return true;
+			}
+		});
 	}
 
 	private void loadChallengedClaim(Claim challengedClaim) {
@@ -405,6 +441,12 @@ public class ClaimDetailsFragment extends Fragment {
 					.setSelection(new LandUse().getIndexByCodeType(claim
 							.getLandUse()));
 
+			if (claim.getDateOfStart() != null) {
+				((EditText) rootView
+						.findViewById(R.id.date_of_start_input_field))
+						.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+								.format(claim.getDateOfStart()));
+			}
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setFocusable(false);
@@ -417,6 +459,9 @@ public class ClaimDetailsFragment extends Fragment {
 						.setFocusable(false);
 				((Spinner) rootView.findViewById(R.id.landUseSpinner))
 						.setClickable(false);
+				((EditText) rootView
+						.findViewById(R.id.date_of_start_input_field)).setFocusable(false);
+				
 			}
 
 			Person claimant = claim.getPerson();
@@ -451,6 +496,20 @@ public class ClaimDetailsFragment extends Fragment {
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
+		java.util.Date dob = null;
+		try {
+			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_start_input_field))
+							.getText().toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			dob = null;
+		}
+
+		if (dob != null)
+			claim.setDateOfStart(new Date(dob.getTime()));
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
@@ -491,6 +550,20 @@ public class ClaimDetailsFragment extends Fragment {
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
+		java.util.Date dob = null;
+		try {
+			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_start_input_field))
+							.getText().toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			dob = null;
+		}
+
+		if (dob != null)
+			claim.setDateOfStart(new Date(dob.getTime()));
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
@@ -699,6 +772,16 @@ public class ClaimDetailsFragment extends Fragment {
 			return 0;
 		}
 
+	}
+
+	private void updateDoB() {
+
+		EditText dateOfBirth = (EditText) getView().findViewById(
+				R.id.date_of_start_input_field);
+		String myFormat = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
 
 }

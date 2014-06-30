@@ -38,46 +38,52 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class IdType {
-	
+
 	Database db = OpenTenureApplication.getInstance().getDatabase();
-	
-	
-    String code;
-    String displayValue;
-    String description;
-    String status;
-    
+
+	String code;
+	String displayValue;
+	String description;
+	String status;
+
 	@Override
 	public String toString() {
 		return "DocumentType [code=" + code + ", description=" + description
-				+ ", displayValue=" + displayValue + ", status=" + status+"]";
+				+ ", displayValue=" + displayValue + ", status=" + status + "]";
 	}
-    
+
 	public String getCode() {
 		return code;
 	}
+
 	public void setCode(String code) {
 		this.code = code;
 	}
+
 	public String getDisplayValue() {
 		return displayValue;
 	}
+
 	public void setDisplayValue(String displayValue) {
 		this.displayValue = displayValue;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
+
 	public int add() {
 
 		int result = 0;
@@ -115,8 +121,7 @@ public class IdType {
 		}
 		return result;
 	}
-	
-	
+
 	public int addType(IdType idType) {
 
 		int result = 0;
@@ -154,9 +159,8 @@ public class IdType {
 		}
 		return result;
 	}
-	
-	
-	public  List<IdType> getIdTypes() {
+
+	public List<IdType> getIdTypes() {
 
 		List<IdType> types = new ArrayList<IdType>();
 		ResultSet rs = null;
@@ -208,8 +212,7 @@ public class IdType {
 		return types;
 
 	}
-	
-	
+
 	public List<String> getDisplayValues() {
 
 		List<org.fao.sola.clients.android.opentenure.model.IdType> list = getIdTypes();
@@ -224,20 +227,18 @@ public class IdType {
 		}
 		return displayList;
 	}
-	
+
 	public int getIndexByCodeType(String code) {
 
 		List<org.fao.sola.clients.android.opentenure.model.IdType> list = getIdTypes();
-		
+
 		int i = 0;
 
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.IdType idType = (org.fao.sola.clients.android.opentenure.model.IdType) iterator
 					.next();
 
-			System.out.println("Ora vedo se il valore " + code +" e' uguale a " + idType.getCode());
 			if (idType.getCode().equals(code)) {
-				
 
 				return i;
 
@@ -248,8 +249,7 @@ public class IdType {
 		return 0;
 
 	}
-	
-	
+
 	public String getTypebyDisplayValue(String value) {
 
 		ResultSet rs = null;
@@ -296,7 +296,7 @@ public class IdType {
 		return null;
 
 	}
-	
+
 	public String getDisplayValueByType(String value) {
 
 		ResultSet rs = null;

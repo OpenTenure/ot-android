@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,8 +41,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -53,7 +57,9 @@ import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View.OnLongClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -66,6 +72,7 @@ public class LocalClaimsFragment extends ListFragment {
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 	private String filter = null;
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -220,7 +227,7 @@ public class LocalClaimsFragment extends ListFragment {
 			}
 		});
 
-		update();
+		update();		
 
 		if(savedInstanceState != null && savedInstanceState.getString(FILTER_KEY) != null){
 			filter = savedInstanceState.getString(FILTER_KEY);
@@ -326,5 +333,8 @@ public void refresh(){
 		
 		update();
 	}
+
+
+
 	
 }
