@@ -99,6 +99,7 @@ public class JsonUtilities {
 							.getChallengedClaim().getClaimId() : null);
 			tempClaim.setId(claimId);
 			tempClaim.setStatusCode(claim.getStatus());
+			tempClaim.setLandUseCode(claim.getLandUse());
 			tempClaim.setTypeCode(claim.getType());
 			tempClaim.setNr("0001");
 
@@ -117,6 +118,8 @@ public class JsonUtilities {
 			// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
 			person.setAddress(claim.getPerson().getPostalAddress());
 			person.setGenderCode(claim.getPerson().getGender());
+			person.setIdTypeCode(claim.getPerson().getIdType());
+			person.setIdNumber(claim.getPerson().getIdNumber());
 
 			tempClaim.setClaimant(person);
 

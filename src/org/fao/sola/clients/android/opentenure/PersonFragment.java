@@ -32,9 +32,12 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.R.string;
+import org.fao.sola.clients.android.opentenure.model.IdType;
+import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -55,10 +58,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class PersonFragment extends Fragment {
@@ -113,6 +118,8 @@ public class PersonFragment extends Fragment {
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
+		preload();
 
 		EditText dateOfBirth = (EditText) rootView
 				.findViewById(R.id.date_of_birth_input_field);
@@ -169,7 +176,27 @@ public class PersonFragment extends Fragment {
 		return rootView;
 	}
 
+	private void preload() {
+		// ID TYPE Spinner
+		Spinner spinnerIT = (Spinner) rootView
+				.findViewById(R.id.id_type_spinner);
+
+		IdType it = new IdType();
+
+		List<String> idTypelist = it.getDisplayValues();
+
+		ArrayAdapter<String> dataAdapterIT = new ArrayAdapter<String>(
+				OpenTenureApplication.getContext(),
+				android.R.layout.simple_spinner_item, idTypelist) {
+		};
+		dataAdapterIT.setDropDownViewResource(R.layout.my_spinner);
+
+		spinnerIT.setAdapter(dataAdapterIT);
+
+	}
+
 	private void load(String personId) {
+
 		Person person = Person.getPerson(personId);
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
 				.setText(person.getFirstName());
@@ -193,6 +220,12 @@ public class PersonFragment extends Fragment {
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(person.getContactPhoneNumber());
+		((Spinner) rootView.findViewById(R.id.id_type_spinner))
+				.setSelection(new IdType().getIndexByCodeType(person
+						.getIdType()));
+
+		((EditText) rootView.findViewById(R.id.id_number)).setText(person
+				.getIdNumber());
 
 		if (person.hasUploadedClaims()) {
 			((EditText) rootView.findViewById(R.id.first_name_input_field))
@@ -220,6 +253,12 @@ public class PersonFragment extends Fragment {
 					.setFocusable(false);
 			((EditText) rootView
 					.findViewById(R.id.contact_phone_number_input_field))
+					.setFocusable(false);
+			((Spinner) rootView.findViewById(R.id.id_type_spinner))
+					.setFocusable(false);
+			((Spinner) rootView.findViewById(R.id.id_type_spinner))
+					.setClickable(false);
+			((EditText) rootView.findViewById(R.id.id_number))
 					.setFocusable(false);
 			allowSave = false;
 			getActivity().invalidateOptionsMenu();
@@ -271,7 +310,7 @@ public class PersonFragment extends Fragment {
 							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			//dob = new java.util.Date();
+			// dob = new java.util.Date();
 			return 3;
 		}
 		person.setDateOfBirth(new Date(dob.getTime()));
@@ -290,6 +329,17 @@ public class PersonFragment extends Fragment {
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
+		person.setContactPhoneNumber(((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field)).getText()
+				.toString());
+
+		String idTypeDispValue = (String) ((Spinner) rootView
+				.findViewById(R.id.id_type_spinner)).getSelectedItem();
+		person.setIdType(new IdType().getTypebyDisplayValue(idTypeDispValue));
+
+		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
+				.getText().toString());
+
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_feminine_input_field)).isChecked())
 			person.setGender("F");
@@ -297,10 +347,8 @@ public class PersonFragment extends Fragment {
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
 
-		if (person.getDateOfBirth() == null 
-				|| person.getFirstName() == null
-				|| person.getLastName() == null				
-				|| person.getGender() == null
+		if (person.getDateOfBirth() == null || person.getFirstName() == null
+				|| person.getLastName() == null || person.getGender() == null
 				|| person.getPlaceOfBirth() == null)
 			return 2;
 
@@ -309,6 +357,7 @@ public class PersonFragment extends Fragment {
 			personActivity.setPersonId(person.getPersonId());
 			personPictureFile = Person.getPersonPictureFile(person
 					.getPersonId());
+			
 			return 1;
 		}
 		return 0;
@@ -317,9 +366,7 @@ public class PersonFragment extends Fragment {
 
 	public int updatePerson() {
 
-		
-		
-		//Person person = Person.getPerson(personActivity.getPersonId());
+		// Person person = Person.getPerson(personActivity.getPersonId());
 		Person person = new Person();
 		person.setPersonId(personActivity.getPersonId());
 		person.setFirstName(((EditText) rootView
@@ -328,14 +375,15 @@ public class PersonFragment extends Fragment {
 		person.setLastName(((EditText) rootView
 				.findViewById(R.id.last_name_input_field)).getText().toString());
 		java.util.Date dob;
-		try {			
-			
-			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(((EditText) rootView
-					.findViewById(R.id.date_of_birth_input_field))
-					.getText().toString());
+		try {
+
+			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_birth_input_field))
+							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			//dob = new java.util.Date();
+			// dob = new java.util.Date();
 			return 3;
 		}
 		person.setDateOfBirth(new Date(dob.getTime()));
@@ -360,21 +408,25 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
+		
+		String idTypeDispValue = (String) ((Spinner) rootView
+				.findViewById(R.id.id_type_spinner)).getSelectedItem();
+		person.setIdType(new IdType().getTypebyDisplayValue(idTypeDispValue));
+
+		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
+				.getText().toString());
 
 		if (person.getDateOfBirth() == null
 				|| person.getDateOfBirth().equals("")
 				|| person.getFirstName() == null
 				|| person.getFirstName().trim().equals("")
 				|| person.getLastName() == null
-				|| person.getLastName().trim().equals("")				
+				|| person.getLastName().trim().equals("")
 				|| person.getGender() == null
 				|| person.getGender().trim().equals("")
 				|| person.getPlaceOfBirth() == null
-				|| person.getPlaceOfBirth().trim().equals("")
-				)
+				|| person.getPlaceOfBirth().trim().equals(""))
 			return 2;
-		
-
 
 		return person.update();
 	}
@@ -399,7 +451,7 @@ public class PersonFragment extends Fragment {
 							R.string.message_error_mandatory_fields,
 							Toast.LENGTH_SHORT);
 					toast.show();
-				}else if (saved == 3) {
+				} else if (saved == 3) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_error_mandatory_birthdate,
 							Toast.LENGTH_SHORT);
@@ -414,7 +466,7 @@ public class PersonFragment extends Fragment {
 			} else {
 
 				int updated = updatePerson();
-				
+
 				if (updated == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);

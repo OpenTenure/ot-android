@@ -36,6 +36,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -297,6 +298,22 @@ public class ClaimDetailsFragment extends Fragment {
 
 		spinner.setAdapter(dataAdapter);
 
+		// Land Uses Spinner
+		Spinner spinnerLU = (Spinner) rootView
+				.findViewById(R.id.landUseSpinner);
+
+		LandUse lu = new LandUse();
+
+		List<String> landUseslist = lu.getDisplayValues();
+
+		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
+				OpenTenureApplication.getContext(),
+				android.R.layout.simple_spinner_item, landUseslist) {
+		};
+		dataAdapterLU.setDropDownViewResource(R.layout.my_spinner);
+
+		spinnerLU.setAdapter(dataAdapterLU);
+
 		// Claimant
 		((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 		((TextView) rootView.findViewById(R.id.claimant_id)).setText("");
@@ -384,12 +401,21 @@ public class ClaimDetailsFragment extends Fragment {
 					.setSelection(new ClaimType().getIndexByCodeType(claim
 							.getType()));
 
+			((Spinner) rootView.findViewById(R.id.landUseSpinner))
+					.setSelection(new LandUse().getIndexByCodeType(claim
+							.getLandUse()));
+
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setFocusable(false);
 				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
 						.setFocusable(false);
 				((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
+						.setClickable(false);
+
+				((Spinner) rootView.findViewById(R.id.landUseSpinner))
+						.setFocusable(false);
+				((Spinner) rootView.findViewById(R.id.landUseSpinner))
 						.setClickable(false);
 			}
 
@@ -421,6 +447,11 @@ public class ClaimDetailsFragment extends Fragment {
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
 		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
+
+		String landUseDispValue = (String) ((Spinner) rootView
+				.findViewById(R.id.landUseSpinner)).getSelectedItem();
+		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		if (claim.create() == 1) {
@@ -456,6 +487,11 @@ public class ClaimDetailsFragment extends Fragment {
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
 		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
+
+		String landUseDispValue = (String) ((Spinner) rootView
+				.findViewById(R.id.landUseSpinner)).getSelectedItem();
+		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
 		return claim.update();

@@ -37,11 +37,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		Filterable {
@@ -70,11 +73,13 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 			protected FilterResults performFiltering(CharSequence constraint) {
 
 				String filterString = constraint.toString();
-				
+
 				filteredPersons = new ArrayList<PersonListTO>();
 				for (PersonListTO pto : originalPersons) {
-					String lcase = pto.getSlogan().toLowerCase(Locale.getDefault());
-					if (lcase.contains(filterString.toLowerCase(Locale.getDefault()))) {
+					String lcase = pto.getSlogan().toLowerCase(
+							Locale.getDefault());
+					if (lcase.contains(filterString.toLowerCase(Locale
+							.getDefault()))) {
 						filteredPersons.add(pto);
 					}
 				}
@@ -109,6 +114,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		TextView id;
 		TextView slogan;
 		ImageView picture;
+		ImageView remove;
 	}
 
 	@Override
@@ -116,24 +122,45 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 		ViewHolder vh;
 
+		Person person = Person.getPerson(persons.get(position).getId());
+
+		System.out.println(" PERSONA   " + person.getLastName() + " "
+				+ person.getFirstName());
+
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.persons_list_item, parent,
 					false);
 			vh = new ViewHolder();
-			vh.slogan = (TextView) convertView
-					.findViewById(R.id.person_slogan);
+			vh.slogan = (TextView) convertView.findViewById(R.id.person_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.person_id);
+
+			vh.remove = (ImageView) convertView
+					.findViewById(R.id.remove_person);
+
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.person_picture);
 			convertView.setTag(vh);
-		}else{
-			vh = (ViewHolder)convertView.getTag();
+		} else {
+			vh = (ViewHolder) convertView.getTag();
+
 		}
+
+		if (!Person.getIdsWithClaims().contains(person.getPersonId())
+				&& !Person.getIdsWithShares().contains(person.getPersonId())) {
+
+			vh.remove.setOnClickListener(new DeletePersonListener(persons.get(
+					position).getId()));
+			vh.remove.setVisibility(View.VISIBLE);
+		} else
+			vh.remove.setVisibility(View.INVISIBLE);
+
 		vh.slogan.setText(persons.get(position).getSlogan());
 		vh.id.setTextSize(8);
 		vh.id.setText(persons.get(position).getId());
-		vh.picture.setImageBitmap(Person.getPersonPicture(context,
-				Person.getPersonPictureFile(persons.get(position).getId()), 96));
+		vh.picture
+				.setImageBitmap(Person.getPersonPicture(context, Person
+						.getPersonPictureFile(persons.get(position).getId()),
+						96));
 
 		return convertView;
 	}

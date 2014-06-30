@@ -199,6 +199,8 @@ public class GetClaims {
 				person.setLastName(claimant.getLastName());
 				person.setMobilePhoneNumber(claimant.getMobilePhone());
 				person.setPersonId(claimant.getId());
+				person.setIdNumber(claimant.getIdNumber());
+				person.setIdType(claimant.getIdTypeCode());
 				// person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 				person.setPostalAddress(claimant.getAddress());
 
@@ -207,6 +209,7 @@ public class GetClaims {
 				claimDB.setClaimId(downloadedClaim.getId());
 				claimDB.setAdditionalInfo(additionalInfoDBList);
 				claimDB.setName(downloadedClaim.getDescription());
+				claimDB.setLandUse(downloadedClaim.getLandUseCode());
 
 				Date date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
 				claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
