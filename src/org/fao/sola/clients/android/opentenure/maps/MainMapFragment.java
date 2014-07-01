@@ -86,7 +86,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	private GoogleMap map;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
-	private List<BasePropertyBoundary> existingProperties;
+	private List<BasePropertyBoundary> visibleProperties;
 	private boolean isFollowing = false;
 	private Marker myLocation;
 	private LocationListener myLocationListener = new LocationListener() {
@@ -127,9 +127,9 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		lh.start();
 		map.setOnCameraChangeListener(this);
 		List<Claim> claims = Claim.getAllClaims();
-		existingProperties = new ArrayList<BasePropertyBoundary>();
+		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for(Claim claim : claims){
-				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
+				visibleProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
 						claim));
 		}
 
@@ -152,14 +152,14 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			}
 		}
 
-		drawProperties();
+		redrawProperties();
 
 		return mapView;
 	}
 
-	private void drawProperties(){
-		for(BasePropertyBoundary existingProperty : existingProperties){
-			existingProperty.drawBoundary();
+	private void redrawProperties(){
+		for(BasePropertyBoundary visibleProperty : visibleProperties){
+			visibleProperty.redrawBoundary();
 		}
 	}
 
@@ -260,7 +260,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapnik));
 			break;
@@ -271,7 +271,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapquest));
 			break;
@@ -280,7 +280,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_local_tiles));
 			break;
@@ -294,7 +294,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "nz:orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 			new GeoserverMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			break;
@@ -421,17 +421,17 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	public void refreshMap(){		
 		
 		List<Claim> claims = Claim.getAllClaims();
-		existingProperties = new ArrayList<BasePropertyBoundary>();
+		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for(Claim claim : claims){
-				existingProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
+				visibleProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
 						claim));
 		}
 		
-		for(BasePropertyBoundary property : existingProperties){
-			property.resetAdjacency(existingProperties);
+		for(BasePropertyBoundary property : visibleProperties){
+			property.resetAdjacency(visibleProperties);
 		}
 
-		drawProperties();
+		redrawProperties();
 
 		return ;
 	}

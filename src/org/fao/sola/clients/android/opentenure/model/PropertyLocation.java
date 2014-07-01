@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.maps.Constants;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -433,7 +434,7 @@ public class PropertyLocation {
 				propertyLocation.getMapPosition().latitude);
 
 		Point point = gf.createPoint(coordinate);
-		point.setSRID(3857);
+		point.setSRID(Constants.SRID);
 
 		StringWriter writer = new StringWriter();
 		WKTWriter wktWriter = new WKTWriter(2);
@@ -457,7 +458,7 @@ public class PropertyLocation {
 				propertyLocation.getGPSPosition().latitude);
 
 		Point point = gf.createPoint(coordinate);
-		point.setSRID(3857);
+		point.setSRID(Constants.SRID);
 
 		StringWriter writer = new StringWriter();
 		WKTWriter wktWriter = new WKTWriter(2);
@@ -480,10 +481,10 @@ public class PropertyLocation {
 
 		try {
 			mapPoint = (Point) reader.read(mapWKT);
-			mapPoint.setSRID(3857);
+			mapPoint.setSRID(Constants.SRID);
 			if (gpsWKT != null) {
 				gpsPoint = (Point) reader.read(gpsWKT);
-				gpsPoint.setSRID(3857);
+				gpsPoint.setSRID(Constants.SRID);
 			}
 		} catch (ParseException e) {
 			return null;

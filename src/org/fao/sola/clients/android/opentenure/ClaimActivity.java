@@ -62,7 +62,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	@Override
 	public void onPause() {
 		super.onPause();
-		OpenTenureApplication.getInstance().getDatabase().sync();;
+		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
 	
 	@Override
@@ -74,6 +74,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(CLAIM_ID_KEY, claimId);
+		super.onSaveInstanceState(outState);
 
 	}
 

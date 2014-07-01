@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.maps.Constants;
 
 import android.util.Log;
 
@@ -461,7 +462,7 @@ public class Vertex {
 						.getMapPosition().latitude);
 
 		Polygon polygon = gf.createPolygon(coordinates);
-		polygon.setSRID(3857);
+		polygon.setSRID(Constants.SRID);
 
 		StringWriter writer = new StringWriter();
 		WKTWriter wktWriter = new WKTWriter(2);
@@ -498,7 +499,7 @@ public class Vertex {
 			
 			
 			Point point = gf.createPoint(coordinates[0]);
-			point.setSRID(3857);
+			point.setSRID(Constants.SRID);
 
 			WKTWriter wktWriter = new WKTWriter(2);
 
@@ -510,7 +511,7 @@ public class Vertex {
 		} else {
 
 			Polygon polygon = gf.createPolygon(coordinates);
-			polygon.setSRID(3857);
+			polygon.setSRID(Constants.SRID);
 
 			WKTWriter wktWriter = new WKTWriter(2);
 
@@ -533,10 +534,10 @@ public class Vertex {
 
 		try {
 			mapPolygon = (Polygon) reader.read(mapWKT);
-			mapPolygon.setSRID(3857);
+			mapPolygon.setSRID(Constants.SRID);
 			if (gpsWKT != null) {
 				gpsPolygon = (Polygon) reader.read(gpsWKT);
-				gpsPolygon.setSRID(3857);
+				gpsPolygon.setSRID(Constants.SRID);
 			}
 		} catch (ParseException e) {
 			return null;

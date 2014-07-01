@@ -68,6 +68,8 @@ public class BasePropertyBoundary {
 
 	protected String name;
 	protected String claimId;
+	protected String claimSlogan;
+	protected String claimType;
 	protected List<Vertex> vertices = new ArrayList<Vertex>();
 	protected Map<Marker, PropertyLocation> propertyLocationsMap = new HashMap<Marker, PropertyLocation>();
 	protected boolean propertyLocationsVisible = false;
@@ -125,6 +127,8 @@ public class BasePropertyBoundary {
 					: claim.getName();
 			String status = claim.getStatus();
 			claimId = claim.getClaimId();
+			claimSlogan = claim.getSlogan(context);
+			claimType = claim.getType();
 
 			if (status != null) {
 
@@ -151,12 +155,6 @@ public class BasePropertyBoundary {
 
 			if (vertices != null && vertices.size() > 0) {
 				calculateGeometry();
-				ClaimType ct = new ClaimType();
-				propertyMarker = createPropertyMarker(
-						center,
-						claim.getSlogan(context) + ", "
-								+ context.getString(R.string.type) + ": "
-								+ ct.getDisplayValueByType(claim.getType()));
 			}
 		}
 	}
@@ -219,7 +217,7 @@ public class BasePropertyBoundary {
 				vertices.get(0).getMapPosition().latitude);
 
 		polygon = gf.createPolygon(coords);
-		polygon.setSRID(3857);
+		polygon.setSRID(Constants.SRID);
 
 		bounds = new LatLngBounds(new LatLng(polygon.getEnvelope()
 				.getCoordinates()[0].y,
@@ -251,15 +249,27 @@ public class BasePropertyBoundary {
 				.title(title).icon(BitmapDescriptorFactory.fromBitmap(bmpText))
 				.anchor(0.5f, 1));
 	}
+	
+	public void hideBoundary(){
+		if (polyline != null) {
+			polyline.remove();
+		}
+		if (propertyMarker != null) {
+			propertyMarker.remove();
+		}
+	}
+	
+	public void redrawBoundary() {
+		hideBoundary();
+		showBoundary();
+	}
 
-	public void drawBoundary() {
+	public void showBoundary() {
 
 		if (vertices.size() <= 0) {
 			return;
 		}
-		if (polyline != null) {
-			polyline.remove();
-		}
+		
 		PolylineOptions polylineOptions = new PolylineOptions();
 		for (int i = 0; i < vertices.size(); i++) {
 			polylineOptions.add(vertices.get(i).getMapPosition());
@@ -272,6 +282,12 @@ public class BasePropertyBoundary {
 		polylineOptions.width(4);
 		polylineOptions.color(color);
 		polyline = map.addPolyline(polylineOptions);
+		ClaimType ct = new ClaimType();
+		propertyMarker = createPropertyMarker(
+				center,
+				claimSlogan + ", "
+						+ context.getString(R.string.type) + ": "
+						+ ct.getDisplayValueByType(claimType));
 	}
 
 	public void showPropertyLocations() {

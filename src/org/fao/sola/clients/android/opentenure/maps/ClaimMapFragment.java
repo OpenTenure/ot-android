@@ -73,6 +73,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.TileOverlay;
@@ -96,8 +97,9 @@ public class ClaimMapFragment extends Fragment implements
 	private MapLabel label;
 	private GoogleMap map;
 	private EditablePropertyBoundary currentProperty;
-	private List<BasePropertyBoundary> existingProperties;
-	private MultiPolygon existingPropertiesMultiPolygon;
+	private List<BasePropertyBoundary> visibleProperties;
+	private List<Claim> allClaims;
+	private MultiPolygon visiblePropertiesMultiPolygon;
 	private boolean saved = false;
 	private LocationHelper lh;
 	private TileOverlay tiles = null;
@@ -244,41 +246,7 @@ public class ClaimMapFragment extends Fragment implements
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		List<Claim> claims = Claim.getAllClaims();
-		existingProperties = new ArrayList<BasePropertyBoundary>();
-		for (Claim claim : claims) {
-			if (!claim.getClaimId()
-					.equalsIgnoreCase(claimActivity.getClaimId())) {
-				BasePropertyBoundary bpb = new BasePropertyBoundary(
-						mapView.getContext(), map, claim);
-				existingProperties.add(bpb);
-			}
-		}
-
-		ArrayList<Polygon> polygonList = new ArrayList<Polygon>();
-
-		for (BasePropertyBoundary bpb : existingProperties) {
-
-			if (bpb.getVertices() != null && bpb.getVertices().size() > 0) {
-				polygonList.add(bpb.getPolygon());
-			}
-		}
-		Polygon[] polygons = new Polygon[polygonList.size()];
-		polygonList.toArray(polygons);
-
-		GeometryFactory gf = new GeometryFactory();
-		existingPropertiesMultiPolygon = gf.createMultiPolygon(polygons);
-		existingPropertiesMultiPolygon.setSRID(3857);
-
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, existingProperties, false);
-		}else{
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, existingProperties, true);
-		}
-
-		drawProperties();
+		reloadVisibleProperties();
 
 		lh = new LocationHelper((LocationManager) getActivity()
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
@@ -328,10 +296,10 @@ public class ClaimMapFragment extends Fragment implements
 			}
 
 		}
+		this.map.setOnCameraChangeListener(this);
 		
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
-			this.map.setOnCameraChangeListener(this);
 			// Allow adding, removing and dragging markers
 
 			this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
@@ -348,7 +316,7 @@ public class ClaimMapFragment extends Fragment implements
 				public void onMarkerDrag(Marker mark) {
 					PointPairDistance ppd = new PointPairDistance();
 					DistanceToPoint.computeDistance(
-							existingPropertiesMultiPolygon,
+							visiblePropertiesMultiPolygon,
 							new Coordinate(mark.getPosition().longitude, mark
 									.getPosition().latitude), ppd);
 
@@ -394,6 +362,70 @@ public class ClaimMapFragment extends Fragment implements
 
 	}
 	
+	private Polygon getPolygon(LatLngBounds bounds){
+		GeometryFactory gf = new GeometryFactory();
+		Coordinate[] coords = new Coordinate[5];
+
+		coords[0] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
+		coords[1] = new Coordinate(bounds.northeast.longitude, bounds.southwest.latitude);
+		coords[2] = new Coordinate(bounds.southwest.longitude, bounds.southwest.latitude);
+		coords[3] = new Coordinate(bounds.southwest.longitude, bounds.northeast.latitude);
+		coords[4] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
+
+		Polygon polygon = gf.createPolygon(coords);
+		polygon.setSRID(Constants.SRID);
+		return polygon;
+	}
+	
+	private void reloadVisibleProperties(){
+
+		hideVisibleProperties();
+
+		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+		Polygon boundsPoly = getPolygon(bounds);
+
+		if(allClaims == null){
+			allClaims = Claim.getAllClaims();
+		}
+		visibleProperties = new ArrayList<BasePropertyBoundary>();
+		for (Claim claim : allClaims) {
+			if (!claim.getClaimId()
+					.equalsIgnoreCase(claimActivity.getClaimId())) {
+				BasePropertyBoundary bpb = new BasePropertyBoundary(
+						mapView.getContext(), map, claim);
+				Polygon claimPoly = bpb.getPolygon();
+				if(claimPoly.intersects(boundsPoly)){
+					visibleProperties.add(bpb);
+				}
+			}
+		}
+
+		List<Polygon> visiblePropertiesPolygonList = new ArrayList<Polygon>();
+
+		for (BasePropertyBoundary visibleProperty : visibleProperties) {
+
+			if (visibleProperty.getVertices() != null && visibleProperty.getVertices().size() > 0) {
+				visiblePropertiesPolygonList.add(visibleProperty.getPolygon());
+			}
+		}
+		Polygon[] visiblePropertiesPolygons = new Polygon[visiblePropertiesPolygonList.size()];
+		visiblePropertiesPolygonList.toArray(visiblePropertiesPolygons);
+
+		GeometryFactory gf = new GeometryFactory();
+		visiblePropertiesMultiPolygon = gf.createMultiPolygon(visiblePropertiesPolygons);
+		visiblePropertiesMultiPolygon.setSRID(Constants.SRID);
+
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, false);
+		}else{
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, true);
+		}
+
+		showVisibleProperties();
+	}
+	
 	public void setMapType(int type) {
 
 		if (tiles != null) {
@@ -433,7 +465,7 @@ public class ClaimMapFragment extends Fragment implements
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapnik));
 			break;
@@ -444,7 +476,7 @@ public class ClaimMapFragment extends Fragment implements
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapquest));
 			break;
@@ -454,7 +486,7 @@ public class ClaimMapFragment extends Fragment implements
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_local_tiles));
 			break;
@@ -471,7 +503,7 @@ public class ClaimMapFragment extends Fragment implements
 			tiles = map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new GeoserverMapTileProvider(256, 256,
 							geoServerUrl, geoServerLayer)));
-			drawProperties();
+			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
 			break;
@@ -481,10 +513,29 @@ public class ClaimMapFragment extends Fragment implements
 		mapType = type;
 	}
 
-	private void drawProperties() {
-		currentProperty.drawBoundary();
-		for (BasePropertyBoundary existingProperty : existingProperties) {
-			existingProperty.drawBoundary();
+	private void redrawProperties() {
+		currentProperty.redrawBoundary();
+		redrawVisibleProperties();
+	}
+
+	private void showVisibleProperties() {
+		if(visibleProperties != null){
+			for (BasePropertyBoundary visibleProperty : visibleProperties) {
+				visibleProperty.showBoundary();
+			}
+		}
+	}
+
+	private void redrawVisibleProperties() {
+		hideVisibleProperties();
+		showVisibleProperties();
+	}
+
+	private void hideVisibleProperties() {
+		if(visibleProperties != null){
+			for (BasePropertyBoundary visibleProperty : visibleProperties) {
+				visibleProperty.hideBoundary();
+			}
 		}
 	}
 
@@ -599,6 +650,8 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
+		reloadVisibleProperties();
+		currentProperty.redrawBoundary();
 		currentProperty.refreshMarkerEditControls();
 	}
 

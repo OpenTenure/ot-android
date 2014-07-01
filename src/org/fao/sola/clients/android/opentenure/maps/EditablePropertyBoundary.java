@@ -245,7 +245,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	
 	private boolean removeSelectedPropertyBoundaryVertex(){
 		removePropertyBoundaryMarker(selectedMarker);
-		drawBoundary();
+		redrawBoundary();
 		updateVertices();
 		resetAdjacency(otherProperties);
 		hideMarkerEditControls();
@@ -277,7 +277,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		removePropertyBoundaryMarker(selectedMarker);
 		hideMarkerEditControls();
 		selectedMarker = null;
-		drawBoundary();
+		redrawBoundary();
 		updateVertices();
 		resetAdjacency(otherProperties);
 		return true;
@@ -591,7 +591,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public void dragPropertyBoundaryMarker(Marker mark) {
 		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
-		drawBoundary();
+		redrawBoundary();
 	}
 
 	public void dragPropertyLocationMarker(Marker mark) {
@@ -661,7 +661,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 		vertices.add(insertIndex, newVertex);
 		updateVertices();
-		drawBoundary();
+		redrawBoundary();
 		verticesMap.put(mark.getId(), newVertex);
 	}
 	
