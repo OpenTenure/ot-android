@@ -36,4 +36,5 @@ public class ClaimStatus {
 	public static String _CHALLENGED = "challenged";
 	public static String _UPLOAD_INCOMPLETE = "upload_incomplete";
 	public static String _UPLOAD_ERROR = "upload_error";
+	public static String _WITHDRAWN = "withdrawn";
 }

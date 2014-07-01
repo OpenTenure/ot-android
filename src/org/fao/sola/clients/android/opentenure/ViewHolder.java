@@ -44,6 +44,7 @@ public class ViewHolder {
 	ImageView iconModerated;
 	ImageView iconUnmoderated;
 	ImageView iconChallenged;
+	ImageView iconWithdrawn;
 	int position;
 	
 	
@@ -125,6 +126,12 @@ public class ViewHolder {
 	}
 	public void setIconChallenged(ImageView iconChallenged) {
 		this.iconChallenged = iconChallenged;
+	}
+	public ImageView getIconWithdrawn() {
+		return iconWithdrawn;
+	}
+	public void setIconWithdrawn(ImageView iconWithdrawn) {
+		this.iconWithdrawn = iconWithdrawn;
 	}
 	
 	
