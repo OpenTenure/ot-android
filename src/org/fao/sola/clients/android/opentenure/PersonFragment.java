@@ -215,6 +215,17 @@ public class PersonFragment extends Fragment {
 				.setChecked((person.getGender().equals("F")));
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
 				.setChecked((person.getGender().equals("M")));
+
+		if (person.getPersonType() != null) {
+			((RadioButton) rootView
+					.findViewById(R.id.physical_person_input_field))
+					.setChecked((person.getPersonType()
+							.equals(Person._PHYSICAL)));
+			((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
+					.setChecked((person.getPersonType().equals(Person._LEGAL)));
+		}
+		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
+				.setChecked((person.getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
 				.setText(person.getMobilePhoneNumber());
 		((EditText) rootView
@@ -247,6 +258,11 @@ public class PersonFragment extends Fragment {
 					.setClickable(false);
 			((RadioButton) rootView
 					.findViewById(R.id.gender_masculine_input_field))
+					.setClickable(false);
+			((RadioButton) rootView
+					.findViewById(R.id.physical_person_input_field))
+					.setClickable(false);
+			((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
 					.setClickable(false);
 			((EditText) rootView
 					.findViewById(R.id.mobile_phone_number_input_field))
@@ -347,9 +363,17 @@ public class PersonFragment extends Fragment {
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
 
+		if (((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
+				.isChecked())
+			person.setPersonType(Person._LEGAL);
+		if (((RadioButton) rootView
+				.findViewById(R.id.physical_person_input_field)).isChecked())
+			person.setPersonType(Person._PHYSICAL);
+
 		if (person.getDateOfBirth() == null || person.getFirstName() == null
 				|| person.getLastName() == null || person.getGender() == null
-				|| person.getPlaceOfBirth() == null)
+				|| person.getPlaceOfBirth() == null || person.getPersonType() == null
+						|| person.getPersonType().trim().equals(""))
 			return 2;
 
 		if (person.create() == 1) {
@@ -357,7 +381,7 @@ public class PersonFragment extends Fragment {
 			personActivity.setPersonId(person.getPersonId());
 			personPictureFile = Person.getPersonPictureFile(person
 					.getPersonId());
-			
+
 			return 1;
 		}
 		return 0;
@@ -409,6 +433,13 @@ public class PersonFragment extends Fragment {
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
 		
+		if (((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
+				.isChecked())
+			person.setPersonType(Person._LEGAL);
+		if (((RadioButton) rootView
+				.findViewById(R.id.physical_person_input_field)).isChecked())
+			person.setPersonType(Person._PHYSICAL);
+
 		String idTypeDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.id_type_spinner)).getSelectedItem();
 		person.setIdType(new IdType().getTypebyDisplayValue(idTypeDispValue));
@@ -424,6 +455,8 @@ public class PersonFragment extends Fragment {
 				|| person.getLastName().trim().equals("")
 				|| person.getGender() == null
 				|| person.getGender().trim().equals("")
+				|| person.getPersonType() == null
+				|| person.getPersonType().trim().equals("")
 				|| person.getPlaceOfBirth() == null
 				|| person.getPlaceOfBirth().trim().equals(""))
 			return 2;

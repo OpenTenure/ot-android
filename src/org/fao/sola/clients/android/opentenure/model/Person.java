@@ -47,6 +47,9 @@ import android.graphics.BitmapFactory;
 public class Person {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
+	
+	public static String _LEGAL = "legal";
+	public static String _PHYSICAL = "physical";
 
 	public java.sql.Date getDateOfBirth() {
 		return dateOfBirth;
@@ -174,7 +177,8 @@ public class Person {
 				+ ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth
 				+ ", placeOfBirth=" + placeOfBirth + ",gender=" + gender
 				+ ", emailAddress=" + emailAddress + ", postalAddress="
-				+ postalAddress + ", mobilePhoneNumber=" + mobilePhoneNumber
+				+ postalAddress + ", personType="
+						+ personType + ", mobilePhoneNumber=" + mobilePhoneNumber
 				+ ", contactPhoneNumber=" + contactPhoneNumber + "]";
 	}
 
@@ -268,7 +272,7 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, person.getPersonId());
 			statement.setString(2, person.getFirstName());
 			statement.setString(3, person.getLastName());
@@ -281,6 +285,7 @@ public class Person {
 			statement.setString(10, person.getGender());
 			statement.setString(11, person.getIdType());
 			statement.setString(12, person.getIdNumber());
+			statement.setString(13, person.getPersonType());
 			result = statement.executeUpdate();
 			
 			FileSystemUtilities.createClaimantFolder(person.getPersonId());
@@ -314,7 +319,7 @@ public class Person {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getPersonId());
 			statement.setString(2, getFirstName());
 			statement.setString(3, getLastName());
@@ -327,6 +332,7 @@ public class Person {
 			statement.setString(10, getGender());
 			statement.setString(11, getIdType());
 			statement.setString(12, getIdNumber());
+			statement.setString(13, getPersonType());
 			result = statement.executeUpdate();
 			FileSystemUtilities.createClaimantFolder(getPersonId());
 		} catch (SQLException e) {
@@ -427,7 +433,7 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=?, ID_TYPE=?, ID_NUMBER=? WHERE PERSON_ID=?");
+					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=?, ID_TYPE=?, ID_NUMBER=?, PERSON_TYPE=? WHERE PERSON_ID=?");
 			statement.setString(1, person.getFirstName());
 			statement.setString(2, person.getLastName());
 			statement.setDate(3, person.getDateOfBirth());
@@ -439,7 +445,9 @@ public class Person {
 			statement.setString(9, person.getGender());
 			statement.setString(10, person.getIdType());
 			statement.setString(11, person.getIdNumber());
-			statement.setString(12, person.getPersonId());
+			statement.setString(12, person.getPersonType());
+			statement.setString(13, person.getPersonId());
+			
 			
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -472,7 +480,7 @@ public class Person {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=?, ID_TYPE=?, ID_NUMBER=? WHERE PERSON_ID=?");
+					.prepareStatement("UPDATE PERSON SET FIRST_NAME=?, LAST_NAME=?, DATE_OF_BIRTH=?, PLACE_OF_BIRTH=?, EMAIL_ADDRESS=?, POSTAL_ADDRESS=?, MOBILE_PHONE_NUMBER=?, CONTACT_PHONE_NUMBER=?, GENDER=?, ID_TYPE=?, ID_NUMBER=?, PERSON_TYPE=? WHERE PERSON_ID=?");
 			statement.setString(1, getFirstName());
 			statement.setString(2, getLastName());
 			statement.setDate(3, getDateOfBirth());
@@ -484,7 +492,8 @@ public class Person {
 			statement.setString(9, getGender());
 			statement.setString(10, getIdType());
 			statement.setString(11, getIdNumber());
-			statement.setString(12, getPersonId());
+			statement.setString(12, getPersonType());
+			statement.setString(13, getPersonId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -518,7 +527,7 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS,POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER FROM PERSON PER WHERE PER.PERSON_ID=?");
+					.prepareStatement("SELECT FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE FROM PERSON PER WHERE PER.PERSON_ID=?");
 			statement.setString(1, personId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
@@ -535,6 +544,7 @@ public class Person {
 				person.setGender(rs.getString(9));
 				person.setIdType(rs.getString(10));
 				person.setIdNumber(rs.getString(11));
+				person.setPersonType(rs.getString(12));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -574,7 +584,7 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER FROM PERSON");
+					.prepareStatement("SELECT PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE FROM PERSON");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 
@@ -591,6 +601,7 @@ public class Person {
 				person.setGender(rs.getString(10));
 				person.setIdType(rs.getString(11));
 				person.setIdNumber(rs.getString(12));
+				person.setPersonType(rs.getString(13));
 				persons.add(person);
 			}
 		} catch (SQLException e) {
@@ -791,6 +802,14 @@ public class Person {
 		return Bitmap.createScaledBitmap(croppedBitmap, size, size, true);
 	}
 
+	public String getPersonType() {
+		return personType;
+	}
+
+	public void setPersonType(String personType) {
+		this.personType = personType;
+	}
+
 	String personId;
 	String firstName;
 	String lastName;
@@ -803,5 +822,6 @@ public class Person {
 	String gender;
 	String idType;
 	String idNumber;
+	String personType;
 
 }

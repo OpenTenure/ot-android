@@ -219,14 +219,12 @@ public class LandUse {
 
 		List<String> displayList = new ArrayList<String>();
 
-		System.out.println(" Fateme capi' sta lista quanto e' grande : " +  displayList.size());
-		
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
 			displayList.add(landUse.getDisplayValue());
-			System.out.println(" ECCOLO : " +  landUse.getDisplayValue());
+
 		}
 		return displayList;
 	}
@@ -237,28 +235,22 @@ public class LandUse {
 
 		int i = 0;
 
-		
-		
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
-			
 
 			if (landUse.getCode().equals(code)) {
-				
-				
+
 				return i;
 
 			}
-		
 
 			i++;
 		}
 		return 0;
 
 	}
-	
-	
+
 	public String getTypebyDisplayValue(String value) {
 
 		ResultSet rs = null;
@@ -305,7 +297,7 @@ public class LandUse {
 		return null;
 
 	}
-	
+
 	public String getDisplayValueByType(String value) {
 
 		ResultSet rs = null;

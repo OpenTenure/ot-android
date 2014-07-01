@@ -69,9 +69,10 @@ public class GetClaims {
 
 			Claim downloadedClaim = CommunityServerAPI.getClaim(claim.getId());
 
-			if (downloadedClaim == null)
+			if (downloadedClaim == null) {
 				success = false;
 
+			}
 			/**
 			 * 
 			 * Parsing the downloaded Claim and saving it to DB
@@ -192,6 +193,7 @@ public class GetClaims {
 			}
 
 			try {
+				Date date;
 
 				person.setEmailAddress(claimant.getEmail());
 				person.setFirstName(claimant.getName());
@@ -203,6 +205,9 @@ public class GetClaims {
 				person.setIdType(claimant.getIdTypeCode());
 				// person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 				person.setPostalAddress(claimant.getAddress());
+				if(claimant.isPhysicalPerson())
+					person.setPersonType(Person._PHYSICAL);
+				else person.setPersonType(Person._LEGAL);
 
 				claimDB.setAttachments(attachmentsDB);
 
@@ -211,7 +216,12 @@ public class GetClaims {
 				claimDB.setName(downloadedClaim.getDescription());
 				claimDB.setLandUse(downloadedClaim.getLandUseCode());
 
-				Date date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
+				if (downloadedClaim.getStartDate() != null) {
+					date = sdf.parse(downloadedClaim.getStartDate());
+					claimDB.setDateOfStart(new java.sql.Date(date.getTime()));
+				}
+
+				date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
 				claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
 
 				claimDB.setPerson(person);
@@ -273,45 +283,46 @@ public class GetClaims {
 
 					for (Iterator iterator2 = sharePersons.iterator(); iterator2
 							.hasNext();) {
-						org.fao.sola.clients.android.opentenure.filesystem.json.model.Person person2 = (org.fao.sola.clients.android.opentenure.filesystem.json.model.Person) iterator2.next();
+						org.fao.sola.clients.android.opentenure.filesystem.json.model.Person person2 = (org.fao.sola.clients.android.opentenure.filesystem.json.model.Person) iterator2
+								.next();
 
 						Person personDB2 = new Person();
 
-						personDB2.setContactPhoneNumber(person2
-								.getPhone());
-						
-						
-						Calendar cal = JsonUtilities
-								.toCalendar(claimant.getBirthDate());
+						personDB2.setContactPhoneNumber(person2.getPhone());
+
+						Calendar cal = JsonUtilities.toCalendar(claimant
+								.getBirthDate());
 						birth = cal.getTime();
 
 						if (birth != null)
-							personDB2.setDateOfBirth(new java.sql.Date(birth.getTime()));
+							personDB2.setDateOfBirth(new java.sql.Date(birth
+									.getTime()));
 						else
-							personDB2.setDateOfBirth(new java.sql.Date(2000, 2, 3));
-						
+							personDB2.setDateOfBirth(new java.sql.Date(2000, 2,
+									3));
+
 						personDB2.setEmailAddress(person2.getEmail());
 						personDB2.setFirstName(person2.getName());
 						personDB2.setGender(person2.getGenderCode());
 						personDB2.setLastName(person2.getLastName());
-						personDB2.setMobilePhoneNumber(person2
-								.getMobilePhone());
+						personDB2
+								.setMobilePhoneNumber(person2.getMobilePhone());
 						personDB2.setPersonId(person2.getId());
-						//personDB2.setPlaceOfBirth(person2.get);
+						// personDB2.setPlaceOfBirth(person2.get);
 						personDB2.setPostalAddress(person2.getAddress());
 
 						Person.createPerson(personDB2);
 
 					}
-					
+
 					Owner owner = new Owner(false);
-					
+
 					owner.setClaimId(downloadedClaim.getId());
 					owner.setId(share.getId());
 					owner.setPersonId(sharePersons.get(0).getId());
 					owner.setOwnerId(sharePersons.get(0).getId());
 					owner.setShares(share.getNominator());
-					
+
 					Owner.createOwner(owner);
 
 				}
@@ -322,6 +333,7 @@ public class GetClaims {
 				Log.d("CommunityServerAPI", "ERROR SAVING DOWNLOADED  CLAIM "
 						+ claim.getId());
 				e.printStackTrace();
+
 				success = false;
 			}
 

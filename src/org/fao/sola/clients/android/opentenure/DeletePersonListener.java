@@ -36,35 +36,31 @@ import android.widget.Toast;
 public class DeletePersonListener implements OnClickListener {
 
 	String personId;
-	
+
 	public DeletePersonListener(String personId) {
 
 		this.personId = personId;
-		
+
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
-		
+
 		Person person = Person.getPerson(personId);
-		
 
 		Toast toast;
-	
-		System.out.println("Sto cercando di cancellare " + person.getLastName() + " "  + person.getFirstName());
 
 		int result = Person.deletePerson(person);
 
 		if (result > 0) {
 
-			String message = String.format(OpenTenureApplication
-					.getContext().getString(
+			String message = String
+					.format(OpenTenureApplication.getContext().getString(
 							R.string.message_remove_person,
-							person.getFirstName()+ " "  + person.getLastName()));
+							person.getFirstName() + " " + person.getLastName()));
 
-			toast = Toast.makeText(
-					OpenTenureApplication.getContext(), message,
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
 
@@ -74,20 +70,17 @@ public class DeletePersonListener implements OnClickListener {
 
 		else {
 
-			String message = String.format(OpenTenureApplication
-					.getContext().getString(
+			String message = String
+					.format(OpenTenureApplication.getContext().getString(
 							R.string.message_error_remove_person,
 							person.getFirstName() + " " + person.getLastName()));
 
-			toast = Toast.makeText(
-					OpenTenureApplication.getContext(), message,
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
-			
-
 
 		}
-		
+
 	}
 
 }

@@ -74,6 +74,9 @@ public class Claim {
 
 	@SerializedName("claimant")
 	Claimant claimant;
+	
+	@SerializedName("startDate")
+	String startDate;
 
 	@SerializedName("typeCode")
 	String typeCode;
@@ -199,6 +202,22 @@ public class Claim {
 
 	public void setLandUseCode(String landUseCode) {
 		this.landUseCode = landUseCode;
+	}
+
+	public String getDecisionDate() {
+		return decisionDate;
+	}
+
+	public void setDecisionDate(String decisionDate) {
+		this.decisionDate = decisionDate;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
 	}
 
 }

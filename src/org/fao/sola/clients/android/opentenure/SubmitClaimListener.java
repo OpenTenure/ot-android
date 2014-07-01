@@ -79,7 +79,8 @@ public class SubmitClaimListener implements OnClickListener {
 					toast.show();
 					return;
 
-				}
+				}				
+
 
 				JsonUtilities.createClaimJson(claimId);
 
@@ -87,6 +88,7 @@ public class SubmitClaimListener implements OnClickListener {
 						"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
 				Log.d(this.getClass().getName(),
 						"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
+				
 
 				SaveClaimTask saveClaimtask = new SaveClaimTask();
 				saveClaimtask.execute(claimId,vh);

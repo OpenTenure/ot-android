@@ -62,7 +62,10 @@
     <string name="email_address">Email Address</string>
     <string name="gender_masculine">Male</string>
     <string name="gender_feminine">Female</string>
+    <string name="physical_person">Physical person</string>
+    <string name="legal_person">Legal person</string>
     <string name="gender">Gender *</string>
+    <string name="person_type">Person Type *</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
     <string name="additional_info">Additional information</string>
@@ -84,6 +87,8 @@
     <string name="last_name_label">Last name *</string>    
     <string name="date_of_birth">Date of birth (YYYY-MM-DD)</string>
     <string name="date_of_birth_label">Date of birth * (YYYY-MM-DD)</string>
+    <string name="date_of_start">Date of right\'s start (YYYY-MM-DD)</string>
+    <string name="date_of_start_label">Date of right\'s start (YYYY-MM-DD)</string>
     <string name="place_of_birth">Place of birth</string>
     <string name="place_of_birth_label">Place of birth *</string>
     <string name="mobile_phone_number">Mobile phone number</string>

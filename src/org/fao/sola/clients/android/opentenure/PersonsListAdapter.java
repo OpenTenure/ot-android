@@ -124,9 +124,6 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 		Person person = Person.getPerson(persons.get(position).getId());
 
-		System.out.println(" PERSONA   " + person.getLastName() + " "
-				+ person.getFirstName());
-
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.persons_list_item, parent,
 					false);
