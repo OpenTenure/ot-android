@@ -91,9 +91,9 @@ public class Person {
 	}
 	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
-	}	
+	}		
 	
-	
+
 	public String getGenderCode() {
 		if (genderCode.equals("male"))
 				return "M";
@@ -121,5 +121,5 @@ public class Person {
 	@SerializedName("email")       private String email;
 	@SerializedName("birthDate")   private String birthDate;
 	@SerializedName("genderCode")  private String genderCode;
-
+	
 }

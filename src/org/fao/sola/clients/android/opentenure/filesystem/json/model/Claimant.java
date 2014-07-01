@@ -45,6 +45,8 @@ public class Claimant {
 	@SerializedName("email")       private String email;
 	@SerializedName("birthDate")   private String birthDate;
 	@SerializedName("genderCode")  private String genderCode;
+	@SerializedName("person") 	   private boolean isPhysicalPerson;
+
 	
 	
 	public String getId() {
@@ -127,6 +129,14 @@ public class Claimant {
 			this.genderCode = "male";
 		if(genderCode.equals("F"))		
 			this.genderCode = "female";		
+	}	
+	
+	public boolean isPhysicalPerson() {
+		return isPhysicalPerson;
 	}
+	public void setPhysicalPerson(boolean isPhysicalPerson) {
+		this.isPhysicalPerson = isPhysicalPerson;
+	}
+	
 
 }

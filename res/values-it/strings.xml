@@ -62,7 +62,10 @@
     <string name="email_address">Indirizzo Email</string>
     <string name="gender_masculine">Maschio</string>
     <string name="gender_feminine">Femmina</string>
+    <string name="physical_person">Persona fisica</string>
+    <string name="legal_person">Persona legale</string>
     <string name="gender">Genere *</string>
+    <string name="person_type">Tipo di persona *</string>
     <string name="claim">Richiesta</string>
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
@@ -98,7 +101,7 @@
     <string name="message_service_not_available">Servizio non disponibile</string>
     <string name="message_connection_error">Connessione non disponibile</string>
     <string name="message_server_error_saving_claim">Server Internal Error</string>
-    <string name="message_attachment_downloaded">Scaricato l\'attachment %s</string>        
+    <string name="message_attachment_downloaded">Scaricato l\'attachment %s</string>
     <string name="message_attachment_downloading">L\'Attachment %s e\' gia\' in download </string>
     <string name="message_attachment_download_failed">Fallito il download dell\'attachment %s</string>
     <string name="message_attachment_download_not_complete">IL download dell\' attachment %s non e\' completo </string>
@@ -139,16 +142,16 @@
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
     <string name="message_no_available_shares">Occorre rilasciare delle quote su questa richiesta prima di aggiungere un nuovo avente diritto</string>
-	<string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
-	<string name="message_map_not_yet_draw">La mappa del claim non e\' ancora completata</string>
+    <string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
+    <string name="message_map_not_yet_draw">La mappa del claim non e\' ancora completata</string>
     <string name="message_touch_to_select_a_person">Tocca per selezionare una persona</string>
     <string name="message_touch_to_select_a_claim">Tocca per seleziona una richiesta</string>
     <string name="message_error_mandatory_fields">Riempire tutti i campi obbligatori prima di salvare</string>
     <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
-	<string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
-	<string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
+    <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+    <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="yes">Si</string>
     <string name="no">No</string>
     <string name="up">Su</string>
@@ -206,10 +209,12 @@
     <string name="south_west">Sud-Ovest</string>
     <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
     <string name="shares_prompt">Seleziona le quote</string>
+
     <string-array name="claim_statuses">
-        <item >Da moderare</item>
-        <item >Moderati</item>
-        <item >Respinti</item>
-        <item >Locali</item>
-        </string-array>
+        <item>Da moderare</item>
+        <item>Moderati</item>
+        <item>Respinti</item>
+        <item>Locali</item>
+    </string-array>
+
 </resources>

@@ -205,6 +205,9 @@ public class GetClaims {
 				person.setIdType(claimant.getIdTypeCode());
 				// person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 				person.setPostalAddress(claimant.getAddress());
+				if(claimant.isPhysicalPerson())
+					person.setPersonType(Person._PHYSICAL);
+				else person.setPersonType(Person._LEGAL);
 
 				claimDB.setAttachments(attachmentsDB);
 

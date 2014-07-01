@@ -62,7 +62,10 @@
     <string name="email_address">Email Address</string>
     <string name="gender_masculine">Male</string>
     <string name="gender_feminine">Female</string>
+    <string name="physical_person">Physical person</string>
+    <string name="legal_person">Legal person</string>
     <string name="gender">Gender *</string>
+    <string name="person_type">Person Type *</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
     <string name="additional_info">Additional information</string>

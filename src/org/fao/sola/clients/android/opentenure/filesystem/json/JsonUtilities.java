@@ -74,166 +74,190 @@ public class JsonUtilities {
 
 		org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim();
 
-		Claim claim = Claim.getClaim(claimId);
+		try {
 
-		if (claim != null) {
+			Claim claim = Claim.getClaim(claimId);
 
-			TimeZone tz = TimeZone.getTimeZone("UTC");
-			SimpleDateFormat sdf = new SimpleDateFormat(
-					"yyyy-MM-dd'T'HH:mm:ss'Z'");
-			sdf.setTimeZone(tz);
+			if (claim != null) {
 
-			Calendar c = Calendar.getInstance();
-			c.setTime(new Date());
-			// number of days to add
-			String lodgementDate = sdf.format(c.getTime());
+				TimeZone tz = TimeZone.getTimeZone("UTC");
+				SimpleDateFormat sdf = new SimpleDateFormat(
+						"yyyy-MM-dd'T'HH:mm:ss'Z'");
+				sdf.setTimeZone(tz);
 
-			c.add(Calendar.MONTH, 1);
-			// number of days to add
-			String challengeExpiryDate = sdf.format(c.getTime());
+				Calendar c = Calendar.getInstance();
+				c.setTime(new Date());
+				// number of days to add
+				String lodgementDate = sdf.format(c.getTime());
 
-			// tempClaim.setChallengedClaim(null);
-			tempClaim.setDescription(claim.getName());
-			tempClaim
-					.setChallengedClaimId(claim.getChallengedClaim() != null ? claim
-							.getChallengedClaim().getClaimId() : null);
-			tempClaim.setId(claimId);
-			tempClaim.setStatusCode(claim.getStatus());
-			tempClaim.setLandUseCode(claim.getLandUse());
-			tempClaim.setTypeCode(claim.getType());
-			tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
-			tempClaim.setNr("0001");
+				c.add(Calendar.MONTH, 1);
+				// number of days to add
+				String challengeExpiryDate = sdf.format(c.getTime());
 
-			tempClaim.setLodgementDate(lodgementDate);
-			tempClaim.setChallengeExpiryDate(challengeExpiryDate);
+				// tempClaim.setChallengedClaim(null);
+				tempClaim.setDescription(claim.getName());
+				tempClaim
+						.setChallengedClaimId(claim.getChallengedClaim() != null ? claim
+								.getChallengedClaim().getClaimId() : null);
+				tempClaim.setId(claimId);
+				tempClaim.setStatusCode(claim.getStatus());
+				tempClaim.setLandUseCode(claim.getLandUse());
+				tempClaim.setTypeCode(claim.getType());
+				if (claim.getDateOfStart() != null)
+					tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
+				tempClaim.setNr("0001");
 
-			Claimant person = new Claimant();
+				tempClaim.setLodgementDate(lodgementDate);
+				tempClaim.setChallengeExpiryDate(challengeExpiryDate);
 
-			person.setPhone(claim.getPerson().getContactPhoneNumber());
-			person.setBirthDate(sdf.format(claim.getPerson().getDateOfBirth()));
-			person.setEmail(claim.getPerson().getEmailAddress());
-			person.setName(claim.getPerson().getFirstName());
-			person.setId(claim.getPerson().getPersonId());
-			person.setLastName(claim.getPerson().getLastName());
-			person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
-			// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
-			person.setAddress(claim.getPerson().getPostalAddress());
-			person.setGenderCode(claim.getPerson().getGender());
-			person.setIdTypeCode(claim.getPerson().getIdType());
-			person.setIdNumber(claim.getPerson().getIdNumber());
+				Claimant person = new Claimant();
 
-			tempClaim.setClaimant(person);
+				person.setPhone(claim.getPerson().getContactPhoneNumber());
+				person.setBirthDate(sdf.format(claim.getPerson()
+						.getDateOfBirth()));
+				person.setEmail(claim.getPerson().getEmailAddress());
+				person.setName(claim.getPerson().getFirstName());
+				person.setId(claim.getPerson().getPersonId());
+				person.setLastName(claim.getPerson().getLastName());
+				person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
+				// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
+				person.setAddress(claim.getPerson().getPostalAddress());
+				person.setGenderCode(claim.getPerson().getGender());
+				person.setIdTypeCode(claim.getPerson().getIdType());
+				person.setIdNumber(claim.getPerson().getIdNumber());
+				if(claim.getPerson().getPersonType().equals(org.fao.sola.clients.android.opentenure.model.Person._PHYSICAL))
+					person.setPhysicalPerson(true);
+				else person.setPhysicalPerson(false);
 
-			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
-			for (Iterator iterator = claim.getAttachments().iterator(); iterator
-					.hasNext();) {
-				Attachment attachment = (Attachment) iterator.next();
+				tempClaim.setClaimant(person);
 
-				org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
+				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
-				attach.setId(attachment.getAttachmentId());
-				attach.setDescription(attachment.getDescription());
-				attach.setFileName(attachment.getFileName());
-				attach.setFileExtension(attachment.getFileType());
-				attach.setTypeCode(attachment.getFileType());
-				// attach.setFileType(attachment.getFileType());
-				attach.setMd5(attachment.getMD5Sum());
-				attach.setSize(attachment.getSize());
-				attach.setMimeType(attachment.getMimeType());
+				for (Iterator iterator = claim.getAttachments().iterator(); iterator
+						.hasNext();) {
+					Attachment attachment = (Attachment) iterator.next();
 
-				attachments.add(attach);
-			}
+					org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
 
-			List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
+					attach.setId(attachment.getAttachmentId());
+					attach.setDescription(attachment.getDescription());
+					attach.setFileName(attachment.getFileName());
+					attach.setFileExtension(attachment.getFileType());
+					attach.setTypeCode(attachment.getFileType());
+					// attach.setFileType(attachment.getFileType());
+					attach.setMd5(attachment.getMD5Sum());
+					attach.setSize(attachment.getSize());
+					attach.setMimeType(attachment.getMimeType());
 
-			List<Owner> owners = Owner.getOwners(claimId);
+					attachments.add(attach);
+				}
 
-			for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
-				Owner owner = (Owner) iterator.next();
+				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
 
-				Share share = new Share();
+				List<Owner> owners = Owner.getOwners(claimId);
 
-				Person personJson = new Person();
-				org.fao.sola.clients.android.opentenure.model.Person personDB = org.fao.sola.clients.android.opentenure.model.Person
-						.getPerson(owner.getPersonId());
+				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
+					Owner owner = (Owner) iterator.next();
 
-				personJson.setAddress(personDB.getPostalAddress());
-				personJson.setBirthDate(sdf.format(personDB.getDateOfBirth()));
-				personJson.setEmail(personDB.getEmailAddress());
-				personJson.setGenderCode(personDB.getGender());
-				personJson.setId(owner.getOwnerId());    // This trick is to permit a claimant to be also owner . When the issue will be resolved on SOLA -----> personJson.setId(personDB.getPersonId());
-				personJson.setMobilePhone(personDB.getMobilePhoneNumber());
-				personJson.setLastName(personDB.getLastName()); 
-				personJson.setName(personDB.getFirstName());
-				personJson.setPhone(personDB.getContactPhoneNumber());
-				
-				List<Person> ownersJson = new ArrayList<Person>();
-				ownersJson.add(personJson);
+					Share share = new Share();
 
-				share.setOwners(ownersJson);
-				share.setId(""+owner.getId());
+					Person personJson = new Person();
+					org.fao.sola.clients.android.opentenure.model.Person personDB = org.fao.sola.clients.android.opentenure.model.Person
+							.getPerson(owner.getPersonId());
 
-				share.setNominator(owner.getShares());
-				share.setDenominator(100);
+					personJson.setAddress(personDB.getPostalAddress());
+					personJson.setBirthDate(sdf.format(personDB
+							.getDateOfBirth()));
+					personJson.setEmail(personDB.getEmailAddress());
+					personJson.setGenderCode(personDB.getGender());
+					personJson.setId(owner.getOwnerId()); // This trick is to
+															// permit a claimant
+															// to be also owner
+															// . When the issue
+															// will be resolved
+															// on SOLA ----->
+															// personJson.setId(personDB.getPersonId());
+					personJson.setMobilePhone(personDB.getMobilePhoneNumber());
+					personJson.setLastName(personDB.getLastName());
+					personJson.setName(personDB.getFirstName());
+					personJson.setPhone(personDB.getContactPhoneNumber());
 
-				shares.add(share);
+					List<Person> ownersJson = new ArrayList<Person>();
+					ownersJson.add(personJson);
 
-			}
+					share.setOwners(ownersJson);
+					share.setId("" + owner.getId());
 
-			/*
-			 * TEmporary off the additional info on the claim submission
-			 */
+					share.setNominator(owner.getShares());
+					share.setDenominator(100);
 
-			// List<AdditionalInfo> xMetadata = new ArrayList<AdditionalInfo>();
-			//
-			// for (Iterator iterator = claim.getMetadata().iterator();
-			// iterator.hasNext();) {
-			// Metadata metadataO = (Metadata) iterator.next();
-			//
-			// AdditionalInfo xm = new AdditionalInfo();
-			//
-			// xm.setMetadataId(metadataO.getMetadataId());
-			// xm.setName(metadataO.getName());
-			// xm.setValue(metadataO.getValue());
-			//
-			// xMetadata.add(xm);
-			// }
+					shares.add(share);
 
-			tempClaim
-					.setGpsGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
-							.gpsWKTFromVertices(claim.getVertices()));
-			tempClaim
-					.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
-							.mapWKTFromVertices(claim.getVertices()));
-			tempClaim.setAttachments(attachments);
+				}
 
-			tempClaim.setShares(shares);
-			// tempClaim.setAdditionaInfo(xMetadata);
+				/*
+				 * TEmporary off the additional info on the claim submission
+				 */
 
-			try {
-				Gson gson = new GsonBuilder()
-						.setPrettyPrinting()
-						.serializeNulls()
-						.setFieldNamingPolicy(
-								FieldNamingPolicy.UPPER_CAMEL_CASE).create();
+				// List<AdditionalInfo> xMetadata = new
+				// ArrayList<AdditionalInfo>();
+				//
+				// for (Iterator iterator = claim.getMetadata().iterator();
+				// iterator.hasNext();) {
+				// Metadata metadataO = (Metadata) iterator.next();
+				//
+				// AdditionalInfo xm = new AdditionalInfo();
+				//
+				// xm.setMetadataId(metadataO.getMetadataId());
+				// xm.setName(metadataO.getName());
+				// xm.setValue(metadataO.getValue());
+				//
+				// xMetadata.add(xm);
+				// }
 
-				String g = gson.toJson(tempClaim);
-				Log.d("CreateClaimJson", g);
+				tempClaim
+						.setGpsGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
+								.gpsWKTFromVertices(claim.getVertices()));
+				tempClaim
+						.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
+								.mapWKTFromVertices(claim.getVertices()));
+				tempClaim.setAttachments(attachments);
 
-				return g;
+				tempClaim.setShares(shares);
+				// tempClaim.setAdditionaInfo(xMetadata);
 
-			} catch (Throwable e) {
+				try {
+					Gson gson = new GsonBuilder()
+							.setPrettyPrinting()
+							.serializeNulls()
+							.setFieldNamingPolicy(
+									FieldNamingPolicy.UPPER_CAMEL_CASE)
+							.create();
 
-				Log.d("CreateClaimJson",
-						"An error has occurred" + e.getMessage());
-				e.printStackTrace();
+					String g = gson.toJson(tempClaim);
+					Log.d("CreateClaimJson", g);
 
+					return g;
+
+				} catch (Throwable e) {
+
+					Log.d("CreateClaimJson",
+							"An error has occurred" + e.getMessage());
+					e.printStackTrace();
+
+					return null;
+				}
+			} else {
+
+				Log.d("CreateClaimJson", "The claim is null");
 				return null;
 			}
-		} else {
+		} catch (Exception e) {
+			// TODO: handle exception
 
-			Log.d("CreateClaimJson", "The claim is null");
+			Log.d("CreateClaimJson","Error : "+ e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 
