@@ -45,7 +45,7 @@ import android.content.Context;
 public class Claim {
 
 	public enum Status {
-		unmoderated, moderated, challenged, created, uploading, upload_incomplete, upload_error
+		unmoderated, moderated, challenged, created, uploading, upload_incomplete, upload_error,withdrawn
 	};
 
 	public static final int MAX_SHARES_PER_CLAIM = 100;
