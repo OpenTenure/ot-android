@@ -159,6 +159,7 @@ public class ClaimMapFragment extends Fragment implements
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt(MAP_TYPE, mapType);
+		super.onSaveInstanceState(outState);
 
 	}
 
@@ -253,6 +254,7 @@ public class ClaimMapFragment extends Fragment implements
 		lh.start();
 
 		MapsInitializer.initialize(this.getActivity());
+		this.map.setOnCameraChangeListener(this);
 
 		if (savedInstanceState != null
 				&& savedInstanceState.getInt(MAP_TYPE) != 0) {
@@ -296,8 +298,6 @@ public class ClaimMapFragment extends Fragment implements
 			}
 
 		}
-		this.map.setOnCameraChangeListener(this);
-		
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
 			// Allow adding, removing and dragging markers
