@@ -80,6 +80,9 @@ public class Claim {
 
 	@SerializedName("typeCode")
 	String typeCode;
+	
+	@SerializedName("notes")
+	String notes;
 
 	@SerializedName("shares")
 	List<Share> shares;
@@ -218,6 +221,14 @@ public class Claim {
 
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
 	}
 
 }

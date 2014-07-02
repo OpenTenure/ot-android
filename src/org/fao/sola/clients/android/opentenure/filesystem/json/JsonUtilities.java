@@ -102,6 +102,7 @@ public class JsonUtilities {
 				tempClaim.setId(claimId);
 				tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
+				tempClaim.setNotes(claim.getNotes());
 				tempClaim.setTypeCode(claim.getType());
 				if (claim.getDateOfStart() != null)
 					tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
@@ -125,10 +126,13 @@ public class JsonUtilities {
 				person.setGenderCode(claim.getPerson().getGender());
 				person.setIdTypeCode(claim.getPerson().getIdType());
 				person.setIdNumber(claim.getPerson().getIdNumber());
-				if(claim.getPerson().getPersonType().equals(org.fao.sola.clients.android.opentenure.model.Person._PHYSICAL))
+				if (claim
+						.getPerson()
+						.getPersonType()
+						.equals(org.fao.sola.clients.android.opentenure.model.Person._PHYSICAL))
 					person.setPhysicalPerson(true);
-				else person.setPhysicalPerson(false);
-
+				else
+					person.setPhysicalPerson(false);
 
 				tempClaim.setClaimant(person);
 
@@ -256,7 +260,7 @@ public class JsonUtilities {
 		} catch (Exception e) {
 			// TODO: handle exception
 
-			Log.d("CreateClaimJson","Error : "+ e.getMessage());
+			Log.d("CreateClaimJson", "Error : " + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}

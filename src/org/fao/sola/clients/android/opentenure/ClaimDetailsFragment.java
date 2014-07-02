@@ -441,6 +441,9 @@ public class ClaimDetailsFragment extends Fragment {
 					.setSelection(new LandUse().getIndexByCodeType(claim
 							.getLandUse()));
 
+			((EditText) rootView.findViewById(R.id.claim_notes_input_field))
+					.setText(claim.getNotes());
+
 			if (claim.getDateOfStart() != null) {
 				((EditText) rootView
 						.findViewById(R.id.date_of_start_input_field))
@@ -460,8 +463,12 @@ public class ClaimDetailsFragment extends Fragment {
 				((Spinner) rootView.findViewById(R.id.landUseSpinner))
 						.setClickable(false);
 				((EditText) rootView
-						.findViewById(R.id.date_of_start_input_field)).setFocusable(false);
-				
+						.findViewById(R.id.date_of_start_input_field))
+						.setFocusable(false);
+
+				((EditText) rootView.findViewById(R.id.claim_notes_input_field))
+						.setFocusable(false);
+
 			}
 
 			Person claimant = claim.getPerson();
@@ -496,6 +503,12 @@ public class ClaimDetailsFragment extends Fragment {
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
+		String notes = ((EditText) rootView
+				.findViewById(R.id.claim_notes_input_field)).getText()
+				.toString();
+
+		claim.setNotes(notes);
 
 		java.util.Date dob = null;
 		try {
@@ -550,6 +563,12 @@ public class ClaimDetailsFragment extends Fragment {
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+
+		String notes = ((EditText) rootView
+				.findViewById(R.id.claim_notes_input_field)).getText()
+				.toString();
+
+		claim.setNotes(notes);
 
 		java.util.Date dob = null;
 		try {

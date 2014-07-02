@@ -215,6 +215,7 @@ public class GetClaims {
 				claimDB.setAdditionalInfo(additionalInfoDBList);
 				claimDB.setName(downloadedClaim.getDescription());
 				claimDB.setLandUse(downloadedClaim.getLandUseCode());
+				claimDB.setNotes(downloadedClaim.getNotes());
 
 				if (downloadedClaim.getStartDate() != null) {
 					date = sdf.parse(downloadedClaim.getStartDate());
