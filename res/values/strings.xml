@@ -79,8 +79,7 @@
     <string name="claim_name">Claim name</string>
     <string name="claim_name_label">Claim name *</string>
     <string name="claim_type">Claim type *</string>
-    <string name="default_claim_name">New claim</string>
-    <string name="claim_notes">Notes</string>
+    <string name="default_claim_name">New claim</string>    
     <string name="first_name">First name</string>
     <string name="first_name_label">First name *</string>
     <string name="last_name">Last name</string>
@@ -176,6 +175,8 @@
     <string name="challenge_to">Challenge to</string>
     <string name="challenged_by">Challenged by</string>
     <string name="owners">Owners</string>
+    <string name="claim_notes">Notes</string>
+    <string name="insert_claim_notes">Insert Claim\'s notes</string>
     <string name="person_picture">Person picture</string>
     <string name="map_provider_google_normal">Google Maps</string>
     <string name="map_provider_google_satellite">Google Earth</string>

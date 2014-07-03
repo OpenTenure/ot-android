@@ -32,26 +32,23 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
+
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		Filterable {
@@ -151,6 +148,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.iconLocal.setVisibility(View.GONE);
 			vh.iconModerated.setVisibility(View.GONE);
 			vh.iconChallenged.setVisibility(View.GONE);
+			vh.iconWithdrawn.setVisibility(View.GONE);
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
 
@@ -217,7 +215,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
-			vh.iconWithdrawn.setVisibility(View.GONE);
 
 		}
 
@@ -227,7 +224,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
-			vh.iconWithdrawn.setVisibility(View.GONE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._CHALLENGED)) {
@@ -236,12 +232,11 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
-			vh.iconWithdrawn.setVisibility(View.GONE);
 
 		}
-		
-		if (claim.getStatus().equals(ClaimStatus._WITHDRAWN)) {			
-			
+
+		if (claim.getStatus().equals(ClaimStatus._WITHDRAWN)) {
+
 			vh.iconWithdrawn.setVisibility(View.VISIBLE);
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);

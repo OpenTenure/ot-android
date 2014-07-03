@@ -81,6 +81,7 @@
     <string name="claim_type">Tipo della richiesta *</string>
     <string name="default_claim_name">Nuova richiesta</string>
     <string name="claim_notes">Annotazioni</string>
+    <string name="insert_claim_notes">Inserisci le annotazioni</string>
     <string name="first_name">Nome</string>
     <string name="first_name_label">Nome *</string>
     <string name="last_name">Cognome</string>
