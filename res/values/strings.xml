@@ -164,6 +164,7 @@
     <string name="not_boundary">Not boundary</string>
     <string name="new_snapshot">New snapshot</string>
     <string name="new_file">New file</string>
+    <string name="withdraw_claim">Withdraw Claim</string>
     <string name="new_additional_info">Add information</string>
     <string name="add_description">Description?</string>
     <string name="add_key">Key?</string>

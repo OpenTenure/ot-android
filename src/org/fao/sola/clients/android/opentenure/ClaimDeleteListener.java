@@ -85,7 +85,7 @@ public class ClaimDeleteListener implements OnClickListener {
 					// custom dialog
 					final Dialog dialog = new Dialog(v.getContext());
 					dialog.setContentView(R.layout.custom_remove_claim);
-					dialog.setTitle(R.string.new_file);
+					dialog.setTitle(R.string.withdraw_claim);
 
 					// Confirm Dialog
 					TextView message = (TextView) dialog
