@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.view.View;
@@ -54,6 +55,8 @@ public class DeletePersonListener implements OnClickListener {
 		int result = Person.deletePerson(person);
 
 		if (result > 0) {
+
+			FileSystemUtilities.deleteCLaimant(personId);
 
 			String message = String
 					.format(OpenTenureApplication.getContext().getString(
