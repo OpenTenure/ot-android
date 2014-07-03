@@ -27,25 +27,19 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.model.Adjacency;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 
-import android.app.Application;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-public class WithdrawClaim extends AsyncTask<String, Void, ApiResponse> {
+public class WithdrawClaimTask extends AsyncTask<String, Void, ApiResponse> {
 
 	@Override
 	protected ApiResponse doInBackground(String... params) {
@@ -65,84 +59,55 @@ public class WithdrawClaim extends AsyncTask<String, Void, ApiResponse> {
 		switch (httpCode) {
 		case 200:
 
-			List<Owner> list = Owner.getOwners(res.getClaimId());
-			for (Iterator iterator = list.iterator(); iterator
-					.hasNext();) {
-				Owner owner = (Owner) iterator.next();
-				owner.delete();
-			}
+			// Local DB Operations
 
-			List<Vertex> vertexList = claim.getVertices();
-			for (Iterator iterator = vertexList.iterator(); iterator
-					.hasNext();) {
-				Vertex vertex = (Vertex) iterator.next();
-				vertex.delete();
-			}
-			
-			List<Attachment> attachments = claim.getAttachments();
-		
-			
-			for (Iterator iterator = attachments.iterator(); iterator
-					.hasNext();) {
-				Attachment attachment = (Attachment) iterator
-						.next();
-				
-				attachment.delete();
-				
-			}
-			
-			List<Adjacency> adjacencies = Adjacency.getAdjacencies(res.getClaimId());
-			for (Iterator iterator = adjacencies.iterator(); iterator
-					.hasNext();) {
-				Adjacency adjacency = (Adjacency) iterator
-						.next();
-				
-				adjacency.delete();
-				
-			}	
-		
+			claim.setStatus(ClaimStatus._WITHDRAWN);
+			claim.update();
 
-			
-			claim.delete();
+			// Local GUI Operations
 
-			FileSystemUtilities.deleteClaim(res.getClaimId());
-			
-			OpenTenureApplication.getLocalClaimsFragment()
-					.refresh();
+			OpenTenureApplication.getLocalClaimsFragment().refresh();
+
+			OpenTenureApplication.getMapFragment().refreshMap();
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_withdrawn_claim),
+					Toast.LENGTH_LONG);
+			toast.show();
 
 			break;
 
 		case 100:
 
-			
-
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_error_withdraw_claim) + res.getMessage(), Toast.LENGTH_LONG);
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_error_withdraw_claim)
+							+ res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
-
 			break;
-			
+
 		case 400:
 
-		
-
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_error_withdraw_claim) + res.getMessage(), Toast.LENGTH_LONG);
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_error_withdraw_claim)
+							+ res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
-
-
-			break;	
-
-		default:
-			
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_error_withdraw_claim) + res.getMessage(), Toast.LENGTH_LONG);
-			toast.show();
-
 
 			break;
-			
+
+		default:
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_error_withdraw_claim)
+							+ res.getMessage(), Toast.LENGTH_LONG);
+			toast.show();
+
+			break;
+
 		}
 
 	}

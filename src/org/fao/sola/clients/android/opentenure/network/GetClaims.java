@@ -205,9 +205,10 @@ public class GetClaims {
 				person.setIdType(claimant.getIdTypeCode());
 				// person.setPlaceOfBirth(claimant.getPlaceOfBirth());
 				person.setPostalAddress(claimant.getAddress());
-				if(claimant.isPhysicalPerson())
+				if (claimant.isPhysicalPerson())
 					person.setPersonType(Person._PHYSICAL);
-				else person.setPersonType(Person._LEGAL);
+				else
+					person.setPersonType(Person._LEGAL);
 
 				claimDB.setAttachments(attachmentsDB);
 
@@ -231,8 +232,15 @@ public class GetClaims {
 
 				Person.createPerson(person);
 
-				org.fao.sola.clients.android.opentenure.model.Claim
-						.createClaim(claimDB);
+				
+				// Here the creation of the Claim 
+				if (org.fao.sola.clients.android.opentenure.model.Claim
+						.getClaim(downloadedClaim.getId()) == null)
+					org.fao.sola.clients.android.opentenure.model.Claim
+							.createClaim(claimDB);
+				else
+					org.fao.sola.clients.android.opentenure.model.Claim
+							.updateClaim(claimDB);
 
 				if (downloadedClaim.getGpsGeometry().startsWith("POINT"))
 					Vertex.storeWKT(claimDB.getClaimId(),

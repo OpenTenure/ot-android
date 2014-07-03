@@ -338,23 +338,21 @@ public class CommunityServerAPI {
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_WITHDRAWCLAIM, claimId);
 		HttpGet request = new HttpGet(url);
-		
-		Log.d("CommunityServerAPI", "WITHDRAW request : "
-				+ request.getRequestLine());
-		
-		Log.d("CommunityServerAPI"," ");
-		
+
+		Log.d("CommunityServerAPI",
+				"WITHDRAW request : " + request.getRequestLine());
+
+		Log.d("CommunityServerAPI", " ");
+
 		CookieStore CS = OpenTenureApplication.getCoockieStore();
 		HttpContext context = new BasicHttpContext();
 		context.setAttribute(ClientContext.COOKIE_STORE, CS);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
-		
-		
 
 		/* Calling the Server.... */
 		try {
-			HttpResponse response = client.execute(request,context);
+			HttpResponse response = client.execute(request, context);
 
 			Log.d("CommunityServerAPI", "WITHDRAW Claim status line "
 					+ response.getStatusLine());
@@ -540,19 +538,17 @@ public class CommunityServerAPI {
 			return methodResponse;
 		}
 
-		
 	}
-	
-	
+
 	public static List<org.fao.sola.clients.android.opentenure.network.response.LandUse> getLandUses() {
-		
+
 		String url = String
 				.format(CommunityServerAPIUtilities.HTTPS_GETLANDUSE);
 
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
-		
+
 		try {
 
 			HttpResponse response = client.execute(request);
@@ -562,8 +558,8 @@ public class CommunityServerAPI {
 
 			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
 
-				Log.d("CommunityServerAPI",
-						"GET LAND USES JSON RESPONSE " + json);
+				Log.d("CommunityServerAPI", "GET LAND USES JSON RESPONSE "
+						+ json);
 
 				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.LandUse>>() {
 				}.getType();
@@ -588,27 +584,26 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {		
-		
+		} catch (Exception ex) {
+
 			Log.d("CommunityServerAPI",
 					"GET LAND USES ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 
 		}
-		
+
 	}
-	
-	
+
 	public static List<org.fao.sola.clients.android.opentenure.network.response.IdType> getIdTypes() {
-		
+
 		String url = String
 				.format(CommunityServerAPIUtilities.HTTPS_GETIDTYPES);
 
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
-		
+
 		try {
 
 			HttpResponse response = client.execute(request);
@@ -618,8 +613,8 @@ public class CommunityServerAPI {
 
 			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
 
-				Log.d("CommunityServerAPI",
-						"GET ALL ID TYPES JSON RESPONSE " + json);
+				Log.d("CommunityServerAPI", "GET ALL ID TYPES JSON RESPONSE "
+						+ json);
 
 				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.IdType>>() {
 				}.getType();
@@ -644,15 +639,15 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {		
-		
+		} catch (Exception ex) {
+
 			Log.d("CommunityServerAPI",
 					"GET ALL ID TYPES ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 
 		}
-		
+
 	}
 
 	public static List<org.fao.sola.clients.android.opentenure.network.response.ClaimType> getClaimTypes() {
@@ -787,73 +782,22 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
-			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
-				Log.d("CommunityServerAPI",
-						"saveClaim status line " + response.getStatusLine());
+			Log.d("CommunityServerAPI",
+					"saveClaim status line " + response.getStatusLine());
 
-				String json = CommunityServerAPIUtilities.Slurp(response
-						.getEntity().getContent(), 1024);
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
 
-				Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
+			Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
 
-				Gson gson = new Gson();
-				SaveClaimResponse saveResponse = gson.fromJson(json,
-						SaveClaimResponse.class);
+			Gson gson = new Gson();
+			SaveClaimResponse saveResponse = gson.fromJson(json,
+					SaveClaimResponse.class);
 
-				saveResponse.setHttpStatusCode(response.getStatusLine()
-						.getStatusCode());
+			saveResponse.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
 
-				return saveResponse;
-			} else if (response.getStatusLine().getStatusCode() == 452) {
-				Log.d("CommunityServerAPI",
-						"saveClaim status line " + response.getStatusLine());
-
-				String json = CommunityServerAPIUtilities.Slurp(response
-						.getEntity().getContent(), 1024);
-
-				Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + json);
-
-				Gson gson = new Gson();
-				SaveClaimResponse saveResponse = gson.fromJson(json,
-						SaveClaimResponse.class);
-
-				saveResponse.setHttpStatusCode(response.getStatusLine()
-						.getStatusCode());
-
-				return saveResponse;
-			}
-
-			else if (response.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND) {
-				Log.d("CommunityServerAPI",
-						"saveClaim status line " + response.getStatusLine());
-
-				String json = CommunityServerAPIUtilities.Slurp(response
-						.getEntity().getContent(), 1024);
-
-				SaveClaimResponse saveResponse = new SaveClaimResponse();
-
-				saveResponse.setHttpStatusCode(response.getStatusLine()
-						.getStatusCode());
-
-				return saveResponse;
-			}
-
-			else {
-
-				Log.d("CommunityServerAPI", "Error saving Claim :  "
-						+ response.getStatusLine().getStatusCode());
-
-				Log.d("CommunityServerAPI",
-						"saveClaim status line " + response.getStatusLine());
-
-				SaveClaimResponse saveResponse = new SaveClaimResponse();
-				saveResponse.setHttpStatusCode(response.getStatusLine()
-						.getStatusCode());
-				saveResponse.setMessage("Error saving claim : "
-						+ CommunityServerAPIUtilities.Slurp(response
-								.getEntity().getContent(), 1024));
-				return saveResponse;
-			}
+			return saveResponse;
 
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
@@ -861,7 +805,7 @@ public class CommunityServerAPI {
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(110);
-			saveResponse.setMessage("Error saving claim " + e.getMessage());
+			saveResponse.setMessage(e.getMessage());
 
 			return saveResponse;
 
@@ -871,7 +815,7 @@ public class CommunityServerAPI {
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(100);
-			saveResponse.setMessage("UnknownHostException");
+			saveResponse.setMessage("Unknown Host Exception");
 
 			return saveResponse;
 		} catch (IOException e) {
@@ -880,7 +824,7 @@ public class CommunityServerAPI {
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(105);
-			saveResponse.setMessage("Error saving claim " + e.getMessage());
+			saveResponse.setMessage(e.getMessage());
 
 			return saveResponse;
 		}

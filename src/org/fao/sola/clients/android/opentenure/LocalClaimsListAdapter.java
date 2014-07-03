@@ -169,6 +169,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					R.color.status_created));
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
+			
+			System.out.println("LocalClaimsListAdapter Qui il progress e' : " +progress);
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
