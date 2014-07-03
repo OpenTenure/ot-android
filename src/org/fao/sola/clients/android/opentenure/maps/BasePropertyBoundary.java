@@ -138,6 +138,10 @@ public class BasePropertyBoundary {
 					color = context.getResources().getColor(
 							R.color.status_unmoderated);
 					break;
+				case withdrawn:
+					color = context.getResources().getColor(
+							R.color.status_withdrawn);
+					break;
 				case moderated:
 					color = context.getResources().getColor(
 							R.color.status_moderated);

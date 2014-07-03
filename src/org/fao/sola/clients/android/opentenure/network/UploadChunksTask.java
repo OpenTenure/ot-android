@@ -35,7 +35,6 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
@@ -105,6 +104,8 @@ public class UploadChunksTask extends
 					claim.update();
 
 					progress = FileSystemUtilities.getUploadProgress(claim);
+					System.out.println("UploadChunkTask Qui il progress e' : "
+							+ progress);
 					vh.getBar().setProgress(progress);
 
 					vh.getStatus().setText(
@@ -203,29 +204,25 @@ public class UploadChunksTask extends
 
 				att = Attachment.getAttachment(res.getAttachmentId());
 
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+				att.update();
 
-					att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
-					att.update();
+				Claim claim = Claim.getClaim(att.getClaimId());
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
 
-					Claim claim = Claim.getClaim(att.getClaimId());
-					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
-					claim.update();
+				progress = FileSystemUtilities.getUploadProgress(claim);
+				vh.getBar().setProgress(progress);
 
-					progress = FileSystemUtilities.getUploadProgress(claim);
-					vh.getBar().setProgress(progress);
+				vh.getStatus().setText(
+						ClaimStatus._UPLOADING + ": " + progress + " %");
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
 
-					vh.getStatus().setText(
-							ClaimStatus._UPLOADING + ": " + progress + " %");
-					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
-					vh.getStatus().setVisibility(View.VISIBLE);
-
-					vh.getIconLocal().setVisibility(View.VISIBLE);
-					vh.getIconUnmoderated().setVisibility(View.GONE);
-
-				}
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 			}

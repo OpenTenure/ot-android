@@ -233,6 +233,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	@Override
 	public void onResume() {
 		super.onResume();
+		refreshMap();
 		lh.hurryUp();
 	}
 

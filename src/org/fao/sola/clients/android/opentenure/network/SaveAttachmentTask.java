@@ -49,7 +49,7 @@ import android.view.View;
 import android.widget.Toast;
 
 /**
- * Task which perform the upload of the meta data of the uploading file If the
+ * Task which perform the upload of the meta-data of the uploading file. If the
  * response is OK , the task check if all attachments are uploaded and in case
  * close the uploading of the claims
  * 
@@ -255,9 +255,12 @@ public class SaveAttachmentTask extends
 			Toast toast;
 			toast = Toast.makeText(
 					OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_login_no_more_valid) + " "
-							+ res.getHttpStatusCode() + " " + res.getMessage(),
-					Toast.LENGTH_LONG);
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_login_no_more_valid)
+							+ " "
+							+ res.getHttpStatusCode()
+							+ " "
+							+ res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
@@ -283,7 +286,7 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
 			}
-
+			progress = FileSystemUtilities.getUploadProgress(claim);
 			vh.getBar().setProgress(progress);
 
 			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
@@ -314,14 +317,26 @@ public class SaveAttachmentTask extends
 				claim.update();
 			}
 
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_submission_error) + " "
-							+ OpenTenureApplication.getContext().getResources().getString(R.string.message_service_not_available),
-					Toast.LENGTH_SHORT);
+			toast = Toast
+					.makeText(
+							OpenTenureApplication.getContext(),
+							OpenTenureApplication
+									.getContext()
+									.getResources()
+									.getString(
+											R.string.message_submission_error)
+									+ " "
+									+ OpenTenureApplication
+											.getContext()
+											.getResources()
+											.getString(
+													R.string.message_service_not_available),
+							Toast.LENGTH_SHORT);
 			toast.show();
 
-			vh.getBar().setProgress(progress);
+			progress = FileSystemUtilities.getUploadProgress(claim);
 
+			vh.getBar().setProgress(progress);
 			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
@@ -353,6 +368,7 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
 			}
+			progress = FileSystemUtilities.getUploadProgress(claim);
 
 			vh.getBar().setProgress(progress);
 
@@ -400,14 +416,13 @@ public class SaveAttachmentTask extends
 			Log.d("CommunityServerAPI",
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
-			// Attachment.getAttachment(res.getAttachmentId()).setStatus(
-			// AttachmentStatus._UPLOADING);
-			// Attachment.getAttachment(res.getAttachmentId()).update();
-
 			toUpdate = Attachment.getAttachment(res.getAttachmentId());
 			toUpdate.setStatus(AttachmentStatus._UPLOADING);
 			Attachment.updateAttachment(toUpdate);
 
+			claim = Claim.getClaim(toUpdate.getClaimId());
+
+			progress = FileSystemUtilities.getUploadProgress(claim);
 			vh.getBar().setProgress(progress);
 
 			vh.getStatus().setText(
@@ -419,8 +434,6 @@ public class SaveAttachmentTask extends
 
 			vh.getIconLocal().setVisibility(View.VISIBLE);
 			vh.getIconUnmoderated().setVisibility(View.GONE);
-
-			claim = Claim.getClaim(toUpdate.getClaimId());
 
 			if (!claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOADING);

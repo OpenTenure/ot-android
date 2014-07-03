@@ -408,22 +408,26 @@ public class FileSystemUtilities {
 
 		File claimFold = getClaimFolder(claimId);
 
-		File[] files = attachFold.listFiles();
-		for (int i = 0; i < files.length; i++) {
+		File[] files;
 
-			files[i].delete();
+		if (attachFold.exists()) {
+			files = attachFold.listFiles();
+			for (int i = 0; i < files.length; i++) {
+
+				files[i].delete();
+			}
 		}
 
-		files = claimFold.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			files[i].delete();
+		if (claimFold.exists()) {
+			files = claimFold.listFiles();
+			for (int i = 0; i < files.length; i++) {
+				files[i].delete();
 
+			}
+			return claimFold.delete();
 		}
 		
-		return claimFold.delete();
-
-	
-
+		return true;
 	}
 
 	public static int getUploadProgress(Claim claim) {
