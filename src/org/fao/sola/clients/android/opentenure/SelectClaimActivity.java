@@ -128,6 +128,7 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putStringArrayList(EXCLUDE_CLAIM_IDS_KEY, excludeClaimIds);
+		super.onSaveInstanceState(outState);
 	};
 
 	@Override

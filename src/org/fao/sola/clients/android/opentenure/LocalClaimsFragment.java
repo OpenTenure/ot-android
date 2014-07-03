@@ -27,8 +27,17 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
+import org.fao.sola.clients.android.opentenure.network.LogoutTask;
+
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,28 +47,12 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
-
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.model.ClaimType;
-import org.fao.sola.clients.android.opentenure.network.LoginActivity;
-import org.fao.sola.clients.android.opentenure.network.LogoutTask;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View.OnLongClickListener;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -98,8 +91,6 @@ public class LocalClaimsFragment extends ListFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		// if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) ==
-		// 0) {
 		MenuItem itemIn;
 		MenuItem itemOut;
 
@@ -112,22 +103,22 @@ public class LocalClaimsFragment extends ListFragment {
 		Log.d(this.getClass().getName(), "Is the user logged in ? : "
 				+ OpenTenureApplication.isLoggedin());
 
-		if (OpenTenureApplication.isLoggedin()) {
+		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+			if (OpenTenureApplication.isLoggedin()) {
+				itemIn = menu.getItem(2);
+				itemIn.setVisible(false);
+				itemOut = menu.getItem(3);
+				itemOut.setVisible(true);
 
-			itemIn = menu.getItem(2); //////////////////////////////////// Here needs some kind of controls !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			itemIn.setVisible(false);
-			itemOut = menu.getItem(3);
-			itemOut.setVisible(true);
+			} else {
 
-		} else {
-
-			itemIn = menu.getItem(2);    //////////////////////////////////// Here needs some kind of controls !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			itemIn.setVisible(true);
-			itemOut = menu.getItem(3);
-			itemOut.setVisible(false);
+				itemIn = menu.getItem(2);
+				itemIn.setVisible(true);
+				itemOut = menu.getItem(3);
+				itemOut.setVisible(false);
+			}
 		}
 
-		// }
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -138,6 +129,8 @@ public class LocalClaimsFragment extends ListFragment {
 
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
+			menu.removeItem(R.id.action_login);
+			menu.removeItem(R.id.action_logout);
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -283,7 +276,7 @@ public class LocalClaimsFragment extends ListFragment {
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
 		for (Claim claim : claims) {
-			if (!excludeClaimIds.contains(claim.getClaimId())) {
+			if (excludeClaimIds != null && !excludeClaimIds.contains(claim.getClaimId())) {
 
 				ClaimListTO cto = new ClaimListTO();
 				String claimName = claim.getName().equalsIgnoreCase("") ? rootView
