@@ -35,7 +35,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.UrlTileProvider;
 
-public class GeoserverMapTileProvider extends UrlTileProvider{
+public class WmsMapTileProvider extends UrlTileProvider{
 	// Web Mercator upper left corner of the world map.
 	private static final double[] TILE_ORIGIN = {-20037508.34789244, 20037508.34789244};
 	//array indexes for that data
@@ -54,13 +54,13 @@ public class GeoserverMapTileProvider extends UrlTileProvider{
     private static final String version = "1.1.0";
     private static final String request = "GetMap";
     private static final String format = "image/png";
-    private static final String srs = "EPSG:900913";
+    private static final String srs = "EPSG:"+Constants.SRID;
     private static final String service = "WMS";
     private static final String styles = "";
 
     final String URL_STRING;
     
-    public GeoserverMapTileProvider(int width, int height, String baseURL, String layer) {
+    public WmsMapTileProvider(int width, int height, String baseURL, String layer) {
 	    super(width, height);
 	    URL_STRING = baseURL + 
 	            "/wms?layers=" + layer + 
@@ -95,6 +95,8 @@ public class GeoserverMapTileProvider extends UrlTileProvider{
             catch (MalformedURLException e) {
                 throw new AssertionError(e);
             }
+            
+            new WmsMapTileCacher(s, zoom, x, y).execute();
 
             return url;
         }

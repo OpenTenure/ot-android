@@ -562,48 +562,48 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 	}
 	
-	public void onPropertyLocationMarkerDragStart(Marker mark) {
+	private void onPropertyLocationMarkerDragStart(Marker mark) {
 		dragMarker(mark);
 	}
 
-	public void onPropertyLocationMarkerDragEnd(Marker mark) {
+	private void onPropertyLocationMarkerDragEnd(Marker mark) {
 		dragMarker(mark);
 		updatePropertyLocations();
 	}
 
-	public void onPropertyLocationMarkerDrag(Marker mark) {
+	private void onPropertyLocationMarkerDrag(Marker mark) {
 		dragMarker(mark);
 	}
 
-	public void onPropertyBoundaryMarkerDragStart(Marker mark) {
+	private void onPropertyBoundaryMarkerDragStart(Marker mark) {
 		dragMarker(mark);
 	}
 
-	public void onPropertyBoundaryMarkerDragEnd(Marker mark) {
+	private void onPropertyBoundaryMarkerDragEnd(Marker mark) {
 		dragMarker(mark);
 		updateVertices();
 		resetAdjacency(otherProperties);
 	}
 
-	public void onPropertyBoundaryMarkerDrag(Marker mark) {
+	private void onPropertyBoundaryMarkerDrag(Marker mark) {
 		dragMarker(mark);
 	}
 
-	public void dragPropertyBoundaryMarker(Marker mark) {
+	private void dragPropertyBoundaryMarker(Marker mark) {
 		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
 		redrawBoundary();
 	}
 
-	public void dragPropertyLocationMarker(Marker mark) {
+	private void dragPropertyLocationMarker(Marker mark) {
 		propertyLocationsMap.get(mark).setMapPosition(mark.getPosition());
 	}
 
-	public void removePropertyLocationMarker(Marker mark) {
+	private void removePropertyLocationMarker(Marker mark) {
 		propertyLocationsMap.remove(mark);
 		mark.remove();
 	}
 
-	public void removePropertyBoundaryMarker(Marker mark) {
+	private void removePropertyBoundaryMarker(Marker mark) {
 		vertices.remove(verticesMap.remove(mark.getId()));
 		mark.remove();
 	}

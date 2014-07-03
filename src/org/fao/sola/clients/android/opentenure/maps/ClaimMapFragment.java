@@ -394,7 +394,7 @@ public class ClaimMapFragment extends Fragment implements
 				BasePropertyBoundary bpb = new BasePropertyBoundary(
 						mapView.getContext(), map, claim);
 				Polygon claimPoly = bpb.getPolygon();
-				if(claimPoly.intersects(boundsPoly)){
+				if(claimPoly != null && claimPoly.intersects(boundsPoly)){
 					visibleProperties.add(bpb);
 				}
 			}
@@ -501,7 +501,7 @@ public class ClaimMapFragment extends Fragment implements
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
 					"nz:orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions()
-					.tileProvider(new GeoserverMapTileProvider(256, 256,
+					.tileProvider(new WmsMapTileProvider(256, 256,
 							geoServerUrl, geoServerLayer)));
 			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()

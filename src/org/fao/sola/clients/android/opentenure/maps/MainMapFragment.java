@@ -327,7 +327,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			String geoServerLayer = OpenTenurePreferences.getString(
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "nz:orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-			new GeoserverMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
+			new WmsMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
@@ -472,7 +472,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			BasePropertyBoundary bpb = new BasePropertyBoundary(
 					mapView.getContext(), map, claim);
 			Polygon claimPoly = bpb.getPolygon();
-			if(claimPoly.intersects(boundsPoly)){
+			if(claimPoly != null && claimPoly.intersects(boundsPoly)){
 				visibleProperties.add(bpb);
 			}
 		}
