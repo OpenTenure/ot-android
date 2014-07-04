@@ -55,7 +55,7 @@
     <string name="title_lock_db">Encrypt local data</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
-    <string name="choose_file">Choose a file</string>
+    <string name="choose_file">Choose an application to select a file</string>
     <string name="person_name">Person Name</string>
     <string name="community_recorder_name">Community recorder</string>
     <string name="postal_address">Postal Address</string>

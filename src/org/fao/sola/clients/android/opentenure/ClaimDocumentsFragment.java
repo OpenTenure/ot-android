@@ -34,17 +34,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.DocumentType;
+import org.fao.sola.clients.android.opentenure.model.MD5;
+
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ListFragment;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -61,13 +63,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ipaulpro.afilechooser.utils.FileUtils;
-
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
-import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.ClaimType;
-import org.fao.sola.clients.android.opentenure.model.DocumentType;
-import org.fao.sola.clients.android.opentenure.model.MD5;
 
 public class ClaimDocumentsFragment extends ListFragment {
 
@@ -198,7 +193,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
 
 						File copy = FileUtils.getFile(rootView.getContext(), uri);
 
@@ -234,7 +228,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub						
 
 						dialog.dismiss();
 					}
@@ -242,51 +235,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 				
 				dialog.show();
 
-				
-				/*snapshotDialog.setTitle(R.string.new_snapshot);
-				final EditText snapshotDescription = new EditText(
-						rootView.getContext());
-				snapshotDescription.setInputType(InputType.TYPE_CLASS_TEXT);
-				snapshotDialog.setView(snapshotDescription);
-				snapshotDialog.setMessage(getResources().getString(
-						R.string.add_description));
-
-				snapshotDialog.setPositiveButton(R.string.confirm,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-								Attachment attachment = new Attachment();
-								attachment.setClaimId(claimActivity
-										.getClaimId());
-								attachment.setDescription(snapshotDescription
-										.getText().toString());
-								attachment.setFileName(FileUtils.getFile(
-										rootView.getContext(), uri).getName());
-								attachment.setFileType(fileType);
-								attachment.setMimeType(mimeType);
-								attachment.setMD5Sum(MD5.calculateMD5(FileUtils
-										.getFile(rootView.getContext(), uri)));
-								attachment.setPath(FileUtils.getPath(
-										rootView.getContext(), uri));
-								attachment.setSize(FileUtils.getFile(
-										rootView.getContext(), uri).length());
-								attachment.create();
-								update();
-							}
-						});
-				snapshotDialog.setNegativeButton(R.string.cancel,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
-
-				snapshotDialog.show();*/
 			}
 
 			break;
@@ -328,8 +276,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				spinner.setAdapter(dataAdapter);
 
-				// Confirm Button
-
 				final Button confirmButton = (Button) dialog
 						.findViewById(R.id.fileDocumentConfirm);
 				confirmButton.setText(R.string.confirm);
@@ -338,7 +284,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
 
 						File copy = FileSystemUtilities.copyFileInAttachFolder(
 								claimActivity.getClaimId(),
@@ -366,8 +311,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 					}
 				});
 
-				// Cancel Button
-
 				final Button cancelButton = (Button) dialog
 						.findViewById(R.id.fileDocumentConfirmCancel);
 				cancelButton.setText(R.string.cancel);
@@ -376,52 +319,12 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub						
 
 						dialog.dismiss();
 					}
 				});
 
 				dialog.show();
-
-				/*
-				 * AlertDialog.Builder fileDialog = new AlertDialog.Builder(
-				 * rootView.getContext());
-				 * fileDialog.setTitle(R.string.new_file); final EditText
-				 * fileDescription = new EditText( rootView.getContext());
-				 * fileDescription.setInputType(InputType.TYPE_CLASS_TEXT);
-				 * fileDialog.setView(fileDescription);
-				 * fileDialog.setMessage(getResources().getString(
-				 * R.string.add_description));
-				 * 
-				 * fileDialog.setPositiveButton(R.string.confirm, new
-				 * OnClickListener() {
-				 * 
-				 * @Override public void onClick(DialogInterface dialog, int
-				 * which) {
-				 * 
-				 * File copy = FileSystemUtilities
-				 * .copyFileInAttachFolder(claimActivity .getClaimId(),
-				 * FileUtils .getFile(rootView.getContext(), uri));
-				 * 
-				 * Attachment attachment = new Attachment();
-				 * attachment.setClaimId(claimActivity .getClaimId());
-				 * attachment.setDescription(fileDescription
-				 * .getText().toString());
-				 * attachment.setFileName(copy.getName());
-				 * attachment.setFileType("document");
-				 * attachment.setMimeType(mimeType);
-				 * attachment.setMD5Sum(MD5.calculateMD5(copy));
-				 * attachment.setPath(copy.getAbsolutePath());
-				 * attachment.setSize(copy.length()); attachment.create();
-				 * update(); } }); fileDialog.setNegativeButton(R.string.cancel,
-				 * new OnClickListener() {
-				 * 
-				 * @Override public void onClick(DialogInterface dialog, int
-				 * which) { } });
-				 * 
-				 * fileDialog.show();
-				 */
 			}
 			break;
 		}
@@ -465,7 +368,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 			intent = Intent.createChooser(getContentIntent, getResources()
 					.getString(R.string.choose_file));
-			startActivityForResult(intent, REQUEST_CHOOSER);
+			try {
+				startActivityForResult(intent, REQUEST_CHOOSER);
+			} catch (Exception e) {
+				Log.d(this.getClass().getName(), "Unable to start file chooser intent due to " + e.getMessage());
+			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

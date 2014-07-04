@@ -84,15 +84,11 @@
             >
         </activity>
         <activity
-            android:name="org.fao.sola.clients.android.opentenure.FileChooserActivity"
-            android:label="@string/title_activity_file_chooser" >
-        </activity>
-        <activity
             android:name="com.ipaulpro.afilechooser.FileChooserActivity"
             android:enabled="@bool/use_activity"
             android:exported="true"
             android:icon="@drawable/ic_action_attachment"
-            android:label="@string/choose_file" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
 
