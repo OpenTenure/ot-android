@@ -103,7 +103,7 @@
             </RadioGroup>
         </LinearLayout>
 
-        <TextView
+        <!-- <TextView
             android:id="@+id/person_type_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/legal_person" />
             </RadioGroup>
-        </LinearLayout>
+        </LinearLayout>   -->
 
         <TextView
             android:id="@+id/place_of_birth_label"
