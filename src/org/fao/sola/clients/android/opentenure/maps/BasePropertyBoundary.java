@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
@@ -210,24 +209,6 @@ public class BasePropertyBoundary {
 		}
 	}
 
-	protected void resetAdjacency(List<BasePropertyBoundary> existingProperties) {
-
-		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
-		Adjacency.deleteAdjacencies(claimId);
-
-		if (adjacentProperties != null) {
-
-			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
-
-				Adjacency adj = new Adjacency();
-				adj.setSourceClaimId(claimId);
-				adj.setDestClaimId(adjacentProperty.getClaimId());
-				adj.setCardinalDirection(getCardinalDirection(adjacentProperty));
-				adj.create();
-			}
-		}
-	}
-
 	protected void calculateGeometry() {
 
 		int fakeCoords = 1;
@@ -282,7 +263,7 @@ public class BasePropertyBoundary {
 	protected Marker createPropertyMarker(LatLng position, String title) {
 		Rect boundsText = new Rect();
 		Paint tf = new Paint();
-		tf.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+		tf.setTypeface(Typeface.create((String)null, Typeface.NORMAL));
 		tf.setTextSize(20);
 		tf.setTextAlign(Align.CENTER);
 		tf.setAntiAlias(true);
@@ -373,21 +354,6 @@ public class BasePropertyBoundary {
 			propertyLocationsMap = new HashMap<Marker, PropertyLocation>();
 		}
 		propertyLocationsVisible = false;
-	}
-
-	public List<BasePropertyBoundary> findAdjacentProperties(
-			List<BasePropertyBoundary> properties) {
-		List<BasePropertyBoundary> adjacentProperties = null;
-		for (BasePropertyBoundary property : properties) {
-			if (polygon != null && property.getPolygon() != null
-					&& polygon.distance(property.getPolygon()) < SNAP_THRESHOLD) {
-				if (adjacentProperties == null) {
-					adjacentProperties = new ArrayList<BasePropertyBoundary>();
-				}
-				adjacentProperties.add(property);
-			}
-		}
-		return adjacentProperties;
 	}
 
 	public CardinalDirection getCardinalDirection(BasePropertyBoundary dest) {

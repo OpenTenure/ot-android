@@ -29,6 +29,7 @@ package org.fao.sola.clients.android.opentenure.maps;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +76,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
-	private Map<String, Vertex> verticesMap = new HashMap<String, Vertex>();
+	private Map<Marker, Vertex> verticesMap;
 	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
 	private ActiveMarkerRegistrar amr;
@@ -152,7 +153,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 	
 	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
-		if (verticesMap.containsKey(mark.getId())) {
+		if (verticesMap.containsKey(mark)) {
 			deselect();
 			selectedMarker = mark;
 			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
@@ -192,7 +193,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	public void onMarkerDragStart(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
+		if(verticesMap.containsKey(mark)){
 			onPropertyBoundaryMarkerDragStart(mark);
 		}else if(propertyLocationsMap.containsKey(mark)){
 			onPropertyLocationMarkerDragStart(mark);
@@ -200,7 +201,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	public void onMarkerDragEnd(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
+		if(verticesMap.containsKey(mark)){
 			onPropertyBoundaryMarkerDragEnd(mark);
 		}else if(propertyLocationsMap.containsKey(mark)){
 			onPropertyLocationMarkerDragEnd(mark);
@@ -208,7 +209,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	public void onMarkerDrag(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
+		if(verticesMap.containsKey(mark)){
 			onPropertyBoundaryMarkerDrag(mark);
 		}else if(propertyLocationsMap.containsKey(mark)){
 			onPropertyLocationMarkerDrag(mark);
@@ -217,7 +218,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	private boolean removeSelectedMarker(){
 
-		if (verticesMap.containsKey(selectedMarker.getId())) {
+		if (verticesMap.containsKey(selectedMarker)) {
 			return removeSelectedPropertyBoundaryVertex();
 		}else if (propertyLocationsMap.containsKey(selectedMarker)) {
 			return removeSelectedPropertyLocation();
@@ -279,7 +280,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 		// Insert a marker at target position and remove the selected
 
-		if (verticesMap.containsKey(selectedMarker.getId())) {
+		if (verticesMap.containsKey(selectedMarker)) {
 			return movePropertyBoundaryMarker();
 		}else if (propertyLocationsMap.containsKey(selectedMarker)) {
 			return movePropertyLocationMarker();
@@ -502,12 +503,45 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		this.selectedMarker = null;
 		this.otherProperties = existingProperties;
 		this.amr = new ActiveMarkerRegistrar();
-
+		verticesMap = new HashMap<Marker, Vertex>();
 		if (vertices != null && vertices.size() > 0) {
-			int i = 0;
 			for (Vertex vertex : vertices) {
-				Marker mark = createMarker(i++, vertex.getMapPosition());
-				verticesMap.put(mark.getId(), vertex);
+				Marker mark = createMarker(vertex.getSequenceNumber(), vertex.getMapPosition());
+				verticesMap.put(mark, vertex);
+			}
+		}
+	}
+	
+	public void setOtherProperties(List<BasePropertyBoundary> otherProperties) {
+		this.otherProperties = otherProperties;
+	}
+
+	private List<BasePropertyBoundary> findAdjacentProperties(
+			List<BasePropertyBoundary> properties) {
+		List<BasePropertyBoundary> adjacentProperties = null;
+		for (BasePropertyBoundary property : properties) {
+			if (polygon != null && property.getPolygon() != null
+					&& polygon.distance(property.getPolygon()) < SNAP_THRESHOLD) {
+				if (adjacentProperties == null) {
+					adjacentProperties = new ArrayList<BasePropertyBoundary>();
+				}
+				adjacentProperties.add(property);
+			}
+		}
+		return adjacentProperties;
+	}
+
+	protected void reload(){
+		for(Marker mark:verticesMap.keySet()){
+			mark.remove();
+		}
+		claimId = claimActivity.getClaimId();
+		super.reload();
+		verticesMap = new HashMap<Marker, Vertex>();
+		if (vertices != null && vertices.size() > 0) {
+			for (Vertex vertex : vertices) {
+				Marker mark = createMarker(vertex.getSequenceNumber(), vertex.getMapPosition());
+				verticesMap.put(mark, vertex);
 			}
 		}
 	}
@@ -534,26 +568,24 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 
 	}
-
-	@Override
-	public void resetAdjacency(List<BasePropertyBoundary> existingProperties){
+	protected void resetAdjacency(List<BasePropertyBoundary> existingProperties) {
 
 		List<BasePropertyBoundary> adjacentProperties = findAdjacentProperties(existingProperties);
-		Adjacency.deleteAdjacencies(claimActivity.getClaimId());
+		Adjacency.deleteAdjacencies(claimId);
 
-		if(adjacentProperties != null){
+		if (adjacentProperties != null) {
 
 			for (BasePropertyBoundary adjacentProperty : adjacentProperties) {
-				
+
 				Adjacency adj = new Adjacency();
-				adj.setSourceClaimId(claimActivity.getClaimId());
+				adj.setSourceClaimId(claimId);
 				adj.setDestClaimId(adjacentProperty.getClaimId());
 				adj.setCardinalDirection(getCardinalDirection(adjacentProperty));
 				adj.create();
 			}
 		}
 	}
-	
+
 	private void onPropertyLocationMarkerDragStart(Marker mark) {
 		dragPropertyLocationMarker(mark);
 	}
@@ -582,7 +614,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	private void dragPropertyBoundaryMarker(Marker mark) {
-		verticesMap.get(mark.getId()).setMapPosition(mark.getPosition());
+		verticesMap.get(mark).setMapPosition(mark.getPosition());
 		redrawBoundary();
 	}
 
@@ -596,7 +628,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	private void removePropertyBoundaryMarker(Marker mark) {
-		vertices.remove(verticesMap.remove(mark.getId()));
+		vertices.remove(verticesMap.remove(mark));
 		mark.remove();
 	}
 
@@ -614,15 +646,18 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		Marker mark = createMarker(vertices.size(), position);
 		Vertex newVertex = new Vertex(position);
 		newVertex.setClaimId(claimActivity.getClaimId());
-		double minDistance = Double.MAX_VALUE;
-		int insertIndex = 0;
+		verticesMap.put(mark, newVertex);
 
 		if (vertices.size() < 2) {
-
+			// no need to calculate the insertion point
 			vertices.add(newVertex);
 			return;
 		}
 
+		double minDistance = Double.MAX_VALUE;
+		int insertIndex = 0;
+
+		// calculate the insertion point
 		for (int i = 0; i < vertices.size(); i++) {
 
 			Vertex from = vertices.get(i);
@@ -652,9 +687,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 		}
 		vertices.add(insertIndex, newVertex);
-		updateVertices();
-		redrawBoundary();
-		verticesMap.put(mark.getId(), newVertex);
 	}
 	
 	public void addMarker(final LatLng position){
@@ -735,6 +767,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 							int which) {
 
 						insertVertex(position);
+						updateVertices();
+						redrawBoundary();
 						resetAdjacency(otherProperties);
 					}
 				});

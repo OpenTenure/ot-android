@@ -531,10 +531,6 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 						claim));
 		}
 		
-		for(BasePropertyBoundary property : visibleProperties){
-			property.resetAdjacency(visibleProperties);
-		}
-
 		redrawVisibleProperties();
 
 		return ;
