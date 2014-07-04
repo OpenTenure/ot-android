@@ -216,14 +216,8 @@ public class PersonFragment extends Fragment {
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
 				.setChecked((person.getGender().equals("M")));
 
-		if (person.getPersonType() != null) {
-			((RadioButton) rootView
-					.findViewById(R.id.physical_person_input_field))
-					.setChecked((person.getPersonType()
-							.equals(Person._PHYSICAL)));
-			((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
-					.setChecked((person.getPersonType().equals(Person._LEGAL)));
-		}
+
+		
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
 				.setChecked((person.getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
@@ -259,11 +253,7 @@ public class PersonFragment extends Fragment {
 			((RadioButton) rootView
 					.findViewById(R.id.gender_masculine_input_field))
 					.setClickable(false);
-			((RadioButton) rootView
-					.findViewById(R.id.physical_person_input_field))
-					.setClickable(false);
-			((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
-					.setClickable(false);
+	
 			((EditText) rootView
 					.findViewById(R.id.mobile_phone_number_input_field))
 					.setFocusable(false);
@@ -362,12 +352,7 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
-
-		if (((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
-				.isChecked())
-			person.setPersonType(Person._LEGAL);
-		if (((RadioButton) rootView
-				.findViewById(R.id.physical_person_input_field)).isChecked())
+		
 			person.setPersonType(Person._PHYSICAL);
 
 		if (person.getDateOfBirth() == null || person.getFirstName() == null
@@ -432,12 +417,7 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
-		
-		if (((RadioButton) rootView.findViewById(R.id.legal_person_input_field))
-				.isChecked())
-			person.setPersonType(Person._LEGAL);
-		if (((RadioButton) rootView
-				.findViewById(R.id.physical_person_input_field)).isChecked())
+
 			person.setPersonType(Person._PHYSICAL);
 
 		String idTypeDispValue = (String) ((Spinner) rootView

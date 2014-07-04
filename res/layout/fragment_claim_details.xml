@@ -6,7 +6,9 @@
     android:baselineAligned="false"
     android:orientation="vertical"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:paddingRight="16dp" 
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/claim_status"
@@ -94,9 +96,11 @@
         android:id="@+id/date_of_start_input_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:background="@color/dark_background_opentenure"
         android:hint="@string/date_of_start"
         android:inputType="date" >
+
     </EditText>
     
         <TextView
@@ -137,7 +141,7 @@
         android:layout_weight="4"
         android:background="@color/light_background_opentenure"
         android:orientation="horizontal"
-        android:padding="10dp" >
+        >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -150,8 +154,7 @@
             <TextView
                 android:id="@+id/claimant_id"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="30dp"
                 android:background="@drawable/item_color"
                 android:gravity="left|center"
                 android:text="@string/title_item" />
@@ -159,8 +162,7 @@
             <TextView
                 android:id="@+id/claimant_slogan"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:background="@color/dark_background_opentenure"
                 android:gravity="left|center"
                 android:hint="@string/message_touch_to_select_a_person" />
@@ -169,10 +171,12 @@
         <ImageView
             android:id="@+id/claimant_picture"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:layout_weight="2.86"
             android:contentDescription="@string/person_picture"
+            android:paddingTop="10sp"
             android:src="@drawable/ic_contact_picture" />
+
     </LinearLayout>
 
     <TextView
@@ -190,7 +194,7 @@
         android:layout_weight="4"
         android:background="@color/light_background_opentenure"
         android:orientation="horizontal"
-        android:padding="10dp" >
+        >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -203,7 +207,7 @@
             <TextView
                 android:id="@+id/challenge_to_claim_id"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/item_color"
                 android:gravity="left|center"
@@ -212,8 +216,7 @@
             <TextView
                 android:id="@+id/challenge_to_claim_slogan"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:background="@color/dark_background_opentenure"
                 android:gravity="left|center"
                 android:hint="@string/message_touch_to_select_a_claim" />
@@ -221,20 +224,23 @@
             <TextView
                 android:id="@+id/challenge_to_claim_status"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/item_color"
                 android:gravity="left|center"
                 android:text="@string/title_item" />
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/challenge_to_claimant_picture"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:contentDescription="@string/person_picture"
-            android:src="@drawable/ic_contact_picture" />
+<ImageView
+    android:id="@+id/challenge_to_claimant_picture"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="2.84"
+    android:contentDescription="@string/person_picture"
+    android:paddingRight="4dp"
+    android:paddingTop="10sp"
+    android:src="@drawable/ic_contact_picture" />
+
     </LinearLayout>
 
 </LinearLayout>
