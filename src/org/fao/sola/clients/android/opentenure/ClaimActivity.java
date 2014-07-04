@@ -42,7 +42,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
-public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, ModeDispatcher {
+public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, ModeDispatcher, ClaimListener, MapFragmentListener {
 
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
@@ -52,6 +52,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
+	private int mapFragmentId;
 
 	@Override
 	public void onDestroy() {
@@ -190,5 +191,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	@Override
 	public Mode getMode() {
 		return mode;
+	}
+
+	@Override
+	public void onClaimSaved() {
+		ClaimMapFragment claimMapFragment = (ClaimMapFragment)
+                getSupportFragmentManager().findFragmentById(mapFragmentId);
+		claimMapFragment.onClaimSaved();
+	}
+
+	@Override
+	public void setId(int id) {
+		mapFragmentId = id;
 	}
 }

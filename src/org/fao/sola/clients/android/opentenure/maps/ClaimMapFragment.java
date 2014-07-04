@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.ClaimListener;
+import org.fao.sola.clients.android.opentenure.MapFragmentListener;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
@@ -86,7 +88,7 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 public class ClaimMapFragment extends Fragment implements
-		OnCameraChangeListener, SensorEventListener {
+		OnCameraChangeListener, SensorEventListener, ClaimListener {
 
 	private static final int MAP_LABEL_FONT_SIZE = 16;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
@@ -154,6 +156,12 @@ public class ClaimMapFragment extends Fragment implements
 			throw new ClassCastException(activity.toString()
 					+ " must implement ModeDispatcher");
 		}
+		try {
+			((MapFragmentListener) activity).setId(getId());
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 
 	@Override
@@ -183,8 +191,6 @@ public class ClaimMapFragment extends Fragment implements
 	                SensorManager.SENSOR_DELAY_UI);
 		}
 		lh.hurryUp();
-		// useful when switching to the map just after saving a new claim
-		currentProperty.reload();
 	}
 
 	@Override
@@ -196,17 +202,22 @@ public class ClaimMapFragment extends Fragment implements
 	}
 
 	@Override
-	public void onStop() {
-		super.onStop();
-		lh.stop();
-	}
-
-	@Override
 	public void onStart() {
 		super.onStart();
 		lh.start();
 	}
+	
+	@Override
+	public void onClaimSaved(){
+		currentProperty.reload();
+	}
 
+	@Override
+	public void onStop() {
+		super.onStop();
+		lh.stop();
+	}
+	
 	@Override
 	public void onDestroyView() {
 		Log.d(this.getClass().getName(), "onDestroyView");

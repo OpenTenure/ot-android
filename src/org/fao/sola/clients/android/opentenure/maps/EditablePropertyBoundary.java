@@ -532,6 +532,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	protected void reload(){
+		Log.d(this.getClass().getName(), "Reloading claim on fragment change");
+
 		for(Marker mark:verticesMap.keySet()){
 			mark.remove();
 		}

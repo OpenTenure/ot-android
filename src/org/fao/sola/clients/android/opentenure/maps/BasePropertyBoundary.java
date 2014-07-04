@@ -47,6 +47,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -126,6 +127,7 @@ public class BasePropertyBoundary {
 			claimId = claim.getClaimId();
 			claimSlogan = claim.getSlogan(context);
 			claimType = claim.getType();
+			Log.d(this.getClass().getName(), "Reloaded claim: " + claim.toString());
 
 			if (status != null) {
 

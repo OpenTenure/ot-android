@@ -429,6 +429,7 @@ public class Claim {
 				claim.setPerson(Person.getPerson(rs.getString(3)));
 				claim.setType((rs.getString(4)));
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
+				claim.setChallengingClaims(getChallengingClaims(claimId));
 				claim.setChallengeExpiryDate(rs.getDate(6));
 				claim.setDateOfStart(rs.getDate(7));
 				claim.setLandUse(rs.getString(8));

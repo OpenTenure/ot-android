@@ -82,6 +82,7 @@ public class ClaimDetailsFragment extends Fragment {
 	View rootView;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
+	private ClaimListener claimListener;
 	private final Calendar localCalendar = Calendar.getInstance();
 
 	@Override
@@ -101,6 +102,12 @@ public class ClaimDetailsFragment extends Fragment {
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement ModeDispatcher");
+		}
+		try {
+			claimListener = (ClaimListener) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ClaimListener");
 		}
 	}
 
@@ -508,6 +515,7 @@ public class ClaimDetailsFragment extends Fragment {
 			createPersonAsOwner(person);
 
 		}
+		claimListener.onClaimSaved();
 
 	}
 
