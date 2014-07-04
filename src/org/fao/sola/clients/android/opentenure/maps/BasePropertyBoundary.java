@@ -115,6 +115,53 @@ public class BasePropertyBoundary {
 		return bounds;
 	}
 
+	protected void reload() {
+		if (claimId != null) {
+			Claim claim = Claim.getClaim(claimId);
+			vertices = claim.getVertices();
+			name = claim.getName() == null
+					|| claim.getName().equalsIgnoreCase("") ? context
+					.getResources().getString(R.string.default_claim_name)
+					: claim.getName();
+			String status = claim.getStatus();
+			claimId = claim.getClaimId();
+			claimSlogan = claim.getSlogan(context);
+			claimType = claim.getType();
+
+			if (status != null) {
+
+				switch (Claim.Status.valueOf(status)) {
+
+				case unmoderated:
+					color = context.getResources().getColor(
+							R.color.status_unmoderated);
+					break;
+				case withdrawn:
+					color = context.getResources().getColor(
+							R.color.status_withdrawn);
+					break;
+				case moderated:
+					color = context.getResources().getColor(
+							R.color.status_moderated);
+					break;
+				case challenged:
+					color = context.getResources().getColor(
+							R.color.status_challenged);
+					break;
+				default:
+					color = context.getResources().getColor(
+							R.color.status_created);
+					break;
+				}
+			}
+
+			if (vertices != null && vertices.size() > 0) {
+				calculateGeometry();
+			}
+
+		}
+	}
+
 	public BasePropertyBoundary(final Context context, final GoogleMap map,
 			final Claim claim) {
 		this.context = context;
@@ -253,8 +300,8 @@ public class BasePropertyBoundary {
 				.title(title).icon(BitmapDescriptorFactory.fromBitmap(bmpText))
 				.anchor(0.5f, 1));
 	}
-	
-	public void hideBoundary(){
+
+	public void hideBoundary() {
 		if (polyline != null) {
 			polyline.remove();
 		}
@@ -262,7 +309,7 @@ public class BasePropertyBoundary {
 			propertyMarker.remove();
 		}
 	}
-	
+
 	public void redrawBoundary() {
 		hideBoundary();
 		showBoundary();
@@ -273,7 +320,7 @@ public class BasePropertyBoundary {
 		if (vertices.size() <= 0) {
 			return;
 		}
-		
+
 		PolylineOptions polylineOptions = new PolylineOptions();
 		for (int i = 0; i < vertices.size(); i++) {
 			polylineOptions.add(vertices.get(i).getMapPosition());
@@ -287,10 +334,8 @@ public class BasePropertyBoundary {
 		polylineOptions.color(color);
 		polyline = map.addPolyline(polylineOptions);
 		ClaimType ct = new ClaimType();
-		propertyMarker = createPropertyMarker(
-				center,
-				claimSlogan + ", "
-						+ context.getString(R.string.type) + ": "
+		propertyMarker = createPropertyMarker(center,
+				claimSlogan + ", " + context.getString(R.string.type) + ": "
 						+ ct.getDisplayValueByType(claimType));
 	}
 
@@ -300,7 +345,8 @@ public class BasePropertyBoundary {
 			return;
 		}
 
-		for (PropertyLocation location : PropertyLocation.getPropertyLocations(claimId)) {
+		for (PropertyLocation location : PropertyLocation
+				.getPropertyLocations(claimId)) {
 			Marker marker = createLocationMarker(location.getMapPosition(),
 					location.getDescription());
 			propertyLocationsMap.put(marker, location);
@@ -320,7 +366,8 @@ public class BasePropertyBoundary {
 
 		if (propertyLocationsMap != null) {
 			for (Marker marker : propertyLocationsMap.keySet()) {
-				// Just hiding the marker, no need to delete the location from DB
+				// Just hiding the marker, no need to delete the location from
+				// DB
 				marker.remove();
 			}
 			propertyLocationsMap = new HashMap<Marker, PropertyLocation>();

@@ -183,6 +183,8 @@ public class ClaimMapFragment extends Fragment implements
 	                SensorManager.SENSOR_DELAY_UI);
 		}
 		lh.hurryUp();
+		// useful when switching to the map just after saving a new claim
+		currentProperty.reload();
 	}
 
 	@Override
@@ -247,8 +249,6 @@ public class ClaimMapFragment extends Fragment implements
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.claim_map_fragment)).getMap();
 
-		reloadVisibleProperties();
-
 		lh = new LocationHelper((LocationManager) getActivity()
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
@@ -270,6 +270,18 @@ public class ClaimMapFragment extends Fragment implements
 				setMapType(Integer.parseInt(mapType));
 			} catch (Exception e) {
 			}
+		}
+
+		hideVisibleProperties();
+		reloadVisibleProperties();
+		showVisibleProperties();
+
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, false);
+		}else{
+			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, true);
 		}
 
 		if (currentProperty.getCenter() != null) {
@@ -379,8 +391,6 @@ public class ClaimMapFragment extends Fragment implements
 	
 	private void reloadVisibleProperties(){
 
-		hideVisibleProperties();
-
 		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
 		Polygon boundsPoly = getPolygon(bounds);
 
@@ -415,15 +425,6 @@ public class ClaimMapFragment extends Fragment implements
 		visiblePropertiesMultiPolygon = gf.createMultiPolygon(visiblePropertiesPolygons);
 		visiblePropertiesMultiPolygon.setSRID(Constants.SRID);
 
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, false);
-		}else{
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, true);
-		}
-
-		showVisibleProperties();
 	}
 	
 	public void setMapType(int type) {
@@ -650,7 +651,9 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
+		hideVisibleProperties();
 		reloadVisibleProperties();
+		showVisibleProperties();
 		currentProperty.redrawBoundary();
 		currentProperty.refreshMarkerEditControls();
 	}

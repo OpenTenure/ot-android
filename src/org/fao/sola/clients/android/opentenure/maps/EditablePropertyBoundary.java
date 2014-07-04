@@ -180,7 +180,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private boolean handleClick(Marker mark){
 		// Can only be a click on the property name, deselect and let the event flow
 		deselect();
-		if(mark.getId().equalsIgnoreCase(propertyMarker.getId())){
+		if(propertyMarker != null && mark.getId().equalsIgnoreCase(propertyMarker.getId())){
 			if(isPropertyLocationsVisible()){
 				hidePropertyLocations();
 			}else{
@@ -212,14 +212,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			onPropertyBoundaryMarkerDrag(mark);
 		}else if(propertyLocationsMap.containsKey(mark)){
 			onPropertyLocationMarkerDrag(mark);
-		}
-	}
-
-	public void dragMarker(Marker mark) {
-		if(verticesMap.containsKey(mark.getId())){
-			dragPropertyBoundaryMarker(mark);
-		}else if(propertyLocationsMap.containsKey(mark)){
-			dragPropertyLocationMarker(mark);
 		}
 	}
 
@@ -563,30 +555,30 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 	
 	private void onPropertyLocationMarkerDragStart(Marker mark) {
-		dragMarker(mark);
+		dragPropertyLocationMarker(mark);
 	}
 
 	private void onPropertyLocationMarkerDragEnd(Marker mark) {
-		dragMarker(mark);
+		dragPropertyLocationMarker(mark);
 		updatePropertyLocations();
 	}
 
 	private void onPropertyLocationMarkerDrag(Marker mark) {
-		dragMarker(mark);
+		dragPropertyLocationMarker(mark);
 	}
 
 	private void onPropertyBoundaryMarkerDragStart(Marker mark) {
-		dragMarker(mark);
+		dragPropertyBoundaryMarker(mark);
 	}
 
 	private void onPropertyBoundaryMarkerDragEnd(Marker mark) {
-		dragMarker(mark);
+		dragPropertyBoundaryMarker(mark);
 		updateVertices();
 		resetAdjacency(otherProperties);
 	}
 
 	private void onPropertyBoundaryMarkerDrag(Marker mark) {
-		dragMarker(mark);
+		dragPropertyBoundaryMarker(mark);
 	}
 
 	private void dragPropertyBoundaryMarker(Marker mark) {
