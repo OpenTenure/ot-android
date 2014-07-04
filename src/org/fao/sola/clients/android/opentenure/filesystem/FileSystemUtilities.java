@@ -429,6 +429,25 @@ public class FileSystemUtilities {
 		
 		return true;
 	}
+	
+	public static boolean deleteCLaimant(String personId) {
+
+		File claimantFold = getClaimantFolder(personId);
+	
+
+		File[] files;
+
+		if (claimantFold.exists()) {
+			files = claimantFold.listFiles();
+			for (int i = 0; i < files.length; i++) {
+
+				files[i].delete();
+			}
+			return claimantFold.delete();
+		}
+		
+		return true;
+	}
 
 	public static int getUploadProgress(Claim claim) {
 

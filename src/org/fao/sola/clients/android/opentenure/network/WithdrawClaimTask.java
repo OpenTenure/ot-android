@@ -68,7 +68,6 @@ public class WithdrawClaimTask extends AsyncTask<String, Void, ApiResponse> {
 
 			OpenTenureApplication.getLocalClaimsFragment().refresh();
 
-			OpenTenureApplication.getMapFragment().refreshMap();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()

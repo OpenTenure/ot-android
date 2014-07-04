@@ -37,17 +37,12 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.LoginActivity;
-import org.fao.sola.clients.android.opentenure.network.LogoutTask;
-import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
@@ -114,10 +109,6 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		// if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) ==
-		// 0) {
-		MenuItem itemIn;
-		MenuItem itemOut;
 
 		try {
 			Thread.sleep(400);
@@ -125,25 +116,6 @@ public class ClaimDetailsFragment extends Fragment {
 			e.printStackTrace();
 		}
 
-		Log.d(this.getClass().getName(), "Is the user logged in ? : "
-				+ OpenTenureApplication.isLoggedin());
-
-		if (OpenTenureApplication.isLoggedin()) {
-
-			itemIn = menu.getItem(4);
-			itemIn.setVisible(false);
-			itemOut = menu.getItem(5);
-			itemOut.setVisible(true);
-
-		} else {
-
-			itemIn = menu.getItem(4);
-			itemIn.setVisible(true);
-			itemOut = menu.getItem(5);
-			itemOut.setVisible(false);
-		}
-
-		// }
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -211,7 +183,8 @@ public class ClaimDetailsFragment extends Fragment {
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
 				int progress = FileSystemUtilities.getUploadProgress(claim);
-				System.out.println("ClaimDetailsFragment Qui il progress e' : " +progress);
+				System.out.println("ClaimDetailsFragment Qui il progress e' : "
+						+ progress);
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
 				bar.setProgress(progress);
@@ -629,39 +602,6 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 			return true;
-		case R.id.action_submit:
-
-			if (!OpenTenureApplication.isLoggedin()) {
-				toast = Toast.makeText(rootView.getContext(),
-						R.string.message_login_before, Toast.LENGTH_SHORT);
-				toast.show();
-				return true;
-
-			} else {
-
-				if (claimActivity.getClaimId() != null) {
-
-					JsonUtilities.createClaimJson(claimActivity.getClaimId());
-					List<Vertex> vertices = Vertex.getVertices(claimActivity
-							.getClaimId());
-					Log.d(this.getClass().getName(),
-							"mapGeometry: "
-									+ Vertex.mapWKTFromVertices(vertices));
-					Log.d(this.getClass().getName(),
-							"gpsGeometry: "
-									+ Vertex.gpsWKTFromVertices(vertices));
-
-					SaveClaimTask saveClaimtask = new SaveClaimTask();
-					saveClaimtask.execute(claimActivity.getClaimId());
-
-				} else {
-					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_save_claim_before_submit,
-							Toast.LENGTH_SHORT);
-					toast.show();
-				}
-				return true;
-			}
 
 		case R.id.action_export:
 
@@ -718,38 +658,11 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 			return true;
 
-		case R.id.action_login:
-
-			OpenTenureApplication.setActivity(getActivity());
-
-			Context context = getActivity().getApplicationContext();
-			Intent intent = new Intent(context, LoginActivity.class);
-			startActivity(intent);
-
-			OpenTenureApplication.setActivity(getActivity());
-
-			return false;
-
-		case R.id.action_logout:
-
-			try {
-
-				LogoutTask logoutTask = new LogoutTask();
-
-				logoutTask.execute(getActivity());
-
-			} catch (Exception e) {
-				Log.d("Details", "An error ");
-
-				e.printStackTrace();
-			}
-
-			return true;
 		case R.id.action_print:
 			try {
 				PDFClaimExporter pdf = new PDFClaimExporter(
 						rootView.getContext(), claimActivity.getClaimId());
-				intent = new Intent(Intent.ACTION_VIEW);
+				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
 						"application/pdf");
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
