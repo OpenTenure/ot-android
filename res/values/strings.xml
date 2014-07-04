@@ -147,6 +147,7 @@
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>
     <string name="message_error_mandatory_fields">Fulfill all the mandatory fields before to save</string>
     <string name="message_error_mandatory_birthdate">Date of birth not in the right format or empty</string>
+    <string name="message_error_startdate">Date of right\'s start  not in the right format or empty</string>
     <string name="message_remove_quest">Do you really want withdraw the Claim ?</string>
     <string name="message_remove_claim">Do you really want remove the Claim ?</string>
     <string name="message_error_withdraw_claim">Error withdrawing claim : </string>

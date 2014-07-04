@@ -32,18 +32,17 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.WithdrawClaimTask;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -155,6 +154,13 @@ public class ClaimDeleteListener implements OnClickListener {
 										attachment.delete();
 
 									}
+									
+									List<PropertyLocation> locations = claim.getPropertyLocations();
+									for (Iterator iterator = locations.iterator(); iterator
+											.hasNext();) {
+										PropertyLocation location = (PropertyLocation) iterator.next();
+										location.delete();
+									}
 
 									List<Adjacency> adjacencies = Adjacency
 											.getAdjacencies(claimId);
@@ -167,24 +173,42 @@ public class ClaimDeleteListener implements OnClickListener {
 
 									}
 
-									claim.delete();
+									if (claim.delete() != 0) {
 
-									FileSystemUtilities.deleteClaim(claimId);
+										FileSystemUtilities
+												.deleteClaim(claimId);
 
-									OpenTenureApplication
-											.getLocalClaimsFragment().refresh();
+										OpenTenureApplication
+												.getLocalClaimsFragment()
+												.refresh();
 
-									dialog.dismiss();
+										dialog.dismiss();
 
-									Toast toast = Toast.makeText(
-											OpenTenureApplication.getContext(),
-											OpenTenureApplication
-													.getContext()
-													.getResources()
-													.getString(
-															R.string.message_deleted_claim),
-											Toast.LENGTH_LONG);
-									toast.show();
+										Toast toast = Toast.makeText(
+												OpenTenureApplication
+														.getContext(),
+												OpenTenureApplication
+														.getContext()
+														.getResources()
+														.getString(
+																R.string.message_deleted_claim),
+												Toast.LENGTH_LONG);
+										toast.show();
+
+									} else {
+										
+										Toast toast = Toast.makeText(
+												OpenTenureApplication
+														.getContext(),
+												OpenTenureApplication
+														.getContext()
+														.getResources()
+														.getString(
+																R.string.message_deleted_claim),
+												Toast.LENGTH_LONG);
+										toast.show();
+										
+									}
 
 								}
 							});
@@ -243,6 +267,13 @@ public class ClaimDeleteListener implements OnClickListener {
 								Vertex vertex = (Vertex) iterator.next();
 								vertex.delete();
 							}
+							
+							List<PropertyLocation> locations = claim.getPropertyLocations();
+							for (Iterator iterator = locations.iterator(); iterator
+									.hasNext();) {
+								PropertyLocation location = (PropertyLocation) iterator.next();
+								location.delete();
+							}
 
 							List<Attachment> attachments = claim
 									.getAttachments();
@@ -266,24 +297,42 @@ public class ClaimDeleteListener implements OnClickListener {
 								adjacency.delete();
 
 							}
-							claim.delete();
+							if (claim.delete() != 0) {
 
-							FileSystemUtilities.deleteClaim(claimId);
+								FileSystemUtilities
+										.deleteClaim(claimId);
 
-							OpenTenureApplication.getLocalClaimsFragment()
-									.refresh();
+								OpenTenureApplication
+										.getLocalClaimsFragment()
+										.refresh();
 
-							dialog.dismiss();
+								dialog.dismiss();
 
-							Toast toast = Toast.makeText(
-									OpenTenureApplication.getContext(),
-									OpenTenureApplication
-											.getContext()
-											.getResources()
-											.getString(
-													R.string.message_deleted_claim),
-									Toast.LENGTH_LONG);
-							toast.show();
+								Toast toast = Toast.makeText(
+										OpenTenureApplication
+												.getContext(),
+										OpenTenureApplication
+												.getContext()
+												.getResources()
+												.getString(
+														R.string.message_deleted_claim),
+										Toast.LENGTH_LONG);
+								toast.show();
+
+							} else {
+								
+								Toast toast = Toast.makeText(
+										OpenTenureApplication
+												.getContext(),
+										OpenTenureApplication
+												.getContext()
+												.getResources()
+												.getString(
+														R.string.message_deleted_claim),
+										Toast.LENGTH_LONG);
+								toast.show();
+								
+							}
 
 						}
 					});

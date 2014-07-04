@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -452,7 +453,7 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	public void saveClaim() {
+	public int saveClaim() {
 
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
@@ -467,7 +468,7 @@ public class ClaimDetailsFragment extends Fragment {
 				.toString();
 
 		if (claimName == null || claimName.trim().equals(""))
-			return;
+			return 3;
 		claim.setName(claimName);
 
 		String displayValue = (String) ((Spinner) rootView
@@ -493,6 +494,7 @@ public class ClaimDetailsFragment extends Fragment {
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = null;
+			return 2;
 		}
 
 		if (dob != null)
@@ -505,9 +507,13 @@ public class ClaimDetailsFragment extends Fragment {
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
 
-			createPersonAsOwner(person);
+			if (createPersonAsOwner(person) == 0)
+				return 0;
 
-		}
+			return 1;
+
+		} else
+			return 4;
 
 	}
 
@@ -521,7 +527,7 @@ public class ClaimDetailsFragment extends Fragment {
 						.toString());
 
 		// Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		Claim claim = new Claim();
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		claim.setClaimId(claimActivity.getClaimId());
 		claim.setName(((EditText) rootView
 				.findViewById(R.id.claim_name_input_field)).getText()
@@ -553,13 +559,18 @@ public class ClaimDetailsFragment extends Fragment {
 		} catch (ParseException e) {
 			e.printStackTrace();
 			dob = null;
+			return 2;
 		}
 
 		if (dob != null)
 			claim.setDateOfStart(new Date(dob.getTime()));
 
+		if (createPersonAsOwner(person, claim.getPerson().getPersonId()) == 0)
+			return 0;
+
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+
 		return claim.update();
 
 	}
@@ -573,12 +584,18 @@ public class ClaimDetailsFragment extends Fragment {
 		case R.id.action_save:
 
 			if (claimActivity.getClaimId() == null) {
-				saveClaim();
-				if (claimActivity.getClaimId() != null) {
+				int resultSave = saveClaim();
+				if (resultSave == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
-				} else {
+				}
+				if (resultSave == 2) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_startdate,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (resultSave == 3 || resultSave == 4) {
 					toast = Toast
 							.makeText(rootView.getContext(),
 									R.string.message_unable_to_save,
@@ -591,6 +608,12 @@ public class ClaimDetailsFragment extends Fragment {
 				if (updated == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
+					toast.show();
+
+				} else if (updated == 2) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_startdate,
+							Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
 					toast = Toast
@@ -683,10 +706,43 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
+	public int createPersonAsOwner(Person claimant, String oldClaimantId) {
+		try {
+			int share = 0;
+
+			Owner toDelete = Owner.getOwner(claimActivity.getClaimId(),
+					oldClaimantId);
+			share = toDelete.getShares();
+
+			toDelete.delete();
+
+			Owner owner = new Owner(true);
+
+			owner.setClaimId(claimActivity.getClaimId());
+			owner.setPersonId(claimant.getPersonId());
+			owner.setShares(share);
+
+			owner.create();
+
+			return 1;
+
+		} catch (Exception e) {
+			// TODO: handle exception
+
+			Log.d("Details", "An error " + e.getMessage());
+
+			e.printStackTrace();
+
+			return 0;
+		}
+
+	}
+
 	public int createPersonAsOwner(Person claimant) {
 		try {
 
 			Owner owner = new Owner(true);
+
 			owner.setClaimId(claimActivity.getClaimId());
 			owner.setPersonId(claimant.getPersonId());
 			owner.setShares(100);
