@@ -273,8 +273,6 @@ public class ClaimMapFragment extends Fragment implements
 		}
 
 		hideVisibleProperties();
-		reloadVisibleProperties();
-		showVisibleProperties();
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
@@ -310,6 +308,8 @@ public class ClaimMapFragment extends Fragment implements
 			}
 
 		}
+		reloadVisibleProperties();
+		showVisibleProperties();
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
 			// Allow adding, removing and dragging markers
@@ -409,6 +409,7 @@ public class ClaimMapFragment extends Fragment implements
 				}
 			}
 		}
+		currentProperty.setOtherProperties(visibleProperties);
 
 		List<Polygon> visiblePropertiesPolygonList = new ArrayList<Polygon>();
 
@@ -617,6 +618,9 @@ public class ClaimMapFragment extends Fragment implements
 						Toast.LENGTH_SHORT).show();
 
 				currentProperty.insertVertex(newLocation);
+				currentProperty.updateVertices();
+				currentProperty.redrawBoundary();
+				currentProperty.resetAdjacency(visibleProperties);
 
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),
