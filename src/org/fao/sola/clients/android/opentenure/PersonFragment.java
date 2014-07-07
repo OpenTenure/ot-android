@@ -35,10 +35,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.R.string;
+
 import org.fao.sola.clients.android.opentenure.model.IdType;
-import org.fao.sola.clients.android.opentenure.model.LandUse;
-import org.fao.sola.clients.android.opentenure.model.Owner;
+
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;

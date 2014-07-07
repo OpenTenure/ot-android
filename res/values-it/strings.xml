@@ -149,6 +149,7 @@
     <string name="message_touch_to_select_a_claim">Tocca per seleziona una richiesta</string>
     <string name="message_error_mandatory_fields">Riempire tutti i campi obbligatori prima di salvare</string>
     <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
+     <string name="message_error_startdate">Data di inizio diritto non e\' in un formato corretto o e\' vuota</string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
