@@ -85,9 +85,9 @@ public class PersonsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.persons, menu);
 
-		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			menu.removeItem(R.id.action_new);
-		}
+//		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+//			menu.removeItem(R.id.action_new);
+//		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -203,7 +203,7 @@ public class PersonsFragment extends ListFragment {
 			}
 		}
 		ArrayAdapter<PersonListTO> adapter = new PersonsListAdapter(
-				rootView.getContext(), personListTOs);
+				rootView.getContext(), personListTOs, mainActivity.getMode());
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 

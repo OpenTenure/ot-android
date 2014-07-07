@@ -55,6 +55,7 @@
     <string name="title_lock_db">Encrypt local data</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
+    <string name="title_remove_person_dialog">Remove person</string>
     <string name="choose_file">Choose an application to select a file</string>
     <string name="person_name">Person Name</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -104,7 +105,8 @@
     <string name="message_attachment_downloading">Attachment %s already downloading </string>
     <string name="message_attachment_download_failed">Download of attachment %s failed </string>    
     <string name="message_attachment_download_not_complete">Download of attachment %s not completed </string>
-    <string name="message_remove_person">Person %s removed </string>
+    <string name="message_remove_person">Person %s removed</string>
+    <string name="message_remove_person_dialog">Do you really want to remove %s?</string>
     <string name="message_error_remove_person">Person %s not removed </string>
     <string name="message_remaining_days">Remaining days to challenge the claim :  </string>
     <string name="message_map_snapshot_saved">Map snapshot saved</string>

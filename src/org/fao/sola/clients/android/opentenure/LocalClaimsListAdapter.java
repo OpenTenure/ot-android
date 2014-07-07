@@ -32,17 +32,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.content.Context;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -56,9 +53,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	private final List<ClaimListTO> originalClaims;
 	private List<ClaimListTO> filteredClaims;
 	private List<ClaimListTO> claims;
+	private ModeDispatcher.Mode mode;
 	LayoutInflater inflater;
 
-	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims) {
+	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims, ModeDispatcher.Mode mode) {
 		super(context, R.layout.claims_list_item, claims);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
@@ -66,6 +64,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		this.originalClaims = new ArrayList<ClaimListTO>(claims);
 		this.claims = claims;
 		this.filteredClaims = null;
+		this.mode = mode;
 	}
 
 	@Override
@@ -255,16 +254,21 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
 				Person.getPersonPictureFile(claim.getPerson().getPersonId()),
 				96));
-
 		vh.send = (ImageView) convertView
 				.findViewById(R.id.action_submit_to_server);
 		vh.remove = (ImageView) convertView
 				.findViewById(R.id.action_remove_claim);
 
-		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
-				.getId(), vh));
-		vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
-				position).getId(), vh));
+
+		if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
+					.getId(), vh));
+			vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
+					position).getId(), vh));
+		}else{
+			vh.send.setVisibility(View.GONE);
+			vh.remove.setVisibility(View.GONE);
+		}
 
 		return convertView;
 	}

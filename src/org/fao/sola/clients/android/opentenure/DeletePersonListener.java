@@ -30,6 +30,8 @@ package org.fao.sola.clients.android.opentenure;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -46,43 +48,64 @@ public class DeletePersonListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+		final Person person = Person.getPerson(personId);
+		AlertDialog.Builder deletePersonDialog = new AlertDialog.Builder(v.getContext());
+		deletePersonDialog.setTitle(R.string.title_remove_person_dialog);
+		String dialogMessage = String
+				.format(OpenTenureApplication.getContext().getString(
+						R.string.message_remove_person_dialog,
+						person.getFirstName() + " " + person.getLastName()));
 
-		Person person = Person.getPerson(personId);
+		deletePersonDialog.setMessage(dialogMessage);
 
-		Toast toast;
+		deletePersonDialog.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
 
-		int result = Person.deletePerson(person);
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
 
-		if (result > 0) {
+				Toast toast;
 
-			FileSystemUtilities.deleteCLaimant(personId);
+				int result = Person.deletePerson(person);
 
-			String message = String
-					.format(OpenTenureApplication.getContext().getString(
-							R.string.message_remove_person,
-							person.getFirstName() + " " + person.getLastName()));
+				if (result > 0) {
 
-			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
-					Toast.LENGTH_SHORT);
-			toast.show();
+					FileSystemUtilities.deleteCLaimant(personId);
 
-			OpenTenureApplication.getPersonsFragment().refresh();
+					String toastMessage = String
+							.format(OpenTenureApplication.getContext().getString(
+									R.string.message_remove_person,
+									person.getFirstName() + " " + person.getLastName()));
 
-		}
+					toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage,
+							Toast.LENGTH_SHORT);
+					toast.show();
 
-		else {
+					OpenTenureApplication.getPersonsFragment().refresh();
 
-			String message = String
-					.format(OpenTenureApplication.getContext().getString(
-							R.string.message_error_remove_person,
-							person.getFirstName() + " " + person.getLastName()));
+				}
 
-			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
-					Toast.LENGTH_SHORT);
-			toast.show();
+				else {
 
-		}
+					String toastMessage = String
+							.format(OpenTenureApplication.getContext().getString(
+									R.string.message_error_remove_person,
+									person.getFirstName() + " " + person.getLastName()));
+
+					toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage,
+							Toast.LENGTH_SHORT);
+					toast.show();
+
+				}
+
+			}
+		});
+		deletePersonDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+		deletePersonDialog.show();
 
 	}
 

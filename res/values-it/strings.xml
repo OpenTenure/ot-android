@@ -55,6 +55,7 @@
     <string name="title_lock_db">Cifratura dei dati locali</string>
     <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
     <string name="title_exit_dialog">Uscita</string>
+    <string name="title_remove_person_dialog">Rimozione persona</string>
     <string name="choose_file">Scegli un\'applicazione per selezionare un file</string>
     <string name="person_name">Nome della Persona</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -116,7 +117,8 @@
     <string name="message_save_claim_before_submit">Salvare la richiesta prima di inviarla</string>
     <string name="message_save_claim_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
     <string name="message_save_person_before_adding_content">Salvare la persona prima di aggiungere contenuti</string>
-    <string name="message_remove_person">Persona %s rimossa </string>
+    <string name="message_remove_person">Persona %s rimossa</string>
+    <string name="message_remove_person_dialog">Vuoi davvero rimuovere %s?</string>
     <string name="message_error_remove_person">Persona %s non rimossa </string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
     <string name="message_export">Esportando</string>

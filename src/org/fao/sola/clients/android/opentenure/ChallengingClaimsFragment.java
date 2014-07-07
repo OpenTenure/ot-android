@@ -119,7 +119,7 @@ public class ChallengingClaimsFragment extends ListFragment {
 				else cto.setStatus(" ");
 				claimListTOs.add(cto);
 			}
-			ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs);
+			ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(rootView.getContext(), claimListTOs, modeActivity.getMode());
 			setListAdapter(adapter);
 			adapter.notifyDataSetChanged();
 

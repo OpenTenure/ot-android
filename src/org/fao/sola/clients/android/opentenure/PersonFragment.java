@@ -101,8 +101,7 @@ public class PersonFragment extends Fragment {
 
 		inflater.inflate(R.menu.person, menu);
 
-		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0
-				|| !allowSave) {
+		if (!allowSave) {
 			menu.removeItem(R.id.action_save);
 		}
 

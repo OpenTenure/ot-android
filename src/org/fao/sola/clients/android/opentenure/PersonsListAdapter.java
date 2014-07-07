@@ -53,8 +53,9 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 	private List<PersonListTO> filteredPersons;
 	private List<PersonListTO> persons;
 	LayoutInflater inflater;
+	private ModeDispatcher.Mode mode;
 
-	public PersonsListAdapter(Context context, List<PersonListTO> persons) {
+	public PersonsListAdapter(Context context, List<PersonListTO> persons, ModeDispatcher.Mode mode) {
 		super(context, R.layout.persons_list_item, persons);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
@@ -62,6 +63,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		this.originalPersons = new ArrayList<PersonListTO>(persons);
 		this.persons = persons;
 		this.filteredPersons = null;
+		this.mode = mode;
 	}
 
 	@Override
@@ -143,7 +145,8 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		}
 
 		if (!Person.getIdsWithClaims().contains(person.getPersonId())
-				&& !Person.getIdsWithShares().contains(person.getPersonId())) {
+				&& !Person.getIdsWithShares().contains(person.getPersonId())
+				&& mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
 			vh.remove.setOnClickListener(new DeletePersonListener(persons.get(
 					position).getId()));

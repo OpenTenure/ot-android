@@ -299,7 +299,7 @@ public class LocalClaimsFragment extends ListFragment {
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());
 
-				if (days != 0)
+				if (days > 0)
 					cto.setRemaingDays(getResources().getString(
 							R.string.message_remaining_days)
 							+ days);
@@ -310,7 +310,7 @@ public class LocalClaimsFragment extends ListFragment {
 			}
 		}
 		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(
-				rootView.getContext(), claimListTOs);
+				rootView.getContext(), claimListTOs, mainActivity.getMode());
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
