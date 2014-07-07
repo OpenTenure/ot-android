@@ -815,7 +815,16 @@ public class CommunityServerAPI {
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(100);
-			saveResponse.setMessage("Unknown Host Exception");
+			saveResponse.setMessage("Unknown Host Exception : Network failure");
+
+			return saveResponse;
+		}catch (java.net.SocketException se) {
+
+			se.printStackTrace();
+
+			SaveClaimResponse saveResponse = new SaveClaimResponse();
+			saveResponse.setHttpStatusCode(100);
+			saveResponse.setMessage("Socket Exception : Network failure" );
 
 			return saveResponse;
 		} catch (IOException e) {
@@ -823,8 +832,8 @@ public class CommunityServerAPI {
 			e.printStackTrace();
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
-			saveResponse.setHttpStatusCode(105);
-			saveResponse.setMessage(e.getMessage());
+			saveResponse.setHttpStatusCode(100);
+			saveResponse.setMessage("IOException Exception : Network failure");
 
 			return saveResponse;
 		}

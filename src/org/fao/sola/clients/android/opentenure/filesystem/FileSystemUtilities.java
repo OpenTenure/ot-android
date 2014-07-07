@@ -40,6 +40,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import com.google.gson.FieldNamingPolicy;
@@ -426,14 +427,13 @@ public class FileSystemUtilities {
 			}
 			return claimFold.delete();
 		}
-		
+
 		return true;
 	}
-	
+
 	public static boolean deleteCLaimant(String personId) {
 
 		File claimantFold = getClaimantFolder(personId);
-	
 
 		File[] files;
 
@@ -445,7 +445,7 @@ public class FileSystemUtilities {
 			}
 			return claimantFold.delete();
 		}
-		
+
 		return true;
 	}
 
@@ -458,6 +458,15 @@ public class FileSystemUtilities {
 		else {
 			long totalSize = 0;
 			long uploadedSize = 0;
+
+			File claimfolder = getClaimFolder(claim.getClaimId());
+			File json = new File(claimfolder, "claim.json");
+			totalSize = totalSize + json.length();
+
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE))
+				uploadedSize = uploadedSize + json.length();
+
 			List<Attachment> attachments = claim.getAttachments();
 			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
@@ -470,10 +479,6 @@ public class FileSystemUtilities {
 				}
 
 			}
-
-			File claimfolder = getClaimFolder(claim.getClaimId());
-			File json = new File(claimfolder, "claim.json");
-			uploadedSize = uploadedSize + json.length();
 
 			float factor = (float) uploadedSize / totalSize;
 

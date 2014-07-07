@@ -104,8 +104,7 @@ public class UploadChunksTask extends
 					claim.update();
 
 					progress = FileSystemUtilities.getUploadProgress(claim);
-					System.out.println("UploadChunkTask Qui il progress e' : "
-							+ progress);
+					
 					vh.getBar().setProgress(progress);
 
 					vh.getStatus().setText(
@@ -215,7 +214,7 @@ public class UploadChunksTask extends
 				vh.getBar().setProgress(progress);
 
 				vh.getStatus().setText(
-						ClaimStatus._UPLOADING + ": " + progress + " %");
+						ClaimStatus._UPLOAD_INCOMPLETE + ": " + progress + " %");
 				vh.getStatus().setTextColor(
 						OpenTenureApplication.getContext().getResources()
 								.getColor(R.color.status_created));

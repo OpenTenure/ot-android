@@ -491,20 +491,28 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setNotes(notes);
 
-		java.util.Date dob = null;
-		try {
-			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_start_input_field))
-							.getText().toString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			dob = null;
-			return 2;
-		}
+		String startDate = ((EditText) rootView
+				.findViewById(R.id.date_of_start_input_field)).getText()
+				.toString();
 
-		if (dob != null)
-			claim.setDateOfStart(new Date(dob.getTime()));
+		java.util.Date dob = null;
+
+		if (startDate != null && !startDate.trim().equals("")) {
+			try {
+
+				dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.parse(startDate);
+
+				if (dob != null)
+					claim.setDateOfStart(new Date(dob.getTime()));
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+				dob = null;
+				return 2;
+			}
+
+		}
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
@@ -557,20 +565,28 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setNotes(notes);
 
-		java.util.Date dob = null;
-		try {
-			dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_start_input_field))
-							.getText().toString());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			dob = null;
-			return 2;
-		}
+		String startDate = ((EditText) rootView
+				.findViewById(R.id.date_of_start_input_field)).getText()
+				.toString();
 
-		if (dob != null)
-			claim.setDateOfStart(new Date(dob.getTime()));
+		java.util.Date dob = null;
+
+		if (startDate != null && !startDate.trim().equals("")) {
+			try {
+
+				dob = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.parse(startDate);
+
+				if (dob != null)
+					claim.setDateOfStart(new Date(dob.getTime()));
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+				dob = null;
+				return 2;
+			}
+
+		}
 
 		if (createPersonAsOwner(person, claim.getPerson().getPersonId()) == 0)
 			return 0;

@@ -65,7 +65,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 		String claimId = (String) params[0];
 		ViewHolder vh = (ViewHolder) params[1];
 		String json = FileSystemUtilities.getJsonClaim(claimId);
-		
+
 		SaveClaimResponse res = CommunityServerAPI.saveClaim(json);
 		res.setClaimId(claimId);
 
@@ -155,7 +155,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		}
 		case 110: {
-			/* IOException: */
+			
 
 			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
@@ -231,8 +231,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			break;
 		}
 
-		case 403:
-
+		case 403: {
 			/* Error Login */
 
 			Log.d("CommunityServerAPI",
@@ -248,8 +247,13 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			OpenTenureApplication.setLoggedin(false);
 
-			break;
+			ViewHolder vh = vhr.getVh();
 
+			vh.getStatus().setVisibility(View.GONE);
+			vh.getBar().setVisibility(View.GONE);
+
+			break;
+		}
 		case 404: {
 
 			/* Error Login */
@@ -307,8 +311,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
 
-			System.out
-					.println("SaveClaimTask Qui il progress e' : " + progress);
 
 			vh.getStatus().setText(
 					ClaimStatus._UPLOADING + ": " + progress + " %");
