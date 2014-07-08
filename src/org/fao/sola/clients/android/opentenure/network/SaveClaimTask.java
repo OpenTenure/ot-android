@@ -240,7 +240,12 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast
 					.makeText(
 							OpenTenureApplication.getContext(),
-							R.string.message_login_no_more_valid + "  "
+							OpenTenureApplication
+									.getContext()
+									.getResources()
+									.getString(
+											R.string.message_submission_error)
+									+ " "
 									+ res.getHttpStatusCode() + "  "
 									+ res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
