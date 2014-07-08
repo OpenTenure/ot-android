@@ -29,6 +29,6 @@ package org.fao.sola.clients.android.opentenure;
 
 public interface MapFragmentListener {
 	
-	public void setId(int id);
+	public void setMapFragmentId(int id);
 
 }

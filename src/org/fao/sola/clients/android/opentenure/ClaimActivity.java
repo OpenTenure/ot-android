@@ -201,7 +201,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	}
 
 	@Override
-	public void setId(int id) {
+	public void setMapFragmentId(int id) {
 		mapFragmentId = id;
 	}
 }

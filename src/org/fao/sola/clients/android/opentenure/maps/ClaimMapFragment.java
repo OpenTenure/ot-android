@@ -107,6 +107,7 @@ public class ClaimMapFragment extends Fragment implements
 	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
+	private MapFragmentListener mapFragmentListener;
 	private int mapType = R.id.map_provider_google_normal;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
@@ -157,10 +158,11 @@ public class ClaimMapFragment extends Fragment implements
 					+ " must implement ModeDispatcher");
 		}
 		try {
-			((MapFragmentListener) activity).setId(getId());
+			mapFragmentListener = (MapFragmentListener) activity;
+			mapFragmentListener.setMapFragmentId(this.getId());
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
-					+ " must implement ModeDispatcher");
+					+ " must implement MapFragmentListener");
 		}
 	}
 
@@ -191,6 +193,7 @@ public class ClaimMapFragment extends Fragment implements
 	                SensorManager.SENSOR_DELAY_UI);
 		}
 		lh.hurryUp();
+		mapFragmentListener.setMapFragmentId(this.getId());
 	}
 
 	@Override
@@ -205,6 +208,7 @@ public class ClaimMapFragment extends Fragment implements
 	public void onStart() {
 		super.onStart();
 		lh.start();
+		mapFragmentListener.setMapFragmentId(this.getId());
 	}
 	
 	@Override
@@ -380,7 +384,7 @@ public class ClaimMapFragment extends Fragment implements
 			});
 		}
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
-	       
+		mapFragmentListener.setMapFragmentId(this.getId());
 		return mapView;
 
 	}
