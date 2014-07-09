@@ -128,6 +128,8 @@
     <string name="message_db_password">Password to access data?</string>
     <string name="message_cant_open_db">Unable to access data</string>
     <string name="message_check_upgrade_db">Checking db upgrade</string>
+    <string name="message_no_application">Can\'t find an application to open the file </string>
+    <string name="message_error_opening_file">Error opening the file : </string>
     <string name="message_old_db_password">Current password?</string>
     <string name="message_new_db_password">New password?</string>
     <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>

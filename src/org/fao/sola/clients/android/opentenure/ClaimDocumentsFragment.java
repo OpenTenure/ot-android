@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.model.MD5;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -160,8 +161,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				final Dialog dialog = new Dialog(rootView.getContext());
 				dialog.setContentView(R.layout.custom_add_document);
 				dialog.setTitle(R.string.new_file);
-				
-				
+
 				// Attachment Description
 				final EditText fileDescription = (EditText) dialog
 						.findViewById(R.id.fileDocumentDescription);
@@ -182,7 +182,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				dataAdapter.setDropDownViewResource(R.layout.document_spinner);
 
 				spinner.setAdapter(dataAdapter);
-				
+
 				// Confirm Button
 
 				final Button confirmButton = (Button) dialog
@@ -194,25 +194,25 @@ public class ClaimDocumentsFragment extends ListFragment {
 					@Override
 					public void onClick(View v) {
 
-						File copy = FileUtils.getFile(rootView.getContext(), uri);
+						File copy = FileUtils.getFile(rootView.getContext(),
+								uri);
 
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						attachment.setFileType((new DocumentType()).getTypebyDisplayVaue((String)spinner.getSelectedItem()));						
+						attachment.setFileType((new DocumentType())
+								.getTypebyDisplayVaue((String) spinner
+										.getSelectedItem()));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
 						attachment.setSize(copy.length());
-						
+
 						attachment.create();
 						update();
-						
-						
-						
-						
+
 						dialog.dismiss();
 
 					}
@@ -232,7 +232,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 						dialog.dismiss();
 					}
 				});
-				
+
 				dialog.show();
 
 			}
@@ -294,18 +294,17 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						attachment.setFileType((new DocumentType()).getTypebyDisplayVaue((String)spinner.getSelectedItem()));
+						attachment.setFileType((new DocumentType())
+								.getTypebyDisplayVaue((String) spinner
+										.getSelectedItem()));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
 						attachment.setSize(copy.length());
-						
+
 						attachment.create();
 						update();
-						
-						
-						
-						
+
 						dialog.dismiss();
 
 					}
@@ -371,7 +370,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 			try {
 				startActivityForResult(intent, REQUEST_CHOOSER);
 			} catch (Exception e) {
-				Log.d(this.getClass().getName(), "Unable to start file chooser intent due to " + e.getMessage());
+				Log.d(this.getClass().getName(),
+						"Unable to start file chooser intent due to "
+								+ e.getMessage());
 			}
 			return true;
 		default:
@@ -418,12 +419,39 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 		if (att != null && att.getPath() != null && !att.getPath().equals("")) {
 
-			Intent intent = new Intent(Intent.ACTION_VIEW);
-			intent.setDataAndType(Uri.parse("file://" + att.getPath()),
-					att.getMimeType());
-			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			try {
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setDataAndType(Uri.parse("file://" + att.getPath()),
+						att.getMimeType());
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-			startActivity(intent);
+				startActivity(intent);
+			} catch (ActivityNotFoundException e) {
+
+				Log.d(this.getClass().getName(),
+						"No Activity Found Exception to handle :"
+								+ att.getFileName());
+
+				Toast.makeText(
+						OpenTenureApplication.getContext(),
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.message_no_application)
+								+" "+ att.getFileName(), Toast.LENGTH_LONG).show();
+
+				e.getMessage();
+			}
+
+			catch (Throwable t) {
+
+				Log.d(this.getClass().getName(),
+						"Error opening :" + att.getFileName());
+
+				Toast.makeText(
+						OpenTenureApplication.getContext(),
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.message_error_opening_file),
+						Toast.LENGTH_LONG).show();
+			}
 
 		}
 
@@ -440,8 +468,10 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Claim claim = Claim.getClaim(claimId);
 			attachments = claim.getAttachments();
 			for (Attachment attachment : attachments) {
-				String slogan = attachment.getDescription() + ", Type: "
-						+ (new DocumentType()).getDisplayVauebyType(attachment.getFileType()) + " - "
+				String slogan = attachment.getDescription()
+						+ ", Type: "
+						+ (new DocumentType()).getDisplayVauebyType(attachment
+								.getFileType()) + " - "
 						+ attachment.getMimeType();
 				slogans.add(slogan);
 				ids.add(attachment.getAttachmentId());

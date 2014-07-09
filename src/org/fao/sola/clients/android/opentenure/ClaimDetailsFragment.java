@@ -190,8 +190,7 @@ public class ClaimDetailsFragment extends Fragment {
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
 				int progress = FileSystemUtilities.getUploadProgress(claim);
-				System.out.println("ClaimDetailsFragment Qui il progress e' : "
-						+ progress);
+
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
 				bar.setProgress(progress);
