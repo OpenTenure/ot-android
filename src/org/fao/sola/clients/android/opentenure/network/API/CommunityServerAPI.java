@@ -52,7 +52,7 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimTypesResponse;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimsResponse;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;

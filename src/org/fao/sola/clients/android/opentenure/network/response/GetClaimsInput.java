@@ -29,9 +29,20 @@ package org.fao.sola.clients.android.opentenure.network.response;
 
 import java.util.List;
 
-public class GetClaimsResponse extends ApiResponse{
+import android.view.View;
+
+
+/**
+ * This class hold the list of claim to be donwloaded from the server
+ *  and the main map view to handle the progress bar 
+ * 
+ * */
+public class GetClaimsInput extends ApiResponse{
 	
 	List<Claim> Claims;
+	View mapView;
+	int downloaded;
+	boolean result ; 
 
 	public List<Claim> getClaims() {
 		return Claims;
@@ -40,7 +51,30 @@ public class GetClaimsResponse extends ApiResponse{
 	public void setClaims(List<Claim> claims) {
 		Claims = claims;
 	}
-	
+
+	public View getMapView() {
+		return mapView;
+	}
+
+	public void setMapView(View mapView) {
+		this.mapView = mapView;
+	}
+
+	public int getDownloaded() {
+		return downloaded;
+	}
+
+	public void setDownloaded(int downloaded) {
+		this.downloaded = downloaded;
+	}
+
+	public boolean isResult() {
+		return result;
+	}
+
+	public void setResult(boolean result) {
+		this.result = result;
+	}
 	
 
 }

@@ -39,6 +39,7 @@
     <string name="title_claim_documents">Documents</string>
     <string name="title_claim_photos">Claim photos</string>
     <string name="title_claim_map">Map</string>
+    <string name="title_claim__downloading_map">Downloading Claim</string>
     <string name="title_claim_adjacencies">Adjacencies</string>
     <string name="title_claim_owners">Shares</string>
     <string name="title_claim_challenges">Challenges</string>
@@ -113,6 +114,8 @@
     <string name="message_downloading_attachment">Downloading the attachment</string>
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save. Check details and retry</string>
+    <string name="message_unable_to_save_missing_claim_name">Unable to save. Missing Claim name</string>
+    <string name="message_unable_to_save_missing_person">Unable to save. Missing Claimant</string>
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_uploading">The claim is in upload</string>
     <string name="message_submission_error">Error during submission of the claim</string>

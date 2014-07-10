@@ -27,44 +27,165 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import java.util.Iterator;
+import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+
+import org.fao.sola.clients.android.opentenure.filesystem.json.SaveDownloadedClaim;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
+
 import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class GetClaimsTask extends AsyncTask<Claim, Void, Boolean> {
+/**
+ * 
+ * Asynk task that downloads from server all the claims of the list passed as
+ * input
+ * 
+ * */
+public class GetClaimsTask extends
+		AsyncTask<GetClaimsInput, GetClaimsInput, GetClaimsInput> {
 
 	@Override
-	protected Boolean doInBackground(Claim... params) {
+	protected GetClaimsInput doInBackground(GetClaimsInput... params) {
 
-		return GetClaims.execute(params);
+		int i = 0;
+		boolean success = true;
+
+		GetClaimsInput input = params[0];
+		List<Claim> claims = input.getClaims();
+
+		for (Iterator iterator = claims.iterator(); iterator.hasNext();) {
+			Claim claim = (Claim) iterator.next();
+
+			org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim downloadedClaim = CommunityServerAPI
+					.getClaim(claim.getId());
+
+			if (downloadedClaim == null) {
+				success = false;
+
+			} else
+				success = SaveDownloadedClaim.save(downloadedClaim);
+
+			if (success == false) {
+
+				input.setResult(success);
+
+				return input;
+
+			} else {
+
+				i++;
+				input.setDownloaded(i);
+				publishProgress(input);
+				input.setResult(success);
+
+			}
+
+		}
+		return input;
+
+	}
+
+	protected void onProgressUpdate(GetClaimsInput... progress) {
+
+		GetClaimsInput input = progress[0];
+
+		View mapView = input.getMapView();
+
+		if (mapView != null) {
+
+			ProgressBar bar = (ProgressBar) mapView
+					.findViewById(R.id.progress_bar);
+
+			bar.setVisibility(View.VISIBLE);
+
+			TextView label = (TextView) mapView
+					.findViewById(R.id.download_claim_label);
+			label.setVisibility(View.VISIBLE);
+
+			bar.setProgress(calculateProgress(input.getDownloaded(), input
+					.getClaims().size()));
+		}
+
 	}
 
 	@Override
-	protected void onPostExecute(final Boolean result) {
+	protected void onPostExecute(final GetClaimsInput input) {
 
 		Toast toast;
 
-		if (result) {
+		if (input.isResult()) {
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_claims_downloaded), Toast.LENGTH_SHORT);
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_claims_downloaded),
+					Toast.LENGTH_SHORT);
 			toast.show();
 
-		OpenTenureApplication.getMapFragment().refreshMap();
-		OpenTenureApplication.getPersonsFragment().refresh();
-			
-			
+			OpenTenureApplication.getMapFragment().refreshMap();
+			OpenTenureApplication.getPersonsFragment().refresh();
+
+			View mapView = input.getMapView();
+
+			if (mapView != null) {
+
+				ProgressBar bar = (ProgressBar) mapView
+						.findViewById(R.id.progress_bar);
+				bar.setVisibility(View.GONE);
+
+				TextView label = (TextView) mapView
+						.findViewById(R.id.download_claim_label);
+				label.setVisibility(View.GONE);
+				
+			}
 
 		} else {
 
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_error_downloading_claims), Toast.LENGTH_SHORT);
+			toast = Toast.makeText(
+					OpenTenureApplication.getContext(),
+					OpenTenureApplication
+							.getContext()
+							.getResources()
+							.getString(
+									R.string.message_error_downloading_claims),
+					Toast.LENGTH_SHORT);
 			toast.show();
+
+			View mapView = input.getMapView();
+
+			if (mapView != null) {
+
+				ProgressBar bar = (ProgressBar) mapView
+						.findViewById(R.id.progress_bar);
+
+				bar.setVisibility(View.GONE);
+				TextView label = (TextView) mapView
+						.findViewById(R.id.download_claim_label);
+				label.setVisibility(View.GONE);
+			}
 		}
 
+	}
+
+	private int calculateProgress(int downloaded, int total) {
+
+		int progress;
+
+		float factor = (float) downloaded / total;
+
+		progress = (int) (factor * 100);
+
+		return progress;
 	}
 
 }
