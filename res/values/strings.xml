@@ -153,6 +153,10 @@
     <string name="message_touch_to_select_a_person">Touch to select a person</string>
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>
     <string name="message_error_mandatory_fields">Fulfill all the mandatory fields before to save</string>
+    <string name="message_error_mandatory_field_first_name">Fulfill the mandatory field first name before to save</string>
+    <string name="message_error_mandatory_field_last_name">Fulfill the mandatory field last name before to save</string>
+    <string name="message_error_mandatory_field_gender">Fulfill the mandatory field gander before to save</string>
+    <string name="message_error_mandatory_field_place_of_birth">Fulfill the mandatory field place of birth before to save</string>
     <string name="message_error_mandatory_birthdate">Date of birth not in the right format or empty</string>
     <string name="message_error_startdate">Date of right\'s start  not in the right format or empty</string>
     <string name="message_remove_quest">Do you really want withdraw the Claim ?</string>

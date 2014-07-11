@@ -35,7 +35,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-
 import org.fao.sola.clients.android.opentenure.model.IdType;
 
 import org.fao.sola.clients.android.opentenure.model.Person;
@@ -214,8 +213,6 @@ public class PersonFragment extends Fragment {
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
 				.setChecked((person.getGender().equals("M")));
 
-
-		
 		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
 				.setChecked((person.getGender().equals("M")));
 		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
@@ -251,7 +248,7 @@ public class PersonFragment extends Fragment {
 			((RadioButton) rootView
 					.findViewById(R.id.gender_masculine_input_field))
 					.setClickable(false);
-	
+
 			((EditText) rootView
 					.findViewById(R.id.mobile_phone_number_input_field))
 					.setFocusable(false);
@@ -314,9 +311,9 @@ public class PersonFragment extends Fragment {
 							.getText().toString());
 		} catch (ParseException e) {
 			e.printStackTrace();
-			// dob = new java.util.Date();
-			return 3;
+			return 4;
 		}
+		
 		person.setDateOfBirth(new Date(dob.getTime()));
 		person.setPlaceOfBirth(((EditText) rootView
 				.findViewById(R.id.place_of_birth_input_field)).getText()
@@ -350,14 +347,20 @@ public class PersonFragment extends Fragment {
 		if (((RadioButton) rootView
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
-		
-			person.setPersonType(Person._PHYSICAL);
 
-		if (person.getDateOfBirth() == null || person.getFirstName() == null
-				|| person.getLastName() == null || person.getGender() == null
-				|| person.getPlaceOfBirth() == null || person.getPersonType() == null
-						|| person.getPersonType().trim().equals(""))
+		person.setPersonType(Person._PHYSICAL);
+
+		if (person.getFirstName() == null || person.getFirstName().trim().equals(""))
 			return 2;
+
+		if (person.getLastName() == null || person.getLastName().trim().equals(""))
+			return 3;
+
+		if (person.getGender() == null )
+			return 5;
+
+		if (person.getPlaceOfBirth() == null || person.getPlaceOfBirth().trim().equals(""))
+			return 6;
 
 		if (person.create() == 1) {
 
@@ -391,7 +394,7 @@ public class PersonFragment extends Fragment {
 		} catch (ParseException e) {
 			e.printStackTrace();
 			// dob = new java.util.Date();
-			return 3;
+			return 4;
 		}
 		person.setDateOfBirth(new Date(dob.getTime()));
 		person.setPlaceOfBirth(((EditText) rootView
@@ -416,7 +419,7 @@ public class PersonFragment extends Fragment {
 				.findViewById(R.id.gender_masculine_input_field)).isChecked())
 			person.setGender("M");
 
-			person.setPersonType(Person._PHYSICAL);
+		person.setPersonType(Person._PHYSICAL);
 
 		String idTypeDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.id_type_spinner)).getSelectedItem();
@@ -425,19 +428,17 @@ public class PersonFragment extends Fragment {
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
 
-		if (person.getDateOfBirth() == null
-				|| person.getDateOfBirth().equals("")
-				|| person.getFirstName() == null
-				|| person.getFirstName().trim().equals("")
-				|| person.getLastName() == null
-				|| person.getLastName().trim().equals("")
-				|| person.getGender() == null
-				|| person.getGender().trim().equals("")
-				|| person.getPersonType() == null
-				|| person.getPersonType().trim().equals("")
-				|| person.getPlaceOfBirth() == null
-				|| person.getPlaceOfBirth().trim().equals(""))
+		if (person.getFirstName() == null || person.getFirstName().trim().equals(""))
 			return 2;
+
+		if (person.getLastName() == null || person.getLastName().trim().equals(""))
+			return 3;
+
+		if (person.getGender() == null )
+			return 5;
+
+		if (person.getPlaceOfBirth() == null || person.getPlaceOfBirth().trim().equals(""))
+			return 6;
 
 		return person.update();
 	}
@@ -459,13 +460,30 @@ public class PersonFragment extends Fragment {
 					toast.show();
 				} else if (saved == 2) {
 					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_error_mandatory_fields,
+							R.string.message_error_mandatory_field_first_name,
 							Toast.LENGTH_SHORT);
 					toast.show();
 				} else if (saved == 3) {
 					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_field_last_name,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (saved == 4) {
+					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_error_mandatory_birthdate,
 							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (saved == 5) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_field_gender,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (saved == 6) {
+					toast = Toast
+							.makeText(
+									rootView.getContext(),
+									R.string.message_error_mandatory_field_place_of_birth,
+									Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
 					toast = Toast
@@ -484,13 +502,30 @@ public class PersonFragment extends Fragment {
 					toast.show();
 				} else if (updated == 2) {
 					toast = Toast.makeText(rootView.getContext(),
-							R.string.message_error_mandatory_fields,
+							R.string.message_error_mandatory_field_first_name,
 							Toast.LENGTH_SHORT);
 					toast.show();
 				} else if (updated == 3) {
 					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_field_last_name,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (updated == 4) {
+					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_error_mandatory_birthdate,
 							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (updated == 5) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_error_mandatory_field_gender,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (updated == 6) {
+					toast = Toast
+							.makeText(
+									rootView.getContext(),
+									R.string.message_error_mandatory_field_place_of_birth,
+									Toast.LENGTH_SHORT);
 					toast.show();
 				} else {
 					toast = Toast
