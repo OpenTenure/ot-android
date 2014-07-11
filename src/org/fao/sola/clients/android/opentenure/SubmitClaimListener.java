@@ -29,7 +29,6 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
-
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -76,12 +75,12 @@ public class SubmitClaimListener implements OnClickListener {
 				if (vertices.size() < 3) {
 
 					Toast toast = Toast.makeText(v.getContext(),
-							R.string.message_map_not_yet_draw, Toast.LENGTH_LONG);
+							R.string.message_map_not_yet_draw,
+							Toast.LENGTH_LONG);
 					toast.show();
 					return;
 
-				}				
-
+				}
 
 				JsonUtilities.createClaimJson(claimId);
 
@@ -89,26 +88,27 @@ public class SubmitClaimListener implements OnClickListener {
 						"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
 				Log.d(this.getClass().getName(),
 						"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
-				
 
-				int progress = FileSystemUtilities.getUploadProgress(Claim.getClaim(claimId));
-				System.out.println("SubmitClaimListener Qui il progress e' : " +progress);
+				int progress = FileSystemUtilities.getUploadProgress(Claim
+						.getClaim(claimId));
+
 				vh.bar.setVisibility(View.VISIBLE);
 				vh.bar.setProgress(progress);
-				vh.status.setText(ClaimStatus._UPLOADING + ": "+ progress + " %");	
-				vh.status.setTextColor(OpenTenureApplication.getContext().getResources().getColor(
-						R.color.status_created));
+				vh.status.setText(ClaimStatus._UPLOADING + ": " + progress
+						+ " %");
+				vh.status.setTextColor(OpenTenureApplication.getContext()
+						.getResources().getColor(R.color.status_created));
 				vh.status.setVisibility(View.VISIBLE);
-				
+
 				try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				SaveClaimTask saveClaimtask = new SaveClaimTask();
-				saveClaimtask.execute(claimId,vh);
+				saveClaimtask.execute(claimId, vh);
 
 			} else {
 				Toast toast = Toast.makeText(v.getContext(),

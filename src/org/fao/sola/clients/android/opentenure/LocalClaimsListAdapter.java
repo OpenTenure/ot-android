@@ -56,7 +56,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	private ModeDispatcher.Mode mode;
 	LayoutInflater inflater;
 
-	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims, ModeDispatcher.Mode mode) {
+	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims,
+			ModeDispatcher.Mode mode) {
 		super(context, R.layout.claims_list_item, claims);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
@@ -168,8 +169,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					R.color.status_created));
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
-			
-			System.out.println("LocalClaimsListAdapter Qui il progress e' : " +progress);
+
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
@@ -259,13 +259,12 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.remove = (ImageView) convertView
 				.findViewById(R.id.action_remove_claim);
 
-
-		if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
-			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
-					.getId(), vh));
+		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(
+					position).getId(), vh));
 			vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
 					position).getId(), vh));
-		}else{
+		} else {
 			vh.send.setVisibility(View.GONE);
 			vh.remove.setVisibility(View.GONE);
 		}

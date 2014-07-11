@@ -513,11 +513,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 		}
 
-		if(person == null)
+		if (person == null)
 			return 4;
-		
+
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+
 		if (claim.create() == 1) {
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
@@ -620,21 +621,17 @@ public class ClaimDetailsFragment extends Fragment {
 							R.string.message_error_startdate,
 							Toast.LENGTH_SHORT);
 					toast.show();
-				} else if (resultSave == 3 ) {
-					toast = Toast
-							.makeText(rootView.getContext(),
-									R.string.message_unable_to_save_missing_claim_name,
-									Toast.LENGTH_SHORT);
+				} else if (resultSave == 3) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_unable_to_save_missing_claim_name,
+							Toast.LENGTH_SHORT);
 					toast.show();
-				}
-				else if (resultSave == 4 ) {
-					toast = Toast
-							.makeText(rootView.getContext(),
-									R.string.message_unable_to_save_missing_person,
-									Toast.LENGTH_SHORT);
+				} else if (resultSave == 4) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_unable_to_save_missing_person,
+							Toast.LENGTH_SHORT);
 					toast.show();
-				}
-				else if (resultSave == 5 ) {
+				} else if (resultSave == 5) {
 					toast = Toast
 							.makeText(rootView.getContext(),
 									R.string.message_unable_to_save,

@@ -45,7 +45,7 @@ import android.content.Context;
 public class Claim {
 
 	public enum Status {
-		unmoderated, moderated, challenged, created, uploading, upload_incomplete, upload_error,withdrawn
+		unmoderated, moderated, challenged, created, uploading, upload_incomplete, upload_error, withdrawn
 	};
 
 	public static final int MAX_SHARES_PER_CLAIM = 100;
@@ -90,11 +90,11 @@ public class Claim {
 				+ Arrays.toString(propertyLocations.toArray()) + ", vertices="
 				+ Arrays.toString(vertices.toArray()) + ", additionalInfo="
 				+ Arrays.toString(additionalInfo.toArray())
-				+ ", challengedClaim=" + challengedClaim
-				+ ", notes=" + notes
+				+ ", challengedClaim=" + challengedClaim + ", notes=" + notes
 				+ ", challengeExpiryDate=" + challengeExpiryDate
-				+ ", dateOfStart=" + dateOfStart + ", challengingClaims="
-				+ Arrays.toString(challengingClaims.toArray())
+				+ ", dateOfStart=" + dateOfStart
+				+ ", challengingClaims="
+				// + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())
 				+ ", owners=" + Arrays.toString(owners.toArray())
 				+ ", availableShares=" + availableShares + "]";
@@ -429,7 +429,7 @@ public class Claim {
 				claim.setPerson(Person.getPerson(rs.getString(3)));
 				claim.setType((rs.getString(4)));
 				claim.setChallengedClaim(Claim.getClaim(rs.getString(5)));
-				claim.setChallengingClaims(getChallengingClaims(claimId));
+				// claim.setChallengingClaims(getChallengingClaims(claimId));
 				claim.setChallengeExpiryDate(rs.getDate(6));
 				claim.setDateOfStart(rs.getDate(7));
 				claim.setLandUse(rs.getString(8));
@@ -485,6 +485,7 @@ public class Claim {
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
+
 				Claim challengingClaim = Claim.getClaim(rs.getString(1));
 				challengingClaims.add(challengingClaim);
 			}
