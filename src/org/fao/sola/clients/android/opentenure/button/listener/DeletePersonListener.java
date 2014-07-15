@@ -25,8 +25,11 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.button.listener;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.R.string;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Person;
 

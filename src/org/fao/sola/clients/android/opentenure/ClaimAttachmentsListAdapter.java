@@ -29,6 +29,7 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.button.listener.DownloadAttachmentListener;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -46,6 +47,7 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,35 +71,38 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		this.readOnly = readOnly;
 	}
 
-	static class ViewHolder {
-		TextView id;
-		TextView slogan;
-		TextView status;
-		ImageView downloadIcon;
-		ImageView removeIcon;
-	}
+//	static class ViewHolder {
+//		TextView id;
+//		TextView slogan;
+//		TextView status;
+//		ImageView downloadIcon;
+//		ImageView removeIcon;
+//		ProgressBar bar;
+//	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		ViewHolder vh;
+		AttachmentViewHolder vh;
 
 		if (convertView == null) {
 			convertView = inflater.inflate(
 					R.layout.claim_attachments_list_item, parent, false);
-			vh = new ViewHolder();
+			vh = new AttachmentViewHolder();
 
 			vh.id = (TextView) convertView.findViewById(R.id.attachment_id);
 			vh.slogan = (TextView) convertView
 					.findViewById(R.id.attachment_description);
 			vh.status = (TextView) convertView
 					.findViewById(R.id.attachment_status);
+			vh.bar = (ProgressBar) convertView
+					.findViewById(R.id.progress_bar);
 			vh.downloadIcon = (ImageView) convertView
 					.findViewById(R.id.download_file);
 			vh.removeIcon = (ImageView) convertView
 					.findViewById(R.id.remove_icon);
 			convertView.setTag(vh);
 		} else {
-			vh = (ViewHolder) convertView.getTag();
+			vh = (AttachmentViewHolder) convertView.getTag();
 		}
 
 		vh.slogan.setText(slogans.get(position));
@@ -140,7 +145,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 		}
-		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
+		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR) || att.getStatus().equals(AttachmentStatus._CREATED)) {
 
 			vh.removeIcon.setOnClickListener(new OnClickListener() {
 
@@ -190,6 +195,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 			((ViewManager) convertView).removeView(vh.removeIcon);
 		}
+
 		Claim claim = Claim.getClaim(claimId);
 
 		if ((!claim.getStatus().equals(ClaimStatus._CREATED) && !claim
@@ -198,25 +204,28 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.downloadIcon.setVisibility(View.VISIBLE);
 		}
 
-		vh.downloadIcon.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				String[] params = new String[2];
-				params[0] = att.getClaimId();
-				params[1] = att.getAttachmentId();
-
-				GetAttachmentTask task = new GetAttachmentTask();
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-
-				Toast toast = Toast.makeText(
-						OpenTenureApplication.getContext(),
-						R.string.message_downloading_attachment,
-						Toast.LENGTH_SHORT);
-				toast.show();
-
-			}
-		});
+//		vh.downloadIcon.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//
+//				String[] params = new String[2];
+//				params[0] = att.getClaimId();
+//				params[1] = att.getAttachmentId();
+//
+//				GetAttachmentTask task = new GetAttachmentTask();
+//				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+//
+//				Toast toast = Toast.makeText(
+//						OpenTenureApplication.getContext(),
+//						R.string.message_downloading_attachment,
+//						Toast.LENGTH_SHORT);
+//				toast.show();
+//
+//			}
+//		});
+		
+		
+		vh.downloadIcon.setOnClickListener(new DownloadAttachmentListener(att,vh));
 
 		return convertView;
 	}

@@ -25,10 +25,15 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.button.listener;
 
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.ViewHolder;
+import org.fao.sola.clients.android.opentenure.R.color;
+import org.fao.sola.clients.android.opentenure.R.string;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -92,13 +97,13 @@ public class SubmitClaimListener implements OnClickListener {
 				int progress = FileSystemUtilities.getUploadProgress(Claim
 						.getClaim(claimId));
 
-				vh.bar.setVisibility(View.VISIBLE);
-				vh.bar.setProgress(progress);
-				vh.status.setText(ClaimStatus._UPLOADING + ": " + progress
+				vh.getBar().setVisibility(View.VISIBLE);
+				vh.getBar().setProgress(progress);
+				vh.getStatus().setText(ClaimStatus._UPLOADING + ": " + progress
 						+ " %");
-				vh.status.setTextColor(OpenTenureApplication.getContext()
+				vh.getStatus().setTextColor(OpenTenureApplication.getContext()
 						.getResources().getColor(R.color.status_created));
-				vh.status.setVisibility(View.VISIBLE);
+				vh.getStatus().setVisibility(View.VISIBLE);
 
 				try {
 					Thread.sleep(200);

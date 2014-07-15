@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.DeletePersonListener;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.content.Context;

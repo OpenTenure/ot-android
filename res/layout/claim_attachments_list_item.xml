@@ -38,6 +38,16 @@
             android:gravity="left|center"
             android:paddingTop="10sp"
             android:text="@string/title_item" />
+        
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="10sp"
+            android:minHeight="10sp"
+            android:paddingTop="5sp"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView

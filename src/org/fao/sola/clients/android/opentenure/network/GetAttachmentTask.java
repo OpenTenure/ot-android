@@ -32,8 +32,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.http.HttpStatus;
+import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.button.listener.DownloadAttachmentListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
@@ -43,6 +45,7 @@ import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentRes
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 /**
@@ -50,28 +53,27 @@ import android.widget.Toast;
  * Implements the resume of partial download.
  * 
  * */
-public class GetAttachmentTask extends AsyncTask<String, Void, String[]> {
+public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 	@Override
-	protected String[] doInBackground(String... params) {
+	protected Object[] doInBackground(Object... params) {
 		// TODO Auto-generated method stub
 
-		/*
-		 * Check if the file already exists
-		 */
 		GetAttachmentResponse res = null;
-		int lenght = 100000; /* Should be setted by property */
+		int lenght = 10000; /* Should be setted by property */
 		long offSet = 0;
-		String[] sentences = new String[2];
+		Object[] result = new Object[2];
 
-		Attachment att = Attachment.getAttachment(params[1]);
+		Attachment att = (Attachment) params[0];
+		AttachmentViewHolder vh = (AttachmentViewHolder) params[1];
 
+		/* if true the file is already in download, nothing to do */
 		if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
 
-			sentences[0] = att.getStatus();
-			sentences[1] = att.getFileName();
+			result[0] = att;
+			result[1] = vh;
 
-			return sentences;
+			return result;
 		} else {
 
 			att.setStatus(AttachmentStatus._DOWNLOADING);
@@ -79,28 +81,47 @@ public class GetAttachmentTask extends AsyncTask<String, Void, String[]> {
 
 		}
 
-		File file = new File(
-				FileSystemUtilities.getAttachmentFolder(params[0]),
-				att.getFileName());
+		/* create the File object to write */
+		File file = new File(FileSystemUtilities.getAttachmentFolder(att
+				.getClaimId()), att.getFileName());
 
 		try {
 
 			if (file.exists()) {
+
+				/* If the file exist set the offset to the last byte downoaded */
 				offSet = file.length();
 			} else
 				file.createNewFile();
 
 			/* Here I need a cycle */
 
+			float factor;
+
 			while (file.length() < att.getSize()) {
 
-				if ((att.getSize() - file.length()) < lenght)
-					lenght = (int) (att.getSize() - file.length());
+				if ((att.getSize() - file.length()) < lenght) {
 
+					/* Here to set the size of the chunk smaller than default */
+					lenght = (int) (att.getSize() - file.length());
+				}
+
+				/*
+				 * Calling the server passing the size of the chunk and the byte
+				 * from which download
+				 */
 				res = CommunityServerAPI.getAttachment(att.getAttachmentId(),
 						offSet, lenght + offSet - 1);
 
+				/* Setting progress bar */
+				factor = (float) file.length() / att.getSize();
+				int progress = (int) (factor * 100);
+				vh.getBar().setProgress(progress);
+
 				if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
+
+					Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED  : "
+							+ res.getMessage());
 
 					FileOutputStream fos = new FileOutputStream(file);
 					fos.write(res.getArray());
@@ -129,6 +150,11 @@ public class GetAttachmentTask extends AsyncTask<String, Void, String[]> {
 					fos.close();
 
 					offSet = offSet + lenght;
+
+					/* Setting progress bar */
+					factor = (float) file.length() / att.getSize();
+					progress = (int) (factor * 100);
+					vh.getBar().setProgress(progress);
 
 				} else if (res.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 
@@ -197,58 +223,81 @@ public class GetAttachmentTask extends AsyncTask<String, Void, String[]> {
 
 		}
 
-		sentences[0] = att.getStatus();
-		sentences[1] = att.getFileName();
+		result[0] = att;
+		result[1] = vh;
 
-		return sentences;
+		return result;
 	}
 
 	@Override
-	protected void onPostExecute(String[] sentences) {
+	protected void onPostExecute(Object[] result) {
 
-		if (sentences[0].equals(AttachmentStatus._UPLOADED)) {
+		AttachmentViewHolder vh = (AttachmentViewHolder) result[1];
+		Attachment att = (Attachment) result[0];
+
+		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
+
+			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getStatus().setText(AttachmentStatus._UPLOADED);
+			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+					R.color.status_unmoderated));
+			vh.getBar().setVisibility(View.GONE);
+			vh.getDownloadIcon().setVisibility(View.GONE);
 
 			Toast toast;
 
 			String message = String.format(OpenTenureApplication.getContext()
 					.getString(R.string.message_attachment_downloaded,
-							sentences[1]));
+							att.getFileName()));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
-		} else if (sentences[0].equals(AttachmentStatus._DOWNLOAD_FAILED)) {
+		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED))) {
+			
+			vh.getStatus().setText(AttachmentStatus._DOWNLOAD_FAILED);
+			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+					R.color.status_challenged));
+			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getBar().setVisibility(View.GONE);
 
 			Toast toast;
 
 			String message = String.format(OpenTenureApplication.getContext()
 					.getString(R.string.message_attachment_download_failed,
-							sentences[1]));
+							att.getFileName()));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
 
-		} else if (sentences[0].equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
+		} else if ((att.getStatus()
+				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE))) {
+
+			vh.getStatus().setText(AttachmentStatus._DOWNLOAD_INCOMPLETE);
+			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+					R.color.status_created));
+			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getBar().setVisibility(View.GONE);
 
 			Toast toast;
 
 			String message = String.format(OpenTenureApplication.getContext()
 					.getString(
 							R.string.message_attachment_download_not_complete,
-							sentences[1]));
+							att.getFileName()));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
 
-		} else if (sentences[0].equals(AttachmentStatus._DOWNLOADING)) {
+		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOADING))) {
 
 			Toast toast;
 
 			String message = String.format(OpenTenureApplication.getContext()
 					.getString(R.string.message_attachment_downloading,
-							sentences[1]));
+							att.getFileName()));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
