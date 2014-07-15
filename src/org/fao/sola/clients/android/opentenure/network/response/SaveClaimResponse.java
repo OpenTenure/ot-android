@@ -36,6 +36,7 @@ public class SaveClaimResponse extends ApiResponse{
 
 
 	String challengeExpiryDate;
+	String nr;
 //	ViewHolder vh;
 //	
 //	public ViewHolder getVh() {
@@ -59,6 +60,14 @@ public class SaveClaimResponse extends ApiResponse{
 	public void setAttachments(List<org.fao.sola.clients.android.opentenure.network.response.Attachment> attachments) {
 		this.attachments = attachments;
 	}
+	public String getNr() {
+		return nr;
+	}
+	public void setNr(String nr) {
+		this.nr = nr;
+	}
+
+	
 	
 
 

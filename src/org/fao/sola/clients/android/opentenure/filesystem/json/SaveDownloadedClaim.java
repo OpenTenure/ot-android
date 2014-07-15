@@ -237,6 +237,7 @@ public class SaveDownloadedClaim {
 
 			claimDB.setPerson(person);
 			claimDB.setStatus(downloadedClaim.getStatusCode());
+			claimDB.setClaimNumber(downloadedClaim.getNr());
 			claimDB.setType(downloadedClaim.getTypeCode());
 
 			Person.createPerson(person);
@@ -324,6 +325,12 @@ public class SaveDownloadedClaim {
 					personDB2.setMobilePhoneNumber(person2.getMobilePhone());
 					personDB2.setPersonId(person2.getId());
 					// personDB2.setPlaceOfBirth(person2.get);
+					
+					if (claimant.isPhysicalPerson())
+						personDB2.setPersonType(Person._PHYSICAL);
+					else
+						personDB2.setPersonType(Person._LEGAL);
+					
 					personDB2.setPostalAddress(person2.getAddress());
 
 					Person.createPerson(personDB2);

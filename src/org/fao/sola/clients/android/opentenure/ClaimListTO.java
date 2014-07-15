@@ -60,6 +60,15 @@ public class ClaimListTO {
 		this.status = status;
 	}
 
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	private String number;
 	private String id;
 	private String slogan;
 	private String status;

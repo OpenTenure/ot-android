@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 public class ViewHolder {
 	TextView id;
+	TextView number;
 	TextView slogan;
 	TextView status;
 	ProgressBar bar;
@@ -54,6 +55,12 @@ public class ViewHolder {
 	}
 	public void setId(TextView id) {
 		this.id = id;
+	}	
+	public TextView getNumber() {
+		return number;
+	}
+	public void setNumber(TextView number) {
+		this.number = number;
 	}
 	public TextView getSlogan() {
 		return slogan;

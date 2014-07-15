@@ -31,6 +31,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -174,6 +175,12 @@ public class ClaimDocumentsFragment extends ListFragment {
 				DocumentType dt = new DocumentType();
 
 				List<String> list = dt.getDocumentTypesDispalyValues();
+				
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					String string = (String) iterator.next();
+					
+					System.out.println("Document Type : "+ string );
+				}
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
