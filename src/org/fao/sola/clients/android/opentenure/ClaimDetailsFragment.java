@@ -72,6 +72,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -380,10 +381,60 @@ public class ClaimDetailsFragment extends Fragment {
 					.setText(challengedClaim.getStatus());
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
+
 			File challengedPersonPictureFile = Person
 					.getPersonPictureFile(challengedPerson.getPersonId());
 			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), challengedPersonPictureFile, 128));
+
+//			TextView challengeToClaimSlogan = (TextView) rootView
+//					.findViewById(R.id.challenge_to_claim_slogan);
+//			android.view.ViewGroup.LayoutParams params = challengeToClaimSlogan
+//					.getLayoutParams();
+//			params.width = LayoutParams.WRAP_CONTENT;
+//			challengeToClaimSlogan.setLayoutParams(params);
+
+			ImageView challengedClaimantRemoveButton = (ImageView) rootView
+					.findViewById(R.id.action_remove_challenge);
+
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0)
+				challengedClaimantRemoveButton.setVisibility(View.VISIBLE);
+
+			challengedClaimantRemoveButton
+					.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_id))
+									.setText("");
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_slogan))
+									.setBackgroundColor(getResources()
+											.getColor(
+													R.color.dark_background_opentenure));
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_slogan))
+									.setText(getResources()
+											.getString(
+													R.string.message_touch_to_select_a_claim));
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_status))
+									.setText("");
+
+							((ImageView) rootView
+									.findViewById(R.id.action_remove_challenge))
+									.setVisibility(View.INVISIBLE);
+							
+							
+
+						}
+					});
+
 		}
 	}
 
@@ -404,6 +455,15 @@ public class ClaimDetailsFragment extends Fragment {
 					.getPersonId());
 			claimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), personPictureFile, 128));
+			
+			ImageView claimantRemove = (ImageView) rootView
+					.findViewById(R.id.action_remove_person);
+			claimantRemove.setVisibility(View.INVISIBLE);
+			
+			
+			
+			
+			
 		}
 	}
 
