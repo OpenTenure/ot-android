@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
-import com.google.android.gms.maps.GoogleMap;
+import com.androidmapsextensions.GoogleMap;
 
 public abstract class ClickableMarker extends ActiveMarker implements Clickable {
 

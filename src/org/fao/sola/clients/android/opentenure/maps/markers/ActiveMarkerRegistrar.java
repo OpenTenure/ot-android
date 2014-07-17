@@ -30,7 +30,7 @@ package org.fao.sola.clients.android.opentenure.maps.markers;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.android.gms.maps.model.Marker;
+import com.androidmapsextensions.Marker;
 
 
 /**

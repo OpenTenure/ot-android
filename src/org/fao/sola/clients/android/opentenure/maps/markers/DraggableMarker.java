@@ -27,8 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.Marker;
 
 public abstract class DraggableMarker extends ActiveMarker implements Draggable {
 

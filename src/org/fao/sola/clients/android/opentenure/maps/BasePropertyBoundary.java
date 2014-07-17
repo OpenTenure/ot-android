@@ -49,14 +49,14 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.Log;
 
-import com.google.android.gms.maps.GoogleMap;
+import com.androidmapsextensions.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.Polyline;
+import com.androidmapsextensions.PolylineOptions;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
@@ -258,8 +258,14 @@ public class BasePropertyBoundary {
 				polygon.getEnvelope().getCoordinates()[0].x), new LatLng(
 				polygon.getEnvelope().getCoordinates()[2].y, polygon
 						.getEnvelope().getCoordinates()[2].x));
-		center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
-				.getCentroid().getCoordinate().x);
+		try {
+			center = new LatLng(polygon.getInteriorPoint().getCoordinate().y, polygon
+					.getInteriorPoint().getCoordinate().x);
+		} catch (Exception e) {
+			Log.d(this.getClass().getName(), "Non-convex polygon, falling back to centroid");
+			center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
+					.getCentroid().getCoordinate().x);
+		}
 	}
 
 	protected Marker createPropertyMarker(LatLng position, String title) {
