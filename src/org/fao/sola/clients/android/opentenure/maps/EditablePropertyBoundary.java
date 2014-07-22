@@ -76,6 +76,8 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
+	protected static final int PROPERTY_BOUNDARY_MARKERS_GROUP = 2;
+	protected static final int MARKER_EDIT_MARKERS_GROUP = 3;
 	private Map<Marker, Vertex> verticesMap;
 	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
@@ -807,20 +809,23 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	private Marker createMarker(int index, LatLng position) {
+		Marker marker;
 		if(allowDragging){
-			return map.addMarker(new MarkerOptions()
+			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
 			.draggable(true)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}else{
-			return map.addMarker(new MarkerOptions()
+			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
+		marker.setClusterGroup(PROPERTY_BOUNDARY_MARKERS_GROUP);
+		return marker;
 	}
 
 	@Override

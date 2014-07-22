@@ -66,6 +66,7 @@ public class BasePropertyBoundary {
 	protected static final float BOUNDARY_Z_INDEX = 2.0f;
 	public static final double SNAP_THRESHOLD = 0.0001;
 
+	protected static final int PROPERTY_LABEL_MARKERS_GROUP = 0;
 	protected String name;
 	protected String claimId;
 	protected String claimSlogan;
@@ -285,9 +286,11 @@ public class BasePropertyBoundary {
 		canvasText.drawText(name, canvasText.getWidth() / 2,
 				canvasText.getHeight(), tf);
 
-		return map.addMarker(new MarkerOptions().position(position)
+		Marker marker = map.addMarker(new MarkerOptions().position(position)
 				.title(title).icon(BitmapDescriptorFactory.fromBitmap(bmpText))
 				.anchor(0.5f, 1));
+		marker.setClusterGroup(PROPERTY_LABEL_MARKERS_GROUP);
+		return marker;
 	}
 
 	public void hideBoundary() {
