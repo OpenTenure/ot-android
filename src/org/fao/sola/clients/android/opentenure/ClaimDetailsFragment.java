@@ -72,6 +72,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -190,8 +191,7 @@ public class ClaimDetailsFragment extends Fragment {
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
 				int progress = FileSystemUtilities.getUploadProgress(claim);
-				System.out.println("ClaimDetailsFragment Qui il progress e' : "
-						+ progress);
+
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
 				bar.setProgress(progress);
@@ -381,10 +381,60 @@ public class ClaimDetailsFragment extends Fragment {
 					.setText(challengedClaim.getStatus());
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
+
 			File challengedPersonPictureFile = Person
 					.getPersonPictureFile(challengedPerson.getPersonId());
 			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), challengedPersonPictureFile, 128));
+
+//			TextView challengeToClaimSlogan = (TextView) rootView
+//					.findViewById(R.id.challenge_to_claim_slogan);
+//			android.view.ViewGroup.LayoutParams params = challengeToClaimSlogan
+//					.getLayoutParams();
+//			params.width = LayoutParams.WRAP_CONTENT;
+//			challengeToClaimSlogan.setLayoutParams(params);
+
+			ImageView challengedClaimantRemoveButton = (ImageView) rootView
+					.findViewById(R.id.action_remove_challenge);
+
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) != 0)
+				challengedClaimantRemoveButton.setVisibility(View.VISIBLE);
+
+			challengedClaimantRemoveButton
+					.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_id))
+									.setText("");
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_slogan))
+									.setBackgroundColor(getResources()
+											.getColor(
+													R.color.dark_background_opentenure));
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_slogan))
+									.setText(getResources()
+											.getString(
+													R.string.message_touch_to_select_a_claim));
+
+							((TextView) rootView
+									.findViewById(R.id.challenge_to_claim_status))
+									.setText("");
+
+							((ImageView) rootView
+									.findViewById(R.id.action_remove_challenge))
+									.setVisibility(View.INVISIBLE);
+							
+							
+
+						}
+					});
+
 		}
 	}
 
@@ -405,6 +455,15 @@ public class ClaimDetailsFragment extends Fragment {
 					.getPersonId());
 			claimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), personPictureFile, 128));
+			
+			ImageView claimantRemove = (ImageView) rootView
+					.findViewById(R.id.action_remove_person);
+			claimantRemove.setVisibility(View.INVISIBLE);
+			
+			
+			
+			
+			
 		}
 	}
 
@@ -514,8 +573,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 		}
 
+		if (person == null)
+			return 4;
+
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+
 		if (claim.create() == 1) {
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
@@ -528,7 +591,7 @@ public class ClaimDetailsFragment extends Fragment {
 			return 1;
 
 		} else
-			return 4;
+			return 5;
 
 	}
 
@@ -618,7 +681,17 @@ public class ClaimDetailsFragment extends Fragment {
 							R.string.message_error_startdate,
 							Toast.LENGTH_SHORT);
 					toast.show();
-				} else if (resultSave == 3 || resultSave == 4) {
+				} else if (resultSave == 3) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_unable_to_save_missing_claim_name,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (resultSave == 4) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_unable_to_save_missing_person,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				} else if (resultSave == 5) {
 					toast = Toast
 							.makeText(rootView.getContext(),
 									R.string.message_unable_to_save,

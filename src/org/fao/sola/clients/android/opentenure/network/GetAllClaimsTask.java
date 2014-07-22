@@ -33,54 +33,97 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.os.AsyncTask;
 
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+
+
 /**
- * Get the list of all claims within the current map box
+ * Get the list of all claims within the current map box . 
  * 
  * */
 public class GetAllClaimsTask extends
-		AsyncTask<LatLngBounds, Void, List<Claim>> {
-
-	
+		AsyncTask<Object, Void, GetClaimsInput> {
 
 	@Override
-	protected List<Claim> doInBackground(LatLngBounds... params) {
+	protected GetClaimsInput doInBackground(Object... params) {
 		// TODO Auto-generated method stub
 
-		if (params == null || params.length == 0)
-			return (List<Claim>) CommunityServerAPI.getAllClaims();
-		else {
 
-			String[] coordinates = buildCoordinates(params[0]);
-			return (List<Claim>) CommunityServerAPI
+
+		if (params[0] == null) {
+			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
+					.getAllClaims();
+			
+			GetClaimsInput claimToRetrieve = new GetClaimsInput();
+			claimToRetrieve.setClaims(listClaim);
+			claimToRetrieve.setMapView((View) params[1]);
+			
+			return claimToRetrieve;
+			
+			
+		} else {
+			
+			/*
+			 * Here in the case of current box bounds
+			 * 
+			 * */
+
+			String[] coordinates = buildCoordinates((LatLngBounds) params[0]);
+			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
 					.getAllClaimsByBox(coordinates);
+
+			GetClaimsInput claimToRetrieve = new GetClaimsInput();
+			claimToRetrieve.setClaims(listClaim);
+			claimToRetrieve.setMapView((View) params[1]);
+
+			return claimToRetrieve;
+
 		}
 
 	}
 
 	@Override
-	protected void onPostExecute(final List<Claim> listClaim) {
+	protected void onPostExecute(final GetClaimsInput input) {
 
 		Toast toast;
 
-		if (listClaim == null) {
+		if (input.getClaims() == null || input.getClaims().size() == 0) {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources().getString(R.string.message_no_claim_to_download), Toast.LENGTH_SHORT);
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_no_claim_to_download),
+					Toast.LENGTH_SHORT);
 			toast.show();
+			
+			
+			View mapView = input.getMapView();
+
+			if (mapView != null) {
+
+				ProgressBar bar = (ProgressBar) mapView
+						.findViewById(R.id.progress_bar);
+				bar.setVisibility(View.GONE);
+
+				TextView label = (TextView) mapView
+						.findViewById(R.id.download_claim_label);
+				label.setVisibility(View.GONE);				
+			}
+			
 			return;
 		}
 
-		Claim[] array = new Claim[listClaim.size()];
-		listClaim.toArray(array);
+
 
 		GetClaimsTask task = new GetClaimsTask();
-		task.execute(array);
+		task.execute(input);
 
 		return;
 

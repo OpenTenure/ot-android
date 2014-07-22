@@ -25,41 +25,50 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network;
+package org.fao.sola.clients.android.opentenure.button.listener;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TimeZone;
-
+import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
-import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
-import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
-import android.util.Log;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
 
-/**
- * Loop on the list of Claims to download, retrieving them once for time and
- * adding them on the local DB. The necessary file system is created indeed
- * */
-public class GetClaims {
+import android.os.AsyncTask;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-	public static boolean execute(
-			org.fao.sola.clients.android.opentenure.network.response.Claim[] params) {
+public class DownloadAttachmentListener implements OnClickListener {
 
-		return false;
+	AttachmentViewHolder vh;
+	Attachment attachment;
+
+	public DownloadAttachmentListener(Attachment att, AttachmentViewHolder vh) {
+
+		this.vh = vh;
+		this.attachment = att;
 
 	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
+		Object[] params = new Object[2];
+		params[0] = attachment;
+		params[1] = vh;
+		
+		vh.getBar().setVisibility(View.VISIBLE);
+		vh.getStatus().setVisibility(View.GONE);
+
+		GetAttachmentTask task = new GetAttachmentTask();
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+
+		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
+				R.string.message_downloading_attachment, Toast.LENGTH_SHORT);
+		toast.show();
+		
+
+	}
+
 }

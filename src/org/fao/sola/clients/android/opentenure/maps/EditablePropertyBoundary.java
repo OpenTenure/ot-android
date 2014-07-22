@@ -872,7 +872,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						att.setClaimId(claimId);
 						att.setDescription("Map");
 						att.setFileName(DEFAULT_MAP_FILE_NAME);
-						att.setFileType("jpg");						
+						att.setFileType("cadastralMap");						
 						att.setMimeType("image/jpeg");
 						att.setMD5Sum(MD5.calculateMD5(new File(path)));
 						att.setPath(path);

@@ -39,6 +39,7 @@
     <string name="title_claim_documents">Documenti</string>
     <string name="title_claim_photos">Immagini della richiesta</string>
     <string name="title_claim_map">Mappa</string>
+    <string name="title_claim__downloading_map">Scaricando i claim</string>
     <string name="title_claim_adjacencies">Adiacenze</string>
     <string name="title_claim_owners">Quote</string>
     <string name="title_claim_challenges">Opposizioni</string>
@@ -111,6 +112,8 @@
     <string name="message_map_snapshot_saved">Immagine della mappa salvata</string>
     <string name="message_invalid_url">URL non valido</string>
     <string name="message_unable_to_save">Impossibile salvare. Controllare i dati e riprovare</string>
+    <string name="message_unable_to_save_missing_claim_name">Impossibile salvare. Inserire il nome del claim</string>
+    <string name="message_unable_to_save_missing_person">Impossibile salvare. Inserire il richiedente</string>
     <string name="message_submitted">Richiesta inviata</string>
     <string name="message_uploading">Il claim e\' in upload</string>
     <string name="message_submission_error">Errore durante l\'invio del claim</string>
@@ -121,6 +124,8 @@
     <string name="message_remove_person_dialog">Vuoi davvero rimuovere %s?</string>
     <string name="message_error_remove_person">Persona %s non rimossa </string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
+    <string name="message_no_application">Manca un\'applicazione per aprire il file </string>
+    <string name="message_error_opening_file">Errore aprendo il file : </string>
     <string name="message_export">Esportando</string>
     <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>
     <string name="message_claims_downloaded">Claim correttamente scaricati</string>
@@ -150,6 +155,10 @@
     <string name="message_touch_to_select_a_person">Tocca per selezionare una persona</string>
     <string name="message_touch_to_select_a_claim">Tocca per seleziona una richiesta</string>
     <string name="message_error_mandatory_fields">Riempire tutti i campi obbligatori prima di salvare</string>
+    <string name="message_error_mandatory_field_first_name">Riempire il campo obbligatorio Nome prima di salvare</string>
+    <string name="message_error_mandatory_field_last_name">Riempire il campo obbligatorio cognome prima di salvare</string>
+    <string name="message_error_mandatory_field_gender">Riempire il campo obbligatorio genere prima di salvare</string>
+    <string name="message_error_mandatory_field_place_of_birth">Riempire il campo obbligatorio luogo di nascita prima di salvare</string>
     <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
      <string name="message_error_startdate">Data di inizio diritto non e\' in un formato corretto o e\' vuota</string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>

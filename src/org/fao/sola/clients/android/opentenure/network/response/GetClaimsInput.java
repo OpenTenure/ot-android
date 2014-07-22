@@ -25,41 +25,56 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network;
+package org.fao.sola.clients.android.opentenure.network.response;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
-import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
-import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
-import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
-import android.util.Log;
+import android.view.View;
+
 
 /**
- * Loop on the list of Claims to download, retrieving them once for time and
- * adding them on the local DB. The necessary file system is created indeed
+ * This class hold the list of claim to be donwloaded from the server
+ *  and the main map view to handle the progress bar 
+ * 
  * */
-public class GetClaims {
+public class GetClaimsInput extends ApiResponse{
+	
+	List<Claim> Claims;
+	View mapView;
+	int downloaded;
+	boolean result ; 
 
-	public static boolean execute(
-			org.fao.sola.clients.android.opentenure.network.response.Claim[] params) {
-
-		return false;
-
+	public List<Claim> getClaims() {
+		return Claims;
 	}
+
+	public void setClaims(List<Claim> claims) {
+		Claims = claims;
+	}
+
+	public View getMapView() {
+		return mapView;
+	}
+
+	public void setMapView(View mapView) {
+		this.mapView = mapView;
+	}
+
+	public int getDownloaded() {
+		return downloaded;
+	}
+
+	public void setDownloaded(int downloaded) {
+		this.downloaded = downloaded;
+	}
+
+	public boolean isResult() {
+		return result;
+	}
+
+	public void setResult(boolean result) {
+		this.result = result;
+	}
+	
+
 }

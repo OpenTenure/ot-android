@@ -55,6 +55,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidmapsextensions.ClusteringSettings;
@@ -76,7 +78,8 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class MainMapFragment extends SupportMapFragment implements OnCameraChangeListener {
+public class MainMapFragment extends SupportMapFragment implements
+		OnCameraChangeListener {
 
 	public static final String MAIN_MAP_ZOOM = "__MAIN_MAP_ZOOM__";
 	public static final String MAIN_MAP_LATITUDE = "__MAIN_MAP_LATITUDE__";
@@ -101,9 +104,11 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 
 		public void onLocationChanged(Location location) {
 			if (isFollowing && myLocation != null) {
-				myLocation.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+				myLocation.setPosition(new LatLng(location.getLatitude(),
+						location.getLongitude()));
 			}
 		}
+
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
@@ -121,7 +126,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		mapView = inflater.inflate(R.layout.main_map, container, false);		
+		mapView = inflater.inflate(R.layout.main_map, container, false);
 		setHasOptionsMenu(true);
 		label = (MapLabel) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.main_map_provider_label);
@@ -140,7 +145,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		lh.start();
 		MapsInitializer.initialize(this.getActivity());
 		map.setOnCameraChangeListener(this);
-		
+
 		if (savedInstanceState != null
 				&& savedInstanceState.getInt(MAIN_MAP_TYPE) != 0) {
 			// probably an orientation change don't move the view but
@@ -182,7 +187,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	}
 
 	private void showVisibleProperties() {
-		if(visibleProperties != null){
+		if (visibleProperties != null) {
 			for (BasePropertyBoundary visibleProperty : visibleProperties) {
 				visibleProperty.showBoundary();
 			}
@@ -195,7 +200,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	}
 
 	private void hideVisibleProperties() {
-		if(visibleProperties != null){
+		if (visibleProperties != null) {
 			for (BasePropertyBoundary visibleProperty : visibleProperties) {
 				visibleProperty.hideBoundary();
 			}
@@ -265,7 +270,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
-	public void setMapType(int type){
+	public void setMapType(int type) {
 
 		if (tiles != null) {
 			tiles.remove();
@@ -302,8 +307,8 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
 					OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					mapNikTileProvider));
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(mapNikTileProvider));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapnik));
@@ -313,8 +318,8 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
 					256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					mapQuestTileProvider));
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(mapQuestTileProvider));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_osm_mapquest));
@@ -322,8 +327,8 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		case R.id.map_provider_local_tiles:
 
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					new LocalMapTileProvider()));
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(new LocalMapTileProvider()));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_local_tiles));
@@ -333,11 +338,14 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
 			String geoServerUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF, "http://192.168.56.1:8085/geoserver/nz");
+					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
+					"http://192.168.56.1:8085/geoserver/nz");
 			String geoServerLayer = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF, "nz:orthophoto");
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
-			new WmsMapTileProvider(256, 256, geoServerUrl, geoServerLayer)));
+					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
+					"nz:orthophoto");
+			tiles = map.addTileOverlay(new TileOverlayOptions()
+					.tileProvider(new WmsMapTileProvider(256, 256,
+							geoServerUrl, geoServerLayer)));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
@@ -347,19 +355,20 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		}
 		mapType = type;
 
-		Configuration provider = Configuration.getConfigurationByName(MAIN_MAP_TYPE);
+		Configuration provider = Configuration
+				.getConfigurationByName(MAIN_MAP_TYPE);
 
-		if(provider != null){
-			provider.setValue(""+type);
+		if (provider != null) {
+			provider.setValue("" + type);
 			provider.update();
-		}else{
+		} else {
 			provider = new Configuration();
 			provider.setName(MAIN_MAP_TYPE);
-			provider.setValue(""+type);
+			provider.setValue("" + type);
 			provider.create();
 		}
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putInt(MAIN_MAP_TYPE, mapType);
@@ -384,24 +393,26 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			setMapType(item.getItemId());
 			return true;
 		case R.id.action_center_and_follow:
-			if(isFollowing){
+			if (isFollowing) {
 				isFollowing = false;
 				myLocation.remove();
 				myLocation = null;
 				lh.setCustomListener(null);
-			}else{
+			} else {
 				LatLng currentLocation = lh.getCurrentLocation();
 
 				if (currentLocation != null && currentLocation.latitude != 0.0
 						&& currentLocation.longitude != 0.0) {
 					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
 							currentLocation, 18), 1000, null);
-					myLocation = map.addMarker(new MarkerOptions()
-					.position(currentLocation)
-					.anchor(0.5f, 0.5f)
-					.title(mapView.getContext().getResources().getString(R.string.title_i_m_here))
-					.icon(BitmapDescriptorFactory
-							.fromResource(R.drawable.ic_menu_mylocation)));
+					myLocation = map
+							.addMarker(new MarkerOptions()
+									.position(currentLocation)
+									.anchor(0.5f, 0.5f)
+									.title(mapView.getContext().getResources()
+											.getString(R.string.title_i_m_here))
+									.icon(BitmapDescriptorFactory
+											.fromResource(R.drawable.ic_menu_mylocation)));
 					lh.setCustomListener(myLocationListener);
 					isFollowing = true;
 
@@ -412,69 +423,81 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 				}
 			}
 			return true;
-			
-		case R.id.action_download_claims:		
-			
-			
-			OpenTenureApplication.setMapFragment(this);	
-			
+
+		case R.id.action_download_claims:
+
+			ProgressBar bar = (ProgressBar) mapView
+					.findViewById(R.id.progress_bar);
+
+			bar.setVisibility(View.VISIBLE);
+			bar.setProgress(0);
+
+			TextView label = (TextView) mapView
+					.findViewById(R.id.download_claim_label);
+			label.setVisibility(View.VISIBLE);
+
+			OpenTenureApplication.setMapFragment(this);
+
 			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-			
+
 			GetAllClaimsTask task = new GetAllClaimsTask();
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds);				
-			
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds, mapView);
+
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	private void storeCameraPosition(CameraPosition cameraPosition) {
-		Configuration zoom = Configuration.getConfigurationByName(MAIN_MAP_ZOOM);
 
-		if(zoom != null){
-			zoom.setValue(""+cameraPosition.zoom);
+	private void storeCameraPosition(CameraPosition cameraPosition) {
+		Configuration zoom = Configuration
+				.getConfigurationByName(MAIN_MAP_ZOOM);
+
+		if (zoom != null) {
+			zoom.setValue("" + cameraPosition.zoom);
 			zoom.update();
-		}else{
+		} else {
 			zoom = new Configuration();
 			zoom.setName(MAIN_MAP_ZOOM);
-			zoom.setValue(""+cameraPosition.zoom);
+			zoom.setValue("" + cameraPosition.zoom);
 			zoom.create();
 		}
-		
-		Configuration latitude = Configuration.getConfigurationByName(MAIN_MAP_LATITUDE);
 
-		if(latitude != null){
-			latitude.setValue(""+cameraPosition.target.latitude);
+		Configuration latitude = Configuration
+				.getConfigurationByName(MAIN_MAP_LATITUDE);
+
+		if (latitude != null) {
+			latitude.setValue("" + cameraPosition.target.latitude);
 			latitude.update();
-		}else{
+		} else {
 			latitude = new Configuration();
 			latitude.setName(MAIN_MAP_LATITUDE);
-			latitude.setValue(""+cameraPosition.target.latitude);
+			latitude.setValue("" + cameraPosition.target.latitude);
 			latitude.create();
 		}
-		
-		Configuration longitude = Configuration.getConfigurationByName(MAIN_MAP_LONGITUDE);
 
-		if(longitude != null){
-			longitude.setValue(""+cameraPosition.target.longitude);
+		Configuration longitude = Configuration
+				.getConfigurationByName(MAIN_MAP_LONGITUDE);
+
+		if (longitude != null) {
+			longitude.setValue("" + cameraPosition.target.longitude);
 			longitude.update();
-		}else{
+		} else {
 			longitude = new Configuration();
 			longitude.setName(MAIN_MAP_LONGITUDE);
-			longitude.setValue(""+cameraPosition.target.longitude);
+			longitude.setValue("" + cameraPosition.target.longitude);
 			longitude.create();
 		}
 	}
 
-	private void reloadVisibleProperties(){
+	private void reloadVisibleProperties() {
 
 		hideVisibleProperties();
 
 		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
 		Polygon boundsPoly = getPolygon(bounds);
 
-		if(allClaims == null){
+		if (allClaims == null) {
 			allClaims = Claim.getAllClaims();
 		}
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
@@ -482,7 +505,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			BasePropertyBoundary bpb = new BasePropertyBoundary(
 					mapView.getContext(), map, claim);
 			Polygon claimPoly = bpb.getPolygon();
-			if(claimPoly != null && claimPoly.intersects(boundsPoly)){
+			if (claimPoly != null && claimPoly.intersects(boundsPoly)) {
 				visibleProperties.add(bpb);
 			}
 		}
@@ -491,35 +514,43 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 
 		for (BasePropertyBoundary visibleProperty : visibleProperties) {
 
-			if (visibleProperty.getVertices() != null && visibleProperty.getVertices().size() > 0) {
+			if (visibleProperty.getVertices() != null
+					&& visibleProperty.getVertices().size() > 0) {
 				visiblePropertiesPolygonList.add(visibleProperty.getPolygon());
 			}
 		}
-		Polygon[] visiblePropertiesPolygons = new Polygon[visiblePropertiesPolygonList.size()];
+		Polygon[] visiblePropertiesPolygons = new Polygon[visiblePropertiesPolygonList
+				.size()];
 		visiblePropertiesPolygonList.toArray(visiblePropertiesPolygons);
 
 		GeometryFactory gf = new GeometryFactory();
-		visiblePropertiesMultiPolygon = gf.createMultiPolygon(visiblePropertiesPolygons);
+		visiblePropertiesMultiPolygon = gf
+				.createMultiPolygon(visiblePropertiesPolygons);
 		visiblePropertiesMultiPolygon.setSRID(Constants.SRID);
 
 		showVisibleProperties();
 	}
-	
-	private Polygon getPolygon(LatLngBounds bounds){
+
+	private Polygon getPolygon(LatLngBounds bounds) {
 		GeometryFactory gf = new GeometryFactory();
 		Coordinate[] coords = new Coordinate[5];
 
-		coords[0] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
-		coords[1] = new Coordinate(bounds.northeast.longitude, bounds.southwest.latitude);
-		coords[2] = new Coordinate(bounds.southwest.longitude, bounds.southwest.latitude);
-		coords[3] = new Coordinate(bounds.southwest.longitude, bounds.northeast.latitude);
-		coords[4] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
+		coords[0] = new Coordinate(bounds.northeast.longitude,
+				bounds.northeast.latitude);
+		coords[1] = new Coordinate(bounds.northeast.longitude,
+				bounds.southwest.latitude);
+		coords[2] = new Coordinate(bounds.southwest.longitude,
+				bounds.southwest.latitude);
+		coords[3] = new Coordinate(bounds.southwest.longitude,
+				bounds.northeast.latitude);
+		coords[4] = new Coordinate(bounds.northeast.longitude,
+				bounds.northeast.latitude);
 
 		Polygon polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
 		return polygon;
 	}
-	
+
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
 		// Store camera position to allow drawing on the claim map where we
@@ -529,22 +560,19 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 		reloadVisibleProperties();
 
 	}
-	
-	
-	public void refreshMap(){		
-		
+
+	public void refreshMap() {
+
 		allClaims = Claim.getAllClaims();
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
-		for(Claim claim : allClaims){
-				visibleProperties.add(new BasePropertyBoundary(mapView.getContext(), map,
-						claim));
+		for (Claim claim : allClaims) {
+			visibleProperties.add(new BasePropertyBoundary(
+					mapView.getContext(), map, claim));
 		}
-		
+
 		redrawVisibleProperties();
 
-		return ;
+		return;
 	}
-	
-	
-	
+
 }

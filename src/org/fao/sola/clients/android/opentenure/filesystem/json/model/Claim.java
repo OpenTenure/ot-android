@@ -85,7 +85,8 @@ public class Claim {
 	String notes;
 
 	@SerializedName("shares")
-	List<Share> shares;
+	List<Share> shares;	
+
 
 	public String getId() {
 		return id;

@@ -155,7 +155,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		}
 		case 110: {
-			
 
 			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
@@ -196,13 +195,14 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 				Date date = sdf.parse(res.getChallengeExpiryDate());
 
 				claim.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
+				claim.setClaimNumber(res.getNr());
 
 				claim.setStatus(ClaimStatus._UNMODERATED);
 				claim.update();
 
 			} catch (Exception e) {
 				Log.d("CommunityServerAPI",
-						"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+						"Error uploading the claim " + res.getMessage());
 				e.printStackTrace();
 			}
 
@@ -213,6 +213,10 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
+
+			vh.getNumber().setText(res.getNr());
+			vh.getNumber().setVisibility(View.VISIBLE);
+			
 			vh.getBar().setVisibility(View.GONE);
 
 			int days = JsonUtilities.remainingDays(claim
@@ -237,12 +241,14 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
-			toast = Toast
-					.makeText(
-							OpenTenureApplication.getContext(),
-							R.string.message_login_no_more_valid + "  "
-									+ res.getHttpStatusCode() + "  "
-									+ res.getMessage(), Toast.LENGTH_LONG);
+			toast = Toast.makeText(
+					OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_submission_error)
+							+ " "
+							+ res.getHttpStatusCode()
+							+ "  "
+							+ res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
@@ -310,7 +316,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			ViewHolder vh = vhr.getVh();
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
-
 
 			vh.getStatus().setText(
 					ClaimStatus._UPLOADING + ": " + progress + " %");

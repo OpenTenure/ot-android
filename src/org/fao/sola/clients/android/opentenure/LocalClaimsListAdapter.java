@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.SubmitClaimListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -56,7 +57,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	private ModeDispatcher.Mode mode;
 	LayoutInflater inflater;
 
-	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims, ModeDispatcher.Mode mode) {
+	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims,
+			ModeDispatcher.Mode mode) {
 		super(context, R.layout.claims_list_item, claims);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
@@ -124,6 +126,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					false);
 			vh = new ViewHolder();
 			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
+			vh.number = (TextView) convertView.findViewById(R.id.claim_number);
 			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
 			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
 			vh.iconUnmoderated = (ImageView) convertView
@@ -152,7 +155,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.slogan.setText(claims.get(position).getSlogan());
 
 		if (claim.getStatus().equals(ClaimStatus._CREATED)) {
-
+			vh.number.setVisibility(View.GONE);
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.iconUnmoderated.setVisibility(View.GONE);
 
@@ -164,12 +167,14 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
-			
-			System.out.println("LocalClaimsListAdapter Qui il progress e' : " +progress);
+
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
@@ -184,6 +189,9 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.status.setText(claims.get(position).getStatus());
@@ -196,6 +204,9 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
@@ -213,6 +224,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
 
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
@@ -222,6 +235,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._MODERATED)) {
 
 			vh.iconModerated.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
@@ -230,6 +245,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._CHALLENGED)) {
 
 			vh.iconChallenged.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
@@ -239,6 +256,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._WITHDRAWN)) {
 
 			vh.iconWithdrawn.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
@@ -249,6 +268,13 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
 		// vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+		vh.number.setTextSize(8);
+		vh.number.setVisibility(View.VISIBLE);
+		
+		
+		
+		
+		vh.number.setText(claim.getClaimNumber());
 		vh.position = position;
 
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
@@ -259,13 +285,12 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.remove = (ImageView) convertView
 				.findViewById(R.id.action_remove_claim);
 
-
-		if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
-			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
-					.getId(), vh));
+		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(
+					position).getId(), vh));
 			vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
 					position).getId(), vh));
-		}else{
+		} else {
 			vh.send.setVisibility(View.GONE);
 			vh.remove.setVisibility(View.GONE);
 		}

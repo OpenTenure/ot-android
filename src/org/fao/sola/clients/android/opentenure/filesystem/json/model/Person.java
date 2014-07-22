@@ -109,6 +109,17 @@ public class Person {
 			this.genderCode = "female";		
 	}
 	
+	
+	
+	public boolean isPhysicalPerson() {
+		return isPhysicalPerson;
+	}
+	public void setPhysicalPerson(boolean isPhysicalPerson) {
+		this.isPhysicalPerson = isPhysicalPerson;
+	}
+
+
+
 	@SerializedName("id")          private String id;
 	@SerializedName("name")        private String name;
 	@SerializedName("lastName")    private String lastName;
@@ -121,5 +132,6 @@ public class Person {
 	@SerializedName("email")       private String email;
 	@SerializedName("birthDate")   private String birthDate;
 	@SerializedName("genderCode")  private String genderCode;
+	@SerializedName("person") 	   private boolean isPhysicalPerson;
 	
 }

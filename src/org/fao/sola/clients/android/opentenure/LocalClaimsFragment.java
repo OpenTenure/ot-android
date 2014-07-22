@@ -65,7 +65,6 @@ public class LocalClaimsFragment extends ListFragment {
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 	private String filter = null;
-	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -87,8 +86,7 @@ public class LocalClaimsFragment extends ListFragment {
 	public void setExcludeClaimIds(List<String> excludeClaimIds) {
 		this.excludeClaimIds = excludeClaimIds;
 	}
-	
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		MenuItem itemIn;
@@ -138,13 +136,12 @@ public class LocalClaimsFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
-		
-		
+
 		switch (item.getItemId()) {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
-			
+
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY,
 					ClaimActivity.CREATE_CLAIM_ID);
 			intent.putExtra(ClaimActivity.MODE_KEY, mainActivity.getMode()
@@ -216,28 +213,31 @@ public class LocalClaimsFragment extends ListFragment {
 			@Override
 			public void afterTextChanged(Editable arg0) {
 				filter = arg0.toString();
-				((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
+				((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(
+						filter);
 			}
 		});
 
-		update();		
+		update();
 
-		if(savedInstanceState != null && savedInstanceState.getString(FILTER_KEY) != null){
+		if (savedInstanceState != null
+				&& savedInstanceState.getString(FILTER_KEY) != null) {
 			filter = savedInstanceState.getString(FILTER_KEY);
-			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
+			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(
+					filter);
 		}
-		
+
 		OpenTenureApplication.setLocalClaimsFragment(this);
-		
 
 		return rootView;
 	}
-	
+
 	@Override
 	public void onResume() {
 		update();
-		if(filter != null){
-			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(filter);
+		if (filter != null) {
+			((LocalClaimsListAdapter) getListAdapter()).getFilter().filter(
+					filter);
 		}
 		super.onResume();
 	};
@@ -276,19 +276,32 @@ public class LocalClaimsFragment extends ListFragment {
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
 		for (Claim claim : claims) {
-			if (excludeClaimIds != null && !excludeClaimIds.contains(claim.getClaimId())) {
+			if (excludeClaimIds != null
+					&& !excludeClaimIds.contains(claim.getClaimId())) {
 
 				ClaimListTO cto = new ClaimListTO();
 				String claimName = claim.getName().equalsIgnoreCase("") ? rootView
 						.getContext().getString(R.string.default_claim_name)
 						: claim.getName();
-				cto.setSlogan(claimName + ", "
-						+ getResources().getString(R.string.by) + ": "
-						+ claim.getPerson().getFirstName() + " "
-						+ claim.getPerson().getLastName() + " "
-						+ getResources().getString(R.string.type) + ": "
-						+ new ClaimType().getDisplayValueByType(claim.getType()) );
+				cto.setSlogan(claimName
+						+ ", "
+						+ getResources().getString(R.string.by)
+						+ ": "
+						+ claim.getPerson().getFirstName()
+						+ " "
+						+ claim.getPerson().getLastName()
+						+ " "
+						+ getResources().getString(R.string.type)
+						+ ": "
+						+ new ClaimType().getDisplayValueByType(claim.getType()));
 				cto.setId(claim.getClaimId());
+				
+				
+				if (claim.getClaimNumber() != null)
+					cto.setNumber(claim.getClaimNumber());
+				else
+					cto.setNumber("");
+
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING))
 					cto.setStatus(claim.getStatus());
 				else if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
@@ -321,13 +334,10 @@ public class LocalClaimsFragment extends ListFragment {
 		outState.putString(FILTER_KEY, filter);
 		super.onSaveInstanceState(outState);
 	}
-	
-public void refresh(){
-		
+
+	public void refresh() {
+
 		update();
 	}
 
-
-
-	
 }

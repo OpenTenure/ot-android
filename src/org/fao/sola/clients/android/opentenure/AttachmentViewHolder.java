@@ -25,21 +25,59 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure.network.response;
+package org.fao.sola.clients.android.opentenure;
 
-import java.util.List;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-public class GetClaimsResponse extends ApiResponse{
+
+public class AttachmentViewHolder {
 	
-	List<Claim> Claims;
-
-	public List<Claim> getClaims() {
-		return Claims;
+	TextView id;
+	TextView slogan;
+	TextView status;
+	ImageView downloadIcon;
+	ImageView removeIcon;
+	ProgressBar bar;
+	public TextView getId() {
+		return id;
 	}
-
-	public void setClaims(List<Claim> claims) {
-		Claims = claims;
+	public void setId(TextView id) {
+		this.id = id;
 	}
+	public TextView getSlogan() {
+		return slogan;
+	}
+	public void setSlogan(TextView slogan) {
+		this.slogan = slogan;
+	}
+	public TextView getStatus() {
+		return status;
+	}
+	public void setStatus(TextView status) {
+		this.status = status;
+	}
+	public ImageView getDownloadIcon() {
+		return downloadIcon;
+	}
+	public void setDownloadIcon(ImageView downloadIcon) {
+		this.downloadIcon = downloadIcon;
+	}
+	public ImageView getRemoveIcon() {
+		return removeIcon;
+	}
+	public void setRemoveIcon(ImageView removeIcon) {
+		this.removeIcon = removeIcon;
+	}
+	public ProgressBar getBar() {
+		return bar;
+	}
+	public void setBar(ProgressBar bar) {
+		this.bar = bar;
+	}
+	
+	
 	
 	
 
