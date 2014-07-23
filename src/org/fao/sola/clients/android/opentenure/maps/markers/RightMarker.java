@@ -32,11 +32,11 @@ import org.fao.sola.clients.android.opentenure.R;
 import android.content.Context;
 import android.graphics.Point;
 
-import com.google.android.gms.maps.GoogleMap;
+import com.androidmapsextensions.GoogleMap;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
 
 public class RightMarker extends TargetMoverMarker {
 	

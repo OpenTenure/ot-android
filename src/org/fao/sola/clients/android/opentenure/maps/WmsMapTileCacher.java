@@ -33,21 +33,54 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 
 public class WmsMapTileCacher extends AsyncTask<Void, Void, Void> {
 
 	private String url;
 	private int zoom;
+	private int levels;
+	private long cacheTime;
 	private int x;
 	private int y;
+	private boolean includeCurrentTile;
+	
+	private class Tile{
+		public String getTileDir() {
+			return tileDir;
+		}
+		public String getTileFile() {
+			return tileFile;
+		}
+		public String getTileUrl() {
+			return tileUrl;
+		}
+		private String tileDir;
+		private String tileFile;
+		private String tileUrl;
+		
+		public Tile(String url, int x, int y, int zoom){
+			tileDir = Environment.getExternalStorageDirectory()+"/Open Tenure/tiles/" + zoom + "/" + x + "/";
+			tileFile = y + ".png";
+            double[] bbox = WmsMapTileProvider.getBoundingBox(x, y, zoom);
+            tileUrl = String.format(Locale.US, url, bbox[WmsMapTileProvider.MINX], 
+                    bbox[WmsMapTileProvider.MINY], bbox[WmsMapTileProvider.MAXX], bbox[WmsMapTileProvider.MAXY]);
+		}
+	}
 
-	public WmsMapTileCacher(String url, int zoom, int x, int y) {
+	public WmsMapTileCacher(String url, int zoom, int levels, boolean includeCurrentTile, int x, int y, long cacheTime) {
 
 		this.url = url;
 		this.zoom = zoom;
+		this.levels = levels;
+		this.cacheTime = cacheTime;
+		this.includeCurrentTile = includeCurrentTile;
 		this.x = x;
 		this.y = y;
 
@@ -60,31 +93,58 @@ public class WmsMapTileCacher extends AsyncTask<Void, Void, Void> {
 
 		FileOutputStream fos = null;
 		InputStream is = null;
+		
+		if (zoom > 21) {
+			return null;
+		}
 
 		try {
 
-			URL url = new URL(this.url);
-			HttpURLConnection c = (HttpURLConnection) url.openConnection();
-			c.setRequestMethod("GET");
-			c.setDoOutput(true);
-			c.connect();
-			String tileDir = Environment.getExternalStorageDirectory()+"/Open Tenure/tiles/" + zoom + "/" + x + "/";
-			String tileFile = y + ".png";
+            List <Tile> tilesToDownload = new ArrayList<Tile>();
 
-			File file = new File(tileDir);
-			file.mkdirs();
+            if(includeCurrentTile){
+                tilesToDownload.add(new Tile(url, x, y, zoom));
+            }
 
-			File outputFile = new File(tileDir, tileFile);
-			fos = new FileOutputStream(outputFile);
+            if(zoom < 21){
+	            tilesToDownload.add(new Tile(url, 2*x, 2*y, zoom+1));
+	            tilesToDownload.add(new Tile(url, 2*x+1, 2*y, zoom+1));
+	            tilesToDownload.add(new Tile(url, 2*x, 2*y+1, zoom+1));
+	            tilesToDownload.add(new Tile(url, 2*x+1, 2*y+1, zoom+1));
+    		}
 
-			is = c.getInputStream();
 
-			byte[] buffer = new byte[1024];
-			int len1 = 0;
-			while ((len1 = is.read(buffer)) != -1) {
+			for(Tile tileToDownload:tilesToDownload){
 
-				fos.write(buffer, 0, len1);
+				File tileDirFile = new File(tileToDownload.getTileDir());
+				tileDirFile.mkdirs();
+
+				File outputFile = new File(tileToDownload.getTileDir(), tileToDownload.getTileFile());
+
+				if(!outputFile.exists() || (outputFile.lastModified() < (System.currentTimeMillis() - cacheTime))){
+					URL url = new URL(tileToDownload.getTileUrl());
+					HttpURLConnection c = (HttpURLConnection) url.openConnection();
+					c.setRequestMethod("GET");
+					c.setDoOutput(true);
+					c.connect();
+					fos = new FileOutputStream(outputFile);
+
+					is = c.getInputStream();
+
+					byte[] buffer = new byte[1024];
+					int len1 = 0;
+					while ((len1 = is.read(buffer)) != -1) {
+
+						fos.write(buffer, 0, len1);
+					}
+					fos.close();
+					is.close();
+					Log.d(this.getClass().getName(), "cached/refreshed tile from url " + tileToDownload.getTileUrl() + " to file " + outputFile.getPath());
+				}else{
+					Log.d(this.getClass().getName(), "no need to refresh cached tile file " + outputFile.getPath());
+				}
 			}
+				
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
@@ -100,6 +160,13 @@ public class WmsMapTileCacher extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected void onPostExecute(String result) {
+		if(zoom < 21 && levels > 1){
+			// Create a cacher for each tile on the next zoom level
+			new WmsMapTileCacher(url, zoom+1, levels-1, false, 2*x, 2*y, cacheTime).execute();
+			new WmsMapTileCacher(url, zoom+1, levels-1, false, 2*x+1, 2*y, cacheTime).execute();
+			new WmsMapTileCacher(url, zoom+1, levels-1, false, 2*x, 2*y+1, cacheTime).execute();
+			new WmsMapTileCacher(url, zoom+1, levels-1, false, 2*x+1, 2*y+1, cacheTime).execute();
+		}
 	}
 
 }

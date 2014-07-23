@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
-import com.google.android.gms.maps.model.Marker;
+import com.androidmapsextensions.Marker;
 
 public interface Draggable {
 

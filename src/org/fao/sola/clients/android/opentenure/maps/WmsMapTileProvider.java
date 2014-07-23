@@ -46,10 +46,10 @@ public class WmsMapTileProvider extends UrlTileProvider{
 	private static final double MAP_SIZE = 20037508.34789244 * 2;
 
 	// array indexes for array to hold bounding boxes.
-	protected static final int MINX = 0;
-	protected static final int MINY = 1;
-	protected static final int MAXX = 2;
-	protected static final int MAXY = 3;
+	public static final int MINX = 0;
+	public static final int MINY = 1;
+	public static final int MAXX = 2;
+	public static final int MAXY = 3;
 
     private static final String version = "1.1.0";
     private static final String request = "GetMap";
@@ -82,21 +82,21 @@ public class WmsMapTileProvider extends UrlTileProvider{
 
             double[] bbox = getBoundingBox(x, y, zoom);
 
-            String s = String.format(Locale.US, URL_STRING, bbox[MINX], 
+            String urlString = String.format(Locale.US, URL_STRING, bbox[MINX], 
                     bbox[MINY], bbox[MAXX], bbox[MAXY]);
 
-            Log.d("GeoServerTileURL", s);
+            Log.d("GeoServerTileURL", urlString);
 
             URL url = null;
 
             try {
-                url = new URL(s);
+                url = new URL(urlString);
             } 
             catch (MalformedURLException e) {
                 throw new AssertionError(e);
             }
-            
-            new WmsMapTileCacher(s, zoom, x, y).execute();
+            // Only refresh cached tiles if older than one week (in milliseconds)
+            new WmsMapTileCacher(URL_STRING, zoom, 3, true, x, y, 7*24*60*60*1000).execute();
 
             return url;
         }
@@ -109,7 +109,7 @@ public class WmsMapTileProvider extends UrlTileProvider{
     
     // Return a web Mercator bounding box given tile x/y indexes and a zoom
 	// level.
-	protected double[] getBoundingBox(int x, int y, int zoom) {
+	public static double[] getBoundingBox(int x, int y, int zoom) {
 	    double tileSize = MAP_SIZE / Math.pow(2, zoom);
 	    double minx = TILE_ORIGIN[ORIG_X] + x * tileSize;
 	    double maxx = TILE_ORIGIN[ORIG_X] + (x+1) * tileSize;

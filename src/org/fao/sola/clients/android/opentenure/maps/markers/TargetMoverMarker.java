@@ -29,8 +29,8 @@ package org.fao.sola.clients.android.opentenure.maps.markers;
 
 import android.location.Location;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.Marker;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.Marker;
 
 public abstract class TargetMoverMarker extends RelativeClickableMarker implements Hideable {
 	

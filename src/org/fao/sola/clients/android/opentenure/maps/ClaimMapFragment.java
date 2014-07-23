@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.ClaimListener;
-import org.fao.sola.clients.android.opentenure.MapFragmentListener;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
@@ -64,22 +63,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.androidmapsextensions.ClusteringSettings;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
+import com.androidmapsextensions.GoogleMap.OnMapLongClickListener;
+import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
+import com.androidmapsextensions.GoogleMap.OnMarkerDragListener;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.SupportMapFragment;
+import com.androidmapsextensions.TileOverlay;
+import com.androidmapsextensions.TileOverlayOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
-import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
-import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -107,7 +107,6 @@ public class ClaimMapFragment extends Fragment implements
 	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
-	private MapFragmentListener mapFragmentListener;
 	private int mapType = R.id.map_provider_google_normal;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
@@ -157,13 +156,6 @@ public class ClaimMapFragment extends Fragment implements
 			throw new ClassCastException(activity.toString()
 					+ " must implement ModeDispatcher");
 		}
-		try {
-			mapFragmentListener = (MapFragmentListener) activity;
-			mapFragmentListener.setMapFragmentId(this.getId());
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement MapFragmentListener");
-		}
 	}
 
 	@Override
@@ -193,7 +185,6 @@ public class ClaimMapFragment extends Fragment implements
 	                SensorManager.SENSOR_DELAY_UI);
 		}
 		lh.hurryUp();
-		mapFragmentListener.setMapFragmentId(this.getId());
 	}
 
 	@Override
@@ -208,7 +199,6 @@ public class ClaimMapFragment extends Fragment implements
 	public void onStart() {
 		super.onStart();
 		lh.start();
-		mapFragmentListener.setMapFragmentId(this.getId());
 	}
 	
 	@Override
@@ -262,7 +252,11 @@ public class ClaimMapFragment extends Fragment implements
 		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity()
 				.getResources().getString(R.string.map_provider_google_normal));
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.claim_map_fragment)).getMap();
+				.findFragmentById(R.id.claim_map_fragment)).getExtendedMap();
+	    ClusteringSettings settings = new ClusteringSettings();
+	    settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
+	    settings.addMarkersDynamically(true);
+	    map.setClustering(settings);
 
 		lh = new LocationHelper((LocationManager) getActivity()
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
@@ -384,7 +378,6 @@ public class ClaimMapFragment extends Fragment implements
 			});
 		}
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
-		mapFragmentListener.setMapFragmentId(this.getId());
 		return mapView;
 
 	}

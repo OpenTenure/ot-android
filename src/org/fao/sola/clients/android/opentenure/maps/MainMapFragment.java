@@ -59,19 +59,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidmapsextensions.ClusteringSettings;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.SupportMapFragment;
+import com.androidmapsextensions.TileOverlay;
+import com.androidmapsextensions.TileOverlayOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.TileOverlay;
-import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -132,7 +133,11 @@ public class MainMapFragment extends SupportMapFragment implements
 		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity()
 				.getResources().getString(R.string.map_provider_google_normal));
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.main_map_fragment)).getMap();
+				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
+	    ClusteringSettings settings = new ClusteringSettings();
+	    settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
+	    settings.addMarkersDynamically(true);
+	    map.setClustering(settings);
 		reloadVisibleProperties();
 
 		lh = new LocationHelper((LocationManager) getActivity()
@@ -205,7 +210,11 @@ public class MainMapFragment extends SupportMapFragment implements
 	@Override
 	public void onStart() {
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.main_map_fragment)).getMap();
+				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
+	    ClusteringSettings settings = new ClusteringSettings();
+	    settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
+	    settings.addMarkersDynamically(true);
+	    map.setClustering(settings);
 		super.onStart();
 
 	}
