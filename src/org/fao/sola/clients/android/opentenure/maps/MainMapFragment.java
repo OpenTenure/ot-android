@@ -563,6 +563,8 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	public void refreshMap() {
+		
+		hideVisibleProperties();
 
 		allClaims = Claim.getAllClaims();
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
@@ -571,7 +573,9 @@ public class MainMapFragment extends SupportMapFragment implements
 					mapView.getContext(), map, claim));
 		}
 
-		redrawVisibleProperties();
+		
+		showVisibleProperties();
+		//redrawVisibleProperties();
 
 		return;
 	}

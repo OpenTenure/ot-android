@@ -158,6 +158,10 @@ public class GetClaimsTask extends
 							.getString(
 									R.string.message_error_downloading_claims),
 					input.getDownloaded());
+			
+			
+			OpenTenureApplication.getMapFragment().refreshMap();
+			OpenTenureApplication.getPersonsFragment().refresh();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
