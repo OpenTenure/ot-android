@@ -30,5 +30,14 @@ package org.fao.sola.clients.android.opentenure.maps;
 public class Constants {
 	
 	public static final int SRID=3857;
+	public static final int PROPERTY_LABEL_MARKERS_GROUP = 0;
+	public static final int PROPERTY_LOCATION_MARKERS_GROUP = 1;
+	public static final int PROPERTY_BOUNDARY_MARKERS_GROUP = 2;
+	public static final int MARKER_EDIT_MARKERS_GROUP = 3;
+	public static final int TARGET_MARKERS_GROUP = 4;
+	public static final int MY_LOCATION_MARKERS_GROUP = 5;
+
+
+
 
 }

@@ -413,6 +413,7 @@ public class MainMapFragment extends SupportMapFragment implements
 											.getString(R.string.title_i_m_here))
 									.icon(BitmapDescriptorFactory
 											.fromResource(R.drawable.ic_menu_mylocation)));
+					myLocation.setClusterGroup(Constants.MY_LOCATION_MARKERS_GROUP);
 					lh.setCustomListener(myLocationListener);
 					isFollowing = true;
 

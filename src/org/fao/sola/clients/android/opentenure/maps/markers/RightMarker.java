@@ -72,6 +72,7 @@ public class RightMarker extends TargetMoverMarker {
 		.title(context.getString(R.string.right))
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(RIGHT_INITIAL_ROTATION));
+		marker.setClusterGroup(MARKER_RELATIVE_EDIT_MARKERS_GROUP);
 	}
 
 	private Point getControlRightPosition(Point markerScreenPosition, int markerWidth, int markerHeight){

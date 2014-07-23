@@ -40,6 +40,7 @@ public abstract class TargetMoverMarker extends RelativeClickableMarker implemen
 	protected static final float LEFT_INITIAL_ROTATION = 90.0f;
 	protected static final float RIGHT_INITIAL_ROTATION = 270.0f;
 	protected static final int PIXELS_PER_STEP = 5;
+	protected static final int MARKER_RELATIVE_EDIT_MARKERS_GROUP = 4;
 
 	protected TargetMoverMarker(Marker selectedMarker, Marker target, GoogleMap  map) {
 		super(selectedMarker, map);

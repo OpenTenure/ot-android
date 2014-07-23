@@ -66,7 +66,6 @@ public class BasePropertyBoundary {
 	protected static final float BOUNDARY_Z_INDEX = 2.0f;
 	public static final double SNAP_THRESHOLD = 0.0001;
 
-	protected static final int PROPERTY_LABEL_MARKERS_GROUP = 0;
 	protected String name;
 	protected String claimId;
 	protected String claimSlogan;
@@ -289,7 +288,7 @@ public class BasePropertyBoundary {
 		Marker marker = map.addMarker(new MarkerOptions().position(position)
 				.title(title).icon(BitmapDescriptorFactory.fromBitmap(bmpText))
 				.anchor(0.5f, 1));
-		marker.setClusterGroup(PROPERTY_LABEL_MARKERS_GROUP);
+		marker.setClusterGroup(Constants.PROPERTY_LABEL_MARKERS_GROUP);
 		return marker;
 	}
 
@@ -347,11 +346,14 @@ public class BasePropertyBoundary {
 	}
 
 	protected Marker createLocationMarker(LatLng position, String description) {
-		return map.addMarker(new MarkerOptions()
+		Marker marker = map.addMarker(new MarkerOptions()
 				.position(position)
 				.title(description)
 				.icon(BitmapDescriptorFactory
 						.fromResource(R.drawable.ot_blue_marker)));
+		marker.setClusterGroup(Constants.PROPERTY_LOCATION_MARKERS_GROUP);
+		return marker;
+
 	}
 
 	public void hidePropertyLocations() {

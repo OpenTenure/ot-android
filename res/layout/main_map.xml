@@ -10,29 +10,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainMapFragment" >
 
-        <TextView
-            android:id="@+id/download_claim_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/item_color"
-            android:gravity="left|bottom"           
-            android:text="@string/title_claim__downloading_map"
-            android:textSize="20sp"
-            android:textColor="@color/status_created"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxHeight="10sp"
-            android:minHeight="10sp"            
-            android:visibility="gone" />
-
     <fragment
         android:id="@+id/main_map_provider_label"
-        android:name="org.fao.sola.clients.android.opentenure.MapLabel"
+        class="org.fao.sola.clients.android.opentenure.MapLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5sp"
@@ -44,4 +24,25 @@
         android:layout_height="wrap_content"
         android:layout_weight="9"
         class="com.androidmapsextensions.SupportMapFragment" />
+
+    <TextView
+        android:id="@+id/download_claim_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_color"
+        android:gravity="left|bottom"
+        android:text="@string/title_claim__downloading_map"
+        android:textColor="@color/status_created"
+        android:textSize="20sp"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="10sp"
+        android:minHeight="10sp"
+        android:visibility="gone" />
+
 </LinearLayout>

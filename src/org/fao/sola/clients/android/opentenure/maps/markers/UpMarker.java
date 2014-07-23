@@ -71,7 +71,9 @@ public class UpMarker extends TargetMoverMarker {
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.up))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(UP_INITIAL_ROTATION));	}
+				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(UP_INITIAL_ROTATION));
+		marker.setClusterGroup(MARKER_RELATIVE_EDIT_MARKERS_GROUP);
+	}
 
 	private Point getControlUpPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
 		return new Point(markerScreenPosition.x, markerScreenPosition.y + 4*markerHeight);

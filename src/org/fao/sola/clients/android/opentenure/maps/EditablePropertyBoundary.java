@@ -76,8 +76,6 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
-	protected static final int PROPERTY_BOUNDARY_MARKERS_GROUP = 2;
-	protected static final int MARKER_EDIT_MARKERS_GROUP = 3;
 	private Map<Marker, Vertex> verticesMap;
 	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
@@ -431,17 +429,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_close_clear_cancel)));
+		remove.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 		relativeEdit = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlRelativeEditPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.title("0.0 m")
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_action_move)));
+		relativeEdit.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 		cancel = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlCancelPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_block)));
+		cancel.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 	}
 
 	private void showRelativeMarkerEditControls() {
@@ -462,25 +463,30 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.title("0.0 m")
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_mylocation)));
+		target.setClusterGroup(Constants.TARGET_MARKERS_GROUP);
 
 		add = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlAddPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_add)));
+		add.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 		moveTo = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlMoveToPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_goto)));
+		moveTo.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 		cancel = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlCancelPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_block)));
+		cancel.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
 
 		up = new UpMarker(context,selectedMarker,target, map);
 		up.show(projection, markerScreenPosition, markerWidth, markerHeight);
+
 		amr.add(up);
 		
 		down = new DownMarker(context,selectedMarker,target, map);
@@ -508,6 +514,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		verticesMap = new HashMap<Marker, Vertex>();
 		if (vertices != null && vertices.size() > 0) {
 			for (Vertex vertex : vertices) {
+				Log.d(this.getClass().getName(), "drawing markers for " + vertices.size() + " vertices");
 				Marker mark = createMarker(vertex.getSequenceNumber(), vertex.getMapPosition());
 				verticesMap.put(mark, vertex);
 			}
@@ -824,26 +831,29 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
-		marker.setClusterGroup(PROPERTY_BOUNDARY_MARKERS_GROUP);
+		marker.setClusterGroup(Constants.PROPERTY_BOUNDARY_MARKERS_GROUP);
 		return marker;
 	}
 
 	@Override
 	protected Marker createLocationMarker(LatLng position, String description) {
+		Marker marker;
 		if(allowDragging){
-			return map.addMarker(new MarkerOptions()
+			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(description)
 			.draggable(true)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}else{
-			return map.addMarker(new MarkerOptions()
+			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(description)
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
+		marker.setClusterGroup(Constants.PROPERTY_LOCATION_MARKERS_GROUP);
+		return marker;
 	}
 
 	public void saveSnapshot() {

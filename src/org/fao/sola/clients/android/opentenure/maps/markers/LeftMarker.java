@@ -72,6 +72,7 @@ public class LeftMarker extends TargetMoverMarker {
 		.title(context.getString(R.string.left))
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(LEFT_INITIAL_ROTATION));
+		marker.setClusterGroup(MARKER_RELATIVE_EDIT_MARKERS_GROUP);
 	}
 
 	private Point getControlLeftPosition(Point markerScreenPosition, int markerWidth, int markerHeight){

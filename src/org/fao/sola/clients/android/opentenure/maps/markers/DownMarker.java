@@ -72,6 +72,7 @@ public class DownMarker extends TargetMoverMarker {
 		.title(context.getString(R.string.down))
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(DOWN_INITIAL_ROTATION));
+		marker.setClusterGroup(MARKER_RELATIVE_EDIT_MARKERS_GROUP);
 	}
 
 	private Point getControlDownPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
