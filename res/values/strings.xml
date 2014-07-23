@@ -126,7 +126,7 @@
     <string name="message_export">Exporting</string>
     <string name="message_no_claim_to_download">There\'s no claim to download</string>
     <string name="message_claims_downloaded">Claims correctly downloaded</string>
-    <string name="message_error_downloading_claims">Error during downloading Claims</string>
+    <string name="message_error_downloading_claims">Downloaded %s claims. Not all claims have been downloaded</string>
     <string name="message_login_no_more_valid">Session expired. Do login again</string>
     <string name="message_db_locked">Data is password protected</string>
     <string name="message_db_password">Password to access data?</string>

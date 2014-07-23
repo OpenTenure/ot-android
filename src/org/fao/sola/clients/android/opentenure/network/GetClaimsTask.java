@@ -41,7 +41,6 @@ import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,12 +56,14 @@ public class GetClaimsTask extends
 
 	@Override
 	protected GetClaimsInput doInBackground(GetClaimsInput... params) {
-
 		int i = 0;
 		boolean success = true;
 
 		GetClaimsInput input = params[0];
 		List<Claim> claims = input.getClaims();
+
+		input.setResult(true);
+		input.setDownloaded(0);
 
 		for (Iterator iterator = claims.iterator(); iterator.hasNext();) {
 			Claim claim = (Claim) iterator.next();
@@ -73,21 +74,20 @@ public class GetClaimsTask extends
 			if (downloadedClaim == null) {
 				success = false;
 
-			} else
+			} else {
 				success = SaveDownloadedClaim.save(downloadedClaim);
+			}
 
 			if (success == false) {
 
 				input.setResult(success);
-
-				return input;
+				i++;
 
 			} else {
 
 				i++;
-				input.setDownloaded(i);
+				input.setDownloaded(input.getDownloaded() + 1);
 				publishProgress(input);
-				input.setResult(success);
 
 			}
 
@@ -146,18 +146,20 @@ public class GetClaimsTask extends
 				TextView label = (TextView) mapView
 						.findViewById(R.id.download_claim_label);
 				label.setVisibility(View.GONE);
-				
+
 			}
 
 		} else {
 
-			toast = Toast.makeText(
-					OpenTenureApplication.getContext(),
+			String message = String.format(
 					OpenTenureApplication
 							.getContext()
 							.getResources()
 							.getString(
 									R.string.message_error_downloading_claims),
+					input.getDownloaded());
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_SHORT);
 			toast.show();
 
