@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.maps.markers;
 
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.maps.Constants;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -72,7 +73,7 @@ public class LeftMarker extends TargetMoverMarker {
 		.title(context.getString(R.string.left))
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(LEFT_INITIAL_ROTATION));
-		marker.setClusterGroup(MARKER_RELATIVE_EDIT_MARKERS_GROUP);
+		marker.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_LEFT_GROUP);
 	}
 
 	private Point getControlLeftPosition(Point markerScreenPosition, int markerWidth, int markerHeight){

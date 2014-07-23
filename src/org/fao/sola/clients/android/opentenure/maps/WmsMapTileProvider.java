@@ -96,7 +96,7 @@ public class WmsMapTileProvider extends UrlTileProvider{
                 throw new AssertionError(e);
             }
             // Only refresh cached tiles if older than one week (in milliseconds)
-            new WmsMapTileCacher(URL_STRING, zoom, 3, true, x, y, 7*24*60*60*1000).execute();
+            new WmsMapTileCacher(URL_STRING, zoom, 4, true, x, y, 7*24*60*60*1000).execute();
 
             return url;
         }

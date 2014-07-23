@@ -112,17 +112,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		if(remove == null || relativeEdit == null || cancel == null){
 			return false;
 		}
-
-		if (mark.getId().equalsIgnoreCase(remove.getId())) {
-			return removeSelectedMarker();
-		}
-		if (mark.getId().equalsIgnoreCase(relativeEdit.getId())) {
-			showRelativeMarkerEditControls();
-			return true;
-		}
-		if (mark.getId().equalsIgnoreCase(cancel.getId())) {
-			deselect();
-			return true;
+		try {
+			if (mark.getId().equalsIgnoreCase(remove.getId())) {
+				return removeSelectedMarker();
+			}
+			if (mark.getId().equalsIgnoreCase(relativeEdit.getId())) {
+				showRelativeMarkerEditControls();
+				return true;
+			}
+			if (mark.getId().equalsIgnoreCase(cancel.getId())) {
+				deselect();
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// Clustered markers have no ID and may throw this
 		}
 		return false;
 	}
@@ -132,24 +135,29 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return false;
 		}
 		
-		if (amr.onClick(mark)) {
-			return true;
-		}else if (mark.getId().equalsIgnoreCase(add.getId())) {
-			Log.d(this.getClass().getName(),"add");
-			return addMarker();
-		}else if (mark.getId().equalsIgnoreCase(moveTo.getId())) {
-			Log.d(this.getClass().getName(),"moveTo");
-			return moveMarker();
-		}else if (mark.getId().equalsIgnoreCase(cancel.getId())) {
-			Log.d(this.getClass().getName(),"cancel");
-			deselect();
-			return true;
-		}else if (mark.getId().equalsIgnoreCase(target.getId())) {
-			Log.d(this.getClass().getName(),"target");
-			return true;
-		}else{
-			return false;
+		try {
+			if (amr.onClick(mark)) {
+				return true;
+			}else if (mark.getId().equalsIgnoreCase(add.getId())) {
+				Log.d(this.getClass().getName(),"add");
+				return addMarker();
+			}else if (mark.getId().equalsIgnoreCase(moveTo.getId())) {
+				Log.d(this.getClass().getName(),"moveTo");
+				return moveMarker();
+			}else if (mark.getId().equalsIgnoreCase(cancel.getId())) {
+				Log.d(this.getClass().getName(),"cancel");
+				deselect();
+				return true;
+			}else if (mark.getId().equalsIgnoreCase(target.getId())) {
+				Log.d(this.getClass().getName(),"target");
+				return true;
+			}else{
+				return false;
+			}
+		} catch (UnsupportedOperationException e) {
+			// Clustered markers have no ID and may throw this
 		}
+		return false;
 	}
 	
 	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
@@ -429,20 +437,20 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_close_clear_cancel)));
-		remove.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		remove.setClusterGroup(Constants.MARKER_EDIT_REMOVE_GROUP);
 		relativeEdit = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlRelativeEditPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.title("0.0 m")
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_action_move)));
-		relativeEdit.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		relativeEdit.setClusterGroup(Constants.MARKER_EDIT_RELATIVE_EDIT_GROUP);
 		cancel = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlCancelPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_block)));
-		cancel.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		cancel.setClusterGroup(Constants.MARKER_EDIT_CANCEL_GROUP);
 	}
 
 	private void showRelativeMarkerEditControls() {
@@ -470,19 +478,19 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_add)));
-		add.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		add.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_ADD_GROUP);
 		moveTo = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlMoveToPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_goto)));
-		moveTo.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		moveTo.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_MOVE_TO_GROUP);
 		cancel = map.addMarker(new MarkerOptions()
 		.position(projection.fromScreenLocation(getControlCancelPosition(markerScreenPosition, markerWidth, markerHeight)))
 		.anchor(0.5f, 0.5f)
 		.icon(BitmapDescriptorFactory
 				.fromResource(R.drawable.ic_menu_block)));
-		cancel.setClusterGroup(Constants.MARKER_EDIT_MARKERS_GROUP);
+		cancel.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_CANCEL_GROUP);
 
 		up = new UpMarker(context,selectedMarker,target, map);
 		up.show(projection, markerScreenPosition, markerWidth, markerHeight);
@@ -831,7 +839,9 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
-		marker.setClusterGroup(Constants.PROPERTY_BOUNDARY_MARKERS_GROUP);
+		// To prevent vertices to cluster when they are too close
+		// assign each vertex to its own group
+		marker.setClusterGroup(Constants.BASE_PROPERTY_BOUNDARY_MARKERS_GROUP + verticesMap.size());
 		return marker;
 	}
 
@@ -852,7 +862,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			.icon(BitmapDescriptorFactory
 					.fromResource(R.drawable.ot_blue_marker)));
 		}
-		marker.setClusterGroup(Constants.PROPERTY_LOCATION_MARKERS_GROUP);
+		marker.setClusterGroup(Constants.BASE_PROPERTY_LOCATION_MARKERS_GROUP + propertyLocationsMap.size());
 		return marker;
 	}
 
