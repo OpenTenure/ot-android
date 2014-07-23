@@ -36,6 +36,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsListener;
+import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsNegativeListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -72,7 +74,6 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -83,6 +84,7 @@ public class ClaimDetailsFragment extends Fragment {
 	View rootView;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
+
 	private ClaimListener claimListener;
 	private final Calendar localCalendar = Calendar.getInstance();
 
@@ -92,6 +94,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		// This makes sure that the container activity has implemented
 		// the callback interface. If not, it throws an exception
+
 		try {
 			claimActivity = (ClaimDispatcher) activity;
 		} catch (ClassCastException e) {
@@ -132,6 +135,7 @@ public class ClaimDetailsFragment extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
 		inflater.inflate(R.menu.claim_details, menu);
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -162,6 +166,7 @@ public class ClaimDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
 				false);
 		setHasOptionsMenu(true);
@@ -207,6 +212,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 						@Override
 						public void onClick(View v) {
+
 							Intent intent = new Intent(rootView.getContext(),
 									SelectPersonActivity.class);
 
@@ -272,6 +278,7 @@ public class ClaimDetailsFragment extends Fragment {
 	}
 
 	private void preload() {
+
 		// Code Types Spinner
 		Spinner spinner = (Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner);
@@ -387,13 +394,6 @@ public class ClaimDetailsFragment extends Fragment {
 			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), challengedPersonPictureFile, 128));
 
-//			TextView challengeToClaimSlogan = (TextView) rootView
-//					.findViewById(R.id.challenge_to_claim_slogan);
-//			android.view.ViewGroup.LayoutParams params = challengeToClaimSlogan
-//					.getLayoutParams();
-//			params.width = LayoutParams.WRAP_CONTENT;
-//			challengeToClaimSlogan.setLayoutParams(params);
-
 			ImageView challengedClaimantRemoveButton = (ImageView) rootView
 					.findViewById(R.id.action_remove_challenge);
 
@@ -429,8 +429,6 @@ public class ClaimDetailsFragment extends Fragment {
 							((ImageView) rootView
 									.findViewById(R.id.action_remove_challenge))
 									.setVisibility(View.INVISIBLE);
-							
-							
 
 						}
 					});
@@ -455,19 +453,15 @@ public class ClaimDetailsFragment extends Fragment {
 					.getPersonId());
 			claimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), personPictureFile, 128));
-			
+
 			ImageView claimantRemove = (ImageView) rootView
 					.findViewById(R.id.action_remove_person);
 			claimantRemove.setVisibility(View.INVISIBLE);
-			
-			
-			
-			
-			
+
 		}
 	}
 
-	private void load(Claim claim) {
+	public void load(Claim claim) {
 
 		if (claim != null) {
 
@@ -485,10 +479,15 @@ public class ClaimDetailsFragment extends Fragment {
 					.setText(claim.getNotes());
 
 			if (claim.getDateOfStart() != null) {
+
 				((EditText) rootView
 						.findViewById(R.id.date_of_start_input_field))
 						.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
 								.format(claim.getDateOfStart()));
+			} else {
+				((EditText) rootView
+						.findViewById(R.id.date_of_start_input_field))
+						.setText("");
 			}
 			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
@@ -832,6 +831,145 @@ public class ClaimDetailsFragment extends Fragment {
 
 	}
 
+	public boolean checkChanges() {
+
+		boolean changed = false;
+
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+
+		if (claim != null) {
+
+			if (!claim.getName().equals(
+					((EditText) rootView
+							.findViewById(R.id.claim_name_input_field))
+							.getText().toString()))
+				changed = true;
+			else {
+				Person person = Person.getPerson(((TextView) rootView
+						.findViewById(R.id.claimant_id)).getText().toString());
+				if (!claim.getPerson().getPersonId()
+						.equals(person.getPersonId()))
+					changed = true;
+				else {
+					Claim challengedClaim = Claim.getClaim(((TextView) rootView
+							.findViewById(R.id.challenge_to_claim_id))
+							.getText().toString());
+					if (claim.getChallengedClaim() != null
+							&& !claim.getChallengedClaim().getClaimId()
+									.equals(challengedClaim.getClaimId()))
+						changed = true;
+					else {
+						String claimType = (String) ((Spinner) rootView
+								.findViewById(R.id.claimTypesSpinner))
+								.getSelectedItem();
+
+						if (!claim.getType().equals(
+								new ClaimType()
+										.getTypebyDisplayValue(claimType)))
+							changed = true;
+						else {
+
+							String landUseDispValue = (String) ((Spinner) rootView
+									.findViewById(R.id.landUseSpinner))
+									.getSelectedItem();
+
+							if (!claim
+									.getLandUse()
+									.equals(new LandUse()
+											.getTypebyDisplayValue(landUseDispValue)))
+								changed = true;
+							else {
+
+								String notes = ((EditText) rootView
+										.findViewById(R.id.claim_notes_input_field))
+										.getText().toString();
+
+								if (!claim.getNotes().equals(notes))
+									changed = true;
+								else {
+									String startDate = ((EditText) rootView
+											.findViewById(R.id.date_of_start_input_field))
+											.getText().toString();
+
+									if (claim.getDateOfStart() == null
+											|| claim.getDateOfStart()
+													.equals("")) {
+
+										if (startDate != null
+												&& !startDate.equals(""))
+											changed = true;
+									} else {
+										java.util.Date dob = null;
+
+										if (startDate != null
+												&& !startDate.trim().equals("")) {
+
+											try {
+												dob = new SimpleDateFormat(
+														"yyyy-MM-dd", Locale.US)
+														.parse(startDate);
+
+												Date date = new Date(
+														dob.getTime());
+
+												if (claim.getDateOfStart()
+														.compareTo(date) != 0)
+													changed = true;
+
+											} catch (ParseException e) {
+												e.printStackTrace();
+												dob = null;
+
+											}
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+			}
+
+			if (changed) {
+
+				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
+						this.getActivity());
+				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);
+				String dialogMessage = OpenTenureApplication.getContext()
+						.getString(R.string.message_save_changes);
+
+				saveChangesDialog.setMessage(dialogMessage);
+
+				saveChangesDialog.setPositiveButton(R.string.confirm,
+						new SaveDetailsListener(this));
+
+				saveChangesDialog.setNegativeButton(R.string.cancel,
+						new SaveDetailsNegativeListener(this));
+				saveChangesDialog.show();
+
+			}
+		}
+		return changed;
+
+	}
+
+	@Override
+	public void onResume() {
+
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		load(claim);
+
+		super.onResume();
+
+	};
+
 	public int createPersonAsOwner(Person claimant) {
 		try {
 
@@ -864,5 +1002,6 @@ public class ClaimDetailsFragment extends Fragment {
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
+
 
 }

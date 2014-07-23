@@ -57,6 +57,7 @@
     <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="title_remove_person_dialog">Remove person</string>
+    <string name="title_save_claim_dialog">The claim has been modified</string>
     <string name="choose_file">Choose an application to select a file</string>
     <string name="person_name">Person Name</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -164,6 +165,8 @@
     <string name="message_error_withdraw_claim">Error withdrawing claim : </string>
     <string name="message_withdrawn_claim">Claim correctly withdrawn</string>
     <string name="message_deleted_claim">Claim correctly deleted locally</string>
+    <string name="message_save_changes">Do you want save changes ?</string>
+    <string name="message_claim_modified">Claim modified</string>
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
