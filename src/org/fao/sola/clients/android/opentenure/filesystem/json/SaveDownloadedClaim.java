@@ -236,7 +236,10 @@ public class SaveDownloadedClaim {
 			claimDB.setClaimNumber(downloadedClaim.getNr());
 			claimDB.setType(downloadedClaim.getTypeCode());
 
-			Person.createPerson(person);
+			if(Person.getPerson(claimant.getId())== null)
+				Person.createPerson(person);
+			else Person.updatePerson(person);
+
 			// Here the creation of the Claim
 			if (org.fao.sola.clients.android.opentenure.model.Claim
 					.getClaim(downloadedClaim.getId()) == null)
@@ -327,7 +330,10 @@ public class SaveDownloadedClaim {
 
 					personDB2.setPostalAddress(person2.getAddress());
 
-					Person.createPerson(personDB2);
+					
+					if(Person.getPerson(person2.getId())== null)
+						Person.createPerson(personDB2);
+					else Person.updatePerson(personDB2);
 
 				}
 				Owner owner = new Owner(false);
@@ -337,8 +343,10 @@ public class SaveDownloadedClaim {
 				owner.setPersonId(sharePersons.get(0).getId());
 				owner.setOwnerId(sharePersons.get(0).getId());
 				owner.setShares(share.getNominator());
-
-				Owner.createOwner(owner);
+				
+				if(Owner.getOwner(downloadedClaim.getId(), sharePersons.get(0).getId()) == null)
+					Owner.createOwner(owner);
+				else Owner.updateOwner(owner);
 
 			}
 
