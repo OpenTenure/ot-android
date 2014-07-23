@@ -40,9 +40,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.Menu;
 
-public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, ModeDispatcher, ClaimListener, MapFragmentListener {
+public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
+		ModeDispatcher, ClaimListener, MapFragmentListener {
 
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
@@ -53,21 +56,43 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
 	private int mapFragmentId;
+	SparseArray<Fragment> fragmentReferences = new SparseArray<Fragment>();
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
-	
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			final ClaimDetailsFragment fragment = (ClaimDetailsFragment) fragmentReferences
+					.get(0);
+
+			if (fragment != null) {
+				if (fragment.checkChanges()) {
+					return true;
+				} else {
+					return super.onKeyDown(keyCode, event);
+				}
+			} else
+				return super.onKeyDown(keyCode, event);
+		} else
+			return super.onKeyDown(keyCode, event);
+	}
+
 	@Override
 	public void onPause() {
+
 		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
-	
+
 	@Override
 	public void onResume() {
+
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
 	};
@@ -83,7 +108,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		mode = ModeDispatcher.Mode.valueOf(getIntent().getStringExtra(MODE_KEY));
+		mode = ModeDispatcher.Mode
+				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -92,22 +118,24 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 				getSupportFragmentManager());
 
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
+		tabs.setIndicatorColor(getResources().getColor(
+				R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		
+
 		String savedInstanceClaimId = null;
 
-		if(savedInstanceState != null){
+		if (savedInstanceState != null) {
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
 
 		String intentClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
-		
-		if(savedInstanceClaimId != null){
+
+		if (savedInstanceClaimId != null) {
 			setClaimId(savedInstanceClaimId);
-		}else if(intentClaimId != null && !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
+		} else if (intentClaimId != null
+				&& !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
 			setClaimId(intentClaimId);
-			
+
 		}
 	}
 
@@ -125,25 +153,45 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 		}
 
 		@Override
+		public void destroyItem(android.view.ViewGroup container, int position,
+				Object object) {
+
+			fragmentReferences.remove(position);
+
+		}
+
+		@Override
 		public Fragment getItem(int position) {
+
+			Fragment fragment;
 
 			switch (position) {
 			case 0:
-				return new ClaimDetailsFragment();
+				fragment = new ClaimDetailsFragment();
+				break;
 			case 1:
-				return new ClaimMapFragment();
+				fragment = new ClaimMapFragment();
+				break;
 			case 2:
-				return new ClaimDocumentsFragment();
+				fragment = new ClaimDocumentsFragment();
+				break;
 			case 3:
-				return new ClaimAdditionalInfoFragments();
+				fragment = new ClaimAdditionalInfoFragments();
+				break;
 			case 4:
-				return new AdjacentClaimsFragment();
+				fragment = new AdjacentClaimsFragment();
+				break;
 			case 5:
-				return new ChallengingClaimsFragment();
+				fragment = new ChallengingClaimsFragment();
+				break;
 			case 6:
-				return new OwnersFragment();
+				fragment = new OwnersFragment();
+				break;
+			default:
+				return null;
 			}
-			return null;
+			fragmentReferences.put(position, fragment);
+			return fragment;
 		}
 
 		@Override
@@ -160,13 +208,16 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 			case 1:
 				return getString(R.string.title_claim_map).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_claim_documents).toUpperCase(l);				
+				return getString(R.string.title_claim_documents).toUpperCase(l);
 			case 3:
-				return getString(R.string.title_claim_additional_info).toUpperCase(l);
+				return getString(R.string.title_claim_additional_info)
+						.toUpperCase(l);
 			case 4:
-				return getString(R.string.title_claim_adjacencies).toUpperCase(l);
+				return getString(R.string.title_claim_adjacencies).toUpperCase(
+						l);
 			case 5:
-				return getString(R.string.title_claim_challenges).toUpperCase(l);
+				return getString(R.string.title_claim_challenges)
+						.toUpperCase(l);
 			case 6:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
 			}
@@ -177,9 +228,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	@Override
 	public void setClaimId(String claimId) {
 		this.claimId = claimId;
-		if(claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)){
+		if (claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
 			Claim claim = Claim.getClaim(claimId);
-			setTitle(getResources().getString(R.string.app_name)+": "+claim.getName());
+			setTitle(getResources().getString(R.string.app_name) + ": "
+					+ claim.getName());
 		}
 	}
 
@@ -195,8 +247,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 
 	@Override
 	public void onClaimSaved() {
-		ClaimMapFragment claimMapFragment = (ClaimMapFragment)
-                getSupportFragmentManager().findFragmentById(mapFragmentId);
+		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
+				.get(1);
 		claimMapFragment.onClaimSaved();
 	}
 
@@ -204,4 +256,5 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher, 
 	public void setMapFragmentId(int id) {
 		mapFragmentId = id;
 	}
+
 }
