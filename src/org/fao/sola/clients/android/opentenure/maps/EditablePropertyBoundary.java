@@ -76,6 +76,8 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
+	public static final String DEFAULT_MAP_FILE_TYPE = "cadastralMap";
+	public static final String DEFAULT_MAP_MIME_TYPE = "image/jpeg";
 	private Map<Marker, Vertex> verticesMap;
 	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
@@ -274,7 +276,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 	
 	private boolean movePropertyBoundaryMarker(){
-		insertVertex(target.getPosition());
+		insertVertex(target.getPosition(), verticesMap.get(selectedMarker).getGPSPosition());
 		removePropertyBoundaryMarker(selectedMarker);
 		hideMarkerEditControls();
 		selectedMarker = null;
@@ -522,7 +524,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		verticesMap = new HashMap<Marker, Vertex>();
 		if (vertices != null && vertices.size() > 0) {
 			for (Vertex vertex : vertices) {
-				Log.d(this.getClass().getName(), "drawing markers for " + vertices.size() + " vertices");
 				Marker mark = createMarker(vertex.getSequenceNumber(), vertex.getMapPosition());
 				verticesMap.put(mark, vertex);
 			}
@@ -651,7 +652,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		mark.remove();
 	}
 
-	public void insertVertex(LatLng position) {
+	public void insertVertex(LatLng mapPosition, LatLng gpsPosition) {
 
 		if (claimActivity.getClaimId() == null) {
 			// Useless to add markers without a claim
@@ -662,8 +663,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return;
 		}
 
-		Marker mark = createMarker(vertices.size(), position);
-		Vertex newVertex = new Vertex(position);
+		Marker mark = createMarker(vertices.size(), mapPosition);
+		Vertex newVertex = new Vertex(mapPosition, gpsPosition);
 		newVertex.setClaimId(claimActivity.getClaimId());
 		verticesMap.put(mark, newVertex);
 
@@ -707,8 +708,12 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		}
 		vertices.add(insertIndex, newVertex);
 	}
+
+	public void addMarker(final LatLng mapPosition){
+		addMarker(mapPosition, Vertex.INVALID_POSITION);
+	}
 	
-	public void addMarker(final LatLng position){
+	public void addMarker(final LatLng mapPosition, final LatLng gpsPosition){
 
 		if (claimActivity.getClaimId() == null) {
 			// Useless to add markers without a claim
@@ -723,8 +728,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		AlertDialog.Builder dialog = new AlertDialog.Builder(
 				context);
 		dialog.setTitle(R.string.message_add_marker);
-		dialog.setMessage("Lon: " + position.longitude + ", lat: "
-				+ position.latitude);
+		dialog.setMessage("Lon: " + mapPosition.longitude + ", lat: "
+				+ mapPosition.latitude);
 
 		dialog.setNeutralButton(R.string.not_boundary,
 				new OnClickListener() {
@@ -759,7 +764,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 												String locationDescription = locationDescriptionInput
 														.getText()
 														.toString();
-												addPropertyLocation(position, locationDescription);
+												addPropertyLocation(mapPosition, gpsPosition, locationDescription);
 											}
 										});
 						locationDescriptionDialog
@@ -785,7 +790,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 					public void onClick(DialogInterface dialog,
 							int which) {
 
-						insertVertex(position);
+						insertVertex(mapPosition, gpsPosition);
 						updateVertices();
 						redrawBoundary();
 						resetAdjacency(otherProperties);
@@ -803,8 +808,11 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		dialog.show();
 	
 	}
+	public void addPropertyLocation(LatLng mapPosition, String description) {
+		addPropertyLocation(mapPosition, Vertex.INVALID_POSITION, description);
+	}
 
-	public void addPropertyLocation(LatLng position, String description) {
+	public void addPropertyLocation(LatLng mapPosition, LatLng gpsPosition, String description) {
 
 		if (claimActivity.getClaimId() == null) {
 			// Useless to add markers without a claim
@@ -815,8 +823,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return;
 		}
 
-		Marker mark = createLocationMarker(position, description);
-		PropertyLocation loc = new PropertyLocation(position);
+		Marker mark = createLocationMarker(mapPosition, description);
+		PropertyLocation loc = new PropertyLocation(mapPosition, gpsPosition);
 		loc.setClaimId(claimActivity.getClaimId());
 		loc.setDescription(description);
 		loc.create();
@@ -892,8 +900,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						att.setClaimId(claimId);
 						att.setDescription("Map");
 						att.setFileName(DEFAULT_MAP_FILE_NAME);
-						att.setFileType("cadastralMap");						
-						att.setMimeType("image/jpeg");
+						att.setFileType(DEFAULT_MAP_FILE_TYPE);						
+						att.setMimeType(DEFAULT_MAP_MIME_TYPE);
 						att.setMD5Sum(MD5.calculateMD5(new File(path)));
 						att.setPath(path);
 						att.setSize(new File(path).length());
