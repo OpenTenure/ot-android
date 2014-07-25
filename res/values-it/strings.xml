@@ -132,7 +132,7 @@
     <string name="message_export">Esportando</string>
     <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>
     <string name="message_claims_downloaded">Claim correttamente scaricati</string>
-    <string name="message_error_downloading_claims">Errore durante lo scaricamento dei Claim</string>
+    <string name="message_error_downloading_claims">Scaricati %s claims. Non tutti i claims sono stati scaricati correttamente</string>
     <string name="message_login_no_more_valid">Sessione scaduta. Fai login di nuovo</string>
     <string name="message_db_locked">Dati protetti da password</string>
     <string name="message_db_password">Password per accedere ai dati?</string>

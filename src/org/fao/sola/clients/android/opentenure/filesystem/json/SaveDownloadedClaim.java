@@ -48,6 +48,7 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.GetClaims;
 import org.fao.sola.clients.android.opentenure.network.GetClaimsTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import android.util.Log;
@@ -60,7 +61,6 @@ public class SaveDownloadedClaim {
 		 * Parsing the downloaded Claim and saving it to DB
 		 * 
 		 **/
-
 		TimeZone tz = TimeZone.getTimeZone("UTC");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		sdf.setTimeZone(tz);
@@ -69,7 +69,6 @@ public class SaveDownloadedClaim {
 		List<org.fao.sola.clients.android.opentenure.model.AdditionalInfo> additionalInfoDBList = new ArrayList<org.fao.sola.clients.android.opentenure.model.AdditionalInfo>();
 
 		org.fao.sola.clients.android.opentenure.model.Claim claimDB = new org.fao.sola.clients.android.opentenure.model.Claim();
-
 		/*
 		 * Temporary disable
 		 */
@@ -110,37 +109,22 @@ public class SaveDownloadedClaim {
 				&& !downloadedClaim.getChallengedClaimId().equals("")) {
 
 			/*
-			 * Check if the claim is already present locally
+			 * The downloaded claim gat a challenging . Check if the challenging
+			 * is already present locally
 			 */
 			org.fao.sola.clients.android.opentenure.model.Claim challenged = org.fao.sola.clients.android.opentenure.model.Claim
 					.getClaim(downloadedClaim.getChallengedClaimId());
 			if (challenged == null) {
-
 				/*
 				 * here the case in which the claim challenged is not already
 				 * present locally
 				 */
-
-				org.fao.sola.clients.android.opentenure.network.response.Claim[] claimCarray = new org.fao.sola.clients.android.opentenure.network.response.Claim[1];
-
-				org.fao.sola.clients.android.opentenure.network.response.Claim toRetrieve = new org.fao.sola.clients.android.opentenure.network.response.Claim();
-
-				toRetrieve.setId(downloadedClaim.getChallengedClaimId());
 
 				/*
 				 * Making a call to GetClaimsTask to retrieve the challenged
 				 * claim
 				 */
 
-				GetClaimsInput input = new GetClaimsInput();
-
-				List<org.fao.sola.clients.android.opentenure.network.response.Claim> list = new ArrayList<org.fao.sola.clients.android.opentenure.network.response.Claim>();
-
-				list.add(toRetrieve);
-
-				input.setClaims(list);
-
-				GetClaimsTask task = new GetClaimsTask();
 				try {
 
 					/*
@@ -149,12 +133,25 @@ public class SaveDownloadedClaim {
 					 * go forward
 					 */
 
-					task.execute(input).get();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
+					org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim challengingClaim = CommunityServerAPI
+							.getClaim(downloadedClaim.getChallengedClaimId());
+
+					if (challengingClaim == null) {
+						Log.d("CommunityServerAPI",
+								"ERROR SAVING CHALLENGED CLAIM OF DOWNLOADED  CLAIM "
+										+ downloadedClaim.getId());
+						return false;
+
+					} else {
+						SaveDownloadedClaim.save(challengingClaim);
+
+					}
+
+				} catch (Exception e) {
+
+					Log.d("CommunityServerAPI",
+							"ERROR SAVING CHALLENGED CLAIM OF DOWNLOADED  CLAIM "
+									+ downloadedClaim.getId());
 					e.printStackTrace();
 				}
 
@@ -231,7 +228,6 @@ public class SaveDownloadedClaim {
 				date = sdf.parse(downloadedClaim.getStartDate());
 				claimDB.setDateOfStart(new java.sql.Date(date.getTime()));
 			}
-
 			date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
 			claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
 
@@ -240,7 +236,9 @@ public class SaveDownloadedClaim {
 			claimDB.setClaimNumber(downloadedClaim.getNr());
 			claimDB.setType(downloadedClaim.getTypeCode());
 
-			Person.createPerson(person);
+			if(Person.getPerson(claimant.getId())== null)
+				Person.createPerson(person);
+			else Person.updatePerson(person);
 
 			// Here the creation of the Claim
 			if (org.fao.sola.clients.android.opentenure.model.Claim
@@ -290,7 +288,6 @@ public class SaveDownloadedClaim {
 						.getId());
 
 			}
-
 			List<Share> shares = downloadedClaim.getShares();
 
 			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
@@ -325,18 +322,20 @@ public class SaveDownloadedClaim {
 					personDB2.setMobilePhoneNumber(person2.getMobilePhone());
 					personDB2.setPersonId(person2.getId());
 					// personDB2.setPlaceOfBirth(person2.get);
-					
+
 					if (claimant.isPhysicalPerson())
 						personDB2.setPersonType(Person._PHYSICAL);
 					else
 						personDB2.setPersonType(Person._LEGAL);
-					
+
 					personDB2.setPostalAddress(person2.getAddress());
 
-					Person.createPerson(personDB2);
+					
+					if(Person.getPerson(person2.getId())== null)
+						Person.createPerson(personDB2);
+					else Person.updatePerson(personDB2);
 
 				}
-
 				Owner owner = new Owner(false);
 
 				owner.setClaimId(downloadedClaim.getId());
@@ -344,8 +343,10 @@ public class SaveDownloadedClaim {
 				owner.setPersonId(sharePersons.get(0).getId());
 				owner.setOwnerId(sharePersons.get(0).getId());
 				owner.setShares(share.getNominator());
-
-				Owner.createOwner(owner);
+				
+				if(Owner.getOwner(downloadedClaim.getId(), sharePersons.get(0).getId()) == null)
+					Owner.createOwner(owner);
+				else Owner.updateOwner(owner);
 
 			}
 
