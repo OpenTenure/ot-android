@@ -74,19 +74,30 @@ public class Claim {
 
 	@SerializedName("claimant")
 	Claimant claimant;
-	
+
 	@SerializedName("startDate")
 	String startDate;
 
 	@SerializedName("typeCode")
 	String typeCode;
-	
+
 	@SerializedName("notes")
 	String notes;
 
-	@SerializedName("shares")
-	List<Share> shares;	
+	@SerializedName("northAdjacency")
+	String northAdjacency;
 
+	@SerializedName("southAdjacency")
+	String southAdjacency;
+
+	@SerializedName("westAdjacency")
+	String westAdjacency;
+
+	@SerializedName("eastAdjacency")
+	String eastAdjacency;
+
+	@SerializedName("shares")
+	List<Share> shares;
 
 	public String getId() {
 		return id;
@@ -230,6 +241,38 @@ public class Claim {
 
 	public void setNotes(String notes) {
 		this.notes = notes;
+	}
+
+	public String getNorthAdjacency() {
+		return northAdjacency;
+	}
+
+	public void setNorthAdjacency(String northAdjacency) {
+		this.northAdjacency = northAdjacency;
+	}
+
+	public String getSouthAdjacency() {
+		return southAdjacency;
+	}
+
+	public void setSouthAdjacency(String southAdjacency) {
+		this.southAdjacency = southAdjacency;
+	}
+
+	public String getWestAdjacency() {
+		return westAdjacency;
+	}
+
+	public void setWestAdjacency(String westAdjacency) {
+		this.westAdjacency = westAdjacency;
+	}
+
+	public String getEastAdjacency() {
+		return eastAdjacency;
+	}
+
+	public void setEastAdjacency(String eastAdjacency) {
+		this.eastAdjacency = eastAdjacency;
 	}
 
 }

@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
+import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
@@ -248,6 +249,17 @@ public class SaveDownloadedClaim {
 			else
 				org.fao.sola.clients.android.opentenure.model.Claim
 						.updateClaim(claimDB);
+			
+			
+			AdjacenciesNotes adjacenciesNotes =  new AdjacenciesNotes();
+			adjacenciesNotes.setClaimId(downloadedClaim.getId());
+			adjacenciesNotes.setNorthAdiacecy(downloadedClaim.getNorthAdjacency());
+			adjacenciesNotes.setSouthAdiacecy(downloadedClaim.getSouthAdjacency());
+			adjacenciesNotes.setEastAdiacecy(downloadedClaim.getEastAdjacency());
+			adjacenciesNotes.setWestAdiacecy(downloadedClaim.getWestAdjacency());
+			adjacenciesNotes.create();
+			
+			
 
 			if (downloadedClaim.getGpsGeometry().startsWith("POINT"))
 				Vertex.storeWKT(claimDB.getClaimId(),

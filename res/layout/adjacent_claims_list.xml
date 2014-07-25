@@ -4,13 +4,115 @@
     android:layout_height="fill_parent"
     android:background="@color/light_background_opentenure"
     android:baselineAligned="false"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="2dp" >
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_background_opentenure"
+        android:text="@string/adjacencies"
+        android:textSize="20sp" 
+       />
+    
+    <TextView
+        android:id="@+id/north_adjacency_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:text="@string/north_adjacency"
+        android:paddingTop="10dp"
+        />
 
-    <ListView
+    <EditText 
+        android:id="@+id/north_adjacency"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:hint="@string/north_adjacency"   
+        android:inputType="text"  
+        android:paddingTop="10dp"   
+        />
+    
+        <TextView
+        android:id="@+id/south_adjacency_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:text="@string/south_adjacency"
+         android:paddingTop="10dp"
+         />
+
+    <EditText 
+        android:id="@+id/south_adjacency"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:hint="@string/south_adjacency"   
+        android:inputType="text"  
+         android:paddingTop="10dp"   
+        />
+    
+    <TextView
+        android:id="@+id/east_adjacency_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:text="@string/east_adjacency"
+         android:paddingTop="10dp"
+         />
+
+    <EditText 
+        android:id="@+id/east_adjacency"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:hint="@string/east_adjacency"   
+        android:inputType="text"  
+        android:paddingTop="10dp"   
+        />
+    
+        <TextView
+        android:id="@+id/west_adjacency_label"    
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:text="@string/west_adjacency"
+        android:paddingTop="10dp"
+        />
+
+    <EditText 
+        android:id="@+id/west_adjacency"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:hint="@string/west_adjacency"   
+        android:inputType="text"  
+        android:paddingTop="10dp"   
+        />
+    
+    <TextView    
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_background_opentenure"
+        android:text="@string/claim_name"
+        android:paddingTop="10dp"
+        android:visibility="invisible"
+        />
+        
+     <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_background_opentenure"
+        android:text="@string/calculated_adjacencies"
+        android:textSize="20sp" />
+        
+         
+  <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/light_background_opentenure"
-        android:drawSelectorOnTop="true" />
+        android:drawSelectorOnTop="true" /> 
 
 </LinearLayout>

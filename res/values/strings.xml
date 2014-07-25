@@ -73,6 +73,8 @@
     <string name="date">Date</string>
     <string name="additional_info">Additional information</string>
     <string name="adjacency">Adjacency</string>
+    <string name="calculated_adjacencies">Adjacencies with the claims</string>
+    <string name="adjacencies">Adjacencies</string>
     <string name="cardinal_direction">Cardinal direction</string>
     <string name="by">By</string>
     <string name="type">Type</string>
@@ -218,6 +220,10 @@
     <string name="id_number">Id Number</string>
     <string name="land_use">Land Use</string>
     <string name="adjacent_properties">Adjacent properties</string>
+    <string name="north_adjacency">North Adjacency</string>
+    <string name="south_adjacency">South Adjacency</string>
+    <string name="east_adjacency">East Adjacency</string>
+    <string name="west_adjacency">West Adjacency</string>
     <string name="north">North</string>
     <string name="south">South</string>
     <string name="east">East</string>
