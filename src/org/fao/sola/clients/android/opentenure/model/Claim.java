@@ -85,9 +85,8 @@ public class Claim {
 	@Override
 	public String toString() {
 		return "Claim [" + "claimId=" + claimId + ", status=" + status
-				+", claimNumber=" + claimNumber
-				+ ", type=" + type + ", name=" + name + ", person=" + person
-				+ ", propertyLocations="
+				+ ", claimNumber=" + claimNumber + ", type=" + type + ", name="
+				+ name + ", person=" + person + ", propertyLocations="
 				+ Arrays.toString(propertyLocations.toArray()) + ", vertices="
 				+ Arrays.toString(vertices.toArray()) + ", additionalInfo="
 				+ Arrays.toString(additionalInfo.toArray())
@@ -216,7 +215,6 @@ public class Claim {
 	public void setNotes(String notes) {
 		this.notes = notes;
 	}
-		
 
 	public String getClaimNumber() {
 		return claimNumber;
@@ -224,6 +222,14 @@ public class Claim {
 
 	public void setClaimNumber(String claimNumber) {
 		this.claimNumber = claimNumber;
+	}
+
+	public AdjacenciesNotes getAdjacenciesNotes() {
+		return adjacenciesNotes;
+	}
+
+	public void setAdjacenciesNotes(AdjacenciesNotes adjacenciesNotes) {
+		this.adjacenciesNotes = adjacenciesNotes;
 	}
 
 	public static int createClaim(Claim claim) {
@@ -662,6 +668,7 @@ public class Claim {
 	private Person person;
 	private Date dateOfStart;
 	private Claim challengedClaim;
+	private AdjacenciesNotes adjacenciesNotes;
 	private List<Vertex> vertices;
 	private List<PropertyLocation> propertyLocations;
 	private List<AdditionalInfo> additionalInfo;

@@ -220,6 +220,11 @@
     <string name="geoserver_layer_pref_dialog_title">Inserisci il nome del layer WMS</string>
     <string name="property">Proprietà</string>
     <string name="adjacent_claims">Richieste adiacenti</string>
+    <string name="adjacent_properties">Richieste adiacenti</string>
+    <string name="north_adjacency">Adiacenza nord</string>
+    <string name="south_adjacency">Adiacenza sud</string>
+    <string name="east_adjacency">Adiacenza est</string>
+    <string name="west_adjacency">Adiacenza ovest</string>
     <string name="north">Nord</string>
     <string name="south">Sud</string>
     <string name="east">Est</string>
