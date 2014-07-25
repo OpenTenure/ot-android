@@ -282,7 +282,6 @@ public class BasePropertyBoundary {
 			center = new LatLng(polygon.getInteriorPoint().getCoordinate().y, polygon
 					.getInteriorPoint().getCoordinate().x);
 		} catch (Exception e) {
-			Log.d(this.getClass().getName(), "Non-convex polygon, falling back to centroid");
 			center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
 					.getCentroid().getCoordinate().x);
 		}

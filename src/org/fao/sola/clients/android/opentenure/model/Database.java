@@ -127,7 +127,7 @@ public class Database {
 					context);
 			dbPasswordDialog.setTitle(R.string.message_db_locked);
 			final EditText dbPasswordInput = new EditText(context);
-			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 			dbPasswordDialog.setView(dbPasswordInput);
 			dbPasswordDialog.setMessage(context.getResources().getString(
 					R.string.message_db_password));

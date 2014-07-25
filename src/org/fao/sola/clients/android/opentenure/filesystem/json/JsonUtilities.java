@@ -106,10 +106,10 @@ public class JsonUtilities {
 				
 				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
 				
-				tempClaim.setNorthAdjacency(adjacenciesNotes.getNorthAdiacecy());
-				tempClaim.setSouthAdjacency(adjacenciesNotes.getSouthAdiacecy());
-				tempClaim.setWestAdjacency(adjacenciesNotes.getWestAdiacecy());
-				tempClaim.setEastAdjacency(adjacenciesNotes.getEastAdiacecy());
+				tempClaim.setNorthAdjacency(adjacenciesNotes.getNorthAdjacency());
+				tempClaim.setSouthAdjacency(adjacenciesNotes.getSouthAdjacency());
+				tempClaim.setWestAdjacency(adjacenciesNotes.getWestAdjacency());
+				tempClaim.setEastAdjacency(adjacenciesNotes.getEastAdjacency());
 				
 				tempClaim.setTypeCode(claim.getType());
 				if (claim.getDateOfStart() != null)

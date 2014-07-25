@@ -105,6 +105,7 @@ public class PDFClaimExporter {
 					110));
 			newLine();
 			drawHorizontalLine();
+			newLine();
 			writeText(context.getResources().getString(R.string.first_name)
 					+ ": " + claim.getPerson().getFirstName());
 			newLine();
@@ -182,16 +183,16 @@ public class PDFClaimExporter {
 					R.string.title_claim_adjacencies));
 			newLine();
 			writeText(context.getResources().getString(
-					R.string.north)+": ");
+					R.string.north)+": "+claim.getAdjacenciesNotes().getNorthAdjacency());
 			newLine();
 			writeText(context.getResources().getString(
-					R.string.south)+": ");
+					R.string.south)+": "+claim.getAdjacenciesNotes().getSouthAdjacency());
 			newLine();
 			writeText(context.getResources().getString(
-					R.string.east)+": ");
+					R.string.east)+": "+claim.getAdjacenciesNotes().getEastAdjacency());
 			newLine();
 			writeText(context.getResources().getString(
-					R.string.west)+": ");
+					R.string.west)+": "+claim.getAdjacenciesNotes().getWestAdjacency());
 			newLine();
 			drawHorizontalLine();
 			newLine();

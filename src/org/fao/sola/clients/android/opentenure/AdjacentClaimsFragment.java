@@ -163,16 +163,16 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		AdjacenciesNotes adjacenciesNotes = new AdjacenciesNotes();
 		adjacenciesNotes.setClaimId(claimId);
-		adjacenciesNotes.setNorthAdiacecy(((EditText) rootView
+		adjacenciesNotes.setNorthAdjacency(((EditText) rootView
 				.findViewById(R.id.north_adjacency)).getText().toString());
 
-		adjacenciesNotes.setEastAdiacecy(((EditText) rootView
+		adjacenciesNotes.setEastAdjacency(((EditText) rootView
 				.findViewById(R.id.east_adjacency)).getText().toString());
 
-		adjacenciesNotes.setSouthAdiacecy(((EditText) rootView
+		adjacenciesNotes.setSouthAdjacency(((EditText) rootView
 				.findViewById(R.id.south_adjacency)).getText().toString());
 
-		adjacenciesNotes.setWestAdiacecy(((EditText) rootView
+		adjacenciesNotes.setWestAdjacency(((EditText) rootView
 				.findViewById(R.id.west_adjacency)).getText().toString());
 
 		int result = AdjacenciesNotes.createAdjacenciesNotes(adjacenciesNotes);
@@ -189,16 +189,16 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		AdjacenciesNotes adjacenciesNotes = new AdjacenciesNotes();
 		adjacenciesNotes.setClaimId(claimId);
-		adjacenciesNotes.setNorthAdiacecy(((EditText) rootView
+		adjacenciesNotes.setNorthAdjacency(((EditText) rootView
 				.findViewById(R.id.north_adjacency)).getText().toString());
 
-		adjacenciesNotes.setEastAdiacecy(((EditText) rootView
+		adjacenciesNotes.setEastAdjacency(((EditText) rootView
 				.findViewById(R.id.east_adjacency)).getText().toString());
 
-		adjacenciesNotes.setSouthAdiacecy(((EditText) rootView
+		adjacenciesNotes.setSouthAdjacency(((EditText) rootView
 				.findViewById(R.id.south_adjacency)).getText().toString());
 
-		adjacenciesNotes.setWestAdiacecy(((EditText) rootView
+		adjacenciesNotes.setWestAdjacency(((EditText) rootView
 				.findViewById(R.id.west_adjacency)).getText().toString());
 
 		int result = AdjacenciesNotes.updateAdjacenciesNotes(adjacenciesNotes);
@@ -265,16 +265,16 @@ public class AdjacentClaimsFragment extends ListFragment {
 		if (claim != null && adNotes != null) {
 
 			((EditText) rootView.findViewById(R.id.north_adjacency))
-					.setText(adNotes.getNorthAdiacecy());
+					.setText(adNotes.getNorthAdjacency());
 
 			((EditText) rootView.findViewById(R.id.south_adjacency))
-					.setText(adNotes.getSouthAdiacecy());
+					.setText(adNotes.getSouthAdjacency());
 
 			((EditText) rootView.findViewById(R.id.east_adjacency))
-					.setText(adNotes.getEastAdiacecy());
+					.setText(adNotes.getEastAdjacency());
 
 			((EditText) rootView.findViewById(R.id.west_adjacency))
-					.setText(adNotes.getWestAdiacecy());
+					.setText(adNotes.getWestAdjacency());
 
 		}
 	}

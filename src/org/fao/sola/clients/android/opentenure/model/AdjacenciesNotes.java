@@ -38,42 +38,42 @@ public class AdjacenciesNotes {
 
 	static Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	private String northAdiacecy;
-	private String southAdiacecy;
-	private String eastAdiacecy;
-	private String westAdiacecy;
+	private String northAdjacency;
+	private String southAjacency;
+	private String eastAdjacency;
+	private String westAdjacency;
 	private String claimId;
 
-	public String getNorthAdiacecy() {
-		return northAdiacecy;
+	public String getNorthAdjacency() {
+		return northAdjacency;
 	}
 
-	public void setNorthAdiacecy(String northAdiacecy) {
-		this.northAdiacecy = northAdiacecy;
+	public void setNorthAdjacency(String northAdjacency) {
+		this.northAdjacency = northAdjacency;
 	}
 
-	public String getSouthAdiacecy() {
-		return southAdiacecy;
+	public String getSouthAdjacency() {
+		return southAjacency;
 	}
 
-	public void setSouthAdiacecy(String southAdiacecy) {
-		this.southAdiacecy = southAdiacecy;
+	public void setSouthAdjacency(String southAdjacency) {
+		this.southAjacency = southAdjacency;
 	}
 
-	public String getEastAdiacecy() {
-		return eastAdiacecy;
+	public String getEastAdjacency() {
+		return eastAdjacency;
 	}
 
-	public void setEastAdiacecy(String eastAdiacecy) {
-		this.eastAdiacecy = eastAdiacecy;
+	public void setEastAdjacency(String eastAdjacency) {
+		this.eastAdjacency = eastAdjacency;
 	}
 
-	public String getWestAdiacecy() {
-		return westAdiacecy;
+	public String getWestAdjacency() {
+		return westAdjacency;
 	}
 
-	public void setWestAdiacecy(String westAdiacecy) {
-		this.westAdiacecy = westAdiacecy;
+	public void setWestAdjacency(String westAdjacency) {
+		this.westAdjacency = westAdjacency;
 	}
 
 	public String getClaimId() {
@@ -86,9 +86,9 @@ public class AdjacenciesNotes {
 
 	@Override
 	public String toString() {
-		return "AdjacenciesNotes [" + "northAdiacecy=" + northAdiacecy
-				+ ", southAdiacecy=" + southAdiacecy + ", eastAdiacecy="
-				+ eastAdiacecy + ", westAdiacecy=" + westAdiacecy + "]";
+		return "AdjacenciesNotes [" + "northAdjacency=" + northAdjacency
+				+ ", southAdjacency=" + southAjacency + ", eastAdjacency="
+				+ eastAdjacency + ", westAdjacency=" + westAdjacency + "]";
 	}
 
 	public static int createAdjacenciesNotes(AdjacenciesNotes adjacenciesNotes) {
@@ -103,10 +103,10 @@ public class AdjacenciesNotes {
 			statement = localConnection
 					.prepareStatement(" INSERT INTO ADJACENCIES_NOTES ( CLAIM_ID, NORTH_ADJACENCY, SOUTH_ADJACENCY, EAST_ADJACENCY,WEST_ADJACENCY) VALUES(?,?,?,?,?)");
 			statement.setString(1, adjacenciesNotes.getClaimId());
-			statement.setString(2, adjacenciesNotes.getNorthAdiacecy());
-			statement.setString(3, adjacenciesNotes.getSouthAdiacecy());
-			statement.setString(4, adjacenciesNotes.getEastAdiacecy());
-			statement.setString(5, adjacenciesNotes.getWestAdiacecy());
+			statement.setString(2, adjacenciesNotes.getNorthAdjacency());
+			statement.setString(3, adjacenciesNotes.getSouthAdjacency());
+			statement.setString(4, adjacenciesNotes.getEastAdjacency());
+			statement.setString(5, adjacenciesNotes.getWestAdjacency());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -143,10 +143,10 @@ public class AdjacenciesNotes {
 			statement = localConnection
 					.prepareStatement(" INSERT INTO ADJACENCIES_NOTES ( CLAIM_ID, NORTH_ADJACENCY, SOUTH_ADJACENCY, EAST_ADJACENCY,WEST_ADJACENCY) VALUES(?,?,?,?,?)");
 			statement.setString(1, getClaimId());
-			statement.setString(2, getNorthAdiacecy());
-			statement.setString(3, getSouthAdiacecy());
-			statement.setString(4, getEastAdiacecy());
-			statement.setString(5, getWestAdiacecy());
+			statement.setString(2, getNorthAdjacency());
+			statement.setString(3, getSouthAdjacency());
+			statement.setString(4, getEastAdjacency());
+			statement.setString(5, getWestAdjacency());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -250,10 +250,10 @@ public class AdjacenciesNotes {
 					.prepareStatement(" UPDATE ADJACENCIES_NOTES SET NORTH_ADJACENCY=?, SOUTH_ADJACENCY=?, EAST_ADJACENCY=?, WEST_ADJACENCY=? WHERE CLAIM_ID=? ");
 
 			statement.setString(5, adjacenciesNotes.getClaimId());
-			statement.setString(1, adjacenciesNotes.getNorthAdiacecy());
-			statement.setString(2, adjacenciesNotes.getSouthAdiacecy());
-			statement.setString(3, adjacenciesNotes.getEastAdiacecy());
-			statement.setString(4, adjacenciesNotes.getWestAdiacecy());
+			statement.setString(1, adjacenciesNotes.getNorthAdjacency());
+			statement.setString(2, adjacenciesNotes.getSouthAdjacency());
+			statement.setString(3, adjacenciesNotes.getEastAdjacency());
+			statement.setString(4, adjacenciesNotes.getWestAdjacency());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -290,10 +290,10 @@ public class AdjacenciesNotes {
 			statement = localConnection
 					.prepareStatement("UPDATE ADJACENCIES_NOTES SET NORTH_ADJACENCY=?, SOUTH_ADJACENCY=?, EAST_ADJACENCY=?, WEST_ADJACENCY=? WHERE CLAIM_ID=?");
 			statement.setString(5, getClaimId());
-			statement.setString(1, getNorthAdiacecy());
-			statement.setString(2, getSouthAdiacecy());
-			statement.setString(3, getEastAdiacecy());
-			statement.setString(4, getWestAdiacecy());
+			statement.setString(1, getNorthAdjacency());
+			statement.setString(2, getSouthAdjacency());
+			statement.setString(3, getEastAdjacency());
+			statement.setString(4, getWestAdjacency());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -335,10 +335,10 @@ public class AdjacenciesNotes {
 			while (rs.next()) {
 				adjacenciesNotes = new AdjacenciesNotes();
 				adjacenciesNotes.setClaimId(claimId);
-				adjacenciesNotes.setNorthAdiacecy(rs.getString(1));
-				adjacenciesNotes.setSouthAdiacecy(rs.getString(2));
-				adjacenciesNotes.setEastAdiacecy(rs.getString(3));
-				adjacenciesNotes.setWestAdiacecy(rs.getString(4));
+				adjacenciesNotes.setNorthAdjacency(rs.getString(1));
+				adjacenciesNotes.setSouthAdjacency(rs.getString(2));
+				adjacenciesNotes.setEastAdjacency(rs.getString(3));
+				adjacenciesNotes.setWestAdjacency(rs.getString(4));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

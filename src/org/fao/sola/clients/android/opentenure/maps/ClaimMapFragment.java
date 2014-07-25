@@ -95,8 +95,8 @@ public class ClaimMapFragment extends Fragment implements
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
-	private static int SNAPSHOT_SIZE = 800;
-	private static int SNAPSHOT_PADDING = 50;
+	private static int CLAIM_MAP_SIZE = 800;
+	private static int CLAIM_MAP_PADDING = 50;
 
 	private View mapView;
 	private MapLabel label;
@@ -115,10 +115,12 @@ public class ClaimMapFragment extends Fragment implements
 	private double snapLat;
 	private double snapLon;
 	private Menu menu;
-	private boolean moved;
 	private boolean isRotating = false;
 	private boolean isFollowing = false;
 	private Marker myLocation;
+	private CameraPosition oldCameraPosition;
+	private CameraPosition newCameraPosition;
+	private boolean adjacenciesReset = false;
 	private LocationListener myLocationListener = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
@@ -238,14 +240,15 @@ public class ClaimMapFragment extends Fragment implements
 	}
 	
 	private void centerMapOnCurrentProperty(CancelableCallback callback){
-		moved = false;
 		if (currentProperty.getCenter() != null) {
 			// A property exists for the claim
 			// so we center on it
 			LatLngBounds llb = currentProperty.getBounds();
+			oldCameraPosition = map.getCameraPosition();
+			newCameraPosition = map.getCameraPosition();
 			map.animateCamera(CameraUpdateFactory.newLatLngBounds(
-					llb, SNAPSHOT_SIZE, SNAPSHOT_SIZE, SNAPSHOT_PADDING), callback);
-			if(!moved && callback != null){
+					llb, CLAIM_MAP_SIZE, CLAIM_MAP_SIZE, CLAIM_MAP_PADDING), callback);
+			if(oldCameraPosition.equals(newCameraPosition) && callback != null){
 				// NOTE: THIS IS A DIRTY HACK
 				// animateCamera will not invoke callback.onFinish if there is no need to move the camera
 				// so, if the map was never moved, we need to force it
@@ -329,7 +332,6 @@ public class ClaimMapFragment extends Fragment implements
 		centerMapOnCurrentProperty(null);
 		reloadVisibleProperties();
 		showVisibleProperties();
-		currentProperty.resetAdjacency(visibleProperties);
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
@@ -390,7 +392,6 @@ public class ClaimMapFragment extends Fragment implements
 			});
 		}
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
-	    moved = false;
 		return mapView;
 
 	}
@@ -693,7 +694,11 @@ public class ClaimMapFragment extends Fragment implements
 		showVisibleProperties();
 		currentProperty.redrawBoundary();
 		currentProperty.refreshMarkerEditControls();
-		moved = true;
+		newCameraPosition = cameraPosition;
+		if(!adjacenciesReset){
+			currentProperty.resetAdjacency(visibleProperties);
+			adjacenciesReset = true;
+		}
 	}
 
 	@Override
