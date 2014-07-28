@@ -35,6 +35,7 @@
     <string name="title_challenged_claims">Richieste con opposizioni</string>
     <string name="title_claim">Richiesta</string>
     <string name="title_person_details">Dettagli della persona</string>
+    <string name="title_group_details">Dettagli del gruppo</string>
     <string name="title_claim_additional_info">Informazioni aggiuntive</string>
     <string name="title_claim_documents">Documenti</string>
     <string name="title_claim_photos">Immagini della richiesta</string>
@@ -50,6 +51,7 @@
     <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>
     <string name="title_i_m_here">La tua posizione</string>
     <string name="title_activity_person">Open Tenure: Nuova persona</string>
+    <string name="title_activity_group">Open Tenure: Nuovo gruppo</string>
     <string name="title_activity_select_claim">Open Tenure: Selezione richiesta</string>
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
@@ -73,10 +75,13 @@
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
     <string name="adjacency">Adiacenza</string>
+    <string name="calculated_adjacencies">Adiacenze con i claim</string>
+    <string name="adjacencies">Adiacenze</string>
     <string name="cardinal_direction">Direzione</string>
     <string name="by">Di</string>
     <string name="type">Tipo</string>
     <string name="na">N.A.</string>
+    <string name="group_name">Nome</string>
     <string name="signature">Firma</string>
     <string name="claim_date">Data della richiesta</string>
     <string name="claim_name">Nome della richiesta</string>
@@ -85,6 +90,7 @@
     <string name="default_claim_name">Nuova richiesta</string>
     <string name="claim_notes">Annotazioni</string>
     <string name="insert_claim_notes">Inserisci le annotazioni</string>
+    <string name="new_entity">Nuova entità</string>
     <string name="first_name">Nome</string>
     <string name="first_name_label">Nome *</string>
     <string name="last_name">Cognome</string>
@@ -95,6 +101,7 @@
     <string name="date_of_start_label">Data di inizio del diritto (YYYY-MM-DD)</string>
     <string name="place_of_birth">Luogo di nascita</string>
     <string name="place_of_birth_label">Luogo di nascita *</string>
+    <string name="date_of_establishment_label">Data di costituzione</string>
     <string name="mobile_phone_number">Telefono mobile</string>
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
@@ -170,7 +177,10 @@
     <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>
     <string name="message_withdrawn_claim">Claim correttamente ritirato</string>
+    <string name="message_entity_type">Che tipo di entità ?</string>
     <string name="yes">Si</string>
+    <string name="person">Persona</string>
+    <string name="group">Gruppo</string>
     <string name="no">No</string>
     <string name="up">Su</string>
     <string name="down">Giù</string>
@@ -222,6 +232,10 @@
     <string name="south">Sud</string>
     <string name="east">Est</string>
     <string name="west">Ovest</string>
+    <string name="north_adjacency">Adiacenza Nord</string>
+    <string name="south_adjacency">Adiacenza Sud</string>
+    <string name="east_adjacency">Adiacenza Est</string>
+    <string name="west_adjacency">Adiacenza Ovest</string>
     <string name="north_east">Nord-Est</string>
     <string name="north_west">Nord-Ovest</string>
     <string name="south_east">Sud-Est</string>

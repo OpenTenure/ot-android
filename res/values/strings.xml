@@ -35,6 +35,7 @@
     <string name="title_challenged_claims">Challenged claims</string>
     <string name="title_claim">Claim</string>
     <string name="title_person_details">Person details</string>
+    <string name="title_group_details">Group details</string>
     <string name="title_claim_additional_info">Additional information</string>
     <string name="title_claim_documents">Documents</string>
     <string name="title_claim_photos">Claim photos</string>
@@ -50,6 +51,7 @@
     <string name="title_activity_claim">Open Tenure: New claim</string>
     <string name="title_i_m_here">Your location</string>
     <string name="title_activity_person">Open Tenure: New person</string>
+    <string name="title_activity_group">Open Tenure: New group</string>
     <string name="title_activity_select_claim">Open Tenure: Select claim</string>
     <string name="title_activity_select_person">Open Tenure: Select person</string>
     <string name="title_activity_file_chooser">Choose a file</string>
@@ -76,9 +78,11 @@
     <string name="calculated_adjacencies">Adjacencies with the claims</string>
     <string name="adjacencies">Adjacencies</string>
     <string name="cardinal_direction">Cardinal direction</string>
+    <string name="new_entity">New entity</string>
     <string name="by">By</string>
     <string name="type">Type</string>
     <string name="na">N.A.</string>
+    <string name="group_name">Name</string>
     <string name="signature">Signature</string>
     <string name="claim_date">Claim date</string>
     <string name="claim_name">Claim name</string>
@@ -95,6 +99,7 @@
     <string name="date_of_start_label">Date of right\'s start (YYYY-MM-DD)</string>
     <string name="place_of_birth">Place of birth</string>
     <string name="place_of_birth_label">Place of birth *</string>
+    <string name="date_of_establishment_label">Date of Establishment</string>
     <string name="mobile_phone_number">Mobile phone number</string>
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
@@ -169,8 +174,11 @@
     <string name="message_deleted_claim">Claim correctly deleted locally</string>
     <string name="message_save_changes">Do you want save changes ?</string>
     <string name="message_claim_modified">Claim modified</string>
+    <string name="message_entity_type">Which kind of entity ?</string>
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
+    <string name="person">Person</string>
+    <string name="group">Group</string>
     <string name="no">No</string>
     <string name="up">Up</string>
     <string name="down">Down</string>
