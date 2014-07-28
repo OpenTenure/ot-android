@@ -65,6 +65,7 @@ import android.widget.Toast;
 
 import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.CancelableCallback;
 import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
 import com.androidmapsextensions.GoogleMap.OnMapLongClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
@@ -94,6 +95,8 @@ public class ClaimMapFragment extends Fragment implements
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
+	private static int CLAIM_MAP_SIZE = 800;
+	private static int CLAIM_MAP_PADDING = 50;
 
 	private View mapView;
 	private MapLabel label;
@@ -115,6 +118,9 @@ public class ClaimMapFragment extends Fragment implements
 	private boolean isRotating = false;
 	private boolean isFollowing = false;
 	private Marker myLocation;
+	private CameraPosition oldCameraPosition;
+	private CameraPosition newCameraPosition;
+	private boolean adjacenciesReset = false;
 	private LocationListener myLocationListener = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
@@ -123,15 +129,12 @@ public class ClaimMapFragment extends Fragment implements
 			}
 		}
 		public void onStatusChanged(String provider, int status, Bundle extras) {
-			Log.d(this.getClass().getName(), "onStatusChanged");
 		}
 
 		public void onProviderEnabled(String provider) {
-			Log.d(this.getClass().getName(), "onProviderEnabled");
 		}
 
 		public void onProviderDisabled(String provider) {
-			Log.d(this.getClass().getName(), "onProviderDisabled");
 		}
 	};
     // device sensor manager
@@ -171,7 +174,6 @@ public class ClaimMapFragment extends Fragment implements
 		menu.findItem(R.id.action_stop_rotating).setVisible(false);
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
-			menu.removeItem(R.id.action_new_picture);
 		}
 		this.menu = menu;
 		super.onCreateOptionsMenu(menu, inflater);
@@ -214,7 +216,6 @@ public class ClaimMapFragment extends Fragment implements
 	
 	@Override
 	public void onDestroyView() {
-		Log.d(this.getClass().getName(), "onDestroyView");
 		lh.stop();
 		Fragment map = getFragmentManager().findFragmentById(
 				R.id.claim_map_fragment);
@@ -237,12 +238,49 @@ public class ClaimMapFragment extends Fragment implements
 		}
 		super.onDestroyView();
 	}
+	
+	private void centerMapOnCurrentProperty(CancelableCallback callback){
+		if (currentProperty.getCenter() != null) {
+			// A property exists for the claim
+			// so we center on it
+			LatLngBounds llb = currentProperty.getBounds();
+			oldCameraPosition = map.getCameraPosition();
+			newCameraPosition = map.getCameraPosition();
+			map.animateCamera(CameraUpdateFactory.newLatLngBounds(
+					llb, CLAIM_MAP_SIZE, CLAIM_MAP_SIZE, CLAIM_MAP_PADDING), callback);
+			if(oldCameraPosition.equals(newCameraPosition) && callback != null){
+				// NOTE: THIS IS A DIRTY HACK
+				// animateCamera will not invoke callback.onFinish if there is no need to move the camera
+				// so, if the map was never moved, we need to force it
+				callback.onFinish();
+			}
+		} else {
+			// No property exists for this claim
+			// so we center where we left the main map
+			String zoom = Configuration
+					.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
+			String latitude = Configuration
+					.getConfigurationValue(MainMapFragment.MAIN_MAP_LATITUDE);
+			String longitude = Configuration
+					.getConfigurationValue(MainMapFragment.MAIN_MAP_LONGITUDE);
+
+			if (zoom != null && latitude != null && longitude != null) {
+				try {
+					map.moveCamera(CameraUpdateFactory.newLatLngZoom(
+							new LatLng(Double.parseDouble(latitude), Double
+									.parseDouble(longitude)), Float
+									.parseFloat(zoom)));
+				} catch (Exception e) {
+				}
+			}
+
+		}
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		Log.d(this.getClass().getName(), "onCreateView");
 		super.onCreateView(inflater, container, savedInstanceState);
 		mapView = inflater.inflate(R.layout.fragment_claim_map, container,
 				false);
@@ -290,35 +328,11 @@ public class ClaimMapFragment extends Fragment implements
 			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
 					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, true);
 		}
-
-		if (currentProperty.getCenter() != null) {
-			// A property exists for the claim
-			// so we center on it
-			map.moveCamera(CameraUpdateFactory.newLatLngBounds(
-					currentProperty.getBounds(), 800, 800, 50));
-		} else {
-			// No property exists for this claim
-			// so we center where we left the main map
-			String zoom = Configuration
-					.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
-			String latitude = Configuration
-					.getConfigurationValue(MainMapFragment.MAIN_MAP_LATITUDE);
-			String longitude = Configuration
-					.getConfigurationValue(MainMapFragment.MAIN_MAP_LONGITUDE);
-
-			if (zoom != null && latitude != null && longitude != null) {
-				try {
-					map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-							new LatLng(Double.parseDouble(latitude), Double
-									.parseDouble(longitude)), Float
-									.parseFloat(zoom)));
-				} catch (Exception e) {
-				}
-			}
-
-		}
+		
+		centerMapOnCurrentProperty(null);
 		reloadVisibleProperties();
 		showVisibleProperties();
+
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
 			// Allow adding, removing and dragging markers
@@ -573,7 +587,21 @@ public class ClaimMapFragment extends Fragment implements
 			toast.show();
 			return true;
 		case R.id.action_new_picture:
-			currentProperty.saveSnapshot();
+			Log.d(this.getClass().getName(), "newPicture");
+			centerMapOnCurrentProperty(new CancelableCallback() {
+				
+				@Override
+				public void onFinish() {
+					Log.d(this.getClass().getName(), "onFinish");
+					currentProperty.saveSnapshot();
+				}
+				
+				@Override
+				public void onCancel() {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			return true;
 		case R.id.action_submit:
 			if (saved) {
@@ -626,10 +654,7 @@ public class ClaimMapFragment extends Fragment implements
 						"onOptionsItemSelected - " + newLocation,
 						Toast.LENGTH_SHORT).show();
 
-				currentProperty.insertVertex(newLocation);
-				currentProperty.updateVertices();
-				currentProperty.redrawBoundary();
-				currentProperty.resetAdjacency(visibleProperties);
+				currentProperty.addMarker(newLocation, newLocation);
 
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),
@@ -669,6 +694,11 @@ public class ClaimMapFragment extends Fragment implements
 		showVisibleProperties();
 		currentProperty.redrawBoundary();
 		currentProperty.refreshMarkerEditControls();
+		newCameraPosition = cameraPosition;
+		if(!adjacenciesReset){
+			currentProperty.resetAdjacency(visibleProperties);
+			adjacenciesReset = true;
+		}
 	}
 
 	@Override

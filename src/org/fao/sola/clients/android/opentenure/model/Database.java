@@ -71,7 +71,12 @@ public class Database {
 	}
 
 	public void setPassword(String password) {
-		this.password = password;
+
+		if (password != null && !password.equals("")) {
+			this.password = password;
+		}else{
+			this.password = null;
+		}
 	}
 
 	public Database(Context context, String password) {
@@ -99,7 +104,7 @@ public class Database {
 
 	}
 
-	private boolean init() {
+	public boolean init() {
 		if (!databaseExists()) {
 			return createDataBase();
 		}
@@ -127,7 +132,7 @@ public class Database {
 					context);
 			dbPasswordDialog.setTitle(R.string.message_db_locked);
 			final EditText dbPasswordInput = new EditText(context);
-			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT);
+			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 			dbPasswordDialog.setView(dbPasswordInput);
 			dbPasswordDialog.setMessage(context.getResources().getString(
 					R.string.message_db_password));
@@ -183,18 +188,31 @@ public class Database {
 		sync();
 		close();
 		try {
-			if (oldPassword != null && !oldPassword.equals("")) {
-				org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
-						"AES", oldPassword.toCharArray(),
-						newPassword.toCharArray(), true);
-			} else {
-				org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
-						"AES", null, newPassword.toCharArray(), true);
+			if (newPassword != null && !newPassword.equals("")) {
+				if (oldPassword != null && !oldPassword.equals("")) {
+					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+							"AES", oldPassword.toCharArray(),
+							newPassword.toCharArray(), true);
+				} else {
+					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+							"AES", null, newPassword.toCharArray(), true);
+				}
+				this.password = newPassword;
+
+			}else{
+				if (oldPassword != null && !oldPassword.equals("")) {
+					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+							"AES", oldPassword.toCharArray(),
+							null, true);
+				} else {
+					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
+							"AES", null, null, true);
+				}
+				this.password = null;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		this.password = newPassword;
 		open();
 	}
 

@@ -28,6 +28,7 @@
     <string name="action_export">Export</string>
     <string name="action_rotate">Rotate map using device compass</string>
     <string name="action_stop_rotating">Stop rotating the map</string>
+    <string name="action_claim_map_snapshot">Attach a snapshot of this claim map</string>
     <string name="title_news">News</string>
     <string name="title_map">Map</string>
     <string name="title_claims">Claims</string>
@@ -75,7 +76,6 @@
     <string name="date">Date</string>
     <string name="additional_info">Additional information</string>
     <string name="adjacency">Adjacency</string>
-    <string name="calculated_adjacencies">Adjacencies with the claims</string>
     <string name="adjacencies">Adjacencies</string>
     <string name="cardinal_direction">Cardinal direction</string>
     <string name="new_entity">New entity</string>
@@ -128,6 +128,7 @@
     <string name="message_uploading">The claim is in upload</string>
     <string name="message_submission_error">Error during submission of the claim</string>
     <string name="message_save_claim_before_submit">The claim must be saved before submission</string>
+    <string name="message_save_snapshot_before_printing">Attach a map snapshot before printing</string>
     <string name="message_save_claim_before_adding_content">The claim must be saved before adding content</string>
     <string name="message_save_person_before_adding_content">The person must be saved before adding content</string>
     <string name="message_export">Exporting</string>
@@ -227,6 +228,8 @@
     <string name="id_type">Id Type</string>
     <string name="id_number">Id Number</string>
     <string name="land_use">Land Use</string>
+    <string name="calculated_adjacencies">Adjacent claims</string>
+    <string name="adjacent_claims">Adjacent claims</string>
     <string name="adjacent_properties">Adjacent properties</string>
     <string name="north_adjacency">North Adjacency</string>
     <string name="south_adjacency">South Adjacency</string>

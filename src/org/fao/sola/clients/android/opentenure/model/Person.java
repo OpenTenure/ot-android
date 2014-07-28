@@ -90,8 +90,9 @@ public class Person {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created'");
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created' UNION SELECT CLAIM_ID FROM OWNER WHERE PERSON_ID=?");
 			statement.setString(1, personId);
+			statement.setString(2, personId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				result = true;
@@ -134,8 +135,9 @@ public class Person {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created'");
+					.prepareStatement("SELECT CLAIM_ID FROM CLAIM WHERE PERSON_ID=? AND STATUS <> 'created' UNION SELECT CLAIM_ID FROM OWNER WHERE PERSON_ID=?");
 			statement.setString(1, personId);
+			statement.setString(2, personId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				result = true;

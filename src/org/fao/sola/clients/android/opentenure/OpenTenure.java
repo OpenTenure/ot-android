@@ -111,21 +111,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
-		
-		OpenTenureApplication.getInstance().getDatabase().unlock(this);
-		
-		if(OpenTenureApplication.getInstance().getDatabase().isOpen()){
-			// Check for pending upgrades
-			if(OpenTenureApplication.getInstance().getDatabase().getUpgradePath().size() > 0){
-				Toast.makeText(this,
-						R.string.message_check_upgrade_db, Toast.LENGTH_LONG)
-						.show();
-				OpenTenureApplication.getInstance().getDatabase().performUpgrade();
-			}
-		}
-
-		Log.d(this.getClass().getName(),
-				"DB version is: " + Configuration.getConfigurationValue("DBVERSION"));
 	}
 
 	@Override

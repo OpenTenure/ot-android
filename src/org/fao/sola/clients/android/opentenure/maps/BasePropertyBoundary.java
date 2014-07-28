@@ -58,6 +58,7 @@ import com.androidmapsextensions.MarkerOptions;
 import com.androidmapsextensions.Polyline;
 import com.androidmapsextensions.PolylineOptions;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -213,8 +214,6 @@ public class BasePropertyBoundary {
 
 	protected void calculateGeometry() {
 
-		int fakeCoords = 1;
-
 		if (vertices == null || vertices.size() <= 0) {
 			return;
 		}
@@ -226,13 +225,8 @@ public class BasePropertyBoundary {
 
 		GeometryFactory gf = new GeometryFactory();
 
-		if (vertices.size() <= 2) {
-			// need at least four coordinates for a closed polygon with three
-			// vertices
-			fakeCoords = 2;
-		}
-
-		Coordinate[] coords = new Coordinate[vertices.size() + fakeCoords];
+		// need at least 4 coordinates for a three vertices polygon
+		Coordinate[] coords = new Coordinate[(vertices.size() + 1) > 4 ? (vertices.size() + 1) : 4];
 
 		int i = 0;
 
@@ -241,28 +235,53 @@ public class BasePropertyBoundary {
 					vertex.getMapPosition().latitude);
 		}
 
-		if (vertices.size() <= 2) {
-			coords[i++] = new Coordinate(
-					vertices.get(1).getMapPosition().longitude, vertices.get(1)
-							.getMapPosition().latitude);
+		if(vertices.size() == 2){
+			// the source is a line segment so we replicate the second vertex to create a three vertices polygon
+			coords[i++] = new Coordinate(vertices.get(1).getMapPosition().longitude,
+					vertices.get(1).getMapPosition().latitude);
 		}
 
-		coords[i] = new Coordinate(vertices.get(0).getMapPosition().longitude,
+		// then we close the polygon
+
+		coords[coords.length - 1] = new Coordinate(vertices.get(0).getMapPosition().longitude,
 				vertices.get(0).getMapPosition().latitude);
 
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
+		Geometry envelope = polygon.getEnvelope();
+		
+		switch(envelope.getCoordinates().length){
+		case 1:
+			// the envelope is a point
+			bounds = new LatLngBounds(new LatLng(
+					envelope.getCoordinates()[0].y,
+					envelope.getCoordinates()[0].x),
+			new LatLng(
+					envelope.getCoordinates()[0].y,
+					envelope.getCoordinates()[0].x));
+			break;
+		case 2:
+			// the envelop is a line segment
+			bounds = new LatLngBounds(new LatLng(
+					envelope.getCoordinates()[0].y,
+					envelope.getCoordinates()[0].x),
+			new LatLng(
+					envelope.getCoordinates()[1].y,
+					envelope.getCoordinates()[1].x));
+			break;
+		default:
+			bounds = new LatLngBounds(new LatLng(
+					envelope.getCoordinates()[0].y,
+					envelope.getCoordinates()[0].x),
+			new LatLng(
+					envelope.getCoordinates()[2].y,
+					envelope.getCoordinates()[2].x));
+		}
 
-		bounds = new LatLngBounds(new LatLng(polygon.getEnvelope()
-				.getCoordinates()[0].y,
-				polygon.getEnvelope().getCoordinates()[0].x), new LatLng(
-				polygon.getEnvelope().getCoordinates()[2].y, polygon
-						.getEnvelope().getCoordinates()[2].x));
 		try {
 			center = new LatLng(polygon.getInteriorPoint().getCoordinate().y, polygon
 					.getInteriorPoint().getCoordinate().x);
 		} catch (Exception e) {
-			Log.d(this.getClass().getName(), "Non-convex polygon, falling back to centroid");
 			center = new LatLng(polygon.getCentroid().getCoordinate().y, polygon
 					.getCentroid().getCoordinate().x);
 		}

@@ -479,13 +479,24 @@ public class Vertex {
 		if (vertices == null || vertices.size() == 0) {
 			return null;
 		}
+		
 		GeometryFactory gf = new GeometryFactory();
 		Coordinate[] coordinates = new Coordinate[vertices.size() + 1];
 		int i = 0;
+		boolean noGPSData = true;
 
 		for (Vertex vertex : vertices) {
-			coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude,
-					vertex.getGPSPosition().latitude);
+			
+			coordinates[i] = new Coordinate();
+
+			if(INVALID_POSITION.equals(vertex.getGPSPosition())){
+				coordinates[i].x = vertex.getMapPosition().longitude;
+				coordinates[i].y = vertex.getMapPosition().latitude;
+			}else{
+				coordinates[i].x = vertex.getGPSPosition().longitude;
+				coordinates[i].y = vertex.getGPSPosition().latitude;
+				noGPSData = false;
+			}
 			
 			i++;
 		}
@@ -495,7 +506,7 @@ public class Vertex {
 
 		StringWriter writer = new StringWriter();
 		
-		if (coordinates[0].x == 40.0 && coordinates[0].y == 90.0) {			
+		if (noGPSData) {			
 			
 			
 			Point point = gf.createPoint(coordinates[0]);

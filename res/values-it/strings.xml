@@ -28,6 +28,7 @@
     <string name="action_export">Esporta</string>
     <string name="action_rotate">Ruota la mappa usando la bussola del dispositivo</string>
     <string name="action_stop_rotating">Non ruotare la mappa</string>
+    <string name="action_claim_map_snapshot">Allega una foto della mappa di questa richiesta</string>
     <string name="title_news">Notizie</string>
     <string name="title_map">Mappa</string>
     <string name="title_claims">Richieste</string>
@@ -126,6 +127,7 @@
     <string name="message_uploading">Il claim e\' in upload</string>
     <string name="message_submission_error">Errore durante l\'invio del claim</string>
     <string name="message_save_claim_before_submit">Salvare la richiesta prima di inviarla</string>
+    <string name="message_save_snapshot_before_printing">Allega un immagine della mappa prime di stampare</string>
     <string name="message_save_claim_before_adding_content">Salvare la richiesta prima di aggiungere contenuti</string>
     <string name="message_save_person_before_adding_content">Salvare la persona prima di aggiungere contenuti</string>
     <string name="message_remove_person">Persona %s rimossa</string>
@@ -227,7 +229,13 @@
     <string name="geoserver_layer_pref_summary">WMS layer da richiedere al GeoServer (chiedere all\'amministratore)</string>
     <string name="geoserver_layer_pref_dialog_title">Inserisci il nome del layer WMS</string>
     <string name="property">Proprietà</string>
-    <string name="adjacent_properties">Proprietà adiacenti</string>
+    <string name="calculated_adjacencies">Richieste adiacenti</string>
+    <string name="adjacent_claims">Richieste adiacenti</string>
+    <string name="adjacent_properties">Richieste adiacenti</string>
+    <string name="north_adjacency">Adiacenza nord</string>
+    <string name="south_adjacency">Adiacenza sud</string>
+    <string name="east_adjacency">Adiacenza est</string>
+    <string name="west_adjacency">Adiacenza ovest</string>
     <string name="north">Nord</string>
     <string name="south">Sud</string>
     <string name="east">Est</string>

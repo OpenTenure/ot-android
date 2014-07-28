@@ -163,6 +163,9 @@ public class NewsFragment extends ListFragment {
 																					.show();
 
 																		} else {
+																			if("".equalsIgnoreCase(newPassword)){
+																				newPassword=null;
+																			}
 																			OpenTenureApplication
 																					.getInstance()
 																					.getDatabase()

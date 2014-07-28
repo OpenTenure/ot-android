@@ -91,13 +91,20 @@ public class PDFClaimExporter {
 
 			addPage(document, context, claimId);
 
-			setFont(FONT_SANS_SERIF, Typeface.NORMAL);
-			writeText(context.getResources().getString(R.string.app_name) + " "
-					+ context.getResources().getString(R.string.claim) + ": "
-					+ claim.getName() + " (id: " + claimId + ")");
+			if(claim.getClaimNumber()!=null){
+				writeBoldText(context.getResources().getString(R.string.app_name) + " "
+						+ context.getResources().getString(R.string.claim) + ": "
+						+ claim.getName() + " (#" + claim.getClaimNumber() + ")");
+			}else{
+				writeBoldText(context.getResources().getString(R.string.app_name) + " "
+						+ context.getResources().getString(R.string.claim) + ": "
+						+ claim.getName() + " (id: " + claimId + ")");
+			}
 			newLine();
 			drawBitmap(bitmapFromResource(context, R.drawable.sola_logo, 128,
 					110));
+			newLine();
+			drawHorizontalLine();
 			newLine();
 			writeText(context.getResources().getString(R.string.first_name)
 					+ ": " + claim.getPerson().getFirstName());
@@ -125,16 +132,18 @@ public class PDFClaimExporter {
 			drawHorizontalLine();
 			newLine();
 			newLine();
-			writeText(context.getResources().getString(R.string.date));
+			writeBoldText(context.getResources().getString(R.string.date));
 			drawHorizontalLine(pageWidth / 2);
-			writeText(context.getResources().getString(R.string.signature));
+			writeBoldText(context.getResources().getString(R.string.signature));
 			drawHorizontalLine(pageWidth - horizontalMargin);
 
 			addPage(document, context, claimId);
-			writeText(context.getResources().getString(
-					R.string.adjacent_properties));
-			newLine();
+			// Adjacent claims section
 			drawHorizontalLine();
+			newLine();
+			writeBoldText(context.getResources().getString(
+					R.string.adjacent_claims));
+			newLine();
 			List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
 			for (Adjacency adj : adjList) {
 				Claim adjacentClaim;
@@ -168,11 +177,29 @@ public class PDFClaimExporter {
 			newLine();
 			newLine();
 			drawHorizontalLine();
+			// Adjacencies section
+			newLine();
+			writeBoldText(context.getResources().getString(
+					R.string.title_claim_adjacencies));
+			newLine();
+			writeText(context.getResources().getString(
+					R.string.north)+": "+claim.getAdjacenciesNotes().getNorthAdjacency());
+			newLine();
+			writeText(context.getResources().getString(
+					R.string.south)+": "+claim.getAdjacenciesNotes().getSouthAdjacency());
+			newLine();
+			writeText(context.getResources().getString(
+					R.string.east)+": "+claim.getAdjacenciesNotes().getEastAdjacency());
+			newLine();
+			writeText(context.getResources().getString(
+					R.string.west)+": "+claim.getAdjacenciesNotes().getWestAdjacency());
+			newLine();
+			drawHorizontalLine();
 			newLine();
 			newLine();
-			writeText(context.getResources().getString(R.string.date));
+			writeBoldText(context.getResources().getString(R.string.date));
 			drawHorizontalLine(pageWidth / 2);
-			writeText(context.getResources().getString(R.string.signature));
+			writeBoldText(context.getResources().getString(R.string.signature));
 			drawHorizontalLine(pageWidth - horizontalMargin);
 
 			if (currentPage != null) {
@@ -195,6 +222,12 @@ public class PDFClaimExporter {
 		typeface = new Paint();
 		typeface.setTypeface(tf);
 		typeface.setAntiAlias(true);
+	}
+
+	private void writeBoldText(String text) {
+		setFont(FONT_SANS_SERIF, Typeface.BOLD);
+		writeText(text);
+		setFont(FONT_SANS_SERIF, Typeface.NORMAL);
 	}
 
 	private void writeText(String text) {

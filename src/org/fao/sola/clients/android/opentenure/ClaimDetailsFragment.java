@@ -39,6 +39,8 @@ import java.util.Locale;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsNegativeListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
@@ -777,6 +779,26 @@ public class ClaimDetailsFragment extends Fragment {
 			return true;
 
 		case R.id.action_print:
+			Claim claim = Claim.getClaim(claimActivity.getClaimId());
+			boolean mapPresent = false;
+		
+			for(Attachment attachment : claim.getAttachments()){
+				if (EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME
+						.equalsIgnoreCase(attachment.getFileName())
+						&& EditablePropertyBoundary.DEFAULT_MAP_FILE_TYPE
+								.equalsIgnoreCase(attachment.getFileType())
+						&& EditablePropertyBoundary.DEFAULT_MAP_MIME_TYPE
+								.equalsIgnoreCase(attachment.getMimeType())) {
+					mapPresent = true;
+				}
+			}
+			if(!mapPresent){
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_save_snapshot_before_printing,
+						Toast.LENGTH_SHORT);
+				toast.show();
+				return true;
+			}
 			try {
 				PDFClaimExporter pdf = new PDFClaimExporter(
 						rootView.getContext(), claimActivity.getClaimId());

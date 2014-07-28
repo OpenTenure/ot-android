@@ -253,10 +253,10 @@ public class SaveDownloadedClaim {
 			
 			AdjacenciesNotes adjacenciesNotes =  new AdjacenciesNotes();
 			adjacenciesNotes.setClaimId(downloadedClaim.getId());
-			adjacenciesNotes.setNorthAdiacecy(downloadedClaim.getNorthAdjacency());
-			adjacenciesNotes.setSouthAdiacecy(downloadedClaim.getSouthAdjacency());
-			adjacenciesNotes.setEastAdiacecy(downloadedClaim.getEastAdjacency());
-			adjacenciesNotes.setWestAdiacecy(downloadedClaim.getWestAdjacency());
+			adjacenciesNotes.setNorthAdjacency(downloadedClaim.getNorthAdjacency());
+			adjacenciesNotes.setSouthAdjacency(downloadedClaim.getSouthAdjacency());
+			adjacenciesNotes.setEastAdjacency(downloadedClaim.getEastAdjacency());
+			adjacenciesNotes.setWestAdjacency(downloadedClaim.getWestAdjacency());
 			adjacenciesNotes.create();
 			
 			

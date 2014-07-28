@@ -72,35 +72,8 @@ public class SplashScreen extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			Intent i = new Intent(SplashScreen.this, OpenTenure.class);
+			Intent i = new Intent(SplashScreen.this, InitializationActivity.class);
 			startActivity(i);
-
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
-
-				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
-				updateCT.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
-
-				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-				updateIdType.execute();
-
-			}
-
-			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
-
-				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-				updateLu.execute();
-			}
 
 			finish();
 		}
