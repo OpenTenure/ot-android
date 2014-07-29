@@ -117,18 +117,26 @@ public class Claimant {
 		this.birthDate = birthDate;
 	}
 	public String getGenderCode() {
+		if (genderCode == null)
+			return null;
 		if (genderCode.equals("male"))
 				return "M";
 		if (genderCode.equals("female"))
 			return "F";
 		return genderCode;
 	}
+
 	public void setGenderCode(String genderCode) {
-		
-		if(genderCode.equals("M"))		
+
+		if (genderCode == null) {
+			this.genderCode = null;
+			return;
+		}
+
+		if (genderCode.equals("M"))
 			this.genderCode = "male";
-		if(genderCode.equals("F"))		
-			this.genderCode = "female";		
+		if (genderCode.equals("F"))
+			this.genderCode = "female";
 	}	
 	
 	public boolean isPhysicalPerson() {

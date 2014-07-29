@@ -215,7 +215,7 @@ public class SaveDownloadedClaim {
 			if (claimant.isPhysicalPerson())
 				person.setPersonType(Person._PHYSICAL);
 			else
-				person.setPersonType(Person._LEGAL);
+				person.setPersonType(Person._GROUP);
 
 			claimDB.setAttachments(attachmentsDB);
 
@@ -338,7 +338,7 @@ public class SaveDownloadedClaim {
 					if (claimant.isPhysicalPerson())
 						personDB2.setPersonType(Person._PHYSICAL);
 					else
-						personDB2.setPersonType(Person._LEGAL);
+						personDB2.setPersonType(Person._GROUP);
 
 					personDB2.setPostalAddress(person2.getAddress());
 

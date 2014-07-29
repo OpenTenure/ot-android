@@ -103,14 +103,20 @@ public class JsonUtilities {
 				tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
 				tempClaim.setNotes(claim.getNotes());
+
+				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
+						.getAdjacenciesNotes(claimId);
 				
-				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
-				
-				tempClaim.setNorthAdjacency(adjacenciesNotes.getNorthAdjacency());
-				tempClaim.setSouthAdjacency(adjacenciesNotes.getSouthAdjacency());
-				tempClaim.setWestAdjacency(adjacenciesNotes.getWestAdjacency());
-				tempClaim.setEastAdjacency(adjacenciesNotes.getEastAdjacency());
-				
+				if (adjacenciesNotes != null) {
+					tempClaim.setNorthAdjacency(adjacenciesNotes
+							.getNorthAdjacency());
+					tempClaim.setSouthAdjacency(adjacenciesNotes
+							.getSouthAdjacency());
+					tempClaim.setWestAdjacency(adjacenciesNotes
+							.getWestAdjacency());
+					tempClaim.setEastAdjacency(adjacenciesNotes
+							.getEastAdjacency());
+				}
 				tempClaim.setTypeCode(claim.getType());
 				if (claim.getDateOfStart() != null)
 					tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
@@ -155,7 +161,14 @@ public class JsonUtilities {
 					attach.setId(attachment.getAttachmentId());
 					attach.setDescription(attachment.getDescription());
 					attach.setFileName(attachment.getFileName());
-					attach.setFileExtension(attachment.getFileType());
+
+					String extension = "";
+					int i = attachment.getPath().lastIndexOf('.');
+					if (i > 0) {
+						extension = attachment.getPath().substring(i + 1);
+					}
+
+					attach.setFileExtension(extension);
 					attach.setTypeCode(attachment.getFileType());
 					// attach.setFileType(attachment.getFileType());
 					attach.setMd5(attachment.getMD5Sum());
@@ -203,8 +216,9 @@ public class JsonUtilities {
 																// on SOLA
 																// ----->
 																// personJson.setId(personDB.getPersonId());
-					
-					else personJson.setId(personDB.getPersonId());
+
+					else
+						personJson.setId(personDB.getPersonId());
 					personJson.setMobilePhone(personDB.getMobilePhoneNumber());
 					personJson.setLastName(personDB.getLastName());
 					personJson.setName(personDB.getFirstName());

@@ -285,13 +285,13 @@ public class LocalClaimsFragment extends ListFragment {
 						: claim.getName();
 				cto.setSlogan(claimName
 						+ ", "
-						+ getResources().getString(R.string.by)
+						+ OpenTenureApplication.getContext().getResources().getString(R.string.by)
 						+ ": "
 						+ claim.getPerson().getFirstName()
 						+ " "
 						+ claim.getPerson().getLastName()
 						+ " "
-						+ getResources().getString(R.string.type)
+						+ OpenTenureApplication.getContext().getResources().getString(R.string.type)
 						+ ": "
 						+ new ClaimType().getDisplayValueByType(claim.getType()));
 				cto.setId(claim.getClaimId());

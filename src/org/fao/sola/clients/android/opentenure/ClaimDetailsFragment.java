@@ -781,8 +781,8 @@ public class ClaimDetailsFragment extends Fragment {
 		case R.id.action_print:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
 			boolean mapPresent = false;
-		
-			for(Attachment attachment : claim.getAttachments()){
+
+			for (Attachment attachment : claim.getAttachments()) {
 				if (EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME
 						.equalsIgnoreCase(attachment.getFileName())
 						&& EditablePropertyBoundary.DEFAULT_MAP_FILE_TYPE
@@ -792,7 +792,7 @@ public class ClaimDetailsFragment extends Fragment {
 					mapPresent = true;
 				}
 			}
-			if(!mapPresent){
+			if (!mapPresent) {
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_save_snapshot_before_printing,
 						Toast.LENGTH_SHORT);
@@ -876,7 +876,14 @@ public class ClaimDetailsFragment extends Fragment {
 					Claim challengedClaim = Claim.getClaim(((TextView) rootView
 							.findViewById(R.id.challenge_to_claim_id))
 							.getText().toString());
-					if (claim.getChallengedClaim() != null
+					if (challengedClaim == null
+							&& claim.getChallengedClaim() != null)
+						changed = true;
+					else if (challengedClaim != null
+							&& claim.getChallengedClaim() == null)
+						changed = true;
+					else if (challengedClaim != null
+							&& claim.getChallengedClaim() != null
 							&& !claim.getChallengedClaim().getClaimId()
 									.equals(challengedClaim.getClaimId()))
 						changed = true;
@@ -1024,6 +1031,5 @@ public class ClaimDetailsFragment extends Fragment {
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
-
 
 }

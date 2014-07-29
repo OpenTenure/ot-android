@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -172,6 +173,10 @@ public class ClaimDeleteListener implements OnClickListener {
 										adjacency.delete();
 
 									}
+									
+									AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
+									if(adjacenciesNotes != null)
+										adjacenciesNotes.delete();
 
 									if (claim.delete() != 0) {
 
@@ -297,6 +302,12 @@ public class ClaimDeleteListener implements OnClickListener {
 								adjacency.delete();
 
 							}
+							
+							AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
+							if(adjacenciesNotes != null)
+								adjacenciesNotes.delete();			
+							
+							
 							if (claim.delete() != 0) {
 
 								FileSystemUtilities

@@ -80,7 +80,7 @@ public class DeletePersonListener implements OnClickListener {
 									person.getFirstName() + " " + person.getLastName()));
 
 					toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage,
-							Toast.LENGTH_SHORT);
+							Toast.LENGTH_LONG);
 					toast.show();
 
 					OpenTenureApplication.getPersonsFragment().refresh();
@@ -95,7 +95,7 @@ public class DeletePersonListener implements OnClickListener {
 									person.getFirstName() + " " + person.getLastName()));
 
 					toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage,
-							Toast.LENGTH_SHORT);
+							Toast.LENGTH_LONG);
 					toast.show();
 
 				}

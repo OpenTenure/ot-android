@@ -47,8 +47,8 @@ import android.graphics.BitmapFactory;
 public class Person {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
-	
-	public static String _LEGAL = "legal";
+
+	public static String _GROUP = "group";
 	public static String _PHYSICAL = "physical";
 
 	public java.sql.Date getDateOfBirth() {
@@ -66,19 +66,19 @@ public class Person {
 	public void setPlaceOfBirth(String placeOfBirth) {
 		this.placeOfBirth = placeOfBirth;
 	}
-	
-    @Override
-  public boolean equals(Object v) {
-        boolean retVal = false;
 
-        if (v instanceof Person){
-           
-        	retVal = this.getPersonId().equals(((Person) v).getPersonId());
-        	 
-        }
+	@Override
+	public boolean equals(Object v) {
+		boolean retVal = false;
 
-     return retVal;
-  }
+		if (v instanceof Person) {
+
+			retVal = this.getPersonId().equals(((Person) v).getPersonId());
+
+		}
+
+		return retVal;
+	}
 
 	public boolean hasUploadedClaims() {
 		Connection localConnection = null;
@@ -179,8 +179,8 @@ public class Person {
 				+ ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth
 				+ ", placeOfBirth=" + placeOfBirth + ",gender=" + gender
 				+ ", emailAddress=" + emailAddress + ", postalAddress="
-				+ postalAddress + ", personType="
-						+ personType + ", mobilePhoneNumber=" + mobilePhoneNumber
+				+ postalAddress + ", personType=" + personType
+				+ ", mobilePhoneNumber=" + mobilePhoneNumber
 				+ ", contactPhoneNumber=" + contactPhoneNumber + "]";
 	}
 
@@ -289,7 +289,7 @@ public class Person {
 			statement.setString(12, person.getIdNumber());
 			statement.setString(13, person.getPersonType());
 			result = statement.executeUpdate();
-			
+
 			FileSystemUtilities.createClaimantFolder(person.getPersonId());
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -449,8 +449,7 @@ public class Person {
 			statement.setString(11, person.getIdNumber());
 			statement.setString(12, person.getPersonType());
 			statement.setString(13, person.getPersonId());
-			
-			
+
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -497,9 +496,12 @@ public class Person {
 			statement.setString(12, getPersonType());
 			statement.setString(13, getPersonId());
 			result = statement.executeUpdate();
+
 		} catch (SQLException e) {
+
 			e.printStackTrace();
 		} catch (Exception exception) {
+
 			exception.printStackTrace();
 		} finally {
 			if (statement != null) {

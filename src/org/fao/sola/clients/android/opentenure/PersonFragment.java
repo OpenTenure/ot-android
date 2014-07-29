@@ -32,16 +32,19 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.IdType;
-
+import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -74,6 +77,7 @@ public class PersonFragment extends Fragment {
 	private File personPictureFile;
 	private ImageView claimantImageView;
 	private boolean allowSave = true;
+	boolean isPerson = true;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -110,67 +114,153 @@ public class PersonFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.fragment_person, container, false);
-		setHasOptionsMenu(true);
-		InputMethodManager imm = (InputMethodManager) rootView.getContext()
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-		preload();
+		if ((personActivity.getEntityType() != null && personActivity
+				.getEntityType().equalsIgnoreCase("group"))
+				|| (personActivity.getPersonId() != null && Person
+						.getPerson(personActivity.getPersonId())
+						.getPersonType().equals(Person._GROUP))) {
 
-		EditText dateOfBirth = (EditText) rootView
-				.findViewById(R.id.date_of_birth_input_field);
+			rootView = inflater.inflate(R.layout.fragment_group, container,
+					false);
+			setHasOptionsMenu(true);
+			InputMethodManager imm = (InputMethodManager) rootView.getContext()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+			EditText dateOfEstablishment = (EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field);
 
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
-				localCalendar.set(Calendar.YEAR, year);
-				localCalendar.set(Calendar.MONTH, monthOfYear);
-				localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				updateDoB();
-			}
+			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
-		};
-
-		dateOfBirth.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				new DatePickerDialog(rootView.getContext(), date, localCalendar
-						.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
-						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
-				return true;
-			}
-		});
-
-		claimantImageView = (ImageView) rootView
-				.findViewById(R.id.claimant_picture);
-		claimantImageView.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (personPictureFile != null) {
-					Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					intent.putExtra(MediaStore.EXTRA_OUTPUT,
-							Uri.fromFile(personPictureFile));
-					startActivityForResult(intent,
-							CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-				} else {
-					Toast toast = Toast.makeText(rootView.getContext(),
-							R.string.message_save_person_before_adding_content,
-							Toast.LENGTH_SHORT);
-					toast.show();
+				@Override
+				public void onDateSet(DatePicker view, int year,
+						int monthOfYear, int dayOfMonth) {
+					localCalendar.set(Calendar.YEAR, year);
+					localCalendar.set(Calendar.MONTH, monthOfYear);
+					localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+					updateDoE();
 				}
 
-			}
-		});
-		if (personActivity.getPersonId() != null) {
-			load(personActivity.getPersonId());
-		}
+			};
 
-		return rootView;
+			dateOfEstablishment
+					.setOnLongClickListener(new OnLongClickListener() {
+
+						@Override
+						public boolean onLongClick(View v) {
+							new DatePickerDialog(rootView.getContext(), date,
+									localCalendar.get(Calendar.YEAR),
+									localCalendar.get(Calendar.MONTH),
+									localCalendar.get(Calendar.DAY_OF_MONTH))
+									.show();
+							return true;
+						}
+					});
+
+			claimantImageView = (ImageView) rootView
+					.findViewById(R.id.claimant_picture);
+			claimantImageView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (personPictureFile != null) {
+						Intent intent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						intent.putExtra(MediaStore.EXTRA_OUTPUT,
+								Uri.fromFile(personPictureFile));
+						startActivityForResult(intent,
+								CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+					} else {
+						Toast toast = Toast.makeText(
+								rootView.getContext(),
+								R.string.message_save_person_before_adding_content,
+								Toast.LENGTH_SHORT);
+						toast.show();
+					}
+
+				}
+			});
+			if (personActivity.getPersonId() != null
+					&& Person.getPerson(personActivity.getPersonId())
+							.getPersonType().equalsIgnoreCase(Person._PHYSICAL)) {
+				load(personActivity.getPersonId());
+			} else if (personActivity.getPersonId() != null
+					&& Person.getPerson(personActivity.getPersonId())
+							.getPersonType().equalsIgnoreCase(Person._GROUP)) {
+				loadGroup(personActivity.getPersonId());
+			}
+
+			return rootView;
+
+		} else {
+
+			rootView = inflater.inflate(R.layout.fragment_person, container,
+					false);
+			setHasOptionsMenu(true);
+			InputMethodManager imm = (InputMethodManager) rootView.getContext()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
+			preload();
+
+			EditText dateOfBirth = (EditText) rootView
+					.findViewById(R.id.date_of_birth_input_field);
+
+			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+				@Override
+				public void onDateSet(DatePicker view, int year,
+						int monthOfYear, int dayOfMonth) {
+					localCalendar.set(Calendar.YEAR, year);
+					localCalendar.set(Calendar.MONTH, monthOfYear);
+					localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+					updateDoB();
+				}
+
+			};
+
+			dateOfBirth.setOnLongClickListener(new OnLongClickListener() {
+
+				@Override
+				public boolean onLongClick(View v) {
+					new DatePickerDialog(rootView.getContext(), date,
+							localCalendar.get(Calendar.YEAR), localCalendar
+									.get(Calendar.MONTH), localCalendar
+									.get(Calendar.DAY_OF_MONTH)).show();
+					return true;
+				}
+			});
+
+			claimantImageView = (ImageView) rootView
+					.findViewById(R.id.claimant_picture);
+			claimantImageView.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (personPictureFile != null) {
+						Intent intent = new Intent(
+								MediaStore.ACTION_IMAGE_CAPTURE);
+						intent.putExtra(MediaStore.EXTRA_OUTPUT,
+								Uri.fromFile(personPictureFile));
+						startActivityForResult(intent,
+								CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+					} else {
+						Toast toast = Toast.makeText(
+								rootView.getContext(),
+								R.string.message_save_person_before_adding_content,
+								Toast.LENGTH_SHORT);
+						toast.show();
+					}
+
+				}
+			});
+			if (personActivity.getPersonId() != null) {
+				load(personActivity.getPersonId());
+			}
+
+			return rootView;
+		}
 	}
 
 	private void preload() {
@@ -270,6 +360,65 @@ public class PersonFragment extends Fragment {
 				rootView.getContext(), personPictureFile, 128));
 	}
 
+	private void loadGroup(String personId) {
+		Person person = Person.getPerson(personId);
+		((EditText) rootView.findViewById(R.id.first_name_input_field))
+				.setText(person.getFirstName());
+
+		((EditText) rootView
+				.findViewById(R.id.date_of_establishment_input_field))
+				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+						.format(person.getDateOfBirth()));
+
+		((EditText) rootView.findViewById(R.id.id_number)).setText(person
+				.getIdNumber());
+
+		((EditText) rootView.findViewById(R.id.postal_address_input_field))
+				.setText(person.getPostalAddress());
+
+		((EditText) rootView.findViewById(R.id.email_address_input_field))
+				.setText(person.getEmailAddress());
+
+		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
+				.setText(person.getMobilePhoneNumber());
+
+		((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field))
+				.setText(person.getContactPhoneNumber());
+		if (person.hasUploadedClaims()) {
+
+			((EditText) rootView.findViewById(R.id.first_name_input_field))
+					.setFocusable(false);
+
+			((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.setFocusable(false);
+
+			((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.setOnLongClickListener(null);
+
+			((EditText) rootView.findViewById(R.id.id_number))
+					.setFocusable(false);
+
+			((EditText) rootView.findViewById(R.id.postal_address_input_field))
+					.setFocusable(false);
+
+			((EditText) rootView.findViewById(R.id.email_address_input_field))
+					.setFocusable(false);
+
+			((EditText) rootView
+					.findViewById(R.id.mobile_phone_number_input_field))
+					.setFocusable(false);
+
+			((EditText) rootView
+					.findViewById(R.id.contact_phone_number_input_field))
+					.setFocusable(false);
+
+		}
+
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -296,6 +445,16 @@ public class PersonFragment extends Fragment {
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
 
+	private void updateDoE() {
+
+		EditText date = (EditText) getView().findViewById(
+				R.id.date_of_establishment_input_field);
+		String myFormat = "yyyy-MM-dd";
+		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+		date.setText(sdf.format(localCalendar.getTime()));
+	}
+
 	public int savePerson() {
 		Person person = new Person();
 		person.setFirstName(((EditText) rootView
@@ -313,7 +472,7 @@ public class PersonFragment extends Fragment {
 			e.printStackTrace();
 			return 4;
 		}
-		
+
 		person.setDateOfBirth(new Date(dob.getTime()));
 		person.setPlaceOfBirth(((EditText) rootView
 				.findViewById(R.id.place_of_birth_input_field)).getText()
@@ -350,19 +509,130 @@ public class PersonFragment extends Fragment {
 
 		person.setPersonType(Person._PHYSICAL);
 
-		if (person.getFirstName() == null || person.getFirstName().trim().equals(""))
+		if (person.getFirstName() == null
+				|| person.getFirstName().trim().equals(""))
 			return 2;
 
-		if (person.getLastName() == null || person.getLastName().trim().equals(""))
+		if (person.getLastName() == null
+				|| person.getLastName().trim().equals(""))
 			return 3;
 
-		if (person.getGender() == null )
+		if (person.getGender() == null)
 			return 5;
 
-		if (person.getPlaceOfBirth() == null || person.getPlaceOfBirth().trim().equals(""))
+		if (person.getPlaceOfBirth() == null
+				|| person.getPlaceOfBirth().trim().equals(""))
 			return 6;
 
 		if (person.create() == 1) {
+
+			personActivity.setPersonId(person.getPersonId());
+			personPictureFile = Person.getPersonPictureFile(person
+					.getPersonId());
+
+			return 1;
+		}
+		return 0;
+
+	}
+
+	public int saveGroup() {
+		Person person = new Person();
+		person.setFirstName(((EditText) rootView
+				.findViewById(R.id.first_name_input_field)).getText()
+				.toString());
+		person.setLastName("");
+
+		java.util.Date doe;
+		try {
+			doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_establishment_input_field))
+							.getText().toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return 4;
+		}
+
+		person.setDateOfBirth(new Date(doe.getTime()));
+
+		person.setPostalAddress(((EditText) rootView
+				.findViewById(R.id.postal_address_input_field)).getText()
+				.toString());
+		person.setEmailAddress(((EditText) rootView
+				.findViewById(R.id.email_address_input_field)).getText()
+				.toString());
+		person.setMobilePhoneNumber(((EditText) rootView
+				.findViewById(R.id.mobile_phone_number_input_field)).getText()
+				.toString());
+		person.setContactPhoneNumber(((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field)).getText()
+				.toString());
+
+		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
+				.getText().toString());
+
+		person.setPersonType(Person._GROUP);
+
+		if (person.getFirstName() == null
+				|| person.getFirstName().trim().equals(""))
+			return 2;
+
+		if (person.create() == 1) {
+
+			personActivity.setPersonId(person.getPersonId());
+			personPictureFile = Person.getPersonPictureFile(person
+					.getPersonId());
+
+			return 1;
+		}
+		return 0;
+
+	}
+
+	public int updateGroup() {
+		Person person = Person.getPerson(personActivity.getPersonId());
+		person.setFirstName(((EditText) rootView
+				.findViewById(R.id.first_name_input_field)).getText()
+				.toString());
+		person.setLastName("");
+
+		java.util.Date doe;
+		try {
+			doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+					.parse(((EditText) rootView
+							.findViewById(R.id.date_of_establishment_input_field))
+							.getText().toString());
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return 4;
+		}
+
+		person.setDateOfBirth(new Date(doe.getTime()));
+
+		person.setPostalAddress(((EditText) rootView
+				.findViewById(R.id.postal_address_input_field)).getText()
+				.toString());
+		person.setEmailAddress(((EditText) rootView
+				.findViewById(R.id.email_address_input_field)).getText()
+				.toString());
+		person.setMobilePhoneNumber(((EditText) rootView
+				.findViewById(R.id.mobile_phone_number_input_field)).getText()
+				.toString());
+		person.setContactPhoneNumber(((EditText) rootView
+				.findViewById(R.id.contact_phone_number_input_field)).getText()
+				.toString());
+
+		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
+				.getText().toString());
+
+		person.setPersonType(Person._GROUP);
+
+		if (person.getFirstName() == null
+				|| person.getFirstName().trim().equals(""))
+			return 2;
+
+		if (person.update() == 1) {
 
 			personActivity.setPersonId(person.getPersonId());
 			personPictureFile = Person.getPersonPictureFile(person
@@ -428,16 +698,19 @@ public class PersonFragment extends Fragment {
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
 
-		if (person.getFirstName() == null || person.getFirstName().trim().equals(""))
+		if (person.getFirstName() == null
+				|| person.getFirstName().trim().equals(""))
 			return 2;
 
-		if (person.getLastName() == null || person.getLastName().trim().equals(""))
+		if (person.getLastName() == null
+				|| person.getLastName().trim().equals(""))
 			return 3;
 
-		if (person.getGender() == null )
+		if (person.getGender() == null)
 			return 5;
 
-		if (person.getPlaceOfBirth() == null || person.getPlaceOfBirth().trim().equals(""))
+		if (person.getPlaceOfBirth() == null
+				|| person.getPlaceOfBirth().trim().equals(""))
 			return 6;
 
 		return person.update();
@@ -451,7 +724,9 @@ public class PersonFragment extends Fragment {
 
 		case R.id.action_save:
 
-			if (personActivity.getPersonId() == null) {
+			if (personActivity.getPersonId() == null
+					&& !(personActivity.getEntityType() != null && personActivity
+							.getEntityType().equalsIgnoreCase("group"))) {
 
 				int saved = savePerson();
 				if (saved == 1) {
@@ -492,6 +767,40 @@ public class PersonFragment extends Fragment {
 									Toast.LENGTH_SHORT);
 					toast.show();
 				}
+			} else if (personActivity.getPersonId() == null
+					&& (personActivity.getEntityType() != null && personActivity
+							.getEntityType().equalsIgnoreCase("group"))) {
+
+				int saved = saveGroup();
+				if (saved == 1) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_saved, Toast.LENGTH_SHORT);
+					toast.show();
+				} else {
+					toast = Toast
+							.makeText(rootView.getContext(),
+									R.string.message_unable_to_save,
+									Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
+			} else if (personActivity.getPersonId() != null
+					&& (Person.getPerson(personActivity.getPersonId())
+							.getPersonType().equalsIgnoreCase("group"))) {
+
+				int saved = updateGroup();
+				if (saved == 1) {
+					toast = Toast.makeText(rootView.getContext(),
+							R.string.message_saved, Toast.LENGTH_SHORT);
+					toast.show();
+				} else {
+					toast = Toast
+							.makeText(rootView.getContext(),
+									R.string.message_unable_to_save,
+									Toast.LENGTH_SHORT);
+					toast.show();
+				}
+
 			} else {
 
 				int updated = updatePerson();

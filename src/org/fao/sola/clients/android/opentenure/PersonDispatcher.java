@@ -30,5 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 public interface PersonDispatcher {
 	public void setPersonId(String personId);
 	public String getPersonId();
+	public void setEntityType(String type);
+	public String getEntityType();
 
 }

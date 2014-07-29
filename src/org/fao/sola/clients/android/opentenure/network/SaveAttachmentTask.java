@@ -331,7 +331,7 @@ public class SaveAttachmentTask extends
 											.getResources()
 											.getString(
 													R.string.message_service_not_available),
-							Toast.LENGTH_SHORT);
+							Toast.LENGTH_LONG);
 			toast.show();
 
 			progress = FileSystemUtilities.getUploadProgress(claim);

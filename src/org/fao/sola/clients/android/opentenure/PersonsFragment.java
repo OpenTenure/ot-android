@@ -33,6 +33,8 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -96,13 +98,59 @@ public class PersonsFragment extends ListFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_new:
-			Intent intent = new Intent(rootView.getContext(),
-					PersonActivity.class);
-			intent.putExtra(PersonActivity.PERSON_ID_KEY,
-					PersonActivity.CREATE_PERSON_ID);
-			intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
-					.toString());
-			startActivityForResult(intent, PERSON_RESULT);
+			
+			
+			
+			AlertDialog.Builder dialog = new AlertDialog.Builder(rootView.getContext());
+
+			dialog.setTitle(R.string.new_entity);
+			dialog.setMessage(R.string.message_entity_type);
+
+			dialog.setPositiveButton(R.string.person,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stu
+
+							Intent intent = new Intent(rootView.getContext(),
+									PersonActivity.class);
+							intent.putExtra(PersonActivity.PERSON_ID_KEY,
+									PersonActivity.CREATE_PERSON_ID);
+							intent.putExtra(PersonActivity.ENTIY_TYPE,
+									PersonActivity.TYPE_PERSON);
+							intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
+									.toString());
+							startActivityForResult(intent, PERSON_RESULT);
+						}
+					});
+
+			dialog.setNegativeButton(R.string.group,
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+
+							Intent intent = new Intent(rootView.getContext(),
+									PersonActivity.class);
+							intent.putExtra(PersonActivity.PERSON_ID_KEY,
+									PersonActivity.CREATE_PERSON_ID);
+							intent.putExtra(PersonActivity.ENTIY_TYPE,
+									PersonActivity.TYPE_GROUP);
+							intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
+									.toString());
+							startActivityForResult(intent, PERSON_RESULT);
+
+						}
+					});
+
+			dialog.show();
+			
+			
+			
+			
+			
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -100,7 +100,7 @@ public class GetAllClaimsTask extends
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_no_claim_to_download),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 			
 			

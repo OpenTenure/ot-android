@@ -67,7 +67,7 @@ public class SubmitClaimListener implements OnClickListener {
 
 		if (!OpenTenureApplication.isLoggedin()) {
 			Toast toast = Toast.makeText(v.getContext(),
-					R.string.message_login_before, Toast.LENGTH_SHORT);
+					R.string.message_login_before, Toast.LENGTH_LONG);
 			toast.show();
 			return;
 

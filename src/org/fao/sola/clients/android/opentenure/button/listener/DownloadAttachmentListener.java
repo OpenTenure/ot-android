@@ -65,7 +65,7 @@ public class DownloadAttachmentListener implements OnClickListener {
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
 
 		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
-				R.string.message_downloading_attachment, Toast.LENGTH_SHORT);
+				R.string.message_downloading_attachment, Toast.LENGTH_LONG);
 		toast.show();
 		
 

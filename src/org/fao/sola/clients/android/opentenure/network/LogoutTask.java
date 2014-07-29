@@ -78,7 +78,7 @@ public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 			toast = Toast
 					.makeText(OpenTenureApplication.getContext(),
 							R.string.message_logout_ok,
-							Toast.LENGTH_SHORT);
+							Toast.LENGTH_LONG);
 			toast.show();		
 			
 			fa.invalidateOptionsMenu();
@@ -89,7 +89,7 @@ public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 			toast = Toast
 			.makeText(OpenTenureApplication.getContext(),
 					R.string.message_logout_not_ok,
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();			
 			break;
 			
@@ -97,7 +97,7 @@ public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 			toast = Toast
 			.makeText(OpenTenureApplication.getContext(),
 					R.string.message_timeout_exception,
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 			break;
 			
@@ -105,7 +105,7 @@ public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 			toast = Toast
 			.makeText(OpenTenureApplication.getContext(),
 					R.string.message_unknowhost_error,
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 			break;	
 
@@ -114,7 +114,7 @@ public class LogoutTask extends AsyncTask<Object, Void, Integer > {
 			toast = Toast
 			.makeText(OpenTenureApplication.getContext(),
 					R.string.message_logout_error,
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 			break;		
 

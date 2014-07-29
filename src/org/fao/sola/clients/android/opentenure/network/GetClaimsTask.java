@@ -129,7 +129,7 @@ public class GetClaimsTask extends
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_claims_downloaded),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.getMapFragment().refreshMap();
@@ -164,7 +164,7 @@ public class GetClaimsTask extends
 			OpenTenureApplication.getPersonsFragment().refresh();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			View mapView = input.getMapView();

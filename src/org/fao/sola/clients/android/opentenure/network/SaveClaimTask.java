@@ -109,7 +109,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 									.getResources()
 									.getString(
 											R.string.message_connection_error),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -137,7 +137,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_submission_error)
-							+ " " + res.getMessage(), Toast.LENGTH_SHORT);
+							+ " " + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -164,7 +164,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_submission_error)
-							+ " " + res.getMessage(), Toast.LENGTH_SHORT);
+							+ " " + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -209,7 +209,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_submitted),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -281,7 +281,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 											.getResources()
 											.getString(
 													R.string.message_service_not_available),
-							Toast.LENGTH_SHORT);
+							Toast.LENGTH_LONG);
 			toast.show();
 
 			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
@@ -310,7 +310,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_uploading),
-					Toast.LENGTH_SHORT);
+					Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -349,7 +349,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_submission_error)
-							+ " ," + res.getMessage(), Toast.LENGTH_SHORT);
+							+ " ," + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
@@ -373,7 +373,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_submission_error)
-							+ " ," + res.getMessage(), Toast.LENGTH_SHORT);
+							+ " ," + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();

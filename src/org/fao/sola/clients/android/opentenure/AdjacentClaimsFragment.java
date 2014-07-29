@@ -146,7 +146,6 @@ public class AdjacentClaimsFragment extends ListFragment {
 		switch (item.getItemId()) {
 
 		case R.id.action_save:
-			System.out.println("SALVO TUTTO");
 
 			if (AdjacenciesNotes
 					.getAdjacenciesNotes(claimActivity.getClaimId()) != null)

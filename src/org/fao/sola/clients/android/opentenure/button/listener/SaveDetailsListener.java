@@ -52,7 +52,7 @@ public class SaveDetailsListener implements DialogInterface.OnClickListener {
 		this.fragment.updateClaim();
 
 		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
-				R.string.message_saved, Toast.LENGTH_SHORT);
+				R.string.message_saved, Toast.LENGTH_LONG);
 		toast.show();
 		
 		fragment.getActivity().finish();

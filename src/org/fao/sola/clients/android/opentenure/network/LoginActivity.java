@@ -236,7 +236,7 @@ public class LoginActivity extends Activity {
 				fa.invalidateOptionsMenu();
 
 				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						R.string.message_login_ok, Toast.LENGTH_SHORT);
+						R.string.message_login_ok, Toast.LENGTH_LONG);
 				toast.show();
 
 				finish();

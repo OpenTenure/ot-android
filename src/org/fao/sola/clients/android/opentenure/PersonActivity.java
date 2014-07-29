@@ -31,6 +31,8 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,13 +43,19 @@ import android.support.v4.view.ViewPager;
 
 import com.astuetz.PagerSlidingTabStrip;
 
-public class PersonActivity extends FragmentActivity implements PersonDispatcher, ModeDispatcher {
+public class PersonActivity extends FragmentActivity implements
+		PersonDispatcher, ModeDispatcher {
 
 	public static final String PERSON_ID_KEY = "personId";
+	public static final String ENTIY_TYPE = "entityType";
+
 	public static final String MODE_KEY = "mode";
-	public static final String CREATE_PERSON_ID = "create";
+	public static final String CREATE_PERSON_ID = "create_person";
+	public static final String TYPE_GROUP = "group";
+	public static final String TYPE_PERSON = "person";
 	private ModeDispatcher.Mode mode = ModeDispatcher.Mode.MODE_RW;
 	private String personId = null;
+	private String entityType = null;
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
@@ -57,13 +65,13 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 		super.onDestroy();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -81,32 +89,51 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
+
+		setEntityType(intent.getStringExtra(ENTIY_TYPE));
+
 		mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_person);
+
+		if ((getEntityType() != null && getEntityType().equalsIgnoreCase(
+				TYPE_GROUP))
+				|| (getPersonId() != null && Person.getPerson(personId)
+						.getPersonType().equalsIgnoreCase(Person._GROUP)))
+			this.setTitle(R.string.title_activity_group);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mViewPager = (ViewPager) findViewById(R.id.person_pager);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
 
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
-		tabs.setViewPager(mViewPager);
-		
 		String savedInstancePersonId = null;
 
-		if(savedInstanceState != null){
+		if (savedInstanceState != null) {
 			savedInstancePersonId = savedInstanceState.getString(PERSON_ID_KEY);
 		}
 
-		String intentPersonId = getIntent().getExtras().getString(PERSON_ID_KEY);
-		
-		if(savedInstancePersonId != null){
+		String intentPersonId = getIntent().getExtras()
+				.getString(PERSON_ID_KEY);
+
+		if (savedInstancePersonId != null) {
 			setPersonId(savedInstancePersonId);
-		}else if(intentPersonId != null && !intentPersonId.equalsIgnoreCase(CREATE_PERSON_ID)){
+		} else if (intentPersonId != null
+				&& !intentPersonId.equalsIgnoreCase(CREATE_PERSON_ID)) {
 			setPersonId(intentPersonId);
-			
+
 		}
+
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		tabs.setIndicatorColor(getResources().getColor(
+				R.color.ab_tab_indicator_opentenure));
+		tabs.setViewPager(mViewPager);
+
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -135,6 +162,18 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
+
+				Person.getPerson(personId).getPersonType()
+						.equalsIgnoreCase(Person._GROUP);
+
+				if ((getEntityType() != null && getEntityType()
+						.equalsIgnoreCase(TYPE_GROUP))
+						|| (getPersonId() != null && Person
+								.getPerson(getPersonId()).getPersonType()
+								.equalsIgnoreCase(Person._GROUP)))
+					return getString(R.string.title_group_details).toUpperCase(
+							l);
+
 				return getString(R.string.title_person_details).toUpperCase(l);
 			}
 			return null;
@@ -144,9 +183,10 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	@Override
 	public void setPersonId(String personId) {
 		this.personId = personId;
-		if(personId != null && !personId.equalsIgnoreCase(CREATE_PERSON_ID)){
+		if (personId != null && !personId.equalsIgnoreCase(CREATE_PERSON_ID)) {
 			Person person = Person.getPerson(personId);
-			setTitle(getResources().getString(R.string.app_name) + ": " + person.getFirstName() + " " + person.getLastName());
+			setTitle(getResources().getString(R.string.app_name) + ": "
+					+ person.getFirstName() + " " + person.getLastName());
 		}
 	}
 
@@ -159,4 +199,13 @@ public class PersonActivity extends FragmentActivity implements PersonDispatcher
 	public Mode getMode() {
 		return mode;
 	}
+
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
+	}
+
 }
