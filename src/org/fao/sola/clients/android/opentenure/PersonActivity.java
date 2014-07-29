@@ -163,13 +163,15 @@ public class PersonActivity extends FragmentActivity implements
 			switch (position) {
 			case 0:
 
-				Person.getPerson(personId).getPersonType()
-						.equalsIgnoreCase(Person._GROUP);
+				String personId = getPersonId();
+
+				if (personId == null)
+					personId = getIntent().getExtras().getString(PERSON_ID_KEY);
 
 				if ((getEntityType() != null && getEntityType()
 						.equalsIgnoreCase(TYPE_GROUP))
-						|| (getPersonId() != null && Person
-								.getPerson(getPersonId()).getPersonType()
+						|| (personId != null && Person.getPerson(personId)
+								.getPersonType()
 								.equalsIgnoreCase(Person._GROUP)))
 					return getString(R.string.title_group_details).toUpperCase(
 							l);

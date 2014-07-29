@@ -176,10 +176,23 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		int result = AdjacenciesNotes.createAdjacenciesNotes(adjacenciesNotes);
 
-		if (result == 1)
+		Toast toast;
+
+		if (result == 1) {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_adjacencies_saved, Toast.LENGTH_LONG);
+			toast.show();
+
 			return true;
-		else
+		} else {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_adjacencies_not_saved, Toast.LENGTH_LONG);
+			toast.show();
+
 			return false;
+		}
 	}
 
 	protected boolean updateNotes() {
@@ -202,10 +215,23 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		int result = AdjacenciesNotes.updateAdjacenciesNotes(adjacenciesNotes);
 
-		if (result == 1)
+		Toast toast;
+
+		if (result == 1) {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_adjacencies_saved, Toast.LENGTH_LONG);
+			toast.show();
+
 			return true;
-		else
+		} else {
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_adjacencies_not_saved, Toast.LENGTH_LONG);
+			toast.show();
+
 			return false;
+		}
 	}
 
 	protected void update() {

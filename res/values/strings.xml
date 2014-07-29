@@ -119,6 +119,8 @@
     <string name="message_error_remove_person">Person %s not removed </string>
     <string name="message_remaining_days">Remaining days to challenge the claim :  </string>
     <string name="message_map_snapshot_saved">Map snapshot saved</string>
+    <string name="message_adjacencies_saved">Adjacencies saved</string>
+    <string name="message_adjacencies_not_saved">Adjacencies not saved</string>
     <string name="message_downloading_attachment">Downloading the attachment</string>
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save. Check details and retry</string>
@@ -176,6 +178,7 @@
     <string name="message_save_changes">Do you want save changes ?</string>
     <string name="message_claim_modified">Claim modified</string>
     <string name="message_entity_type">Which kind of entity ?</string>
+    
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>
     <string name="person">Person</string>
