@@ -41,11 +41,13 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Location;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.GetClaims;
 import org.fao.sola.clients.android.opentenure.network.GetClaimsTask;
@@ -237,9 +239,10 @@ public class SaveDownloadedClaim {
 			claimDB.setClaimNumber(downloadedClaim.getNr());
 			claimDB.setType(downloadedClaim.getTypeCode());
 
-			if(Person.getPerson(claimant.getId())== null)
+			if (Person.getPerson(claimant.getId()) == null)
 				Person.createPerson(person);
-			else Person.updatePerson(person);
+			else
+				Person.updatePerson(person);
 
 			// Here the creation of the Claim
 			if (org.fao.sola.clients.android.opentenure.model.Claim
@@ -249,17 +252,18 @@ public class SaveDownloadedClaim {
 			else
 				org.fao.sola.clients.android.opentenure.model.Claim
 						.updateClaim(claimDB);
-			
-			
-			AdjacenciesNotes adjacenciesNotes =  new AdjacenciesNotes();
+
+			AdjacenciesNotes adjacenciesNotes = new AdjacenciesNotes();
 			adjacenciesNotes.setClaimId(downloadedClaim.getId());
-			adjacenciesNotes.setNorthAdjacency(downloadedClaim.getNorthAdjacency());
-			adjacenciesNotes.setSouthAdjacency(downloadedClaim.getSouthAdjacency());
-			adjacenciesNotes.setEastAdjacency(downloadedClaim.getEastAdjacency());
-			adjacenciesNotes.setWestAdjacency(downloadedClaim.getWestAdjacency());
+			adjacenciesNotes.setNorthAdjacency(downloadedClaim
+					.getNorthAdjacency());
+			adjacenciesNotes.setSouthAdjacency(downloadedClaim
+					.getSouthAdjacency());
+			adjacenciesNotes.setEastAdjacency(downloadedClaim
+					.getEastAdjacency());
+			adjacenciesNotes.setWestAdjacency(downloadedClaim
+					.getWestAdjacency());
 			adjacenciesNotes.create();
-			
-			
 
 			if (downloadedClaim.getGpsGeometry().startsWith("POINT"))
 				Vertex.storeWKT(claimDB.getClaimId(),
@@ -300,6 +304,26 @@ public class SaveDownloadedClaim {
 						.getId());
 
 			}
+
+			List<Location> locations = downloadedClaim.getLocations();
+			for (Iterator<Location> iterator = locations.iterator(); iterator
+					.hasNext();) {
+
+				Location location = (Location) iterator.next();
+				org.fao.sola.clients.android.opentenure.model.PropertyLocation propertyLocation = PropertyLocation
+						.propertyLocationFromWKT(location.getMappedLocation(),
+								location.getGpsLocation());
+
+				propertyLocation.setClaimId(location.getClaimId());
+				propertyLocation.setDescription(location.getDescription());
+				propertyLocation.setPropertyLocationId(location.getId());
+
+				int i = PropertyLocation
+						.createPropertyLocation(propertyLocation);
+
+
+			}
+
 			List<Share> shares = downloadedClaim.getShares();
 
 			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
@@ -342,10 +366,10 @@ public class SaveDownloadedClaim {
 
 					personDB2.setPostalAddress(person2.getAddress());
 
-					
-					if(Person.getPerson(person2.getId())== null)
+					if (Person.getPerson(person2.getId()) == null)
 						Person.createPerson(personDB2);
-					else Person.updatePerson(personDB2);
+					else
+						Person.updatePerson(personDB2);
 
 				}
 				Owner owner = new Owner(false);
@@ -355,10 +379,12 @@ public class SaveDownloadedClaim {
 				owner.setPersonId(sharePersons.get(0).getId());
 				owner.setOwnerId(sharePersons.get(0).getId());
 				owner.setShares(share.getNominator());
-				
-				if(Owner.getOwner(downloadedClaim.getId(), sharePersons.get(0).getId()) == null)
+
+				if (Owner.getOwner(downloadedClaim.getId(), sharePersons.get(0)
+						.getId()) == null)
 					Owner.createOwner(owner);
-				else Owner.updateOwner(owner);
+				else
+					Owner.updateOwner(owner);
 
 			}
 

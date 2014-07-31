@@ -69,6 +69,9 @@ public class Claim {
 
 	@SerializedName("attachments")
 	List<Attachment> attachments;
+	
+	@SerializedName("locations")
+	List<Location> locations;
 
 	// @SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
 
@@ -273,6 +276,14 @@ public class Claim {
 
 	public void setEastAdjacency(String eastAdjacency) {
 		this.eastAdjacency = eastAdjacency;
+	}
+
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<Location> locations) {
+		this.locations = locations;
 	}
 
 }

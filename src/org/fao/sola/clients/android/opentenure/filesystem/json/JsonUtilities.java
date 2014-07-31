@@ -48,12 +48,14 @@ import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
+import org.fao.sola.clients.android.opentenure.filesystem.json.model.Location;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Person;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -177,6 +179,26 @@ public class JsonUtilities {
 
 					attachments.add(attach);
 				}
+				
+				List<Location> locations = new ArrayList<Location>();
+				
+				for (Iterator iterator = claim.getPropertyLocations().iterator(); iterator
+						.hasNext();){
+					
+					PropertyLocation propertyLocation = (PropertyLocation) iterator.next();
+					
+					Location location = new Location();
+					
+					location.setClaimId(propertyLocation.getClaimId());
+					location.setDescription(propertyLocation.getDescription());
+					location.setGpsLocation(PropertyLocation.gpsWKTFromPropertyLocation(propertyLocation));
+					location.setMappedLocation(PropertyLocation.mapWKTFromPropertyLocation(propertyLocation));
+					location.setId(propertyLocation.getPropertyLocationId());
+					
+					locations.add(location);
+				}
+				
+				
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
 
@@ -266,6 +288,8 @@ public class JsonUtilities {
 						.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
 								.mapWKTFromVertices(claim.getVertices()));
 				tempClaim.setAttachments(attachments);
+				
+				tempClaim.setLocations(locations);
 
 				tempClaim.setShares(shares);
 				// tempClaim.setAdditionaInfo(xMetadata);
