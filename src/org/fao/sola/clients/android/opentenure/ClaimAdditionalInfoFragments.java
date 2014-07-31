@@ -91,6 +91,8 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		
 		inflater.inflate(R.menu.claim_metadata, menu);
 
 		if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
@@ -108,6 +110,7 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
 		setHasOptionsMenu(true);
+		setRetainInstance(true);
 
 		update();
 		return rootView;

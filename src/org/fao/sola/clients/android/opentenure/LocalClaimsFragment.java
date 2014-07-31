@@ -195,6 +195,7 @@ public class LocalClaimsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.local_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
+		setRetainInstance(true);
 		EditText inputSearch = (EditText) rootView
 				.findViewById(R.id.filter_input_field);
 		inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);

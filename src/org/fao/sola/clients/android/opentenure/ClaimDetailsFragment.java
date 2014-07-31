@@ -135,10 +135,13 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 
 		inflater.inflate(R.menu.claim_details, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 	}
 
 	@Override

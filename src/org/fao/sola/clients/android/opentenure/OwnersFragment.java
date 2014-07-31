@@ -55,6 +55,8 @@ public class OwnersFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		
 		inflater.inflate(R.menu.owners, menu);
 
 		if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
@@ -62,6 +64,8 @@ public class OwnersFragment extends ListFragment {
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 	}
 
 	@Override
@@ -169,6 +173,7 @@ public class OwnersFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.owners_list, container,
 				false);
 		setHasOptionsMenu(true);
+		setRetainInstance(true);
 		update();
 
 		return rootView;

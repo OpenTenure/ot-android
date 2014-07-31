@@ -100,10 +100,13 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 
 		inflater.inflate(R.menu.adjacencies, menu);
-
+		
 		super.onCreateOptionsMenu(menu, inflater);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 	}
 
 	@Override
@@ -111,8 +114,9 @@ public class AdjacentClaimsFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.adjacent_claims_list, container,
 				false);
+		
 		setHasOptionsMenu(true);
-
+		setRetainInstance(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);

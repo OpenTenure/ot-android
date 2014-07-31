@@ -117,8 +117,13 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
+		
 		inflater.inflate(R.menu.claim_documents, menu);
+		
 		super.onCreateOptionsMenu(menu, inflater);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 	}
 
 	private File getOutputMediaFile(int type) {

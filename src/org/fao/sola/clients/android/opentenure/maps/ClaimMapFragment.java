@@ -170,6 +170,9 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		
+		menu.clear();
+		
 		inflater.inflate(R.menu.claim_map, menu);
 		menu.findItem(R.id.action_stop_rotating).setVisible(false);
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
@@ -177,6 +180,8 @@ public class ClaimMapFragment extends Fragment implements
 		}
 		this.menu = menu;
 		super.onCreateOptionsMenu(menu, inflater);
+		setHasOptionsMenu(true);
+		setRetainInstance(true);
 	}
 
 	@Override

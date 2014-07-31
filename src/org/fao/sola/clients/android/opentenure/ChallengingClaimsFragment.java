@@ -79,6 +79,7 @@ public class ChallengingClaimsFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.challenging_claims_list, container,
 				false);
 		setHasOptionsMenu(true);
+		setRetainInstance(true);
 		update();
 
 		return rootView;

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -6,6 +7,11 @@
     android:baselineAligned="false"
     android:orientation="vertical"
     android:padding="2dp" >
+    
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
     
     <TextView
         android:layout_width="fill_parent"
@@ -21,7 +27,7 @@
         android:layout_height="wrap_content"
         android:background="@color/light_background_opentenure"
         android:text="@string/north_adjacency"
-        android:paddingTop="10dp"
+        android:paddingTop="2dp"
         />
 
     <EditText 
@@ -31,7 +37,7 @@
         android:background="@color/light_background_opentenure"
         android:hint="@string/north_adjacency"   
         android:inputType="text"  
-        android:paddingTop="10dp"   
+        android:paddingTop="2dp"   
         />
     
         <TextView
@@ -40,7 +46,7 @@
         android:layout_height="wrap_content"
         android:background="@color/light_background_opentenure"
         android:text="@string/south_adjacency"
-         android:paddingTop="10dp"
+         android:paddingTop="2dp"
          />
 
     <EditText 
@@ -50,7 +56,7 @@
         android:background="@color/light_background_opentenure"
         android:hint="@string/south_adjacency"   
         android:inputType="text"  
-         android:paddingTop="10dp"   
+         android:paddingTop="2dp"   
         />
     
     <TextView
@@ -59,7 +65,7 @@
         android:layout_height="wrap_content"
         android:background="@color/light_background_opentenure"
         android:text="@string/east_adjacency"
-         android:paddingTop="10dp"
+         android:paddingTop="2dp"
          />
 
     <EditText 
@@ -69,7 +75,7 @@
         android:background="@color/light_background_opentenure"
         android:hint="@string/east_adjacency"   
         android:inputType="text"  
-        android:paddingTop="10dp"   
+        android:paddingTop="2dp"   
         />
     
         <TextView
@@ -78,7 +84,7 @@
         android:layout_height="wrap_content"
         android:background="@color/light_background_opentenure"
         android:text="@string/west_adjacency"
-        android:paddingTop="10dp"
+        android:paddingTop="2dp"
         />
 
     <EditText 
@@ -88,31 +94,24 @@
         android:background="@color/light_background_opentenure"
         android:hint="@string/west_adjacency"   
         android:inputType="text"  
-        android:paddingTop="10dp"   
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"   
         />
-    
-    <TextView    
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/light_background_opentenure"
-        android:text="@string/claim_name"
-        android:paddingTop="10dp"
-        android:visibility="invisible"
-        />
+    </LinearLayout>
         
      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/dark_background_opentenure"
-        android:text="@string/calculated_adjacencies"
-        android:textSize="20sp" />
-        
-         
-  <ListView
-        android:id="@android:id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/light_background_opentenure"
-        android:drawSelectorOnTop="true" /> 
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/dark_background_opentenure"
+         android:text="@string/calculated_adjacencies"
+         android:textSize="20sp" />
+
+     <ListView
+         android:id="@android:id/list"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:background="@color/light_background_opentenure"
+         android:drawSelectorOnTop="true" >
+     </ListView>
 
 </LinearLayout>
