@@ -40,6 +40,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -66,6 +67,31 @@ public class PersonActivity extends FragmentActivity implements
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+			final PersonFragment fragment = (PersonFragment) mSectionsPagerAdapter
+					.getItem(0);
+
+			if (fragment != null) {
+				if (fragment.checkChanges(this)) {
+					return true;
+				} else {
+					
+					return super.onKeyDown(keyCode, event);
+				}
+			} else{
+				return super.onKeyDown(keyCode, event);
+				}
+		} else
+			return super.onKeyDown(keyCode, event);
+	}
+
+	
+
+	
+	
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -165,18 +191,29 @@ public class PersonActivity extends FragmentActivity implements
 
 				String personId = getPersonId();
 
-				if (personId == null)
-					personId = getIntent().getExtras().getString(PERSON_ID_KEY);
+				System.out.println("Entity Type : " + getEntityType());
+				System.out.println("personId " + personId);
 
-				if ((getEntityType() != null && getEntityType()
-						.equalsIgnoreCase(TYPE_GROUP))
-						|| (personId != null && Person.getPerson(personId)
-								.getPersonType()
-								.equalsIgnoreCase(Person._GROUP)))
-					return getString(R.string.title_group_details).toUpperCase(
-							l);
+				if (getEntityType() != null) {
 
-				return getString(R.string.title_person_details).toUpperCase(l);
+					if (getEntityType().equalsIgnoreCase(TYPE_GROUP))
+						return getString(R.string.title_group_details)
+								.toUpperCase(l);
+					else
+						return getString(R.string.title_person_details)
+								.toUpperCase(l);
+
+				} else {
+
+					if (personId != null
+							&& Person.getPerson(personId).getPersonType()
+									.equalsIgnoreCase(Person._GROUP))
+						return getString(R.string.title_group_details)
+								.toUpperCase(l);
+					else
+						return getString(R.string.title_person_details)
+								.toUpperCase(l);
+				}
 			}
 			return null;
 		}

@@ -61,6 +61,8 @@
     <string name="title_exit_dialog">Uscita</string>
     <string name="title_remove_person_dialog">Rimozione persona</string>
     <string name="title_save_claim_dialog">Il Claim e\' stato modificato</string>
+    <string name="title_save_person_dialog">La persona e\' stata modificata</string>
+    <string name="title_save_group_dialog">Il gruppo e\' stato modificato</string>
     <string name="choose_file">Scegli un\'applicazione per selezionare un file</string>
     <string name="person_name">Nome della Persona</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -230,14 +232,9 @@
     <string name="geoserver_layer_pref_title">Layer GeoServer</string>
     <string name="geoserver_layer_pref_summary">WMS layer da richiedere al GeoServer (chiedere all\'amministratore)</string>
     <string name="geoserver_layer_pref_dialog_title">Inserisci il nome del layer WMS</string>
-    <string name="property">Proprietà</string>
-    <string name="calculated_adjacencies">Richieste adiacenti</string>
+    <string name="property">Proprietà</string>    
     <string name="adjacent_claims">Richieste adiacenti</string>
-    <string name="adjacent_properties">Richieste adiacenti</string>
-    <string name="north_adjacency">Adiacenza nord</string>
-    <string name="south_adjacency">Adiacenza sud</string>
-    <string name="east_adjacency">Adiacenza est</string>
-    <string name="west_adjacency">Adiacenza ovest</string>
+    <string name="adjacent_properties">Richieste adiacenti</string> 
     <string name="north">Nord</string>
     <string name="south">Sud</string>
     <string name="east">Est</string>

@@ -32,30 +32,37 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.SaveGroupListener;
+import org.fao.sola.clients.android.opentenure.button.listener.SavePersonListener;
+import org.fao.sola.clients.android.opentenure.button.listener.SavePersonNegativeListenr;
+
+import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.IdType;
-import org.fao.sola.clients.android.opentenure.model.Owner;
+
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -65,6 +72,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+
 import android.widget.Toast;
 
 public class PersonFragment extends Fragment {
@@ -111,6 +119,13 @@ public class PersonFragment extends Fragment {
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
+	// @Override
+	// public void onPause() {
+	//
+	// checkChanges();
+	//
+	// }
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -124,6 +139,9 @@ public class PersonFragment extends Fragment {
 			rootView = inflater.inflate(R.layout.fragment_group, container,
 					false);
 			setHasOptionsMenu(true);
+
+			OpenTenureApplication.setPersonsView(rootView);
+
 			InputMethodManager imm = (InputMethodManager) rootView.getContext()
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
@@ -201,6 +219,8 @@ public class PersonFragment extends Fragment {
 			InputMethodManager imm = (InputMethodManager) rootView.getContext()
 					.getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+			
+			OpenTenureApplication.setPersonsView(rootView);
 
 			preload();
 
@@ -590,8 +610,17 @@ public class PersonFragment extends Fragment {
 
 	}
 
-	public int updateGroup() {
-		Person person = Person.getPerson(personActivity.getPersonId());
+	public int updateGroup(PersonActivity personActivity) {
+
+		if (rootView == null)
+			rootView = OpenTenureApplication.getPersonsView();
+		Person person;
+
+		if (this.personActivity == null)
+			this.personActivity = personActivity;
+
+		person = Person.getPerson(this.personActivity.getPersonId());
+
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
 				.toString());
@@ -634,7 +663,7 @@ public class PersonFragment extends Fragment {
 
 		if (person.update() == 1) {
 
-			personActivity.setPersonId(person.getPersonId());
+			this.personActivity.setPersonId(person.getPersonId());
 			personPictureFile = Person.getPersonPictureFile(person
 					.getPersonId());
 
@@ -644,10 +673,17 @@ public class PersonFragment extends Fragment {
 
 	}
 
-	public int updatePerson() {
+	public int updatePerson(PersonActivity personActivity) {
+		
+		if (rootView == null)
+			rootView = OpenTenureApplication.getPersonsView();
+		Person person;
+
+		if (this.personActivity == null)
+			this.personActivity = personActivity;
 
 		// Person person = Person.getPerson(personActivity.getPersonId());
-		Person person = new Person();
+		person = new Person();
 		person.setPersonId(personActivity.getPersonId());
 		person.setFirstName(((EditText) rootView
 				.findViewById(R.id.first_name_input_field)).getText()
@@ -788,7 +824,7 @@ public class PersonFragment extends Fragment {
 					&& (Person.getPerson(personActivity.getPersonId())
 							.getPersonType().equalsIgnoreCase("group"))) {
 
-				int saved = updateGroup();
+				int saved = updateGroup(null);
 				if (saved == 1) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
@@ -803,7 +839,7 @@ public class PersonFragment extends Fragment {
 
 			} else {
 
-				int updated = updatePerson();
+				int updated = updatePerson(null);
 
 				if (updated == 1) {
 					toast = Toast.makeText(rootView.getContext(),
@@ -849,6 +885,479 @@ public class PersonFragment extends Fragment {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	public boolean checkChanges(PersonActivity personActivity) {
+
+		Person person = Person.getPerson(personActivity.getPersonId());
+		if (person != null) {
+			if (person.getPersonType().equalsIgnoreCase(Person._GROUP))
+				return checkChangesGroup(personActivity);
+			else
+				return checkChangesPerson(personActivity);
+		}
+		return false;
+	}
+
+	public boolean checkChangesGroup(PersonActivity personActivity) {
+
+		View rootView = null;
+
+		boolean changed = false;
+		Person person = Person.getPerson(personActivity.getPersonId());
+
+		if (person != null) {
+
+			rootView = OpenTenureApplication.getPersonsView();
+
+			if (person.getPersonType().equalsIgnoreCase(Person._GROUP)) {
+
+				String name = ((EditText) rootView
+						.findViewById(R.id.first_name_input_field)).getText()
+						.toString();
+
+				if (!person.getFirstName().equals(name))
+					changed = true;
+
+				else {
+
+					String postal_address = ((EditText) rootView
+							.findViewById(R.id.postal_address_input_field))
+							.getText().toString();
+
+					if ((postal_address == null || postal_address
+							.equalsIgnoreCase(""))
+							&& (person.getPostalAddress() != null && !person
+									.getPostalAddress().equals("")))
+
+						changed = true;
+
+					else if ((postal_address != null && !postal_address
+							.equalsIgnoreCase(""))
+							&& (person.getPostalAddress() == null || person
+									.getPostalAddress().equals("")))
+						changed = true;
+
+					else if (!postal_address.equals(person.getPostalAddress()))
+						changed = true;
+
+					else {
+
+						String email = ((EditText) rootView
+								.findViewById(R.id.email_address_input_field))
+								.getText().toString();
+
+						if ((email == null || email.equals(""))
+								&& (person.getEmailAddress() != null && !person
+										.getEmailAddress().equals("")))
+
+							changed = true;
+
+						else if ((email != null && !email.equals(""))
+								&& (person.getEmailAddress() == null || person
+										.getEmailAddress().equals("")))
+							changed = true;
+						else if (!person.getEmailAddress().equalsIgnoreCase(
+								email))
+							changed = true;
+
+						else {
+							String numberId = ((EditText) rootView
+									.findViewById(R.id.id_number)).getText()
+									.toString();
+
+							if ((numberId == null || numberId.equals(""))
+									&& (person.getIdNumber() != null && !person
+											.getIdNumber().equals("")))
+
+								changed = true;
+							else if ((numberId != null && !numberId.equals(""))
+									&& (person.getIdNumber() == null || person
+											.getIdNumber().equals("")))
+
+								changed = true;
+
+							else if (!person.getIdNumber().equals(numberId))
+								changed = true;
+
+							else {
+
+								String mobile = ((EditText) rootView
+										.findViewById(R.id.mobile_phone_number_input_field))
+										.getText().toString();
+
+								if ((mobile == null || mobile.equals(""))
+										&& (person.getMobilePhoneNumber() != null && !person
+												.getMobilePhoneNumber().equals(
+														"")))
+
+									changed = true;
+
+								else if ((mobile != null && !mobile.equals(""))
+										&& (person.getMobilePhoneNumber() == null || person
+												.getMobilePhoneNumber().equals(
+														"")))
+									changed = true;
+								else if (!mobile.equals(person
+										.getMobilePhoneNumber())) {
+									changed = true;
+								}
+
+								else {
+
+									String contact = ((EditText) rootView
+											.findViewById(R.id.contact_phone_number_input_field))
+											.getText().toString();
+
+									if ((contact == null || contact.equals(""))
+											&& (person.getContactPhoneNumber() != null && !person
+													.getContactPhoneNumber()
+													.equals("")))
+
+										changed = true;
+
+									else if ((contact != null && !contact
+											.equals(""))
+											&& (person.getContactPhoneNumber() == null || person
+													.getContactPhoneNumber()
+													.equals("")))
+										changed = true;
+									else if (!contact.equals(person
+											.getContactPhoneNumber()))
+										changed = true;
+
+									else {
+
+										String dateEstablishment = ((EditText) rootView
+												.findViewById(R.id.date_of_establishment_input_field))
+												.getText().toString();
+
+										if (person.getDateOfBirth() == null
+												|| person.getDateOfBirth()
+														.equals("")) {
+
+											if (dateEstablishment != null
+													&& !dateEstablishment
+															.equals(""))
+												changed = true;
+										} else {
+											java.util.Date dob = null;
+
+											if (dateEstablishment != null
+													&& !dateEstablishment
+															.trim().equals("")) {
+
+												try {
+													dob = new SimpleDateFormat(
+															"yyyy-MM-dd",
+															Locale.US)
+															.parse(dateEstablishment);
+
+													Date date = new Date(
+															dob.getTime());
+
+													if (person.getDateOfBirth()
+															.compareTo(date) != 0)
+														changed = true;
+
+												} catch (ParseException e) {
+													e.printStackTrace();
+													dob = null;
+
+												}
+
+											}
+
+										}
+
+									}
+
+								}
+							}
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if (changed) {
+
+			AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
+					rootView.getContext());
+			saveChangesDialog.setTitle(R.string.title_save_group_dialog);
+			String dialogMessage = OpenTenureApplication.getContext()
+					.getString(R.string.message_save_changes);
+
+			saveChangesDialog.setMessage(dialogMessage);
+
+			saveChangesDialog.setPositiveButton(R.string.confirm,
+					new SaveGroupListener(this, personActivity));
+
+			saveChangesDialog.setNegativeButton(R.string.cancel,
+					new SavePersonNegativeListenr(personActivity));
+			saveChangesDialog.show();
+
+		}
+
+		return false;
+
+	}
+
+	public boolean checkChangesPerson(PersonActivity personActivity) {
+
+		View rootView = null;
+
+		boolean changed = false;
+		Person person = Person.getPerson(personActivity.getPersonId());
+
+		if (person != null) {
+
+			rootView = OpenTenureApplication.getPersonsView();
+
+			String name = ((EditText) rootView
+					.findViewById(R.id.first_name_input_field)).getText()
+					.toString();
+
+			if (!person.getFirstName().equals(name))
+				changed = true;
+
+			else {
+				
+				String lastName = ((EditText) rootView
+						.findViewById(R.id.last_name_input_field)).getText()
+						.toString();
+
+				if (!person.getLastName().equals(lastName))
+					changed = true;
+
+				else {
+					
+					String birthPlace = ((EditText) rootView
+							.findViewById(R.id.place_of_birth_input_field))
+							.getText().toString();
+
+					if (!person.getPlaceOfBirth().equals(birthPlace))
+						changed = true;
+
+					else {
+					
+						String postal_address = ((EditText) rootView
+								.findViewById(R.id.postal_address_input_field))
+								.getText().toString();
+
+						if ((postal_address == null || postal_address
+								.equalsIgnoreCase(""))
+								&& (person.getPostalAddress() != null && !person
+										.getPostalAddress().equals("")))
+
+							changed = true;
+
+						else if ((postal_address != null && !postal_address
+								.equalsIgnoreCase(""))
+								&& (person.getPostalAddress() == null || person
+										.getPostalAddress().equals("")))
+							changed = true;
+
+						else if (!postal_address.equals(person
+								.getPostalAddress()))
+							changed = true;
+
+						else {
+							
+							String email = ((EditText) rootView
+									.findViewById(R.id.email_address_input_field))
+									.getText().toString();
+
+							if ((email == null || email.equals(""))
+									&& (person.getEmailAddress() != null && !person
+											.getEmailAddress().equals("")))
+
+								changed = true;
+
+							else if ((email != null && !email.equals(""))
+									&& (person.getEmailAddress() == null || person
+											.getEmailAddress().equals("")))
+								changed = true;
+							else if (!person.getEmailAddress()
+									.equalsIgnoreCase(email))
+								changed = true;
+
+							else {
+								
+								String numberId = ((EditText) rootView
+										.findViewById(R.id.id_number))
+										.getText().toString();
+
+								if ((numberId == null || numberId.equals(""))
+										&& (person.getIdNumber() != null && !person
+												.getIdNumber().equals("")))
+
+									changed = true;
+								else if ((numberId != null && !numberId
+										.equals(""))
+										&& (person.getIdNumber() == null || person
+												.getIdNumber().equals("")))
+
+									changed = true;
+
+								else if (!person.getIdNumber().equals(numberId))
+									changed = true;
+
+								else {
+									
+									String idType = (String) ((Spinner) rootView
+											.findViewById(R.id.id_type_spinner))
+											.getSelectedItem();
+
+									if (!person
+											.getIdType()
+											.equals(new IdType().getTypebyDisplayValue(idType)))
+										changed = true;
+
+									else {
+										
+										String mobile = ((EditText) rootView
+												.findViewById(R.id.mobile_phone_number_input_field))
+												.getText().toString();
+
+										if ((mobile == null || mobile
+												.equals(""))
+												&& (person
+														.getMobilePhoneNumber() != null && !person
+														.getMobilePhoneNumber()
+														.equals("")))
+
+											changed = true;
+
+										else if ((mobile != null && !mobile
+												.equals(""))
+												&& (person
+														.getMobilePhoneNumber() == null || person
+														.getMobilePhoneNumber()
+														.equals("")))
+											changed = true;
+										else if (!mobile.equals(person
+												.getMobilePhoneNumber())) {
+											changed = true;
+										}
+
+										else {
+											
+											String contact = ((EditText) rootView
+													.findViewById(R.id.contact_phone_number_input_field))
+													.getText().toString();
+
+											if ((contact == null || contact
+													.equals(""))
+													&& (person
+															.getContactPhoneNumber() != null && !person
+															.getContactPhoneNumber()
+															.equals("")))
+
+												changed = true;
+
+											else if ((contact != null && !contact
+													.equals(""))
+													&& (person
+															.getContactPhoneNumber() == null || person
+															.getContactPhoneNumber()
+															.equals("")))
+												changed = true;
+											else if (!contact.equals(person
+													.getContactPhoneNumber()))
+												changed = true;
+
+											else {
+
+												String dateEstablishment = ((EditText) rootView
+														.findViewById(R.id.date_of_birth_input_field))
+														.getText().toString();
+
+												if (person.getDateOfBirth() == null
+														|| person
+																.getDateOfBirth()
+																.equals("")) {
+
+													if (dateEstablishment != null
+															&& !dateEstablishment
+																	.equals(""))
+														changed = true;
+												} else {
+													java.util.Date dob = null;
+
+													if (dateEstablishment != null
+															&& !dateEstablishment
+																	.trim()
+																	.equals("")) {
+
+														try {
+															dob = new SimpleDateFormat(
+																	"yyyy-MM-dd",
+																	Locale.US)
+																	.parse(dateEstablishment);
+
+															Date date = new Date(
+																	dob.getTime());
+
+															if (person
+																	.getDateOfBirth()
+																	.compareTo(
+																			date) != 0)
+																changed = true;
+
+														} catch (ParseException e) {
+															e.printStackTrace();
+															dob = null;
+
+														}
+
+													}
+
+												}
+
+											}
+
+										}
+									}
+
+								}
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+		if (changed) {
+			
+			AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
+					rootView.getContext());
+			saveChangesDialog.setTitle(R.string.title_save_person_dialog);
+			String dialogMessage = OpenTenureApplication.getContext()
+					.getString(R.string.message_save_changes);
+
+			saveChangesDialog.setMessage(dialogMessage);
+
+			saveChangesDialog.setPositiveButton(R.string.confirm,
+					new SavePersonListener(this, personActivity));
+
+			saveChangesDialog.setNegativeButton(R.string.cancel,
+					new SavePersonNegativeListenr(personActivity));
+			saveChangesDialog.show();
+
+		}
+
+		return false;
+
 	}
 
 }

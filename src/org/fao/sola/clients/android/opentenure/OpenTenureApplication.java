@@ -40,6 +40,7 @@ import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Database;
 
 
+
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -47,6 +48,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Log;
+import android.view.View;
 
 
 public class OpenTenureApplication extends Application {
@@ -69,6 +71,7 @@ public class OpenTenureApplication extends Application {
 		private static HttpContext http_context;
 		private static MainMapFragment mapFragment;
 		private static PersonsFragment personsFragment;
+		private static View personsView;
 		private static LocalClaimsFragment localClaimsFragment;
 		
 		
@@ -222,6 +225,14 @@ public class OpenTenureApplication extends Application {
 
 		public void setCheckedTypes(boolean checkedTypes) {
 			this.checkedTypes = checkedTypes;
+		}
+
+		public static View getPersonsView() {
+			return personsView;
+		}
+
+		public static void setPersonsView(View personsView) {
+			OpenTenureApplication.personsView = personsView;
 		}
 
 		public static List<ClaimType> getClaimTypes() {
