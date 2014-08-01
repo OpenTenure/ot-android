@@ -51,7 +51,7 @@ public class SavePersonListener implements DialogInterface.OnClickListener {
 	public void onClick(DialogInterface dialog, int which) {
 		// TODO Auto-generated method stub
 
-		this.fragment.updatePerson(this.personActivity);
+		this.fragment.updatePerson(this.personActivity.getPersonId());
 
 		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
 				R.string.message_saved, Toast.LENGTH_LONG);
