@@ -95,9 +95,21 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		case 100: {
 			/* UnknownHostException: */
+			
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+				claim.update();
+			}
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+				claim.update();
+			}
 
-			claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
-			claim.update();
+			
 
 			toast = Toast.makeText(
 					OpenTenureApplication.getContext(),
@@ -116,11 +128,8 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_INCOMPLETE);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 
@@ -129,8 +138,16 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 		case 105: {
 			/* IOException: */
 
-			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
 
@@ -144,20 +161,25 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 
 		}
 		case 110: {
 
-			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
 
@@ -174,9 +196,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 
@@ -216,7 +235,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			vh.getNumber().setText(res.getNr());
 			vh.getNumber().setVisibility(View.VISIBLE);
-			
+
 			vh.getBar().setVisibility(View.GONE);
 
 			int days = JsonUtilities.remainingDays(claim
@@ -284,17 +303,24 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 							Toast.LENGTH_LONG);
 			toast.show();
 
-			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
-			claim.update();
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			}
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
+				claim.update();
+			}
 
 			ViewHolder vh = vhr.getVh();
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 		}
@@ -303,8 +329,16 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			/* Missing Attachments */
 
-			if (claim.getStatus().equals(ClaimStatus._CREATED)) {
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
+				claim.update();
+			}
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				claim.setStatus(ClaimStatus._UPDATING);
 				claim.update();
 			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -317,12 +351,8 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			int progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getStatus().setText(
-					ClaimStatus._UPLOADING + ": " + progress + " %");
+			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setVisibility(View.VISIBLE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			List<Attachment> list = res.getAttachments();
 
@@ -343,8 +373,16 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
-			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
-			claim.update();
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOADING)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
+				claim.update();
+			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
@@ -354,11 +392,8 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 		}
@@ -367,8 +402,16 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
-			claim.setStatus(ClaimStatus._UPLOAD_ERROR);
-			claim.update();
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOADING)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
+				claim.update();
+			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
@@ -378,12 +421,8 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
-			vh.getBar().setVisibility(View.GONE);
-
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			break;
 

@@ -67,6 +67,7 @@ public class UploadChunksTask extends
 
 		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
 		ViewHolder vh = (ViewHolder) vhr.getVh();
+		Claim claim = null;
 
 		if (res.getSuccess()) {
 
@@ -94,30 +95,31 @@ public class UploadChunksTask extends
 
 				att = Attachment.getAttachment(res.getAttachmentId());
 
+				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+				att.update();
+
+				claim = Claim.getClaim(att.getClaimId());
 				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-
-					att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
-					att.update();
-
-					Claim claim = Claim.getClaim(att.getClaimId());
 					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 					claim.update();
-
-					progress = FileSystemUtilities.getUploadProgress(claim);
-					
-					vh.getBar().setProgress(progress);
-
-					vh.getStatus().setText(
-							ClaimStatus._UPLOADING + ": " + progress + " %");
-					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
-					vh.getStatus().setVisibility(View.VISIBLE);
-
-					vh.getIconLocal().setVisibility(View.VISIBLE);
-					vh.getIconUnmoderated().setVisibility(View.GONE);
-
+				} else {
+					claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+					claim.update();
 				}
+
+				progress = FileSystemUtilities.getUploadProgress(claim);
+
+				vh.getBar().setProgress(progress);
+
+				vh.getStatus().setText(
+						claim.getStatus() + ": " + progress + " %");
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
+
+				// vh.getIconLocal().setVisibility(View.VISIBLE);
+				// vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 
@@ -125,25 +127,26 @@ public class UploadChunksTask extends
 
 				att = Attachment.getAttachment(res.getAttachmentId());
 
+				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+				att.update();
+
+				claim = Claim.getClaim(att.getClaimId());
 				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-
-					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
-					att.update();
-
-					Claim claim = Claim.getClaim(att.getClaimId());
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-
-					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
-					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
-					vh.getStatus().setVisibility(View.VISIBLE);
-
-					vh.getIconLocal().setVisibility(View.VISIBLE);
-					vh.getIconUnmoderated().setVisibility(View.GONE);
-
+				} else {
+					claim.setStatus(ClaimStatus._UPDATE_ERROR);
+					claim.update();
 				}
+
+				vh.getStatus().setText(claim.getStatus());
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
+
+				// vh.getIconLocal().setVisibility(View.VISIBLE);
+				// vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 
@@ -151,25 +154,25 @@ public class UploadChunksTask extends
 
 				att = Attachment.getAttachment(res.getAttachmentId());
 
+				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+				att.update();
+
+				claim = Claim.getClaim(att.getClaimId());
 				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-
-					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
-					att.update();
-
-					Claim claim = Claim.getClaim(att.getClaimId());
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-
-					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
-					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
-					vh.getStatus().setVisibility(View.VISIBLE);
-
-					vh.getIconLocal().setVisibility(View.VISIBLE);
-					vh.getIconUnmoderated().setVisibility(View.GONE);
-
+				} else {
+					claim.setStatus(ClaimStatus._UPDATE_ERROR);
+					claim.update();
 				}
+				vh.getStatus().setText(claim.getStatus());
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
+
+//				vh.getIconLocal().setVisibility(View.VISIBLE);
+//				vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 
@@ -177,25 +180,25 @@ public class UploadChunksTask extends
 
 				att = Attachment.getAttachment(res.getAttachmentId());
 
+				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
+				att.update();
+
+				claim = Claim.getClaim(att.getClaimId());
 				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-
-					att.setStatus(AttachmentStatus._UPLOAD_ERROR);
-					att.update();
-
-					Claim claim = Claim.getClaim(att.getClaimId());
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-
-					vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
-					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
-					vh.getStatus().setVisibility(View.VISIBLE);
-
-					vh.getIconLocal().setVisibility(View.VISIBLE);
-					vh.getIconUnmoderated().setVisibility(View.GONE);
-
+				} else {
+					claim.setStatus(ClaimStatus._UPDATE_ERROR);
+					claim.update();
 				}
+				vh.getStatus().setText(claim.getStatus());
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
+
+//				vh.getIconLocal().setVisibility(View.VISIBLE);
+//				vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 
@@ -206,22 +209,29 @@ public class UploadChunksTask extends
 				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
 				att.update();
 
-				Claim claim = Claim.getClaim(att.getClaimId());
-				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
-				claim.update();
+				claim = Claim.getClaim(att.getClaimId());
+				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+					claim.update();
+				} else {
+					claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+					claim.update();
+				}
 
 				progress = FileSystemUtilities.getUploadProgress(claim);
 				vh.getBar().setProgress(progress);
 
-				vh.getStatus().setText(
-						ClaimStatus._UPLOAD_INCOMPLETE + ": " + progress + " %");
+				vh.getStatus()
+						.setText(
+								ClaimStatus._UPLOAD_INCOMPLETE + ": "
+										+ progress + " %");
 				vh.getStatus().setTextColor(
 						OpenTenureApplication.getContext().getResources()
 								.getColor(R.color.status_created));
 				vh.getStatus().setVisibility(View.VISIBLE);
 
-				vh.getIconLocal().setVisibility(View.VISIBLE);
-				vh.getIconUnmoderated().setVisibility(View.GONE);
+				// vh.getIconLocal().setVisibility(View.VISIBLE);
+				// vh.getIconUnmoderated().setVisibility(View.GONE);
 
 				break;
 			}

@@ -252,7 +252,11 @@ public class LocalClaimsFragment extends ListFragment {
 					.getText().toString();
 			intent.putExtra(ClaimActivity.CLAIM_ID_KEY, claimId);
 			Claim claim = Claim.getClaim(claimId);
-			if (!claim.getStatus().equalsIgnoreCase(ClaimStatus._CREATED)) {
+			if (!claim.getStatus().equalsIgnoreCase(ClaimStatus._CREATED)
+					&& !claim.getStatus().equalsIgnoreCase(
+							ClaimStatus._UPLOAD_ERROR)
+					&& !claim.getStatus().equalsIgnoreCase(
+							ClaimStatus._UPLOAD_INCOMPLETE)) {
 				intent.putExtra(ClaimActivity.MODE_KEY,
 						ModeDispatcher.Mode.MODE_RO.toString());
 			} else {
@@ -286,29 +290,25 @@ public class LocalClaimsFragment extends ListFragment {
 						: claim.getName();
 				cto.setSlogan(claimName
 						+ ", "
-						+ OpenTenureApplication.getContext().getResources().getString(R.string.by)
+						+ OpenTenureApplication.getContext().getResources()
+								.getString(R.string.by)
 						+ ": "
 						+ claim.getPerson().getFirstName()
 						+ " "
 						+ claim.getPerson().getLastName()
 						+ " "
-						+ OpenTenureApplication.getContext().getResources().getString(R.string.type)
+						+ OpenTenureApplication.getContext().getResources()
+								.getString(R.string.type)
 						+ ": "
 						+ new ClaimType().getDisplayValueByType(claim.getType()));
 				cto.setId(claim.getClaimId());
-				
-				
+
 				if (claim.getClaimNumber() != null)
 					cto.setNumber(claim.getClaimNumber());
 				else
 					cto.setNumber("");
 
-				if (claim.getStatus().equals(ClaimStatus._UPLOADING))
-					cto.setStatus(claim.getStatus());
-				else if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
-					cto.setStatus(claim.getStatus());
-				} else
-					cto.setStatus(claim.getStatus());
+				cto.setStatus(claim.getStatus());
 
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());

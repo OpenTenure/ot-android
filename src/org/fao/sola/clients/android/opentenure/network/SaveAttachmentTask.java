@@ -114,18 +114,23 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
 			}
+			if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
+				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+				claim.update();
+			}
 
 			progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getStatus().setText(
-					ClaimStatus._UPLOAD_INCOMPLETE + ": " + progress + " %");
+			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
+			}
 
 			break;
 
@@ -149,18 +154,23 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
 			}
+			if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
+				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+				claim.update();
+			}
 
 			progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getStatus().setText(
-					ClaimStatus._UPLOAD_INCOMPLETE + ": " + progress + " %");
+			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
+			}
 
 			break;
 
@@ -221,12 +231,21 @@ public class SaveAttachmentTask extends
 			switch (action) {
 			case 1:
 
+				// DO NOTHING
+
 				break;
 			case 2:
 
+				// JUST UPDATE THE STATUS OF CLAIM IN CASE OF INCOMPLETE
+
 				Claim claim2 = Claim.getClaim(claimId);
-				if (!claim2.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				if (claim2.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim2.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+					claim2.update();
+
+				}
+				if (claim2.getStatus().equals(ClaimStatus._UPDATING)) {
+					claim2.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 					claim2.update();
 
 				}
@@ -234,6 +253,8 @@ public class SaveAttachmentTask extends
 				break;
 
 			default: {
+
+				// CALL THE SAVE CLAIM TASK TO CLOSE THE FLOW OF SAVE CLAIM
 
 				SaveClaimTask saveClaim = new SaveClaimTask();
 				saveClaim.execute(claimId, vh);
@@ -282,21 +303,36 @@ public class SaveAttachmentTask extends
 			Attachment.updateAttachment(toUpdate);
 
 			claim = Claim.getClaim(toUpdate.getClaimId());
-			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+			if (!claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPDATE_INCOMPLETE)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
 			progress = FileSystemUtilities.getUploadProgress(claim);
 			vh.getBar().setProgress(progress);
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_submission_error)
+							+ " " + res.getMessage(), Toast.LENGTH_LONG);
+			toast.show();
+
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
+			}
 
 			vh.getBar().setVisibility(View.GONE);
 
@@ -312,8 +348,15 @@ public class SaveAttachmentTask extends
 			toUpdate = Attachment.getAttachment(res.getAttachmentId());
 			claim = Claim.getClaim(toUpdate.getClaimId());
 
-			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+			if (!claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPDATE_INCOMPLETE)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
 
@@ -336,15 +379,16 @@ public class SaveAttachmentTask extends
 
 			progress = FileSystemUtilities.getUploadProgress(claim);
 
-			vh.getBar().setProgress(progress);
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
+			}
 
 			vh.getBar().setVisibility(View.GONE);
 
@@ -364,22 +408,32 @@ public class SaveAttachmentTask extends
 			Attachment.updateAttachment(toUpdate);
 
 			claim = Claim.getClaim(toUpdate.getClaimId());
-			if (!claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+			if (!claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPDATE_INCOMPLETE)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
+				claim.update();
 			}
+
 			progress = FileSystemUtilities.getUploadProgress(claim);
 
 			vh.getBar().setProgress(progress);
 
-			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
+			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
+			}
 
 			vh.getBar().setVisibility(View.GONE);
 
@@ -435,7 +489,12 @@ public class SaveAttachmentTask extends
 			vh.getIconLocal().setVisibility(View.VISIBLE);
 			vh.getIconUnmoderated().setVisibility(View.GONE);
 
-			if (!claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOADING);
+				claim.update();
+			} else {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
 			}

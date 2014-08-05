@@ -143,6 +143,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					.findViewById(R.id.claim_challenging_time);
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.claimant_picture);
+			vh.send = (ImageView) convertView
+					.findViewById(R.id.action_submit_to_server);
+			vh.remove = (ImageView) convertView
+					.findViewById(R.id.action_remove_claim);
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
@@ -154,6 +158,11 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
 
+		vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
+				position).getId(), vh));
+		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
+				.getId(), vh));
+
 		if (claim.getStatus().equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
 			vh.iconLocal.setVisibility(View.VISIBLE);
@@ -162,6 +171,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
+			vh.send.setVisibility(View.VISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
@@ -184,7 +194,31 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					+ " %");
 
 			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
 
+		}
+		if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
+
+			vh.iconLocal.setVisibility(View.GONE);
+			vh.iconUnmoderated.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+
+			int progress = FileSystemUtilities.getUploadProgress(claim);
+
+			// Setting the update value in the progress bar
+			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+			vh.bar.setVisibility(View.VISIBLE);
+			vh.bar.setProgress(progress);
+
+			vh.status.setText(claims.get(position).getStatus() + " " + progress
+					+ " %");
+
+			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 
@@ -199,7 +233,24 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.GONE);
 
 			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
 
+		}
+		if (claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)) {
+
+			vh.iconLocal.setVisibility(View.GONE);
+			vh.iconUnmoderated.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+			vh.status.setText(claims.get(position).getStatus());
+			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+			vh.bar.setVisibility(View.GONE);
+
+			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
@@ -219,6 +270,29 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setText(claims.get(position).getStatus() + " " + progress
 					+ " %");
 			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
+
+		}
+		if (claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+
+			vh.iconLocal.setVisibility(View.GONE);
+			vh.iconUnmoderated.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			if (claims.get(position).getNumber() != null)
+				vh.number.setText(claims.get(position).getNumber());
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_created));
+
+			int progress = FileSystemUtilities.getUploadProgress(claim);
+			// Setting the update value in the progress bar
+			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+			vh.bar.setVisibility(View.VISIBLE);
+			vh.bar.setProgress(progress);
+
+			vh.status.setText(claims.get(position).getStatus() + " " + progress
+					+ " %");
+			vh.status.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.VISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
@@ -229,6 +303,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
+			vh.send.setVisibility(View.VISIBLE);
 
 		}
 
@@ -240,6 +315,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
+			vh.send.setVisibility(View.INVISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._CHALLENGED)) {
@@ -261,6 +337,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
+			vh.send.setVisibility(View.INVISIBLE);
 
 		}
 
@@ -270,30 +347,13 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		// vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 		vh.number.setTextSize(8);
 		vh.number.setVisibility(View.VISIBLE);
-		
-		
-		
-		
+
 		vh.number.setText(claim.getClaimNumber());
 		vh.position = position;
 
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
 				Person.getPersonPictureFile(claim.getPerson().getPersonId()),
 				96));
-		vh.send = (ImageView) convertView
-				.findViewById(R.id.action_submit_to_server);
-		vh.remove = (ImageView) convertView
-				.findViewById(R.id.action_remove_claim);
-
-		if (mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
-			vh.send.setOnClickListener(new SubmitClaimListener(claims.get(
-					position).getId(), vh));
-			vh.remove.setOnClickListener(new ClaimDeleteListener(claims.get(
-					position).getId(), vh));
-		} else {
-			vh.send.setVisibility(View.GONE);
-			vh.remove.setVisibility(View.GONE);
-		}
 
 		return convertView;
 	}

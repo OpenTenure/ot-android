@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -192,7 +193,10 @@ public class ClaimDetailsFragment extends Fragment {
 
 			if (!claim.getStatus().equals(ClaimStatus._UPLOADING)
 					&& !claim.getStatus()
-							.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+							.equals(ClaimStatus._UPDATE_INCOMPLETE)
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				bar.setVisibility(View.GONE);
 				status.setVisibility(View.GONE);
 
@@ -832,9 +836,26 @@ public class ClaimDetailsFragment extends Fragment {
 
 			Owner toDelete = Owner.getOwner(claimActivity.getClaimId(),
 					oldClaimantId);
+			
+			if(toDelete !=null){
 			share = toDelete.getShares();
 
 			toDelete.delete();
+			}
+			else {
+				
+				List<Owner> owners = Claim.getClaim(claimActivity.getClaimId()).getOwners();
+				int sum = 0;
+				
+				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
+					
+					
+					Owner owner = (Owner) iterator.next();
+					sum = sum + owner.getShares();
+				}
+				
+				share = 100 - sum;
+			}
 
 			Owner owner = new Owner(true);
 

@@ -32,9 +32,13 @@ public class ClaimStatus {
 	public static String _CREATED = "created";
 	public static String _UPLOADING = "uploading";
 	public static String _UNMODERATED = "unmoderated";
+	public static String _UPDATING = "updating";
 	public static String _MODERATED = "moderated";
 	public static String _CHALLENGED = "challenged";
 	public static String _UPLOAD_INCOMPLETE = "upload_incomplete";
 	public static String _UPLOAD_ERROR = "upload_error";
+	public static String _UPDATE_INCOMPLETE = "update_incomplete";
+	public static String _UPDATE_ERROR = "update_error";
 	public static String _WITHDRAWN = "withdrawn";
+		
 }

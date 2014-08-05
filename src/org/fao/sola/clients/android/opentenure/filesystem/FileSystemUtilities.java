@@ -464,7 +464,9 @@ public class FileSystemUtilities {
 			totalSize = totalSize + json.length();
 
 			if (claim.getStatus().equals(ClaimStatus._UPLOADING)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE))
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPDATING)
+					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE))
 				uploadedSize = uploadedSize + json.length();
 
 			List<Attachment> attachments = claim.getAttachments();

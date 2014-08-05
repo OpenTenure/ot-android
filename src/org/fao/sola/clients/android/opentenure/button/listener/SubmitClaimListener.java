@@ -99,10 +99,19 @@ public class SubmitClaimListener implements OnClickListener {
 
 				vh.getBar().setVisibility(View.VISIBLE);
 				vh.getBar().setProgress(progress);
-				vh.getStatus().setText(ClaimStatus._UPLOADING + ": " + progress
-						+ " %");
-				vh.getStatus().setTextColor(OpenTenureApplication.getContext()
-						.getResources().getColor(R.color.status_created));
+
+				String status = Claim.getClaim(claimId).getStatus();
+				if (status.equals(ClaimStatus._MODERATED)
+						|| status.equals(ClaimStatus._UPDATE_ERROR)
+						|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
+					vh.getStatus().setText(
+							ClaimStatus._UPDATING + ": " + progress + " %");
+				else
+					vh.getStatus().setText(
+							ClaimStatus._UPLOADING + ": " + progress + " %");
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
 				vh.getStatus().setVisibility(View.VISIBLE);
 
 				try {
