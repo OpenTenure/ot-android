@@ -836,24 +836,23 @@ public class ClaimDetailsFragment extends Fragment {
 
 			Owner toDelete = Owner.getOwner(claimActivity.getClaimId(),
 					oldClaimantId);
-			
-			if(toDelete !=null){
-			share = toDelete.getShares();
 
-			toDelete.delete();
-			}
-			else {
-				
-				List<Owner> owners = Claim.getClaim(claimActivity.getClaimId()).getOwners();
+			if (toDelete != null) {
+				share = toDelete.getShares();
+
+				toDelete.delete();
+			} else {
+
+				List<Owner> owners = Claim.getClaim(claimActivity.getClaimId())
+						.getOwners();
 				int sum = 0;
-				
+
 				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
-					
-					
+
 					Owner owner = (Owner) iterator.next();
 					sum = sum + owner.getShares();
 				}
-				
+
 				share = 100 - sum;
 			}
 
@@ -925,8 +924,12 @@ public class ClaimDetailsFragment extends Fragment {
 							String landUseDispValue = (String) ((Spinner) rootView
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
+							if (claim.getLandUse() == null
+									&& new LandUse()
+											.getTypebyDisplayValue(landUseDispValue) != null)
+								changed = true;
 
-							if (!claim
+							else if (!claim
 									.getLandUse()
 									.equals(new LandUse()
 											.getTypebyDisplayValue(landUseDispValue)))
