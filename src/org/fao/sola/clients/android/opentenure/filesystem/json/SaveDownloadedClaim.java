@@ -274,6 +274,16 @@ public class SaveDownloadedClaim {
 						downloadedClaim.getMappedGeometry(),
 						downloadedClaim.getGpsGeometry());
 
+			
+			/*
+			 * Here the creation of Folder for the claim
+			 */
+
+			FileSystemUtilities.createClaimantFolder(claimant.getId());
+			FileSystemUtilities.createClaimFileSystem(downloadedClaim
+					.getId());
+			
+			
 			List<Attachment> attachments = downloadedClaim.getAttachments();
 			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 					.hasNext();) {
@@ -295,13 +305,7 @@ public class SaveDownloadedClaim {
 				org.fao.sola.clients.android.opentenure.model.Attachment
 						.createAttachment(attachmentDB);
 
-				/*
-				 * Here the creation of Folder for the claim
-				 */
-
-				FileSystemUtilities.createClaimantFolder(claimant.getId());
-				FileSystemUtilities.createClaimFileSystem(downloadedClaim
-						.getId());
+				
 
 			}
 

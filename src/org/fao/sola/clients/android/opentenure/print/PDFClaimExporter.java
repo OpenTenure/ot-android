@@ -91,14 +91,21 @@ public class PDFClaimExporter {
 
 			addPage(document, context, claimId);
 
-			if(claim.getClaimNumber()!=null){
-				writeBoldText(context.getResources().getString(R.string.app_name) + " "
-						+ context.getResources().getString(R.string.claim) + ": "
-						+ claim.getName() + " (#" + claim.getClaimNumber() + ")");
-			}else{
-				writeBoldText(context.getResources().getString(R.string.app_name) + " "
-						+ context.getResources().getString(R.string.claim) + ": "
-						+ claim.getName() + " (id: " + claimId + ")");
+			if (claim.getClaimNumber() != null) {
+				writeBoldText(context.getResources().getString(
+						R.string.app_name)
+						+ " "
+						+ context.getResources().getString(R.string.claim)
+						+ ": "
+						+ claim.getName()
+						+ " (#"
+						+ claim.getClaimNumber() + ")");
+			} else {
+				writeBoldText(context.getResources().getString(
+						R.string.app_name)
+						+ " "
+						+ context.getResources().getString(R.string.claim)
+						+ ": " + claim.getName() + " (id: " + claimId + ")");
 			}
 			newLine();
 			drawBitmap(bitmapFromResource(context, R.drawable.sola_logo, 128,
@@ -148,14 +155,15 @@ public class PDFClaimExporter {
 			for (Adjacency adj : adjList) {
 				Claim adjacentClaim;
 				String direction;
-				if(adj.getSourceClaimId().equalsIgnoreCase(claimId)){
+				if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
 					adjacentClaim = Claim.getClaim(adj.getDestClaimId());
 					direction = Adjacency.getCardinalDirection(context,
 							adj.getCardinalDirection());
-				}else{
+				} else {
 					adjacentClaim = Claim.getClaim(adj.getSourceClaimId());
 					direction = Adjacency.getCardinalDirection(context,
-							Adjacency.getReverseCardinalDirection(adj.getCardinalDirection()));
+							Adjacency.getReverseCardinalDirection(adj
+									.getCardinalDirection()));
 				}
 				newLine();
 				newLine();
@@ -182,17 +190,21 @@ public class PDFClaimExporter {
 			writeBoldText(context.getResources().getString(
 					R.string.title_claim_adjacencies));
 			newLine();
-			writeText(context.getResources().getString(
-					R.string.north)+": "+claim.getAdjacenciesNotes().getNorthAdjacency());
-			newLine();
-			writeText(context.getResources().getString(
-					R.string.south)+": "+claim.getAdjacenciesNotes().getSouthAdjacency());
-			newLine();
-			writeText(context.getResources().getString(
-					R.string.east)+": "+claim.getAdjacenciesNotes().getEastAdjacency());
-			newLine();
-			writeText(context.getResources().getString(
-					R.string.west)+": "+claim.getAdjacenciesNotes().getWestAdjacency());
+			if (claim.getAdjacenciesNotes() != null) {
+				writeText(context.getResources().getString(R.string.north)
+						+ ": "
+						+ claim.getAdjacenciesNotes().getNorthAdjacency());
+				newLine();
+				writeText(context.getResources().getString(R.string.south)
+						+ ": "
+						+ claim.getAdjacenciesNotes().getSouthAdjacency());
+				newLine();
+				writeText(context.getResources().getString(R.string.east)
+						+ ": " + claim.getAdjacenciesNotes().getEastAdjacency());
+				newLine();
+				writeText(context.getResources().getString(R.string.west)
+						+ ": " + claim.getAdjacenciesNotes().getWestAdjacency());
+			}
 			newLine();
 			drawHorizontalLine();
 			newLine();
