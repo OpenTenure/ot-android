@@ -39,13 +39,14 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 
 import android.content.Context;
 
 public class Claim {
 
 	public enum Status {
-		unmoderated, moderated, challenged, created, uploading, updating,upload_incomplete, update_incomplete, upload_error, update_error,withdrawn
+		unmoderated, moderated, challenged, created, uploading, updating, upload_incomplete, update_incomplete, upload_error, update_error, withdrawn
 	};
 
 	public static final int MAX_SHARES_PER_CLAIM = 100;
@@ -462,6 +463,7 @@ public class Claim {
 				claim.setOwners(Owner.getOwners(claimId));
 				claim.setAdditionalInfo(AdditionalInfo
 						.getClaimAdditionalInfo(claimId));
+				claim.setModifiable(claim.isModifiable());
 
 			}
 
@@ -661,6 +663,24 @@ public class Claim {
 				+ getPerson().getFirstName() + " " + getPerson().getLastName();
 	}
 
+	public boolean isModifiable() {
+		
+		if(getChallengeExpiryDate() == null)
+			return true;
+
+		if ((getStatus().equals(ClaimStatus._MODERATED) || getStatus().equals(
+				ClaimStatus._WITHDRAWN))
+				|| (JsonUtilities.remainingDays(getChallengeExpiryDate()) < 1))
+			return false;
+		else return true;
+	}
+	
+	
+
+	public void setModifiable(boolean isModifiable) {
+		this.isModifiable = isModifiable;
+	}
+
 	private String claimId;
 	private String name;
 	private String type;
@@ -680,5 +700,6 @@ public class Claim {
 	private String landUse;
 	private String notes;
 	private String claimNumber;
+	private boolean isModifiable;
 
 }

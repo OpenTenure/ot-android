@@ -163,6 +163,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
 				.getId(), vh));
 
+		System.out.println("La verita' : " + position + " " + claim.getStatus()
+				+ " " + claim.isModifiable() + " "
+				+ claim.getChallengeExpiryDate());
+
 		if (claim.getStatus().equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
 			vh.iconLocal.setVisibility(View.VISIBLE);
@@ -171,7 +175,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
-			vh.send.setVisibility(View.VISIBLE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
@@ -233,7 +240,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.GONE);
 
 			vh.status.setVisibility(View.VISIBLE);
-			vh.send.setVisibility(View.VISIBLE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)) {
@@ -250,7 +260,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.GONE);
 
 			vh.status.setVisibility(View.VISIBLE);
-			vh.send.setVisibility(View.VISIBLE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 		}
 		if (claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
@@ -292,7 +305,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setText(claims.get(position).getStatus() + " " + progress
 					+ " %");
 			vh.status.setVisibility(View.VISIBLE);
-			vh.send.setVisibility(View.VISIBLE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 
 		}
 		if (claim.getStatus().equals(ClaimStatus._UNMODERATED)) {
@@ -303,7 +319,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
 			vh.bar.setVisibility(View.GONE);
-			vh.send.setVisibility(View.VISIBLE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 
 		}
 
@@ -325,7 +344,10 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.status.setVisibility(View.GONE);
-			vh.bar.setVisibility(View.GONE);
+			if (claim.isModifiable())
+				vh.send.setVisibility(View.VISIBLE);
+			else
+				vh.send.setVisibility(View.INVISIBLE);
 
 		}
 

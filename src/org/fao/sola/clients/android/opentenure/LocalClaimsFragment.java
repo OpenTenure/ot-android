@@ -313,7 +313,7 @@ public class LocalClaimsFragment extends ListFragment {
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());
 
-				if (days > 0)
+				if (claim.isModifiable())
 					cto.setRemaingDays(getResources().getString(
 							R.string.message_remaining_days)
 							+ days);
