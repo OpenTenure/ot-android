@@ -53,10 +53,10 @@ import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimTypesResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
+import org.fao.sola.clients.android.opentenure.network.response.GetCommunityAreaResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;
-
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -643,6 +643,60 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI",
 					"GET ALL ID TYPES ERROR " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
+		}
+
+	}
+	
+	public static String  getCommunityArea() {
+
+		String url = String
+				.format(CommunityServerAPIUtilities.HTTPS_GETCOMMUNITYAREA);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI", "GET COMMUNITY AREA JSON RESPONSE "
+						+ json);
+
+				
+				GetCommunityAreaResponse area = new Gson()
+						.fromJson(json, GetCommunityAreaResponse.class);
+
+				if (area != null)
+					Log.d("CommunityServerAPI", "RETRIEVED COMMUNITY AREA"
+							+ area.getResult());
+
+				return area.getResult();
+
+			} else {
+
+				Log.d("CommunityServerAPI",
+						"GET COMMUNITY AREA NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI",
+					"GET COMMUNITY AREA ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 

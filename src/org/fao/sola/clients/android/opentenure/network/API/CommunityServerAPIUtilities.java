@@ -77,6 +77,9 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETLANDUSE = "https://ot.flossola.org/ws/en-us/ref/getlanduses";
 	public static final String HTTP_GETLANDUSE = "http://ot.flossola.org/ws/en-us/ref/getlanduses";
 	
+	public static final String HTTPS_GETCOMMUNITYAREA = "https://ot.flossola.org/ws/en-us/ref/getcommunityarea";
+	public static final String HTTP_GETCOMMUNITYAREA = "http://ot.flossola.org/ws/en-us/ref/getcommunityarea";
+	
 	public static final String HTTPS_WITHDRAWCLAIM = "https://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
 	public static final String HTTP_WITHDRAWCLAIM = "http://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
 

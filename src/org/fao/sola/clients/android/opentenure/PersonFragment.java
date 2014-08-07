@@ -664,7 +664,7 @@ public class PersonFragment extends Fragment {
 
 	public int updatePerson(String personId) {
 
-		System.out.println("Arrivando " + personId);
+		
 
 		if (rootView == null)
 			rootView = OpenTenureApplication.getPersonsView();
@@ -856,7 +856,6 @@ public class PersonFragment extends Fragment {
 
 	public boolean checkChanges(PersonActivity personActivity) {
 
-		System.out.println("PAsso da checkChanges");
 		System.out.println("PersonActivity is " + personActivity);
 		System.out.println("PersonActivity is " + personActivity.getPersonId());
 

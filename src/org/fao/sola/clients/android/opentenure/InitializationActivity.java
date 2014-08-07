@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
@@ -163,6 +164,14 @@ public class InitializationActivity extends Activity {
 				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
 				updateLu.execute();
 			}
+			if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
+				Log.d(this.getClass().getName(), "starting tasks for community area download");
+
+				UpdateCommunityArea updateArea = new UpdateCommunityArea();
+				updateArea.execute();
+			}
+			
+			
 			Intent i = new Intent(InitializationActivity.this, OpenTenure.class);
 			startActivity(i);
 			finish();

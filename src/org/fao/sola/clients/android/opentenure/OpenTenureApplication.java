@@ -60,6 +60,7 @@ public class OpenTenureApplication extends Application {
 	    private boolean checkedDocTypes = false;
 	    private boolean checkedIdTypes = false;
 	    private boolean checkedLandUses = false;
+	    private boolean checkedCommunityArea = false;
 	    
 	    
 	    private static boolean loggedin ;
@@ -249,6 +250,14 @@ public class OpenTenureApplication extends Application {
 
 		public static void setPersonsFragment(PersonsFragment personsFragment) {
 			OpenTenureApplication.personsFragment = personsFragment;
+		}
+		
+		public boolean isCheckedCommunityArea() {
+			return checkedCommunityArea;
+		}
+
+		public void setCheckedCommunityArea(boolean checkedCommunityArea) {
+			this.checkedCommunityArea = checkedCommunityArea;
 		}
 
 		public static LocalClaimsFragment getLocalClaimsFragment() {

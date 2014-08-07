@@ -163,10 +163,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
 				.getId(), vh));
 
-		System.out.println("La verita' : " + position + " " + claim.getStatus()
-				+ " " + claim.isModifiable() + " "
-				+ claim.getChallengeExpiryDate());
-
 		if (claim.getStatus().equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
 			vh.iconLocal.setVisibility(View.VISIBLE);
