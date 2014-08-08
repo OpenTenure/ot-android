@@ -108,7 +108,7 @@ public class JsonUtilities {
 
 				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
 						.getAdjacenciesNotes(claimId);
-				
+
 				if (adjacenciesNotes != null) {
 					tempClaim.setNorthAdjacency(adjacenciesNotes
 							.getNorthAdjacency());
@@ -130,8 +130,9 @@ public class JsonUtilities {
 				Claimant person = new Claimant();
 
 				person.setPhone(claim.getPerson().getContactPhoneNumber());
-				person.setBirthDate(sdf.format(claim.getPerson()
-						.getDateOfBirth()));
+				Date bDate = claim.getPerson().getDateOfBirth();
+				if (bDate != null)
+					person.setBirthDate(sdf.format(bDate));
 				person.setEmail(claim.getPerson().getEmailAddress());
 				person.setName(claim.getPerson().getFirstName());
 				person.setId(claim.getPerson().getPersonId());
@@ -179,26 +180,27 @@ public class JsonUtilities {
 
 					attachments.add(attach);
 				}
-				
+
 				List<Location> locations = new ArrayList<Location>();
-				
-				for (Iterator iterator = claim.getPropertyLocations().iterator(); iterator
-						.hasNext();){
-					
-					PropertyLocation propertyLocation = (PropertyLocation) iterator.next();
-					
+
+				for (Iterator iterator = claim.getPropertyLocations()
+						.iterator(); iterator.hasNext();) {
+
+					PropertyLocation propertyLocation = (PropertyLocation) iterator
+							.next();
+
 					Location location = new Location();
-					
+
 					location.setClaimId(propertyLocation.getClaimId());
 					location.setDescription(propertyLocation.getDescription());
-					location.setGpsLocation(PropertyLocation.gpsWKTFromPropertyLocation(propertyLocation));
-					location.setMappedLocation(PropertyLocation.mapWKTFromPropertyLocation(propertyLocation));
+					location.setGpsLocation(PropertyLocation
+							.gpsWKTFromPropertyLocation(propertyLocation));
+					location.setMappedLocation(PropertyLocation
+							.mapWKTFromPropertyLocation(propertyLocation));
 					location.setId(propertyLocation.getPropertyLocationId());
-					
+
 					locations.add(location);
 				}
-				
-				
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
 
@@ -214,8 +216,9 @@ public class JsonUtilities {
 							.getPerson(owner.getPersonId());
 
 					personJson.setAddress(personDB.getPostalAddress());
-					personJson.setBirthDate(sdf.format(personDB
-							.getDateOfBirth()));
+					Date aDate = personDB.getDateOfBirth();
+					if (aDate != null)
+						personJson.setBirthDate(sdf.format(aDate));
 					personJson.setEmail(personDB.getEmailAddress());
 					personJson.setGenderCode(personDB.getGender());
 					personJson
@@ -288,7 +291,7 @@ public class JsonUtilities {
 						.setMappedGeometry(org.fao.sola.clients.android.opentenure.model.Vertex
 								.mapWKTFromVertices(claim.getVertices()));
 				tempClaim.setAttachments(attachments);
-				
+
 				tempClaim.setLocations(locations);
 
 				tempClaim.setShares(shares);

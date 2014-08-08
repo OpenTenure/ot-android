@@ -179,17 +179,18 @@ public class SaveDownloadedClaim {
 		try {
 			// birth = df.parse(claimant.getBirthDate());
 
-			Calendar cal = JsonUtilities.toCalendar(claimant.getBirthDate());
-			birth = cal.getTime();
+			String aDate = claimant.getBirthDate();
+			if(aDate != null){
+				
+				Calendar cal = JsonUtilities.toCalendar(aDate);
+				birth = cal.getTime();
 
-			if (birth != null)
-				person.setDateOfBirth(new java.sql.Date(birth.getTime()));
-			else
-				person.setDateOfBirth(new java.sql.Date(2000, 2, 3));
-
-			// *****Qui ho un problema perche' la data di nascita puo' nn
-			// esserci.
-			// Nn ci serebbe motivo contrario*************************////
+				if (birth != null)
+					person.setDateOfBirth(new java.sql.Date(birth.getTime()));
+				else
+					person.setDateOfBirth(new java.sql.Date(2000, 2, 3));
+				
+			}
 
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block

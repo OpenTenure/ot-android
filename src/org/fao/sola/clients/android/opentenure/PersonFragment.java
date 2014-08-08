@@ -381,6 +381,7 @@ public class PersonFragment extends Fragment {
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
 				.setText(person.getFirstName());
 
+		if(person.getDateOfBirth() != null)
 		((EditText) rootView
 				.findViewById(R.id.date_of_establishment_input_field))
 				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
@@ -552,18 +553,20 @@ public class PersonFragment extends Fragment {
 				.toString());
 		person.setLastName("");
 
-		java.util.Date doe;
+		java.util.Date doe = null;
 		try {
-			doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_establishment_input_field))
-							.getText().toString());
+
+			String date = ((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.getText().toString();
+			if (date != null && !date.trim().equals(""))
+				doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return 4;
 		}
-
-		person.setDateOfBirth(new Date(doe.getTime()));
+		if (doe != null)
+			person.setDateOfBirth(new Date(doe.getTime()));
 
 		person.setPostalAddress(((EditText) rootView
 				.findViewById(R.id.postal_address_input_field)).getText()
@@ -663,8 +666,6 @@ public class PersonFragment extends Fragment {
 	}
 
 	public int updatePerson(String personId) {
-
-		
 
 		if (rootView == null)
 			rootView = OpenTenureApplication.getPersonsView();

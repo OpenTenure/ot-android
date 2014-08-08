@@ -34,41 +34,48 @@ import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class UpdateCommunityArea extends
-AsyncTask<String, Void, String>{
+public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected String doInBackground(String... arg0) {
 		// TODO Auto-generated method stub
-		
+
 		String polygon = CommunityServerAPI.getCommunityArea();
 
 		// TODO Auto-generated method stub
 		return polygon;
-	
+
 	}
-	
+
 	@Override
 	protected void onPostExecute(String polygon) {
-		
-		if(polygon != null){
+
+		if (polygon != null) {
 			try {
-				Configuration configuration = new Configuration();
-				configuration.setName("communityArea");
-				configuration.setValue(polygon);
-				
-				
-				configuration.create();
-				
-				OpenTenureApplication.getInstance().setCheckedCommunityArea(true);	
-				
+
+				Configuration configuration = Configuration
+						.getConfigurationByName("communityArea");
+
+				if (configuration != null) {
+					configuration.setValue(polygon);
+					configuration.update();
+				} else {
+					configuration = new Configuration();
+					configuration.setName("communityArea");
+					configuration.setValue(polygon);
+
+					configuration.create();
+				}
+
+				OpenTenureApplication.getInstance().setCheckedCommunityArea(
+						true);
+
 			} catch (Exception e) {
 				// TODO: handle exception
-				
-				Log.d("OpenTenure",
-						this.getClass().getName()  + e.getMessage());
+
+				Log.d("OpenTenure", this.getClass().getName() + e.getMessage());
 			}
-			
+
 		}
 	}
 

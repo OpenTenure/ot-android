@@ -283,11 +283,20 @@ public class Database {
 	public Connection getConnection() {
 
 		try {
-
+			
 			return DriverManager.getConnection(getUrl());
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			
+			Log.d(this.getClass().getName(), "getConnection first try exception" );
+			e.printStackTrace();			
+			try {
+				unlock(context);
+				return DriverManager.getConnection(getUrl());
+			} catch (Exception e2) {
+				// TODO: handle exception				
+				Log.d(this.getClass().getName(), "getConnection second try exception" );
+			}
 		}
 		return null;
 	}
