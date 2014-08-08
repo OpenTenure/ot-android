@@ -227,6 +227,7 @@ public class SaveDownloadedClaim {
 			claimDB.setName(downloadedClaim.getDescription());
 			claimDB.setLandUse(downloadedClaim.getLandUseCode());
 			claimDB.setNotes(downloadedClaim.getNotes());
+			claimDB.setRecorderName(downloadedClaim.getRecorderName());
 
 			if (downloadedClaim.getStartDate() != null) {
 				date = sdf.parse(downloadedClaim.getStartDate());
@@ -346,15 +347,14 @@ public class SaveDownloadedClaim {
 
 					personDB2.setContactPhoneNumber(person2.getPhone());
 
+					if(claimant.getBirthDate() != null){
 					Calendar cal = JsonUtilities.toCalendar(claimant
 							.getBirthDate());
 					birth = cal.getTime();
-
+					}
 					if (birth != null)
 						personDB2.setDateOfBirth(new java.sql.Date(birth
 								.getTime()));
-					else
-						personDB2.setDateOfBirth(new java.sql.Date(2000, 2, 3));
 
 					personDB2.setEmailAddress(person2.getEmail());
 					personDB2.setFirstName(person2.getName());

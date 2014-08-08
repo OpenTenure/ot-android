@@ -217,6 +217,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 				claim.setClaimNumber(res.getNr());
 
 				claim.setStatus(ClaimStatus._UNMODERATED);
+				claim.setRecorderName(OpenTenureApplication.getUsername());
 				claim.update();
 
 			} catch (Exception e) {

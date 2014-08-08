@@ -288,7 +288,7 @@ public class LocalClaimsFragment extends ListFragment {
 				String claimName = claim.getName().equalsIgnoreCase("") ? rootView
 						.getContext().getString(R.string.default_claim_name)
 						: claim.getName();
-				cto.setSlogan(claimName
+				String slogan = claimName
 						+ ", "
 						+ OpenTenureApplication.getContext().getResources()
 								.getString(R.string.by)
@@ -300,7 +300,17 @@ public class LocalClaimsFragment extends ListFragment {
 						+ OpenTenureApplication.getContext().getResources()
 								.getString(R.string.type)
 						+ ": "
-						+ new ClaimType().getDisplayValueByType(claim.getType()));
+						+ new ClaimType()
+								.getDisplayValueByType(claim.getType());
+
+				if (claim.getRecorderName() != null)
+					slogan = slogan
+							+ "\r\n"
+							+ OpenTenureApplication.getContext().getResources()
+									.getString(R.string.recordered_by) + " "
+							+ claim.getRecorderName();
+
+				cto.setSlogan(slogan);
 				cto.setId(claim.getClaimId());
 
 				if (claim.getClaimNumber() != null)

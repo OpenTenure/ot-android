@@ -46,6 +46,7 @@ import java.util.TimeZone;
 
 import android.util.Log;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Location;
@@ -105,6 +106,12 @@ public class JsonUtilities {
 				tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
 				tempClaim.setNotes(claim.getNotes());
+				if (claim.getRecorderName() != null
+						&& !claim.getRecorderName().equals(""))
+					tempClaim.setRecorderName(claim.getRecorderName());
+				else
+					tempClaim.setRecorderName(OpenTenureApplication
+							.getUsername());
 
 				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
 						.getAdjacenciesNotes(claimId);

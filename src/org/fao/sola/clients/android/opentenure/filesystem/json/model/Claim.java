@@ -98,6 +98,9 @@ public class Claim {
 
 	@SerializedName("eastAdjacency")
 	String eastAdjacency;
+	
+	@SerializedName("recorderName")
+	String recorderName;
 
 	@SerializedName("shares")
 	List<Share> shares;
@@ -285,5 +288,15 @@ public class Claim {
 	public void setLocations(List<Location> locations) {
 		this.locations = locations;
 	}
+
+	public String getRecorderName() {
+		return recorderName;
+	}
+
+	public void setRecorderName(String recorderName) {
+		this.recorderName = recorderName;
+	}
+	
+	
 
 }
