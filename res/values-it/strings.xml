@@ -105,6 +105,7 @@
     <string name="place_of_birth">Luogo di nascita</string>
     <string name="place_of_birth_label">Luogo di nascita *</string>
     <string name="date_of_establishment_label">Data di costituzione</string>
+    <string name="recordered_by">Registrato da : </string>
     <string name="mobile_phone_number">Telefono mobile</string>
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
