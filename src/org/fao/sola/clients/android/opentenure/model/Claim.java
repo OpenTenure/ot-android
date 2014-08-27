@@ -97,7 +97,7 @@ public class Claim {
 				+ ", challengingClaims="
 				// + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())
-				+ ", owners=" + Arrays.toString(owners.toArray())
+				+ ", shares=" + Arrays.toString(shares.toArray())
 				+ ", availableShares=" + availableShares + "]";
 	}
 
@@ -165,16 +165,16 @@ public class Claim {
 		this.attachments = attachments;
 	}
 
-	public List<Owner> getOwners() {
-		return owners;
+	public List<ShareProperty> getShares() {
+		return shares;
 	}
 
-	public void setOwners(List<Owner> owners) {
+	public void setShares(List<ShareProperty> shares) {
 		availableShares = MAX_SHARES_PER_CLAIM;
-		for (Owner owner : owners) {
-			availableShares -= owner.getShares();
+		for (ShareProperty share : shares) {
+			availableShares -= share.getShares();
 		}
-		this.owners = owners;
+		this.shares = shares;
 	}
 
 	public String getStatus() {
@@ -473,7 +473,7 @@ public class Claim {
 				claim.setPropertyLocations(PropertyLocation
 						.getPropertyLocations(claimId));
 				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setOwners(Owner.getOwners(claimId));
+				claim.setShares(ShareProperty.getShares(claimId));
 				claim.setAdditionalInfo(AdditionalInfo
 						.getClaimAdditionalInfo(claimId));
 				claim.setModifiable(claim.isModifiable());
@@ -556,19 +556,14 @@ public class Claim {
 		return Claim.getClaim(claimId).addOwner(personId, shares);
 	}
 
-	public static int removeOwner(String claimId, String personId) {
-		return Claim.getClaim(claimId).removeOwner(personId);
-	}
 
-	public int addOwner(String personId, int shares) {
+	public int addOwner(String personId, int shares) { //Questo e' il punto focale !!!!!!!
 
-		Owner own = new Owner(false);
-		own.setClaimId(claimId);
-		own.setPersonId(personId);
-		own.setOwnerId(personId);
-		own.setShares(shares);
+		ShareProperty share = new ShareProperty();
+		share.setClaimId(claimId);
+		share.setShares(shares);
 
-		int result = own.create();
+		int result = share.create();
 
 		if (result == 1) {
 			availableShares -= shares;
@@ -576,12 +571,12 @@ public class Claim {
 		return result;
 	}
 
-	public int removeOwner(String personId) {
+	public int removeShare(String shareId) {
 
-		Owner own = Owner.getOwner(claimId, personId);
-		int shares = own.getShares();
+		ShareProperty share = ShareProperty.getShare(shareId);
+		int shares = share.getShares();
 
-		int result = own.delete();
+		int result = share.deleteShare();
 
 		if (result == 1) {
 			availableShares += shares;
@@ -707,7 +702,7 @@ public class Claim {
 	private List<AdditionalInfo> additionalInfo;
 	private List<Claim> challengingClaims;
 	private List<Attachment> attachments;
-	private List<Owner> owners;
+	private List<ShareProperty> shares;
 	private Date challengeExpiryDate;
 	private int availableShares;
 	private String landUse;

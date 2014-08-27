@@ -46,6 +46,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -180,8 +181,8 @@ public class SaveDownloadedClaim {
 			// birth = df.parse(claimant.getBirthDate());
 
 			String aDate = claimant.getBirthDate();
-			if(aDate != null){
-				
+			if (aDate != null) {
+
 				Calendar cal = JsonUtilities.toCalendar(aDate);
 				birth = cal.getTime();
 
@@ -189,7 +190,7 @@ public class SaveDownloadedClaim {
 					person.setDateOfBirth(new java.sql.Date(birth.getTime()));
 				else
 					person.setDateOfBirth(new java.sql.Date(2000, 2, 3));
-				
+
 			}
 
 		} catch (ParseException e) {
@@ -276,16 +277,13 @@ public class SaveDownloadedClaim {
 						downloadedClaim.getMappedGeometry(),
 						downloadedClaim.getGpsGeometry());
 
-			
 			/*
 			 * Here the creation of Folder for the claim
 			 */
 
 			FileSystemUtilities.createClaimantFolder(claimant.getId());
-			FileSystemUtilities.createClaimFileSystem(downloadedClaim
-					.getId());
-			
-			
+			FileSystemUtilities.createClaimFileSystem(downloadedClaim.getId());
+
 			List<Attachment> attachments = downloadedClaim.getAttachments();
 			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 					.hasNext();) {
@@ -307,8 +305,6 @@ public class SaveDownloadedClaim {
 				org.fao.sola.clients.android.opentenure.model.Attachment
 						.createAttachment(attachmentDB);
 
-				
-
 			}
 
 			List<Location> locations = downloadedClaim.getLocations();
@@ -327,13 +323,23 @@ public class SaveDownloadedClaim {
 				int i = PropertyLocation
 						.createPropertyLocation(propertyLocation);
 
-
 			}
 
 			List<Share> shares = downloadedClaim.getShares();
 
 			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
 				Share share = (Share) iterator.next();
+
+				ShareProperty shareDB = new ShareProperty();
+
+				shareDB.setClaimId(downloadedClaim.getId());
+				shareDB.setId(share.getId());
+				shareDB.setShares(share.getNominator());
+
+				if (ShareProperty.getShare(share.getId()) == null)
+					shareDB.create();
+				else
+					shareDB.updateShare();
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Person> sharePersons = share
 						.getOwners();
@@ -347,10 +353,10 @@ public class SaveDownloadedClaim {
 
 					personDB2.setContactPhoneNumber(person2.getPhone());
 
-					if(claimant.getBirthDate() != null){
-					Calendar cal = JsonUtilities.toCalendar(claimant
-							.getBirthDate());
-					birth = cal.getTime();
+					if (claimant.getBirthDate() != null) {
+						Calendar cal = JsonUtilities.toCalendar(claimant
+								.getBirthDate());
+						birth = cal.getTime();
 					}
 					if (birth != null)
 						personDB2.setDateOfBirth(new java.sql.Date(birth
@@ -376,20 +382,12 @@ public class SaveDownloadedClaim {
 					else
 						Person.updatePerson(personDB2);
 
+					Owner ownerDB = new Owner();
+					ownerDB.setPersonId(person2.getId());
+					ownerDB.setShareId(share.getId());
+					ownerDB.create();
+
 				}
-				Owner owner = new Owner(false);
-
-				owner.setClaimId(downloadedClaim.getId());
-				owner.setId(share.getId());
-				owner.setPersonId(sharePersons.get(0).getId());
-				owner.setOwnerId(sharePersons.get(0).getId());
-				owner.setShares(share.getNominator());
-
-				if (Owner.getOwner(downloadedClaim.getId(), sharePersons.get(0)
-						.getId()) == null)
-					Owner.createOwner(owner);
-				else
-					Owner.updateOwner(owner);
 
 			}
 

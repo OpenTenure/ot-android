@@ -44,6 +44,7 @@
     <string name="title_claim__downloading_map">Scaricando i claim</string>
     <string name="title_claim_adjacencies">Adiacenze</string>
     <string name="title_claim_owners">Quote</string>
+    <string name="title_share">Quota</string>
     <string name="title_claim_challenges">Opposizioni</string>
     <string name="title_export">Esportando il Claim come file compresso</string>
     <string name="title_section">Sezione</string>
@@ -55,6 +56,7 @@
     <string name="title_activity_group">Open Tenure: Nuovo gruppo</string>
     <string name="title_activity_select_claim">Open Tenure: Selezione richiesta</string>
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
+    <string name="title_activity_share_details">Open Tenure: Dettaglio della quota</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
     <string name="title_lock_db">Cifratura dei dati locali</string>
     <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
@@ -75,6 +77,7 @@
     <string name="gender">Genere *</string>
     <string name="person_type">Tipo di persona *</string>
     <string name="claim">Richiesta</string>
+    <string name="share_value">Valore della quota : </string>
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
     <string name="adjacency">Adiacenza</string>
@@ -162,7 +165,10 @@
     <string name="message_not_supported_on_this_device">Non supportato su questo dispositivo</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>
     <string name="message_create_before_edit">Prima di aggiungere informazioni, crea una richiesta specificandone i dettagli</string>
-    <string name="message_no_available_shares">Occorre rilasciare delle quote su questa richiesta prima di aggiungere un nuovo avente diritto</string>
+    <string name="message_no_available_shares">Occorre rilasciare delle quote su questa richiesta prima di modificare il valore di questa quota</string>
+    <string name="message_no_available_shares_adding_new">Occorre rilasciare delle quote su questa richiesta prima di aggiungere una nuova quota</string>
+    <string name="message_share_saved">Quota salvata</string>
+    <string name="message_share_not_saved">Errore salvando la quota </string>
     <string name="message_already_owner">La persona detiene già una quota di questa richiesta</string>
     <string name="message_map_not_yet_draw">La mappa del claim non e\' ancora completata</string>
     <string name="message_touch_to_select_a_person">Tocca per selezionare una persona</string>

@@ -28,11 +28,12 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.util.ArrayList;
+
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.Person;
+
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -56,10 +57,10 @@ public class OwnersFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
-		
+
 		inflater.inflate(R.menu.owners, menu);
 
-		if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
 		}
 
@@ -69,79 +70,39 @@ public class OwnersFragment extends ListFragment {
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+
+		update();
+
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_new:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
-			if(claim.getAvailableShares() > 0){
+			if (claim.getAvailableShares() > 0) {
+
 				Intent intent = new Intent(rootView.getContext(),
-						SelectPersonActivity.class);
+						ShareDetailsActivity.class);
 
-				// SOLA DB cannot store the same person twice
-				
-				ArrayList<String> idsWithClaims = Person
-						.getIdsWithClaims();
+				intent.putExtra("claimId", claimActivity.getClaimId());
 
-				ArrayList<String> idsWithShares = Person
-						.getIdsWithShares();
-				
-				ArrayList<String> excludeList = new ArrayList<String>();
+				startActivityForResult(intent, 0);
 
-				excludeList.addAll(idsWithClaims);
-				excludeList.addAll(idsWithShares);
-
-				intent.putStringArrayListExtra(
-						SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-						excludeList);
-
-				startActivityForResult(
-						intent,
-						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
-			}else{
-				Toast toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_no_available_shares,
-								Toast.LENGTH_SHORT);
+			} else {
+				Toast toast = Toast.makeText(rootView.getContext(),
+						R.string.message_no_available_shares_adding_new,
+						Toast.LENGTH_LONG);
 				toast.show();
 			}
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-		if (data != null) { // No selection has been done
-
-			switch (requestCode) {
-			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
-				String personId = data
-				.getStringExtra(PersonActivity.PERSON_ID_KEY);
-				String claimId = claimActivity.getClaimId();
-				
-				if(claimId != null){
-
-					Claim claim = Claim.getClaim(claimId);
-					Owner owner = Owner.getOwner(claimId, personId);
-					
-					if(owner != null){
-						Toast
-						.makeText(rootView.getContext(),
-								R.string.message_already_owner,
-								Toast.LENGTH_LONG).show();
-					}else{
-						claim.addOwner(personId, claim.getAvailableShares());
-					}
-				}
-
-				update();
-				break;
-			}
 		}
 
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -170,43 +131,46 @@ public class OwnersFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.owners_list, container,
-				false);
+		rootView = inflater.inflate(R.layout.share_list, container, false);
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 		update();
 
 		return rootView;
 	}
-	
+
 	protected void update() {
 
 		String claimId = claimActivity.getClaimId();
-		
-		if(claimId != null){
+
+		if (claimId != null) {
 
 			Claim claim = Claim.getClaim(claimId);
 
-			List<Owner> owners = claim.getOwners();
-			List<OwnersListTO> ownersListTOs = new ArrayList<OwnersListTO>();
+			List<ShareProperty> shares = claim.getShares();
+			List<SharesListTO> sharesListTOs = new ArrayList<SharesListTO>();
 
-			for(Owner owner : owners){
-				
-				Person person = Person.getPerson(owner.getPersonId());
-				
-				OwnersListTO olto = new OwnersListTO();
-				olto.setSlogan(person.getFirstName()+ " " + person.getLastName());
-				olto.setId(person.getPersonId());
-				olto.setShares(owner.getShares());
-				ownersListTOs.add(olto);
+			int i = 0;
+			for (ShareProperty share : shares) {
+
+				SharesListTO olto = new SharesListTO();
+
+				olto.setSlogan(getString(R.string.title_share) + " " + ++i
+						+ " : " + share.getShares() + "/100");
+				olto.setId(share.getId());
+				olto.setShares(share.getShares());
+				sharesListTOs.add(olto);
+
 			}
 
-			ArrayAdapter<OwnersListTO> adapter = null;
+			ArrayAdapter<SharesListTO> adapter = null;
 
-			if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
-				adapter = new OwnersListAdapter(rootView.getContext(), ownersListTOs, claim.getClaimId(), true);
-			}else{
-				adapter = new OwnersListAdapter(rootView.getContext(), ownersListTOs, claim.getClaimId(), false);
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+				adapter = new SharesListAdapter(rootView.getContext(),
+						sharesListTOs, claim.getClaimId(), true);
+			} else {
+				adapter = new SharesListAdapter(rootView.getContext(),
+						sharesListTOs, claim.getClaimId(), false);
 			}
 
 			setListAdapter(adapter);

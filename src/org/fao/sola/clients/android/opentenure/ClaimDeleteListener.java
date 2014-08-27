@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.WithdrawClaimTask;
@@ -128,11 +129,11 @@ public class ClaimDeleteListener implements OnClickListener {
 								public void onClick(View v) {
 									// TODO Auto-generated method stub
 
-									List<Owner> list = Owner.getOwners(claimId);
+									List<ShareProperty> list = ShareProperty.getShares(claimId);
 									for (Iterator iterator = list.iterator(); iterator
 											.hasNext();) {
-										Owner owner = (Owner) iterator.next();
-										owner.delete();
+										ShareProperty share = (ShareProperty) iterator.next();
+										share.deleteShare();
 									}
 
 									List<Vertex> vertexList = claim
@@ -258,12 +259,25 @@ public class ClaimDeleteListener implements OnClickListener {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
+							
+							
 
-							List<Owner> list = Owner.getOwners(claimId);
+							List<ShareProperty> list = ShareProperty.getShares(claimId);
 							for (Iterator iterator = list.iterator(); iterator
 									.hasNext();) {
-								Owner owner = (Owner) iterator.next();
-								owner.delete();
+								ShareProperty share = (ShareProperty) iterator.next();
+								
+								
+								List<Owner> owers = Owner.getOwners(share.getId());
+								
+								for (Iterator iterator2 = owers.iterator(); iterator2
+										.hasNext();) {
+									Owner owner = (Owner) iterator2.next();
+									owner.delete();
+									
+								}
+								
+								share.deleteShare();
 							}
 
 							List<Vertex> vertexList = claim.getVertices();

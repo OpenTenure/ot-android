@@ -44,6 +44,7 @@
     <string name="title_claim__downloading_map">Downloading Claim</string>
     <string name="title_claim_adjacencies">Adjacencies</string>
     <string name="title_claim_owners">Shares</string>
+    <string name="title_share">Share</string>
     <string name="title_claim_challenges">Challenges</string>
     <string name="title_export">Exporting Claim as compressed file</string>
     <string name="title_section">Section</string>
@@ -55,6 +56,7 @@
     <string name="title_activity_group">Open Tenure: New group</string>
     <string name="title_activity_select_claim">Open Tenure: Select claim</string>
     <string name="title_activity_select_person">Open Tenure: Select person</string>
+    <string name="title_activity_share_details">Open Tenure: Share details</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
@@ -76,6 +78,7 @@
     <string name="person_type">Person Type *</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
+    <string name="share_value">Value of the share : </string>
     <string name="additional_info">Additional information</string>
     <string name="adjacency">Adjacency</string>
     <string name="adjacencies">Adjacencies</string>
@@ -162,7 +165,10 @@
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
     <string name="message_map_not_yet_draw">The map of the claim is not yet complete</string>
-    <string name="message_no_available_shares">Free some shares on this claim before adding a right owner</string>
+    <string name="message_no_available_shares">Free some shares on this claim before modify the value of this share </string>
+    <string name="message_no_available_shares_adding_new">Free some shares on this claim before ading a new share </string>
+    <string name="message_share_saved">Share saved</string>
+    <string name="message_share_not_saved">Error saving share </string>
 	<string name="message_already_owner">The selected person already shares this claim</string>
     <string name="message_touch_to_select_a_person">Touch to select a person</string>
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>

@@ -38,35 +38,51 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-public class Owner {
-
-	String shareId;
-	String personId;
-
-	Database db = OpenTenureApplication.getInstance().getDatabase();
+public class ShareProperty {
 
 	@Override
 	public String toString() {
-		return "Owner [shareId=" + shareId + ", personId=" + personId + "]";
+		return "ShareProperty [id=" + id + ", claimId=" + claimId + ", shares=" + shares + "]";
 	}
 
-	public String getShareId() {
-		return shareId;
+	public String getClaimId() {
+		return claimId;
 	}
 
-	public void setShareId(String shareId) {
-		this.shareId = shareId;
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
 	}
 
-	public String getPersonId() {
-		return personId;
+
+	public int getShares() {
+		return shares;
 	}
 
-	public void setPersonId(String personId) {
-		this.personId = personId;
+	public void setShares(int shares) {
+		this.shares = shares;
 	}
 
-	public static int createOwner(Owner owner) {
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	String claimId;
+	int shares;
+	String id;
+
+	Database db = OpenTenureApplication.getInstance().getDatabase();
+
+	public ShareProperty() {
+
+			this.id = UUID.randomUUID().toString();
+	}
+
+	public static int createShare(ShareProperty share) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -76,10 +92,10 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO OWNER(SHARE_ID,PERSON_ID) VALUES (?,?)");
-			statement.setString(1, owner.getShareId());
-			statement.setString(2, owner.getPersonId());
-
+					.prepareStatement("INSERT INTO SHARE(ID,CLAIM_ID, SHARES) VALUES (?,?,?)");
+			statement.setString(1, share.getId());
+			statement.setString(2, share.getClaimId());
+			statement.setBigDecimal(3, new BigDecimal(share.getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -109,16 +125,16 @@ public class Owner {
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
+			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO OWNER(SHARE_ID,PERSON_ID) VALUES (?,?)");
-			statement.setString(1, shareId);
-			statement.setString(2, personId);
-
+					.prepareStatement("INSERT INTO SHARE(ID, CLAIM_ID, SHARES) VALUES (?,?,?)");
+			statement.setString(1, getId());
+			statement.setString(2, getClaimId());			
+			statement.setBigDecimal(3, new BigDecimal(getShares()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
+
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
@@ -138,7 +154,7 @@ public class Owner {
 		return result;
 	}
 
-	public static int deleteOwner(Owner owner) {
+	public static int updateShare(ShareProperty share) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -148,13 +164,12 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE OWNER WHERE SHARE_ID=? AND PERSON_ID=? ");
-			statement.setString(1, owner.getShareId());
-			statement.setString(2, owner.getPersonId());
+					.prepareStatement("UPDATE SHARE SET SHARES=? WHERE ID=? ");
+			statement.setBigDecimal(1, new BigDecimal(share.getShares()));
+			statement.setString(2, share.getId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
@@ -174,7 +189,42 @@ public class Owner {
 		return result;
 	}
 
-	public int delete() {
+	public int updateShare() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE SHARE SET SHARES=? WHERE ID=?");
+			statement.setBigDecimal(1, new BigDecimal(shares));
+			statement.setString(2, id);
+			
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int deleteShare(ShareProperty share) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -184,9 +234,8 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE OWNER WHERE SHARE_ID=? AND PERSON_ID=? ");
-			statement.setString(1, shareId);
-			statement.setString(2, personId);
+					.prepareStatement("DELETE SHARE WHERE ID=? ");
+			statement.setString(1, share.getId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -210,8 +259,50 @@ public class Owner {
 		return result;
 	}
 
-	public static List<Owner> getOwners(String shareId) {
-		List<Owner> ownersList = new ArrayList<Owner>();
+	public int deleteShare() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			
+			statement = localConnection
+					.prepareStatement("DELETE OWNER WHERE SHARE_ID=?");
+			statement.setString(1, id);
+			result = statement.executeUpdate();
+			statement.close();
+			
+			statement = localConnection
+					.prepareStatement("DELETE SHARE WHERE ID=?");
+			statement.setString(1, id);
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static List<ShareProperty> getShares(String claimId) {
+		List<ShareProperty> shareList = new ArrayList<ShareProperty>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -221,15 +312,15 @@ public class Owner {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWNER.PERSON_ID FROM OWNER WHERE OWNER.SHARE_ID=? ORDER BY SHARE_ID");
-			statement.setString(1, shareId);
+					.prepareStatement("SELECT SHARE.ID, SHARE.CLAIM_ID, SHARE.SHARES FROM SHARE WHERE SHARE.CLAIM_ID=? ORDER BY SHARE.ID");
+			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				Owner owner = new Owner();
-				owner.setPersonId(rs.getString(1));
-				owner.setShareId(shareId);
-
-				ownersList.add(owner);
+				ShareProperty share = new ShareProperty();
+				share.setId(rs.getString(1));
+				share.setClaimId(claimId);
+				share.setShares(rs.getBigDecimal(3).intValue());
+				shareList.add(share);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -255,30 +346,31 @@ public class Owner {
 				}
 			}
 		}
-		return ownersList;
+		return shareList;
 	}
 
-	public static Owner getOwner(String personId, String shareId) {
-		Owner owner = null;
+	public static ShareProperty getShare(String id) {
+
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
+		ShareProperty share = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT OWNER.PERSON_ID, OWNER.SHARE_ID FROM OWNER WHERE OWNER.PERSON_ID=? AND OWNER.SHARE_ID IN (SELECT SHARE_ID FROM SHARE WHERE CLAIM_ID =?)");
-			statement.setString(1, personId);
-			statement.setString(2, shareId);
+					.prepareStatement("SELECT SHARE.ID, SHARE.CLAIM_ID, SHARE.SHARES FROM SHARE WHERE SHARE.ID=?");
+			statement.setString(1, id);
+			
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				owner = new Owner();
-				owner.setPersonId(rs.getString(1));
-				owner.setShareId(rs.getString(2));
-
 				
+				share = new ShareProperty();
+				share.setId(rs.getString(1));
+				share.setClaimId(rs.getString(2));
+				share.setShares(rs.getBigDecimal(3).intValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -304,7 +396,8 @@ public class Owner {
 				}
 			}
 		}
-		return owner;
+		return share;
 	}
 
+	
 }

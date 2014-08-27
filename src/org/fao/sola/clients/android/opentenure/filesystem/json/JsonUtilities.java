@@ -43,6 +43,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import android.util.Log;
 
@@ -56,6 +57,7 @@ import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 
 import com.google.gson.FieldNamingPolicy;
@@ -211,60 +213,76 @@ public class JsonUtilities {
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share> shares = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Share>();
 
-				List<Owner> owners = Owner.getOwners(claimId);
+				List<ShareProperty> sharesDB = ShareProperty.getShares(claimId);
 
-				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
-					Owner owner = (Owner) iterator.next();
+				for (Iterator iterator = sharesDB.iterator(); iterator
+						.hasNext();) {
+					ShareProperty shareDB = (ShareProperty) iterator.next();
 
 					Share share = new Share();
 
-					Person personJson = new Person();
-					org.fao.sola.clients.android.opentenure.model.Person personDB = org.fao.sola.clients.android.opentenure.model.Person
-							.getPerson(owner.getPersonId());
-
-					personJson.setAddress(personDB.getPostalAddress());
-					Date aDate = personDB.getDateOfBirth();
-					if (aDate != null)
-						personJson.setBirthDate(sdf.format(aDate));
-					personJson.setEmail(personDB.getEmailAddress());
-					personJson.setGenderCode(personDB.getGender());
-					personJson
-							.setPhysicalPerson(personDB
-									.getPersonType()
-									.equals(org.fao.sola.clients.android.opentenure.model.Person._PHYSICAL));
-
-					if (claim.getPerson().getPersonId()
-							.equals(personDB.getPersonId()))
-						personJson.setId(owner.getOwnerId()); // This trick is
-																// to
-																// permit a
-																// claimant
-																// to be also
-																// owner
-																// . When the
-																// issue
-																// will be
-																// resolved
-																// on SOLA
-																// ----->
-																// personJson.setId(personDB.getPersonId());
-
-					else
-						personJson.setId(personDB.getPersonId());
-					personJson.setMobilePhone(personDB.getMobilePhoneNumber());
-					personJson.setLastName(personDB.getLastName());
-					personJson.setName(personDB.getFirstName());
-					personJson.setPhone(personDB.getContactPhoneNumber());
-					personJson.setIdNumber(personDB.getIdNumber());
-					personJson.setIdTypeCode(personDB.getIdType());
+					List<Owner> owners = Owner.getOwners(shareDB.getId());
 
 					List<Person> ownersJson = new ArrayList<Person>();
-					ownersJson.add(personJson);
+
+					for (Iterator iterator2 = owners.iterator(); iterator2
+							.hasNext();) {
+
+						Person personJson = new Person();
+						Owner ownerDB = (Owner) iterator2.next();
+
+						org.fao.sola.clients.android.opentenure.model.Person personDB = org.fao.sola.clients.android.opentenure.model.Person
+								.getPerson(ownerDB.getPersonId());
+
+						personJson.setAddress(personDB.getPostalAddress());
+						Date aDate = personDB.getDateOfBirth();
+						if (aDate != null)
+							personJson.setBirthDate(sdf.format(aDate));
+						personJson.setEmail(personDB.getEmailAddress());
+						personJson.setGenderCode(personDB.getGender());
+						personJson
+								.setPhysicalPerson(personDB
+										.getPersonType()
+										.equals(org.fao.sola.clients.android.opentenure.model.Person._PHYSICAL));
+
+						if (claim.getPerson().getPersonId()
+								.equals(personDB.getPersonId()))
+							personJson.setId(UUID.randomUUID().toString()); // This
+																			// trick
+						// is
+						// to
+						// permit a
+						// claimant
+						// to be
+						// also
+						// owner
+						// . When
+						// the
+						// issue
+						// will be
+						// resolved
+						// on SOLA
+						// ----->
+						// personJson.setId(personDB.getPersonId());
+
+						else
+							personJson.setId(personDB.getPersonId());
+						personJson.setMobilePhone(personDB
+								.getMobilePhoneNumber());
+						personJson.setLastName(personDB.getLastName());
+						personJson.setName(personDB.getFirstName());
+						personJson.setPhone(personDB.getContactPhoneNumber());
+						personJson.setIdNumber(personDB.getIdNumber());
+						personJson.setIdTypeCode(personDB.getIdType());
+
+						ownersJson.add(personJson);
+
+					}
 
 					share.setOwners(ownersJson);
-					share.setId("" + owner.getId());
+					share.setId("" + shareDB.getId());
 
-					share.setNominator(owner.getShares());
+					share.setNominator(shareDB.getShares());
 					share.setDenominator(100);
 
 					shares.add(share);

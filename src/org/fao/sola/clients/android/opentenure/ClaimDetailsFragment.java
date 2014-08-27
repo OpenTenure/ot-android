@@ -47,6 +47,7 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
@@ -659,7 +660,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		}
 
-		if (createPersonAsOwner(person, claim.getPerson().getPersonId()) == 0)
+		if (createPersonAsOwner(person) == 0)
 			return 0;
 
 		claim.setPerson(person);
@@ -830,51 +831,51 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	public int createPersonAsOwner(Person claimant, String oldClaimantId) {
-		try {
-			int share = 0;
-
-			Owner toDelete = Owner.getOwner(claimActivity.getClaimId(),
-					oldClaimantId);
-
-			if (toDelete != null) {
-				share = toDelete.getShares();
-
-				toDelete.delete();
-			} else {
-
-				List<Owner> owners = Claim.getClaim(claimActivity.getClaimId())
-						.getOwners();
-				int sum = 0;
-
-				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
-
-					Owner owner = (Owner) iterator.next();
-					sum = sum + owner.getShares();
-				}
-
-				share = 100 - sum;
-			}
-
-			Owner owner = new Owner(true);
-
-			owner.setClaimId(claimActivity.getClaimId());
-			owner.setPersonId(claimant.getPersonId());
-			owner.setShares(share);
-
-			owner.create();
-
-			return 1;
-
-		} catch (Exception e) {
-			Log.d("Details", "An error " + e.getMessage());
-
-			e.printStackTrace();
-
-			return 0;
-		}
-
-	}
+//	public int createPersonAsOwner(Person claimant, String oldClaimantId) {
+//		try {
+//			int share = 0;
+//
+//			ShareProperty toDelete = ShareProperty.getOwner(claimActivity.getClaimId(),
+//					oldClaimantId);
+//
+//			if (toDelete != null) {
+//				share = toDelete.getShares();
+//
+//				toDelete.delete();
+//			} else {
+//
+//				List<ShareProperty> owners = Claim.getClaim(claimActivity.getClaimId())
+//						.getOwners();
+//				int sum = 0;
+//
+//				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
+//
+//					ShareProperty owner = (ShareProperty) iterator.next();
+//					sum = sum + owner.getShares();
+//				}
+//
+//				share = 100 - sum;
+//			}
+//
+//			ShareProperty owner = new ShareProperty(true);
+//
+//			owner.setClaimId(claimActivity.getClaimId());
+//			owner.setPersonId(claimant.getPersonId());
+//			owner.setShares(share);
+//
+//			owner.create();
+//
+//			return 1;
+//
+//		} catch (Exception e) {
+//			Log.d("Details", "An error " + e.getMessage());
+//
+//			e.printStackTrace();
+//
+//			return 0;
+//		}
+//
+//	}
 
 	public boolean checkChanges() {
 
@@ -1029,13 +1030,22 @@ public class ClaimDetailsFragment extends Fragment {
 	public int createPersonAsOwner(Person claimant) {
 		try {
 
-			Owner owner = new Owner(true);
+			ShareProperty share = new ShareProperty();
+			
+			share.setClaimId(claimActivity.getClaimId());
+			share.setShares(100);
 
-			owner.setClaimId(claimActivity.getClaimId());
-			owner.setPersonId(claimant.getPersonId());
-			owner.setShares(100);
-
+			share.create();
+			
+			Person claimantCopy = claimant.copy();
+			claimantCopy.create();
+			
+			Owner owner =  new Owner();
+			owner.setPersonId(claimantCopy.getPersonId());
+			owner.setShareId(share.getId());
+			
 			owner.create();
+			
 
 			return 1;
 

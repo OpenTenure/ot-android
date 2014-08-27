@@ -69,6 +69,8 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+		
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_person);
@@ -77,10 +79,13 @@ public class SelectPersonActivity extends FragmentActivity implements ModeDispat
 		mViewPager = (ViewPager) findViewById(R.id.person_pager);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
+		
+		
 
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
+		
 		if (savedInstanceState != null
 				&& savedInstanceState.getStringArrayList(EXCLUDE_PERSON_IDS_KEY) != null) {
 			excludePersonIds = savedInstanceState.getStringArrayList(EXCLUDE_PERSON_IDS_KEY);

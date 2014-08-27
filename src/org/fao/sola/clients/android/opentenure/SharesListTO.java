@@ -27,7 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-public class OwnersListTO {
+public class SharesListTO {
 
 	public String getId() {
 		return id;
@@ -48,7 +48,17 @@ public class OwnersListTO {
 		this.shares = shares;
 	}
 	
+	public int getOwners_num() {
+		return owners_num;
+	}
+	public void setOwners_num(int owners_num) {
+		this.owners_num = owners_num;
+	}
+
+
+
 	private String id;
 	private String slogan;
 	private int shares;
+	private int owners_num;
 }

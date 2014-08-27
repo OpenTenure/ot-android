@@ -29,182 +29,97 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
 
+
+
+
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.ViewManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class OwnersListAdapter extends ArrayAdapter<OwnersListTO> {
+public class OwnersListAdapter extends ArrayAdapter<String>{
+	
+	private static int resource;
 	private final Context context;
-	private List<OwnersListTO> owners;
+	private List<String> owners;
 	private LayoutInflater inflater;
-	private int availableShares;
-	private boolean readOnly;
-	private String claimId;
+	private Claim claim;
 
-	public OwnersListAdapter(Context context, List<OwnersListTO> owners, String claimId, boolean readOnly) {
-		super(context, R.layout.owners_list_item, owners);
+	public OwnersListAdapter(Context context, List<String> owners, String claimId) {
+		super(context, resource, owners);
+		// TODO Auto-generated constructor stub
 		this.context = context;
+		this.owners = owners;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.owners = owners;
-		this.readOnly = readOnly;
-		this.claimId = claimId;
-		setAvailableShares();
+		this.claim = Claim.getClaim(claimId);
 	}
 	
-	private void setAvailableShares(){
-		this.availableShares = Claim.MAX_SHARES_PER_CLAIM;
-		for(OwnersListTO owner: owners){
-			availableShares -= owner.getShares();
-		}
-	}
 	
 	static class ViewHolder {
-		TextView id;
+		
 		TextView slogan;
-		Spinner shares;
+		TextView id;		
 		ImageView picture;
 		ImageView removeIcon;
 	}
-
+	
+	
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
+		
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.owners_list_item,
+			convertView = inflater.inflate(R.layout.owner_list_item,
 					parent, false);
 			vh = new ViewHolder();
-			vh.slogan = (TextView) convertView.findViewById(R.id.owner_slogan);
-			vh.id = (TextView) convertView.findViewById(R.id.owner_id);
-			vh.picture = (ImageView) convertView
-					.findViewById(R.id.owner_picture);
-			vh.shares = (Spinner) convertView.findViewById(R.id.owner_shares);
+			vh.slogan = (TextView) convertView.findViewById(R.id.person_slogan);			
+			vh.id = (TextView) convertView.findViewById(R.id.person_id);
 			vh.removeIcon = (ImageView) convertView
-					.findViewById(R.id.remove_icon);
+					.findViewById(R.id.remove_person);
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
 		}
-		vh.slogan.setText(owners.get(position).getSlogan());
-		vh.slogan.setOnClickListener(new OnClickListener(){
+		
+		Person person = Person.getPerson(owners.get(position));
+		vh.slogan.setText(person.getFirstName() + " "+ person.getLastName() );
+		vh.id.setText(owners.get(position));
+		
+		vh.removeIcon.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(context,
-						PersonActivity.class);
-				intent.putExtra(PersonActivity.PERSON_ID_KEY, owners.get(position).getId());
-				intent.putExtra(PersonActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
-				context.startActivity(intent);
-			}
-			
-		});
-
-		int shares = owners.get(position).getShares();
-		String personId = owners.get(position).getId();
-
-		if(shares >= 1){
-			vh.shares.setSelection(shares-1);
-		}
-
-		vh.shares.setEnabled(!readOnly);
-		vh.shares.setFocusable(!readOnly);
-		vh.shares.setOnItemSelectedListener(new OnItemSelectedListener(){
-
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int pos,long id) {
-				int shares = pos+1;
-				owners.get(position).setShares(shares);
-				Owner own = Owner.getOwner(claimId, owners.get(position).getId());
-				if(shares > own.getShares() + availableShares){
-					Toast.makeText(context,
-							R.string.message_no_available_shares,
-							Toast.LENGTH_SHORT).show();
-					((Spinner)view.getParent()).setSelection(own.getShares()-1);
-					
-				}else{
-					own.setShares(shares);
-					own.updateOwner();
-					setAvailableShares();
-					notifyDataSetChanged();
-				}
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				// Do nothing
+				
+				owners.remove(position);
+				notifyDataSetChanged();
+				
+				
 			}});
-
-		vh.id.setTextSize(8);
-		vh.id.setText(personId);
-		vh.picture.setImageBitmap(Person.getPersonPicture(
-				context,
-				Person.getPersonPictureFile(personId), 96));
-		if(!readOnly){
-			vh.removeIcon.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					AlertDialog.Builder removeOwnerDialog = new AlertDialog.Builder(
-							context);
-					removeOwnerDialog
-							.setTitle(R.string.action_remove_owner);
-					removeOwnerDialog.setMessage(owners.get(position).getSlogan()
-							+ ": "
-							+ context.getResources().getString(
-									R.string.message_remove_owner));
-
-					removeOwnerDialog.setPositiveButton(
-							R.string.confirm,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									Owner.getOwner(claimId, owners.get(position).getId())
-											.delete();
-									owners.remove(position);
-									Toast.makeText(context,
-											R.string.owner_removed,
-											Toast.LENGTH_SHORT).show();
-									setAvailableShares();
-									notifyDataSetChanged();
-								}
-							});
-					removeOwnerDialog.setNegativeButton(R.string.cancel,
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
-
-					removeOwnerDialog.show();
-
-				}
-			});
-		}else{
-			((ViewManager)convertView).removeView(vh.removeIcon);
+		
+		if (!claim.getStatus().equals(ClaimStatus._CREATED)
+				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
+				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+			
+			vh.removeIcon.setVisibility(View.INVISIBLE);
+			
 		}
-
-		return convertView;
+	
+	
+	return convertView;
+	
 	}
+	
+
 }
