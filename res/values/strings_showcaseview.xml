@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="action_showcase">View Tutorial</string>
+    <string name="showcase_main_title">What is Open Tenure ?</string>
+    <string name="showcase_main_message">
+        									\n• To facilitate community recording of tenure rights using crowd sourcing approach
+											\n• Mobile Device software for field capture and display of tenure rights and associated reference map imagery
+											\n• Web based Community Server for community moderation of tenure claims community accessible     </string>
+    <string name="showcase_main_message2">First step\'s style</string>
+    <string name="showcase_claim_title">Claim Details</string>
+    <string name="showcase_news_message">First step\'s style</string>
+    <string name="showcase_map_message">\n Maps the extent of the tenure rights using the mobile device 
+                                           and the downloaded map imagery assisted with GPS positions provided by mobile device. 
+                                        \n When complete a map of the claim can be generated and added to the claim
+    </string>
+    <string name="showcase_persons_message">\n Details about the person making the claim on behalf of others or themselves 
+                                               including  name, date of birth, gender, ID details and photo
+    </string>
+    <string name="showcase_claims_message">\n• Shows the list of SLTR Claims
+										   \n• Each claim has a lifecycle and transition to different states as the claim is processed
+										   \n• A claim can be selected from the list to enter/see details on claim and mark up the extent of the tenure rights
+										   \n• A new claim can be entered by clicking
+    </string>
+    <string name="showcase_claim_select_message"> \n \n \n 
+        										 Select an existing Claim from the list to edit its details or ...
+    </string>
+    <string name="showcase_claim_message"> \n Details about Claim including name, 
+                                              tenure right, land use, date that right started and any notes about the claim
+    </string>
+    <string 
+        name="showcase_actionNews_message"> \n Search Icon 
+        										\n Lock Icon
+        										\n Setting Icon
+           
+    </string>
+    <string name="showcase_actionMap_message"> \n Locate Icon
+        										\n Download Claims Icon
+        										
+    </string>
+    <string name="showcase_actionPersons_message"> \n Add Person Icon
+        										
+    </string>
+    <string name="showcase_actionClaims_message"> \n Click on the Add Claim Icon to add new claim 
+        										 </string>
+    
+    <string name="showcase_actionClaimDetails_message"> \n Save Icon
+        										\n Upload Icon
+        										\n Print Icon
+    </string>
+    <string name="showcase_actionClaimMap_message"> \n Rotate Icon
+        										\n Center Icon
+        										\n Attach Snapshot Icon
+    </string>
+    
+    <string name="next">Next</string>
+    <string name="close">Close</string>
+    <string name="skip">Skip</string>
+    <string name="ok">OK</string>
+    
+</resources>

@@ -31,9 +31,16 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.amlcurran.showcaseview.ApiUtils;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -43,9 +50,13 @@ import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 
 public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
-		ModeDispatcher, ClaimListener, MapFragmentListener {
+		ModeDispatcher, ClaimListener, MapFragmentListener
+		// SHOWCASE INTERFACE
+		, OnShowcaseEventListener, View.OnClickListener {
 
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
@@ -57,6 +68,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	PagerSlidingTabStrip tabs;
 	private int mapFragmentId;
 	SparseArray<Fragment> fragmentReferences = new SparseArray<Fragment>();
+
+	// SHOWCASE Variables
+	ShowcaseView sv;
+	private int counter = 0;
+	private final ApiUtils apiUtils = new ApiUtils();
+	public static final String FIRST_RUN_CLAIM_ACTIVITY = "__FIRST_RUN_CLAIM_ACTIVITY__";
+
+	// END SHOW CASE
 
 	@Override
 	public void onDestroy() {
@@ -104,6 +123,29 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	}
 
+	private String getFirstRun() {
+		String result = "False";
+		Configuration firstRun = Configuration
+				.getConfigurationByName(FIRST_RUN_CLAIM_ACTIVITY);
+
+		if (firstRun != null) {
+			result = firstRun.getValue();
+			firstRun.setValue("False");
+			firstRun.update();
+		} else {
+			firstRun = new Configuration();
+			firstRun.setName(FIRST_RUN_CLAIM_ACTIVITY);
+			firstRun.setValue("False");
+			firstRun.create();
+			result = "True";
+		}
+		// TODO THIS ROW MUST BE DELETED BEFORE PUSHING - IT IS USED FOR TESTING
+		// result = "True";
+		// System.out.println("QUI RESULT::  "+result);
+		// System.out.println("QUI firstRun.getValue()::  "+firstRun.getValue());
+		return result;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 
@@ -137,7 +179,192 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setClaimId(intentClaimId);
 
 		}
+
+		// ShowCase Main
+		if (getFirstRun().contentEquals("True")) {
+			sv = new ShowcaseView.Builder(this, true).setTarget(Target.NONE)
+					.setContentTitle(getString(R.string.showcase_claim_title))
+					.setContentText(getString(R.string.showcase_claim_message))
+					.setStyle(R.style.CustomShowcaseTheme)
+					.setOnClickListener(this).build();
+			sv.setButtonText(getString(R.string.next));
+			sv.setSkipButtonText(getString(R.string.skip));
+			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
+					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
+					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
+					mViewPager);
+		}
+
 	}
+
+	private void setAlpha(float alpha, View... views) {
+		if (apiUtils.isCompatWithHoneycomb()) {
+			for (View view : views) {
+				view.setAlpha(alpha);
+			}
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		if (v.toString().indexOf("skip") > 0) {
+			sv.hide();
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0), tabs
+					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
+					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
+					tabs, mViewPager);
+			counter = 0;
+		}
+		switch (counter) {
+		case 0:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+			sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
+			sv.setContentText("ECCO PRIMO TAB");
+			mViewPager.setCurrentItem(0);
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
+			break;
+
+		case 1:
+			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
+					true);
+			sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
+			break;
+		case 2:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
+			sv.setContentTitle(getString(R.string.title_claim_map)
+					.toUpperCase());
+			sv.setContentText("ECCO SECONDO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
+			mViewPager.setCurrentItem(1);
+			break;
+		case 3:
+			sv.setShowcase(new ViewTarget(
+					findViewById(R.id.action_center_and_follow)), true);
+			sv.setContentTitle("  ");
+			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
+			break;
+
+		case 4:
+			sv.setShowcase(new ViewTarget(mViewPager), true);
+			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
+			mViewPager.setCurrentItem(1);
+			break;
+		case 5:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
+			sv.setContentTitle(getString(R.string.title_claim_documents)
+					.toUpperCase());
+			sv.setContentText("ECCO TERZO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
+			mViewPager.setCurrentItem(2);
+			break;
+		case 6:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
+			sv.setContentTitle(getString(R.string.title_claim_additional_info)
+					.toUpperCase());
+			sv.setContentText("ECCO TERZO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
+			mViewPager.setCurrentItem(3);
+			break;
+		case 7:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
+			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
+					.toUpperCase());
+			sv.setContentText("ECCO TERZO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
+			mViewPager.setCurrentItem(4);
+			break;
+		case 8:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
+			sv.setContentTitle(getString(R.string.title_claim_challenges)
+					.toUpperCase());
+			sv.setContentText("ECCO TERZO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
+			mViewPager.setCurrentItem(5);
+			break;
+		case 9:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(6)), true);
+			sv.setContentTitle(getString(R.string.title_claim_owners)
+					.toUpperCase());
+			sv.setContentText("ECCO QUARTO TAB");
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(6));
+			mViewPager.setCurrentItem(6);
+			break;
+		case 10:
+			sv.setShowcase(new ViewTarget(mViewPager.getChildAt(0)), true);
+			sv.setContentTitle(("ELEMENTI DELLA LISTA"));
+			sv.setContentText("ECCO QUARTO TAB");
+			setAlpha(1.0f, mViewPager.getChildAt(0));
+			sv.setButtonText(getString(R.string.close));
+			mViewPager.setCurrentItem(0);
+			break;
+		case 11:
+			sv.hide();
+			setAlpha(1.0f, tabs, mViewPager);
+			counter = 0;
+			break;
+		}
+
+		counter++;
+	}
+
+	@Override
+	public void onShowcaseViewHide(ShowcaseView showcaseView) {
+		// if (apiUtils.isCompatWithHoneycomb()) {
+		// listView.setAlpha(1f);
+		// }
+		// buttonBlocked.setText(R.string.button_show);
+		// //buttonBlocked.setEnabled(false);
+	}
+
+	@Override
+	public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+	}
+
+	@Override
+	public void onShowcaseViewShow(ShowcaseView showcaseView) {
+		// dimView(listView);
+		// buttonBlocked.setText(R.string.button_hide);
+		// //buttonBlocked.setEnabled(true);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_showcase:
+			// ShowCase Tutorial
+			sv = new ShowcaseView.Builder(this, true).setTarget(Target.NONE)
+					.setContentTitle(getString(R.string.showcase_main_title))
+					.setContentText(getString(R.string.showcase_main_message))
+					.setStyle(R.style.CustomShowcaseTheme)
+					.setOnClickListener(this).build();
+			sv.setButtonText(getString(R.string.next));
+			sv.setSkipButtonText(getString(R.string.skip));
+			mViewPager.setCurrentItem(0);
+			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
+					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
+					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
+					tabs.getTabsContainer().getChildAt(6),
+					mViewPager);
+
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	// END SHOWCASE
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
