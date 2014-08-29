@@ -323,27 +323,27 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					OpenTenurePreferencesActivity.class);
 			startActivityForResult(intent, 0);
 			return true;
-		case R.id.action_showcase:
-			
-			// ShowCase Tutorial
-				sv = new ShowcaseView.Builder(this, true)
-						.setTarget(Target.NONE)
-						.setContentTitle(
-								getString(R.string.showcase_main_title))
-						.setContentText(
-								getString(R.string.showcase_main_message))
-						.setStyle(R.style.CustomShowcaseTheme)
-						.setOnClickListener(this).build();
-				sv.setButtonText(getString(R.string.next));
-				sv.setSkipButtonText(getString(R.string.skip));
-				mViewPager.setCurrentItem(0);
-				setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
-						.getTabsContainer().getChildAt(1), tabs
-						.getTabsContainer().getChildAt(2), tabs
-						.getTabsContainer().getChildAt(3), mViewPager);
-			
-
-			return true;
+//		case R.id.action_showcase:
+//			
+//			// ShowCase Tutorial
+//				sv = new ShowcaseView.Builder(this, true)
+//						.setTarget(Target.NONE)
+//						.setContentTitle(
+//								getString(R.string.showcase_main_title))
+//						.setContentText(
+//								getString(R.string.showcase_main_message))
+//						.setStyle(R.style.CustomShowcaseTheme)
+//						.setOnClickListener(this).build();
+//				sv.setButtonText(getString(R.string.next));
+//				sv.setSkipButtonText(getString(R.string.skip));
+//				mViewPager.setCurrentItem(0);
+//				setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
+//						.getTabsContainer().getChildAt(1), tabs
+//						.getTabsContainer().getChildAt(2), tabs
+//						.getTabsContainer().getChildAt(3), mViewPager);
+//			
+//
+//			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

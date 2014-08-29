@@ -346,31 +346,31 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		// //buttonBlocked.setEnabled(true);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.action_showcase:
-			// ShowCase Tutorial
-			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
-					.setContentTitle(getString(R.string.showcase_claim_title))
-					.setContentText(getString(R.string.showcase_claim_message))
-					.setStyle(R.style.CustomShowcaseTheme)
-					.setOnClickListener(this).build();
-			sv.setButtonText(getString(R.string.next));
-			sv.setSkipButtonText(getString(R.string.skip));
-			mViewPager.setCurrentItem(0);
-			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
-					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
-					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
-					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
-					tabs.getTabsContainer().getChildAt(6),
-					mViewPager);
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.action_claim_showcase:
+//			// ShowCase Tutorial
+//			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+//					.setContentTitle(getString(R.string.showcase_claim_title))
+//					.setContentText(getString(R.string.showcase_claim_message))
+//					.setStyle(R.style.CustomShowcaseTheme)
+//					.setOnClickListener(this).build();
+//			sv.setButtonText(getString(R.string.next));
+//			sv.setSkipButtonText(getString(R.string.skip));
+//			mViewPager.setCurrentItem(0);
+//			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
+//					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
+//					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
+//					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
+//					tabs.getTabsContainer().getChildAt(6),
+//					mViewPager);
+//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 
 	// END SHOWCASE
 
