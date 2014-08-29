@@ -202,6 +202,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 
 		case 1:
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_lock)), true);
+			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_actionNews_message));
 			break;
 

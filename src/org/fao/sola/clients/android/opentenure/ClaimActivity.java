@@ -182,7 +182,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		// ShowCase Main
 		if (getFirstRun().contentEquals("True")) {
-			sv = new ShowcaseView.Builder(this, true).setTarget(Target.NONE)
+			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
 					.setContentTitle(getString(R.string.showcase_claim_title))
 					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
@@ -220,95 +220,103 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			counter = 0;
 		}
 		switch (counter) {
-		case 0:
-			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
-			sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
-			sv.setContentText("ECCO PRIMO TAB");
-			mViewPager.setCurrentItem(0);
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
-			break;
+//		case 0:
+//			sv.setShowcase(
+//					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+//			sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
+//			sv.setContentText(getString(R.string.showcase_claim_message));
+//			mViewPager.setCurrentItem(0);
+//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
+//			break;
 
-		case 1:
+		case 0:
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
 					true);
+			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
 			break;
-		case 2:
+		case 1:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
 			sv.setContentTitle(getString(R.string.title_claim_map)
 					.toUpperCase());
-			sv.setContentText("ECCO SECONDO TAB");
+			sv.setContentText(getString(R.string.showcase_claim_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
 			break;
+		case 2:
+			sv.setShowcase(new ViewTarget(mViewPager), true);
+			sv.setContentTitle("  ");
+			sv.setContentText(getString(R.string.showcase_claim_mapdraw_message));
+			mViewPager.setCurrentItem(1);
+			break;
+
 		case 3:
 			sv.setShowcase(new ViewTarget(
 					findViewById(R.id.action_center_and_follow)), true);
 			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
 			break;
-
 		case 4:
-			sv.setShowcase(new ViewTarget(mViewPager), true);
-			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
-			mViewPager.setCurrentItem(1);
-			break;
-		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
 			sv.setContentTitle(getString(R.string.title_claim_documents)
 					.toUpperCase());
-			sv.setContentText("ECCO TERZO TAB");
+			sv.setContentText(getString(R.string.showcase_claim_document_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-		case 6:
-			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
-			sv.setContentTitle(getString(R.string.title_claim_additional_info)
-					.toUpperCase());
-			sv.setContentText("ECCO TERZO TAB");
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
-			mViewPager.setCurrentItem(3);
-			break;
-		case 7:
+//		case 6:
+//			sv.setShowcase(
+//					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
+//			sv.setContentTitle(getString(R.string.title_claim_additional_info)
+//					.toUpperCase());
+//			sv.setContentText("ECCO TERZO TAB");
+//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
+//			mViewPager.setCurrentItem(3);
+//			break;
+		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
 			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
 					.toUpperCase());
-			sv.setContentText("ECCO TERZO TAB");
+			sv.setContentText(getString(R.string.showcase_claim_adjacencies_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
 			mViewPager.setCurrentItem(4);
 			break;
-		case 8:
+		case 6:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
 			sv.setContentTitle(getString(R.string.title_claim_challenges)
 					.toUpperCase());
-			sv.setContentText("ECCO TERZO TAB");
+			sv.setContentText(getString(R.string.showcase_claim_challenges_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
 			mViewPager.setCurrentItem(5);
 			break;
-		case 9:
+		case 7:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(6)), true);
 			sv.setContentTitle(getString(R.string.title_claim_owners)
 					.toUpperCase());
-			sv.setContentText("ECCO QUARTO TAB");
+			sv.setContentText(getString(R.string.showcase_claim_shares_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(6));
 			mViewPager.setCurrentItem(6);
 			break;
-		case 10:
-			sv.setShowcase(new ViewTarget(mViewPager.getChildAt(0)), true);
-			sv.setContentTitle(("ELEMENTI DELLA LISTA"));
-			sv.setContentText("ECCO QUARTO TAB");
-			setAlpha(1.0f, mViewPager.getChildAt(0));
+		case 8:
+			sv.setShowcase(
+					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+			sv.setContentTitle(("  "));
+			sv.setContentText(getString(R.string.showcase_end_message));
+			setAlpha(0.6f, tabs.getTabsContainer().getChildAt(0), tabs
+					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
+					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
+					tabs);
 			sv.setButtonText(getString(R.string.close));
 			mViewPager.setCurrentItem(0);
 			break;
-		case 11:
+		case 9:
 			sv.hide();
 			setAlpha(1.0f, tabs, mViewPager);
 			counter = 0;
@@ -343,9 +351,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		switch (item.getItemId()) {
 		case R.id.action_showcase:
 			// ShowCase Tutorial
-			sv = new ShowcaseView.Builder(this, true).setTarget(Target.NONE)
-					.setContentTitle(getString(R.string.showcase_main_title))
-					.setContentText(getString(R.string.showcase_main_message))
+			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+					.setContentTitle(getString(R.string.showcase_claim_title))
+					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
 					.setOnClickListener(this).build();
 			sv.setButtonText(getString(R.string.next));
@@ -357,7 +365,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
 					tabs.getTabsContainer().getChildAt(6),
 					mViewPager);
-
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
