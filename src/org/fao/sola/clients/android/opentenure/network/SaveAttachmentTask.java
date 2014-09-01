@@ -72,7 +72,6 @@ public class SaveAttachmentTask extends
 		Claim claim = Claim.getClaim(toUpdate.getClaimId());
 
 
-
 		String status = claim.getStatus();
 		if (!status.equals(ClaimStatus._CREATED)
 				&& !status.equals(ClaimStatus._UPLOADING)
@@ -518,7 +517,6 @@ public class SaveAttachmentTask extends
 
 			claim = Claim.getClaim(toUpdate.getClaimId());
 
-
 			progress = FileSystemUtilities.getUploadProgress(claim);
 			vh.getBar().setProgress(progress);
 
@@ -533,7 +531,7 @@ public class SaveAttachmentTask extends
 
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR) || claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
 

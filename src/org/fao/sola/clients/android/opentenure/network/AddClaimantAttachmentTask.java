@@ -89,8 +89,10 @@ public class AddClaimantAttachmentTask extends
 		Toast toast;
 		
 		
+		
 		SaveAttachmentResponse saRes =  (SaveAttachmentResponse) vhResponse.getRes();
-		AttachmentViewHolder vh = (AttachmentViewHolder) vhResponse.getVh();
+		
+		
 
 		int status = saRes.getHttpStatusCode();
 
@@ -102,17 +104,35 @@ public class AddClaimantAttachmentTask extends
 					R.string.message_added_attachment, Toast.LENGTH_LONG);
 			toast.show();
 			
+			
+			
 			Claim claim = Claim.getClaim(saRes.getClaimId());
 			claim.setStatus(ClaimStatus._UNMODERATED);
 			claim.update();
 			
-			vh.getBar().setVisibility(View.INVISIBLE);
-			vh.getSendIcon().setVisibility(View.INVISIBLE);
-			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
-					R.color.status_unmoderated));
-			vh.getStatus().setText(AttachmentStatus._UPLOADED);
-			vh.getStatus().setVisibility(View.VISIBLE);
-			vh.getRemoveIcon().setVisibility(View.INVISIBLE);
+			try {
+				AttachmentViewHolder	 vh = (AttachmentViewHolder) vhResponse.getVh();
+				
+				vh.getBar().setVisibility(View.INVISIBLE);
+				vh.getSendIcon().setVisibility(View.INVISIBLE);
+				vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+						R.color.status_unmoderated));
+				vh.getStatus().setText(AttachmentStatus._UPLOADED);
+				vh.getStatus().setVisibility(View.VISIBLE);
+				vh.getRemoveIcon().setVisibility(View.INVISIBLE);
+			} catch (ClassCastException e) {
+				ViewHolder vh = (ViewHolder) vhResponse.getVh();
+				
+				vh.getBar().setVisibility(View.INVISIBLE);
+				vh.getSend().setVisibility(View.INVISIBLE);
+				vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+						R.color.status_unmoderated));
+				vh.getStatus().setText(AttachmentStatus._UPLOADED);
+				vh.getStatus().setVisibility(View.VISIBLE);
+				//vh.getRemove().setVisibility(View.INVISIBLE);
+			}
+			
+			
 
 			break;
 			
