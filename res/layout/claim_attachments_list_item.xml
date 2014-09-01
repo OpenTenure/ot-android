@@ -55,15 +55,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center"
         android:contentDescription="@string/action_download_file"
         android:visibility="invisible"
         android:src="@drawable/ic_download_file" /> 
+        
+    
+       <ImageView
+        android:id="@+id/action_submit_attachment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:contentDescription="@string/action_submit"
+        android:src="@drawable/ic_submit_big"
+        android:visibility="gone" /> 
     
     <ImageView
         android:id="@+id/remove_icon"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_gravity="center"
         android:contentDescription="@string/action_remove_attachment"
         android:src="@android:drawable/ic_delete" />
 </LinearLayout>

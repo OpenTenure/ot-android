@@ -78,7 +78,7 @@
     <string name="person_type">Person Type *</string>
     <string name="claim">Claim</string>
     <string name="date">Date</string>
-    <string name="share_value">Value of the share : </string>
+    <string name="share_value">Percentage value : </string>
     <string name="additional_info">Additional information</string>
     <string name="adjacency">Adjacency</string>
     <string name="adjacencies">Adjacencies</string>
@@ -128,12 +128,15 @@
     <string name="message_adjacencies_saved">Adjacencies saved</string>
     <string name="message_adjacencies_not_saved">Adjacencies not saved</string>
     <string name="message_downloading_attachment">Downloading the attachment</string>
+    <string name="message_uploading_attachment">Uploading the attachment</string>
     <string name="message_invalid_url">Invalid URL</string>
     <string name="message_unable_to_save">Unable to save. Check details and retry</string>
     <string name="message_unable_to_save_missing_claim_name">Unable to save. Missing Claim name</string>
     <string name="message_unable_to_save_missing_person">Unable to save. Missing Claimant</string>
     <string name="message_submitted">The claim has been submitted</string>
     <string name="message_uploading">The claim is in upload</string>
+    <string name="message_added_attachment">The attachment has been added to the claim</string>
+    <string name="message_adding_attachment_not_ok">Error during adding of the attachment</string>
     <string name="message_submission_error">Error during submission of the claim</string>
     <string name="message_save_claim_before_submit">The claim must be saved before submission</string>
     <string name="message_save_snapshot_before_printing">Attach a map snapshot before printing</string>

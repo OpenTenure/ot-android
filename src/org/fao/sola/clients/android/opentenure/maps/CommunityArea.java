@@ -25,40 +25,60 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
 
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 
-public class AttachmentViewHolder extends ViewHolder{
-	
+import com.androidmapsextensions.Polyline;
+import com.androidmapsextensions.PolylineOptions;
+import com.androidmapsextensions.GoogleMap;
 
-	ImageView downloadIcon;
-	ImageView removeIcon;
-	ImageView sendIcon;
-	public ImageView getDownloadIcon() {
-		return downloadIcon;
+public class CommunityArea {
+
+	String communityAreaClob = null;
+	GoogleMap map = null;
+	protected Polyline polyline = null;
+
+	public void drawInterestArea() {
+		
+		if(communityAreaClob == null)
+			return;
+		
+		List<Vertex> communityAreaVertics = Vertex.verticesFromWKT(
+				communityAreaClob, null);
+
+		if (communityAreaVertics.size() <= 0) {
+			return;
+		}
+
+		PolylineOptions polylineOptions = new PolylineOptions();
+		for (int i = 0; i < communityAreaVertics.size(); i++) {
+			polylineOptions.add(communityAreaVertics.get(i).getMapPosition());
+		}
+		polylineOptions.add(communityAreaVertics.get(0).getMapPosition()); // Needed
+																			// in
+		// order to
+		// close the
+		// polyline
+		polylineOptions.zIndex(BasePropertyBoundary.BOUNDARY_Z_INDEX);
+		polylineOptions.width(4);
+		polylineOptions.color(OpenTenureApplication.getContext().getResources()
+				.getColor(R.color.community_area));
+		polyline = map.addPolyline(polylineOptions);
+
 	}
-	public void setDownloadIcon(ImageView downloadIcon) {
-		this.downloadIcon = downloadIcon;
+
+	public CommunityArea(GoogleMap map) {
+
+		communityAreaClob = Configuration
+				.getConfigurationValue("communityArea");
+		this.map = map;
+
 	}
-	public ImageView getRemoveIcon() {
-		return removeIcon;
-	}
-	public void setRemoveIcon(ImageView removeIcon) {
-		this.removeIcon = removeIcon;
-	}
-	public ImageView getSendIcon() {
-		return sendIcon;
-	}
-	public void setSendIcon(ImageView sendIcon) {
-		this.sendIcon = sendIcon;
-	}	
-	
-	
-	
-	
 
 }

@@ -121,7 +121,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 		
 		inflater.inflate(R.menu.claim_documents, menu);
 		
-		if (!Claim.getClaim(claimActivity.getClaimId()).isModifiable()) {
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		if (claim != null && !claim.isModifiable()) {
 			menu.removeItem(R.id.action_new_picture);
 			menu.removeItem(R.id.action_new_attachment);
 		}

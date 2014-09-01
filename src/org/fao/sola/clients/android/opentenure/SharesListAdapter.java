@@ -111,7 +111,7 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 		vh.owners_num.setText("Owners : " + numb);
 
 		vh.slogan.setText(shares.get(position).getSlogan());
-		vh.slogan.setOnClickListener(new OnClickListener() {
+		convertView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

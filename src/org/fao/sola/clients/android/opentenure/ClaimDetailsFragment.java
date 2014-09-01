@@ -155,6 +155,7 @@ public class ClaimDetailsFragment extends Fragment {
 			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
 				String personId = data
 						.getStringExtra(PersonActivity.PERSON_ID_KEY);
+				
 				Person claimant = Person.getPerson(personId);
 				loadClaimant(claimant);
 				break;
@@ -448,6 +449,8 @@ public class ClaimDetailsFragment extends Fragment {
 
 	private void loadClaimant(Person claimant) {
 		if (claimant != null) {
+
+
 			((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 			((TextView) rootView.findViewById(R.id.claimant_id))
 					.setText(claimant.getPersonId());
@@ -519,8 +522,15 @@ public class ClaimDetailsFragment extends Fragment {
 						.setFocusable(false);
 
 			}
+			Person claimant = null;
+			String claimantId = ((TextView) rootView
+					.findViewById(R.id.claimant_id)).getText().toString();
 
-			Person claimant = claim.getPerson();
+
+			if (claimantId == null || claimantId.trim().equals(""))
+				claimant = claim.getPerson();
+			else
+				claimant = Person.getPerson(claimantId);
 			loadClaimant(claimant);
 			loadChallengedClaim(claim.getChallengedClaim());
 
@@ -831,51 +841,52 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-//	public int createPersonAsOwner(Person claimant, String oldClaimantId) {
-//		try {
-//			int share = 0;
-//
-//			ShareProperty toDelete = ShareProperty.getOwner(claimActivity.getClaimId(),
-//					oldClaimantId);
-//
-//			if (toDelete != null) {
-//				share = toDelete.getShares();
-//
-//				toDelete.delete();
-//			} else {
-//
-//				List<ShareProperty> owners = Claim.getClaim(claimActivity.getClaimId())
-//						.getOwners();
-//				int sum = 0;
-//
-//				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
-//
-//					ShareProperty owner = (ShareProperty) iterator.next();
-//					sum = sum + owner.getShares();
-//				}
-//
-//				share = 100 - sum;
-//			}
-//
-//			ShareProperty owner = new ShareProperty(true);
-//
-//			owner.setClaimId(claimActivity.getClaimId());
-//			owner.setPersonId(claimant.getPersonId());
-//			owner.setShares(share);
-//
-//			owner.create();
-//
-//			return 1;
-//
-//		} catch (Exception e) {
-//			Log.d("Details", "An error " + e.getMessage());
-//
-//			e.printStackTrace();
-//
-//			return 0;
-//		}
-//
-//	}
+	// public int createPersonAsOwner(Person claimant, String oldClaimantId) {
+	// try {
+	// int share = 0;
+	//
+	// ShareProperty toDelete =
+	// ShareProperty.getOwner(claimActivity.getClaimId(),
+	// oldClaimantId);
+	//
+	// if (toDelete != null) {
+	// share = toDelete.getShares();
+	//
+	// toDelete.delete();
+	// } else {
+	//
+	// List<ShareProperty> owners = Claim.getClaim(claimActivity.getClaimId())
+	// .getOwners();
+	// int sum = 0;
+	//
+	// for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
+	//
+	// ShareProperty owner = (ShareProperty) iterator.next();
+	// sum = sum + owner.getShares();
+	// }
+	//
+	// share = 100 - sum;
+	// }
+	//
+	// ShareProperty owner = new ShareProperty(true);
+	//
+	// owner.setClaimId(claimActivity.getClaimId());
+	// owner.setPersonId(claimant.getPersonId());
+	// owner.setShares(share);
+	//
+	// owner.create();
+	//
+	// return 1;
+	//
+	// } catch (Exception e) {
+	// Log.d("Details", "An error " + e.getMessage());
+	//
+	// e.printStackTrace();
+	//
+	// return 0;
+	// }
+	//
+	// }
 
 	public boolean checkChanges() {
 
@@ -1029,24 +1040,36 @@ public class ClaimDetailsFragment extends Fragment {
 
 	public int createPersonAsOwner(Person claimant) {
 		try {
+			List<ShareProperty> shares = ShareProperty.getShares(claimActivity
+					.getClaimId());
 
-			ShareProperty share = new ShareProperty();
-			
-			share.setClaimId(claimActivity.getClaimId());
-			share.setShares(100);
+			int value = 0;
 
-			share.create();
-			
-			Person claimantCopy = claimant.copy();
-			claimantCopy.create();
-			
-			Owner owner =  new Owner();
-			owner.setPersonId(claimantCopy.getPersonId());
-			owner.setShareId(share.getId());
-			
-			owner.create();
-			
+			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
+				ShareProperty shareProperty = (ShareProperty) iterator.next();
+				value = value + shareProperty.getShares();
+			}
 
+			int shareValue = 100 - value;
+		
+
+			if (shareValue > 0) {
+				ShareProperty share = new ShareProperty();
+
+				share.setClaimId(claimActivity.getClaimId());
+				share.setShares(shareValue);
+
+				share.create();
+
+				Person claimantCopy = claimant.copy();
+				claimantCopy.create();
+
+				Owner owner = new Owner();
+				owner.setPersonId(claimantCopy.getPersonId());
+				owner.setShareId(share.getId());
+
+				owner.create();
+			}
 			return 1;
 
 		} catch (Exception e) {

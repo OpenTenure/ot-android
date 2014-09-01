@@ -252,6 +252,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			vh.getIconLocal().setVisibility(View.GONE);
 			vh.getIconUnmoderated().setVisibility(View.VISIBLE);
+			vh.getSend().setVisibility(View.INVISIBLE);
 			break;
 		}
 
@@ -395,6 +396,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getBar().setVisibility(View.GONE);
 
 			break;
 		}
@@ -424,6 +426,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getBar().setVisibility(View.GONE);
 
 			break;
 

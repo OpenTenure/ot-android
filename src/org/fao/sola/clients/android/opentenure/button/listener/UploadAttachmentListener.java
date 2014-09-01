@@ -25,40 +25,64 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.button.listener;
 
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.ViewHolder;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.network.SaveAttachmentTask;
+import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 
+import android.os.AsyncTask;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Toast;
 
-public class AttachmentViewHolder extends ViewHolder{
-	
+public class UploadAttachmentListener implements OnClickListener {
 
-	ImageView downloadIcon;
-	ImageView removeIcon;
-	ImageView sendIcon;
-	public ImageView getDownloadIcon() {
-		return downloadIcon;
+	AttachmentViewHolder vh;
+	Attachment attachment;
+
+	public UploadAttachmentListener(Attachment att, AttachmentViewHolder vh) {
+
+		this.vh = vh;
+		this.attachment = att;
+
 	}
-	public void setDownloadIcon(ImageView downloadIcon) {
-		this.downloadIcon = downloadIcon;
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+
+		Object[] params = new Object[2];
+		params[0] = attachment;
+		params[1] = vh;
+
+		if (!OpenTenureApplication.isLoggedin()) {
+			Toast toast;
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_login_before)
+							+ " ", Toast.LENGTH_SHORT);
+			toast.show();
+
+			return;
+		}
+
+		vh.getBar().setVisibility(View.VISIBLE);
+		vh.getStatus().setVisibility(View.GONE);
+
+		SaveAttachmentTask task = new SaveAttachmentTask();
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+				attachment.getAttachmentId(), vh);
+
+		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
+				R.string.message_uploading_attachment, Toast.LENGTH_LONG);
+		toast.show();
+
 	}
-	public ImageView getRemoveIcon() {
-		return removeIcon;
-	}
-	public void setRemoveIcon(ImageView removeIcon) {
-		this.removeIcon = removeIcon;
-	}
-	public ImageView getSendIcon() {
-		return sendIcon;
-	}
-	public void setSendIcon(ImageView sendIcon) {
-		this.sendIcon = sendIcon;
-	}	
-	
-	
-	
-	
 
 }
