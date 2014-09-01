@@ -1,5 +1,6 @@
 /**
  * ******************************************************************************************
+
  * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
@@ -182,7 +183,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		// ShowCase Main
 		if (getFirstRun().contentEquals("True")) {
-			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+			sv = new ShowcaseView.Builder(this, true)
+					.setTarget(
+							new ViewTarget(tabs.getTabsContainer()
+									.getChildAt(0)))
 					.setContentTitle(getString(R.string.showcase_claim_title))
 					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
@@ -209,7 +213,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public void onClick(View v) {
+		
+		
 		if (v.toString().indexOf("skip") > 0) {
+			counter = 0;
 			sv.hide();
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0), tabs
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
@@ -217,17 +224,21 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
 					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
 					tabs, mViewPager);
+			mViewPager.setCurrentItem(0);
 			counter = 0;
+			return;
 		}
+		
+		
 		switch (counter) {
-//		case 0:
-//			sv.setShowcase(
-//					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
-//			sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
-//			sv.setContentText(getString(R.string.showcase_claim_message));
-//			mViewPager.setCurrentItem(0);
-//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
-//			break;
+		// case 0:
+		// sv.setShowcase(
+		// new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+		// sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
+		// sv.setContentText(getString(R.string.showcase_claim_message));
+		// mViewPager.setCurrentItem(0);
+		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
+		// break;
 
 		case 0:
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
@@ -266,15 +277,21 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-//		case 6:
-//			sv.setShowcase(
-//					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
-//			sv.setContentTitle(getString(R.string.title_claim_additional_info)
-//					.toUpperCase());
-//			sv.setContentText("ECCO TERZO TAB");
-//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
-//			mViewPager.setCurrentItem(3);
-//			break;
+//		case 5:
+//			sv.setShowcase(new ViewTarget(
+//					findViewById(R.id.action_new_attachment)), true);
+//			sv.setContentTitle("  ");
+//			sv.setContentText(getString(R.string.showcase_claim_documentAttach_message));
+//			break;	
+		// case 6:
+		// sv.setShowcase(
+		// new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
+		// sv.setContentTitle(getString(R.string.title_claim_additional_info)
+		// .toUpperCase());
+		// sv.setContentText("ECCO TERZO TAB");
+		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
+		// mViewPager.setCurrentItem(3);
+		// break;
 		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
@@ -311,8 +328,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
-					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
-					tabs);
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6), tabs);
 			sv.setButtonText(getString(R.string.close));
 			mViewPager.setCurrentItem(0);
 			break;
@@ -351,21 +367,23 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		switch (item.getItemId()) {
 		case R.id.action_claim_showcase:
 			// ShowCase Tutorial
-			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+			counter = 0;
+			sv = new ShowcaseView.Builder(this, true)
+					.setTarget(
+							new ViewTarget(tabs.getTabsContainer()
+									.getChildAt(0)))
 					.setContentTitle(getString(R.string.showcase_claim_title))
 					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
 					.setOnClickListener(this).build();
 			sv.setButtonText(getString(R.string.next));
 			sv.setSkipButtonText(getString(R.string.skip));
-			mViewPager.setCurrentItem(0);
 			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
-					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
-					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
-					tabs.getTabsContainer().getChildAt(6),
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
+					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
 					mViewPager);
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
