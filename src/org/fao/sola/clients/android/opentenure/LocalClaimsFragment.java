@@ -103,20 +103,21 @@ public class LocalClaimsFragment extends ListFragment {
 
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			if (OpenTenureApplication.isLoggedin()) {
-				itemIn = menu.getItem(2);
+				itemIn = menu.getItem(3);
 				itemIn.setVisible(false);
-				itemOut = menu.getItem(3);
+				itemOut = menu.getItem(4);
 				itemOut.setVisible(true);
 
 			} else {
 
-				itemIn = menu.getItem(2);
+				itemIn = menu.getItem(3);
 				itemIn.setVisible(true);
-				itemOut = menu.getItem(3);
+				itemOut = menu.getItem(4);
 				itemOut.setVisible(false);
 			}
 		}
-
+        
+		
 		super.onPrepareOptionsMenu(menu);
 
 	}

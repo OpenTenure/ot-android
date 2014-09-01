@@ -528,6 +528,11 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 	public int getTabPaddingLeftRight() {
 		return tabPadding;
 	}
+	
+	
+	public LinearLayout getTabsContainer() {
+		return tabsContainer;
+	}
 
 	@Override
 	public void onRestoreInstanceState(Parcelable state) {
