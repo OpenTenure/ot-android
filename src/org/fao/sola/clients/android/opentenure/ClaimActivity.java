@@ -213,8 +213,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public void onClick(View v) {
-		
-		
+
 		if (v.toString().indexOf("skip") > 0) {
 			counter = 0;
 			sv.hide();
@@ -228,8 +227,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			counter = 0;
 			return;
 		}
-		
-		
+
 		switch (counter) {
 		// case 0:
 		// sv.setShowcase(
@@ -277,12 +275,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-//		case 5:
-//			sv.setShowcase(new ViewTarget(
-//					findViewById(R.id.action_new_attachment)), true);
-//			sv.setContentTitle("  ");
-//			sv.setContentText(getString(R.string.showcase_claim_documentAttach_message));
-//			break;	
+		// case 5:
+		// sv.setShowcase(new ViewTarget(
+		// findViewById(R.id.action_new_attachment)), true);
+		// sv.setContentTitle("  ");
+		// sv.setContentText(getString(R.string.showcase_claim_documentAttach_message));
+		// break;
 		// case 6:
 		// sv.setShowcase(
 		// new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
@@ -502,7 +500,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onClaimSaved() {
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
-		claimMapFragment.onClaimSaved();
+		if (claimMapFragment != null)
+			claimMapFragment.onClaimSaved();
 	}
 
 	@Override
