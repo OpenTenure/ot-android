@@ -11,6 +11,7 @@
     <string name="action_remove_owner">Remove rights owner</string>
     <string name="action_remove_additional_info">Remove information</string>
     <string name="action_remove_claim">Remove claim</string>
+    <string name="action_remove_field_group">Remove item</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
@@ -111,6 +112,7 @@
     <string name="password">Password</string>
     <string name="attachment_removed">The attachment has been removed</string>
     <string name="owner_removed">The owner has been removed</string>
+    <string name="field_group_removed">The field group has been removed from the form</string>
     <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
     <string name="message_server_error_saving_claim">Server Internal Error</string>
@@ -235,6 +237,9 @@
     <string name="geoserver_layer_pref_title">GeoServer layer</string>
     <string name="geoserver_layer_pref_summary">WMS layer to be retrieved from GeoServer (ask your administrator)</string>
     <string name="geoserver_layer_pref_dialog_title">Enter the name of the WMS layer</string>
+    <string name="form_template_url_pref_title">Form URL</string>
+    <string name="form_template_url_pref_summary">URL for the survey form</string>
+    <string name="form_template_url_pref_dialog_title">Enter the URL for the survey form</string>
     <string name="property">Property</string>
     <string name="id_type">Id Type</string>
     <string name="id_number">Id Number</string>

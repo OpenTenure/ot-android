@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="libs/gson-2.2.4.jar" sourcepath="sources/gson-2.2.4-sources.jar"/>
-	<classpathentry kind="lib" path="libs/h2-1.3.175.jar" sourcepath="sources/h2"/>
-	<classpathentry kind="lib" path="libs/jts-1.13.jar" sourcepath="sources/jts"/>
-	<classpathentry kind="lib" path="libs/zip4j_1.3.2.jar" sourcepath="sources/zip4j-1.3.2-sources.jar"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.2.4.jar" sourcepath="libs/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="libs/h2-1.3.175.jar" sourcepath="libs/h2-1.3.175.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime-4.3.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-annotations-2.4.1.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-core-2.4.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-databind-2.4.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/jts-1.13.jar" sourcepath="sources/jts">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/administrator/workspace/ot-android/javadocs/jts/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/zip4j_1.3.2.jar" sourcepath="sources/zip4j-1.3.2-sources.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

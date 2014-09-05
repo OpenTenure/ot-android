@@ -29,18 +29,17 @@ package org.fao.sola.clients.android.opentenure;
 
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
+import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
+import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
+import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
+import org.fao.sola.clients.android.opentenure.form.ui.SectionElementFragment;
+import org.fao.sola.clients.android.opentenure.form.ui.SectionFragment;
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
-import com.astuetz.PagerSlidingTabStrip;
-import com.github.amlcurran.showcaseview.ApiUtils;
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -53,20 +52,28 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.astuetz.PagerSlidingTabStrip;
+import com.github.amlcurran.showcaseview.ApiUtils;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
+
 public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
-		ModeDispatcher, ClaimListener, MapFragmentListener
-		// SHOWCASE INTERFACE
-		, OnShowcaseEventListener, View.OnClickListener {
+		ModeDispatcher, ClaimListener, OnShowcaseEventListener,
+		View.OnClickListener, FormDispatcher {
 
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
 	public static final String CREATE_CLAIM_ID = "create";
 	private ModeDispatcher.Mode mode;
 	private String claimId = null;
+	FormPayload originalForm;
+	FormPayload editedForm;
+	FormTemplate formTemplate;
+
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
 	PagerSlidingTabStrip tabs;
-	private int mapFragmentId;
 	SparseArray<Fragment> fragmentReferences = new SparseArray<Fragment>();
 
 	// SHOWCASE Variables
@@ -150,6 +157,11 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		
+		formTemplate = FormRetriever.getTemplate();
+		originalForm = new FormPayload(formTemplate);
+		editedForm = new FormPayload(originalForm);
+
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
@@ -182,7 +194,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		// ShowCase Main
 		if (getFirstRun().contentEquals("True")) {
-			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+			sv = new ShowcaseView.Builder(this, true)
+					.setTarget(
+							new ViewTarget(tabs.getTabsContainer()
+									.getChildAt(0)))
 					.setContentTitle(getString(R.string.showcase_claim_title))
 					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
@@ -220,14 +235,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			counter = 0;
 		}
 		switch (counter) {
-//		case 0:
-//			sv.setShowcase(
-//					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
-//			sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
-//			sv.setContentText(getString(R.string.showcase_claim_message));
-//			mViewPager.setCurrentItem(0);
-//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
-//			break;
+		// case 0:
+		// sv.setShowcase(
+		// new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+		// sv.setContentTitle(getString(R.string.title_claim).toUpperCase());
+		// sv.setContentText(getString(R.string.showcase_claim_message));
+		// mViewPager.setCurrentItem(0);
+		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
+		// break;
 
 		case 0:
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
@@ -266,15 +281,15 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-//		case 6:
-//			sv.setShowcase(
-//					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
-//			sv.setContentTitle(getString(R.string.title_claim_additional_info)
-//					.toUpperCase());
-//			sv.setContentText("ECCO TERZO TAB");
-//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
-//			mViewPager.setCurrentItem(3);
-//			break;
+		// case 6:
+		// sv.setShowcase(
+		// new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
+		// sv.setContentTitle(getString(R.string.title_claim_additional_info)
+		// .toUpperCase());
+		// sv.setContentText("ECCO TERZO TAB");
+		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
+		// mViewPager.setCurrentItem(3);
+		// break;
 		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
@@ -311,8 +326,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
-					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
-					tabs);
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6), tabs);
 			sv.setButtonText(getString(R.string.close));
 			mViewPager.setCurrentItem(0);
 			break;
@@ -351,7 +365,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		switch (item.getItemId()) {
 		case R.id.action_claim_showcase:
 			// ShowCase Tutorial
-			sv = new ShowcaseView.Builder(this, true).setTarget(new ViewTarget(tabs.getTabsContainer().getChildAt(0)))
+			sv = new ShowcaseView.Builder(this, true)
+					.setTarget(
+							new ViewTarget(tabs.getTabsContainer()
+									.getChildAt(0)))
 					.setContentTitle(getString(R.string.showcase_claim_title))
 					.setContentText(getString(R.string.showcase_claim_message))
 					.setStyle(R.style.CustomShowcaseTheme)
@@ -361,9 +378,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			mViewPager.setCurrentItem(0);
 			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
-					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
-					tabs.getTabsContainer().getChildAt(4),tabs.getTabsContainer().getChildAt(5),
-					tabs.getTabsContainer().getChildAt(6),
+					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
+					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
+					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
 					mViewPager);
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 			return true;
@@ -399,6 +416,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public Fragment getItem(int position) {
 
 			Fragment fragment;
+			int sectionPosition = position - 7;
 
 			switch (position) {
 			case 0:
@@ -423,20 +441,34 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				return null;
+				SectionTemplate sectionTemplate = formTemplate.getSections().get(sectionPosition);
+				if(sectionTemplate == null){
+					return null;
+				}
+				if(sectionTemplate.getMaxOccurrences() > 1){
+					fragment = new SectionFragment(editedForm.getSections().get(sectionPosition), sectionTemplate, mode);
+				}else{
+					if(editedForm.getSections().get(sectionPosition).getElements().size()==0){
+						editedForm.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate.getElementTemplate()));
+					}
+					fragment = new SectionElementFragment(editedForm.getSections().get(sectionPosition).getElements().get(0), sectionTemplate.getElementTemplate(), mode);
+				}
 			}
+				fragmentReferences.put(position, fragment);
 			fragmentReferences.put(position, fragment);
 			return fragment;
 		}
 
 		@Override
 		public int getCount() {
-			return 7;
+			return 7 + formTemplate.getSections().size();
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
+			int sectionPosition = position - 7;
+
 			switch (position) {
 			case 0:
 				return getString(R.string.title_claim).toUpperCase(l);
@@ -455,8 +487,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 						.toUpperCase(l);
 			case 6:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
+			default:
+				return formTemplate.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
 			}
-			return null;
 		}
 	}
 
@@ -488,8 +521,13 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	}
 
 	@Override
-	public void setMapFragmentId(int id) {
-		mapFragmentId = id;
+	public FormPayload getFormPayload() {
+		return editedForm;
+	}
+
+	@Override
+	public FormTemplate getFormTemplate() {
+		return formTemplate;
 	}
 
 }

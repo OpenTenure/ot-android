@@ -40,6 +40,10 @@ import java.util.Locale;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsNegativeListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
+import org.fao.sola.clients.android.opentenure.form.server.FormSender;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -88,7 +92,7 @@ public class ClaimDetailsFragment extends Fragment {
 	View rootView;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
-
+	private FormDispatcher formDispatcher;
 	private ClaimListener claimListener;
 	private final Calendar localCalendar = Calendar.getInstance();
 
@@ -116,6 +120,12 @@ public class ClaimDetailsFragment extends Fragment {
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement ClaimListener");
+		}
+		try {
+			formDispatcher = (FormDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement FormDispatcher");
 		}
 	}
 
@@ -597,6 +607,7 @@ public class ClaimDetailsFragment extends Fragment {
 				return 0;
 
 			claimListener.onClaimSaved();
+			saveForm(claim.getClaimId());
 			return 1;
 
 		} else
@@ -665,9 +676,23 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+		
+		saveForm(claim.getClaimId());
 
 		return claim.update();
 
+	}
+	
+	private void saveForm(String claimId){
+		FormPayload formPayload = formDispatcher.getFormPayload();
+		FormTemplate formTemplate = formDispatcher.getFormTemplate();
+		FieldConstraint constraint = null;
+		if((constraint = formTemplate.getFailedConstraint(formPayload)) != null){
+			Toast.makeText(rootView.getContext(),
+					constraint.displayErrorMsg(), Toast.LENGTH_SHORT);
+		}else{
+			FormSender.savePayload(formPayload, claimId);
+		}
 	}
 
 	@Override
