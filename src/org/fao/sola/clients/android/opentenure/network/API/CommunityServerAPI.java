@@ -649,8 +649,8 @@ public class CommunityServerAPI {
 		}
 
 	}
-	
-	public static String  getCommunityArea() {
+
+	public static String getCommunityArea() {
 
 		String url = String
 				.format(CommunityServerAPIUtilities.HTTPS_GETCOMMUNITYAREA);
@@ -671,9 +671,8 @@ public class CommunityServerAPI {
 				Log.d("CommunityServerAPI", "GET COMMUNITY AREA JSON RESPONSE "
 						+ json);
 
-				
-				GetCommunityAreaResponse area = new Gson()
-						.fromJson(json, GetCommunityAreaResponse.class);
+				GetCommunityAreaResponse area = new Gson().fromJson(json,
+						GetCommunityAreaResponse.class);
 
 				if (area != null)
 					Log.d("CommunityServerAPI", "RETRIEVED COMMUNITY AREA"
@@ -832,7 +831,7 @@ public class CommunityServerAPI {
 
 			HttpContext context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
-			
+
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
@@ -872,13 +871,13 @@ public class CommunityServerAPI {
 			saveResponse.setMessage("Unknown Host Exception : Network failure");
 
 			return saveResponse;
-		}catch (java.net.SocketException se) {
+		} catch (java.net.SocketException se) {
 
 			se.printStackTrace();
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
 			saveResponse.setHttpStatusCode(100);
-			saveResponse.setMessage("Socket Exception : Network failure" );
+			saveResponse.setMessage("Socket Exception : Network failure");
 
 			return saveResponse;
 		} catch (IOException e) {
@@ -1028,4 +1027,55 @@ public class CommunityServerAPI {
 		return apiResponse;
 
 	}
+
+	public static SaveAttachmentResponse addClaimantAttachment(String claimId,
+			String attachmentId) {
+
+		Log.d("CommunityServerAPI", "ADD CLAIMANT ATTACHMENT : " + attachmentId);
+
+		String url = String.format(
+				CommunityServerAPIUtilities.HTTPS_ADDCLAIMATTACHMENT, claimId,
+				attachmentId);
+
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			HttpResponse response = client.execute(request, context);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			SaveAttachmentResponse saveAttRes;
+
+			Log.d("CommunityServerAPI", " ADD CLAIMANT ATTACHMENT RESPONSE : "
+					+ json);
+
+			Gson gson = new Gson();
+			saveAttRes = gson.fromJson(json, SaveAttachmentResponse.class);
+			saveAttRes.setHttpStatusCode(response.getStatusLine()
+					.getStatusCode());
+			saveAttRes.setClaimId(claimId);
+
+			return saveAttRes;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			SaveAttachmentResponse res = new SaveAttachmentResponse();
+
+			res.setHttpStatusCode(100);
+			res.setMessage(e.getMessage());
+			res.setClaimId(claimId);
+			res.setAttachmentId(attachmentId);
+
+			return res;
+		}
+	}
+
 }

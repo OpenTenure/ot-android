@@ -15,4 +15,9 @@
         android:title="@string/geoserver_layer_pref_title"
         android:summary="@string/geoserver_layer_pref_summary"
         android:dialogTitle="@string/geoserver_layer_pref_dialog_title" />
+    <EditTextPreference
+        android:key="form_template_url_pref"
+        android:title="@string/form_template_url_pref_title"
+        android:summary="@string/form_template_url_pref_summary"
+        android:dialogTitle="@string/form_template_url_pref_dialog_title" />
 </PreferenceScreen>

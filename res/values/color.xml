@@ -11,5 +11,6 @@
     <color name="status_unmoderated">#FF9D36</color>   
     <color name="status_challenged">#CC0000</color>   
     <color name="status_moderated">#00DB00</color>
-    <color name="status_withdrawn">#722E1E</color>   
+    <color name="status_withdrawn">#722E1E</color> 
+    <color name="community_area">#722A1A</color>   
 </resources>

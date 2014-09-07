@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
@@ -169,6 +170,12 @@ public class InitializationActivity extends Activity {
 
 				UpdateCommunityArea updateArea = new UpdateCommunityArea();
 				updateArea.execute();
+			}
+			if (!OpenTenureApplication.getInstance().isCheckedForm()) {
+				Log.d(this.getClass().getName(), "starting tasks for form retrieval");
+
+				FormRetriever formRetriever = new FormRetriever();
+				formRetriever.execute();
 			}
 			
 			

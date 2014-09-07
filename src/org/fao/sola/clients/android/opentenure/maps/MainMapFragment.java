@@ -530,6 +530,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		visiblePropertiesMultiPolygon.setSRID(Constants.SRID);
 
 		showVisibleProperties();
+		drawAreaOfInterest();
 	}
 
 	private Polygon getPolygon(LatLngBounds bounds) {
@@ -575,9 +576,19 @@ public class MainMapFragment extends SupportMapFragment implements
 
 		
 		showVisibleProperties();
+		drawAreaOfInterest();
 		//redrawVisibleProperties();
+		
+		
 
 		return;
+	}
+	
+	private void drawAreaOfInterest(){
+		CommunityArea area = new CommunityArea(map);
+		area.drawInterestArea();
+		
+		
 	}
 
 }

@@ -337,6 +337,7 @@ public class ClaimMapFragment extends Fragment implements
 		centerMapOnCurrentProperty(null);
 		reloadVisibleProperties();
 		showVisibleProperties();
+		drawAreaOfInterest();
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			
@@ -545,6 +546,8 @@ public class ClaimMapFragment extends Fragment implements
 	private void redrawProperties() {
 		currentProperty.redrawBoundary();
 		redrawVisibleProperties();
+		drawAreaOfInterest();
+		
 	}
 
 	private void showVisibleProperties() {
@@ -553,11 +556,18 @@ public class ClaimMapFragment extends Fragment implements
 				visibleProperty.showBoundary();
 			}
 		}
+
 	}
 
 	private void redrawVisibleProperties() {
 		hideVisibleProperties();
 		showVisibleProperties();
+		
+	}
+	
+	private void drawAreaOfInterest(){
+		CommunityArea area = new CommunityArea(map);
+		area.drawInterestArea();
 	}
 
 	private void hideVisibleProperties() {

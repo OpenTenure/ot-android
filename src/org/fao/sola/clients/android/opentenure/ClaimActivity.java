@@ -1,5 +1,6 @@
 /**
  * ******************************************************************************************
+
  * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
@@ -224,7 +225,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public void onClick(View v) {
+
 		if (v.toString().indexOf("skip") > 0) {
+			counter = 0;
 			sv.hide();
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0), tabs
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
@@ -232,8 +235,11 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
 					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
 					tabs, mViewPager);
+			mViewPager.setCurrentItem(0);
 			counter = 0;
+			return;
 		}
+
 		switch (counter) {
 		// case 0:
 		// sv.setShowcase(
@@ -281,6 +287,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
+		// case 5:
+		// sv.setShowcase(new ViewTarget(
+		// findViewById(R.id.action_new_attachment)), true);
+		// sv.setContentTitle("  ");
+		// sv.setContentText(getString(R.string.showcase_claim_documentAttach_message));
+		// break;
 		// case 6:
 		// sv.setShowcase(
 		// new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
@@ -365,6 +377,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		switch (item.getItemId()) {
 		case R.id.action_claim_showcase:
 			// ShowCase Tutorial
+			counter = 0;
 			sv = new ShowcaseView.Builder(this, true)
 					.setTarget(
 							new ViewTarget(tabs.getTabsContainer()
@@ -375,14 +388,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.setOnClickListener(this).build();
 			sv.setButtonText(getString(R.string.next));
 			sv.setSkipButtonText(getString(R.string.skip));
-			mViewPager.setCurrentItem(0);
 			setAlpha(0.2f, tabs.getTabsContainer().getChildAt(0), tabs
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
 					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
 					mViewPager);
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -517,7 +528,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onClaimSaved() {
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
-		claimMapFragment.onClaimSaved();
+		if (claimMapFragment != null)
+			claimMapFragment.onClaimSaved();
 	}
 
 	@Override

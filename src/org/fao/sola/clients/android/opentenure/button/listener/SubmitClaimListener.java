@@ -32,10 +32,9 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
-import org.fao.sola.clients.android.opentenure.R.color;
-import org.fao.sola.clients.android.opentenure.R.string;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.form.server.FormSender;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -86,6 +85,10 @@ public class SubmitClaimListener implements OnClickListener {
 					return;
 
 				}
+				// TODO Remove this once the form payload is made part of the claim
+				FormSender fs = new FormSender();
+				fs.setId(claimId);
+				fs.execute();
 
 				JsonUtilities.createClaimJson(claimId);
 

@@ -34,7 +34,6 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -62,19 +61,33 @@ public class SaveAttachmentTask extends
 	protected ViewHolderResponse doInBackground(Object... params) {
 		// TODO Auto-generated method stub
 
+		ViewHolderResponse vhr = new ViewHolderResponse();
+
 		String json = FileSystemUtilities.getJsonAttachment((String) params[0]);
 
 		Attachment toUpdate = Attachment.getAttachment((String) params[0]);
 		toUpdate.setStatus(AttachmentStatus._UPLOADING);
 		Attachment.updateAttachment(toUpdate);
 
+		Claim claim = Claim.getClaim(toUpdate.getClaimId());
+
+
+		String status = claim.getStatus();
+		if (!status.equals(ClaimStatus._CREATED)
+				&& !status.equals(ClaimStatus._UPLOADING)
+				&& !status.equals(ClaimStatus._UPLOAD_ERROR)
+				&& !status.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+
+			claim.setStatus(ClaimStatus._UPDATING);
+			claim.update();
+
+		}
+
 		SaveAttachmentResponse res = CommunityServerAPI.saveAttachment(json,
 				(String) params[0]);
 
 		Log.d("CommunityServerAPI",
 				"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
-
-		ViewHolderResponse vhr = new ViewHolderResponse();
 
 		vhr.setRes(res);
 		vhr.setVh((ViewHolder) params[1]);
@@ -104,8 +117,10 @@ public class SaveAttachmentTask extends
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 			toUpdate = Attachment.getAttachment(res.getAttachmentId());
 
-			if (toUpdate.getStatus().equals(AttachmentStatus._UPLOADING))
+			if (toUpdate.getStatus().equals(AttachmentStatus._UPLOADING)) {
 				toUpdate.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+				toUpdate.update();
+			}
 
 			Attachment.updateAttachment(toUpdate);
 
@@ -146,6 +161,9 @@ public class SaveAttachmentTask extends
 
 			if (toUpdate.getStatus().equals(AttachmentStatus._UPLOADING))
 				toUpdate.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
+			{
+				toUpdate.update();
+			}
 
 			Attachment.updateAttachment(toUpdate);
 
@@ -176,7 +194,7 @@ public class SaveAttachmentTask extends
 
 		case 200:
 			/*
-			 * OK
+			 * D * OK
 			 */
 
 			Log.d("CommunityServerAPI",
@@ -193,74 +211,88 @@ public class SaveAttachmentTask extends
 
 			vh.getBar().setProgress(progress);
 
-			vh.getStatus().setText(
-					ClaimStatus._UPLOADING + ": " + progress + " %");
-			vh.getStatus().setTextColor(
-					OpenTenureApplication.getContext().getResources()
-							.getColor(R.color.status_created));
-			vh.getStatus().setVisibility(View.VISIBLE);
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+				vh.getStatus().setText(
+						ClaimStatus._UPLOADING + ": " + progress + " %");
+				vh.getStatus().setTextColor(
+						OpenTenureApplication.getContext().getResources()
+								.getColor(R.color.status_created));
+				vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
-
-			if (!claim.getStatus().equals(ClaimStatus._UPLOADING)) {
-				claim.setStatus(ClaimStatus._UPLOADING);
-				claim.update();
+				vh.getIconLocal().setVisibility(View.VISIBLE);
+				vh.getIconUnmoderated().setVisibility(View.GONE);
 			}
+			// if (!claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+			// claim.setStatus(ClaimStatus._UPLOADING);
+			// claim.update();
+			// }
 
 			/*
 			 * Now check the list of attachment for that Claim . If all the
 			 * attachments are uploaded I can call saveClaim.
 			 */
 
-			List<Attachment> attachments = claim.getAttachments();
+			if ((claim.getStatus().equals(ClaimStatus._UPDATING))) {
 
-			int action = 0;
-			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
-				Attachment attachment = (Attachment) iterator.next();
-				if (!attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
-					action = 1;
+				AddClaimantAttachmentTask task = new AddClaimantAttachmentTask();
+				vhr.getRes().setClaimId(claimId);
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,vhr);
+			}
+
+			else {
+				List<Attachment> attachments = claim.getAttachments();
+
+				int action = 0;
+				for (Iterator iterator = attachments.iterator(); iterator
+						.hasNext();) {
+					Attachment attachment = (Attachment) iterator.next();
+					if (!attachment.getStatus().equals(
+							AttachmentStatus._UPLOADED)) {
+						action = 1;
+					}
+					if (attachment.getStatus().equals(
+							AttachmentStatus._UPLOAD_INCOMPLETE)) {
+						action = 2;
+						break;
+					}
 				}
-				if (attachment.getStatus().equals(
-						AttachmentStatus._UPLOAD_INCOMPLETE)) {
-					action = 2;
+
+				switch (action) {
+				case 1:
+
+					// DO NOTHING
+
 					break;
+				case 2:
+
+					// JUST UPDATE THE STATUS OF CLAIM IN CASE OF INCOMPLETE
+
+					// Claim claim2 = Claim.getClaim(claimId);
+					if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+						claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
+						claim.update();
+
+					}
+					if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
+						claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
+						claim.update();
+
+					}
+
+					break;
+
+				default: {
+
+					// CALL THE SAVE CLAIM TASK TO CLOSE THE FLOW OF SAVE CLAIM
+
+					if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
+						SaveClaimTask saveClaim = new SaveClaimTask();
+						saveClaim.execute(claimId, vh);
+						break;
+					}
 				}
-			}
-
-			switch (action) {
-			case 1:
-
-				// DO NOTHING
-
-				break;
-			case 2:
-
-				// JUST UPDATE THE STATUS OF CLAIM IN CASE OF INCOMPLETE
-
-				Claim claim2 = Claim.getClaim(claimId);
-				if (claim2.getStatus().equals(ClaimStatus._UPLOADING)) {
-					claim2.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
-					claim2.update();
 
 				}
-				if (claim2.getStatus().equals(ClaimStatus._UPDATING)) {
-					claim2.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
-					claim2.update();
-
-				}
-
-				break;
-
-			default: {
-
-				// CALL THE SAVE CLAIM TASK TO CLOSE THE FLOW OF SAVE CLAIM
-
-				SaveClaimTask saveClaim = new SaveClaimTask();
-				saveClaim.execute(claimId, vh);
-				break;
-			}
-
 			}
 
 			break;
@@ -274,17 +306,26 @@ public class SaveAttachmentTask extends
 					"SAVE ATTACHMENT JSON RESPONSE " + res.getMessage());
 
 			Toast toast;
-			toast = Toast.makeText(
-					OpenTenureApplication.getContext(),
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_login_no_more_valid)
-							+ " "
-							+ res.getHttpStatusCode()
-							+ " "
-							+ res.getMessage(), Toast.LENGTH_LONG);
+							+ " " + res.getMessage(), Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
+
+			Attachment att = Attachment.getAttachment(res.getAttachmentId());
+
+			if (att.getStatus().equals(ClaimStatus._UPLOADING)) {
+
+				att.setStatus(AttachmentStatus._CREATED);
+				att.update();
+
+				vh.getBar().setVisibility(View.INVISIBLE);
+				vh.getStatus().setVisibility(View.VISIBLE);
+				vh.getSend().setVisibility(View.VISIBLE);
+
+			}
 
 			break;
 
@@ -479,28 +520,32 @@ public class SaveAttachmentTask extends
 			progress = FileSystemUtilities.getUploadProgress(claim);
 			vh.getBar().setProgress(progress);
 
-			vh.getStatus().setText(
-					ClaimStatus._UPLOADING + ": " + progress + " %");
+			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setTextColor(
 					OpenTenureApplication.getContext().getResources()
 							.getColor(R.color.status_created));
 			vh.getStatus().setVisibility(View.VISIBLE);
 
-			vh.getIconLocal().setVisibility(View.VISIBLE);
-			vh.getIconUnmoderated().setVisibility(View.GONE);
+			// vh.getIconLocal().setVisibility(View.VISIBLE);
+			// vh.getIconUnmoderated().setVisibility(View.GONE);
 
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR) || claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
+
 			} else {
-				claim.setStatus(ClaimStatus._UPLOADING);
+				claim.setStatus(ClaimStatus._UPDATING);
 				claim.update();
 			}
 
+
+
 			UploadChunksTask uploadTask = new UploadChunksTask();
 			uploadTask.execute(res.getAttachmentId(), vh);
+
+
 
 			break;
 

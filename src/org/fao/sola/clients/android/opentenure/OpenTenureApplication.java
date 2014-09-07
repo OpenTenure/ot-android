@@ -61,6 +61,7 @@ public class OpenTenureApplication extends Application {
 	    private boolean checkedIdTypes = false;
 	    private boolean checkedLandUses = false;
 	    private boolean checkedCommunityArea = false;
+	    private boolean checkedForm = false;
 	    
 	    
 	    private static boolean loggedin ;
@@ -222,6 +223,14 @@ public class OpenTenureApplication extends Application {
 
 		public void setCheckedLandUses(boolean checkedLandUses) {
 			this.checkedLandUses = checkedLandUses;
+		}
+
+		public boolean isCheckedForm() {
+			return checkedForm;
+		}
+
+		public void setCheckedForm(boolean checkedForm) {
+			this.checkedForm = checkedForm;
 		}
 
 		public void setCheckedTypes(boolean checkedTypes) {

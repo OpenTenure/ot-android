@@ -78,7 +78,7 @@
     <string name="gender">Genere *</string>
     <string name="person_type">Tipo di persona *</string>
     <string name="claim">Richiesta</string>
-    <string name="share_value">Valore della quota : </string>
+    <string name="share_value">Valore percentuale : </string>
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
     <string name="adjacency">Adiacenza</string>
@@ -142,6 +142,7 @@
     <string name="message_remove_person_dialog">Vuoi davvero rimuovere %s?</string>
     <string name="message_error_remove_person">Persona %s non rimossa </string>
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
+    <string name="message_uploading_attachment">Upload dell\'attachment in corso</string>
     <string name="message_no_application">Manca un\'applicazione per aprire il file </string>
     <string name="message_error_opening_file">Errore aprendo il file : </string>
     <string name="message_export">Esportando</string>
@@ -163,6 +164,8 @@
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
+    <string name="message_added_attachment">L\' attachment e\' stato aggiunto al claim</string>
+    <string name="message_adding_attachment_not_ok">Errore durante l\'aggiunta dell\' attachment al claim</string>
     <string name="message_remove_additional_info">Rimuovere l\'informazione?</string>
     <string name="message_not_supported_on_this_device">Non supportato su questo dispositivo</string>
     <string name="message_exit_dialog">Vuoi davvero chiudere l\'applicazione?</string>

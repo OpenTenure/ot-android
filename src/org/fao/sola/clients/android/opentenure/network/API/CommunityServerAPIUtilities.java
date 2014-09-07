@@ -38,8 +38,8 @@ import android.util.Log;
 
 public class CommunityServerAPIUtilities {
 
-	public static final String HTTP_LOGIN = "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
-	public static final String HTTPS_LOGIN = "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
+	public static final String HTTPS_LOGIN = "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
+	public static final String HTTP_LOGIN = "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
 
 	public static final String HTTPS_LOGOUT = "https://ot.flossola.org/ws/en-us/auth/logout";
 	public static final String HTTP_LOGOUT = "http://ot.flossola.org/ws/en-us/auth/logout";
@@ -82,6 +82,9 @@ public class CommunityServerAPIUtilities {
 	
 	public static final String HTTPS_WITHDRAWCLAIM = "https://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
 	public static final String HTTP_WITHDRAWCLAIM = "http://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
+	
+	public static final String HTTPS_ADDCLAIMATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
+	public static final String HTTP_ADDCLAIMATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];

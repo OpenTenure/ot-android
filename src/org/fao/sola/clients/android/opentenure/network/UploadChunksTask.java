@@ -99,7 +99,7 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 					claim.update();
 				} else {
@@ -131,7 +131,7 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
 				} else {
@@ -158,7 +158,7 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
 				} else {
@@ -184,7 +184,7 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
 				} else {
@@ -210,7 +210,7 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
+				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 					claim.update();
 				} else {

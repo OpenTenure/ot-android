@@ -34,14 +34,6 @@ import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
-import com.astuetz.PagerSlidingTabStrip;
-import com.github.amlcurran.showcaseview.ApiUtils;
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.google.android.gms.maps.model.CameraPosition;
-
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -57,9 +49,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.astuetz.PagerSlidingTabStrip;
+import com.github.amlcurran.showcaseview.ApiUtils;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		OnShowcaseEventListener, View.OnClickListener {
@@ -83,6 +79,12 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		super.onPause();
 	};
 
+	@Override
+	public void onResume() {
+		OpenTenureApplication.getInstance().getDatabase().open();
+		super.onResume();
+	};
+	
 	@Override
 	public void onDestroy() {
 		OpenTenureApplication.getInstance().getDatabase().close();
