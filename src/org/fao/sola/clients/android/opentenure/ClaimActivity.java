@@ -501,7 +501,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
 		if (claimMapFragment != null)
-			claimMapFragment.onClaimSaved();
+			 claimMapFragment.onClaimSaved();
 	}
 
 	@Override

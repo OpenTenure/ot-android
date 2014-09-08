@@ -72,6 +72,9 @@ public class Claim {
 	
 	@SerializedName("locations")
 	List<Location> locations;
+	
+	@SerializedName("version")
+	String version;
 
 	// @SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
 
@@ -296,6 +299,16 @@ public class Claim {
 	public void setRecorderName(String recorderName) {
 		this.recorderName = recorderName;
 	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	
+	
 	
 	
 

@@ -44,44 +44,44 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
 /**
- * Get the list of all claims within the current map box . 
+ * Get the list of all claims within the current map box .
  * 
  * */
-public class GetAllClaimsTask extends
-		AsyncTask<Object, Void, GetClaimsInput> {
+public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 
 	@Override
 	protected GetClaimsInput doInBackground(Object... params) {
 		// TODO Auto-generated method stub
 
-
-
 		if (params[0] == null) {
 			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
 					.getAllClaims();
-			
+
 			GetClaimsInput claimToRetrieve = new GetClaimsInput();
 			claimToRetrieve.setClaims(listClaim);
 			claimToRetrieve.setMapView((View) params[1]);
-			
+
 			return claimToRetrieve;
-			
-			
+
 		} else {
-			
+
 			/*
 			 * Here in the case of current box bounds
-			 * 
-			 * */
+			 */
+
+			GetClaimsInput claimToRetrieve = new GetClaimsInput();
+
+			/* In case there's no connection*/
+			if (!OpenTenureApplication.getInstance().isOnline()) {
+				claimToRetrieve.setMapView((View) params[1]);
+				return claimToRetrieve;
+			}
 
 			String[] coordinates = buildCoordinates((LatLngBounds) params[0]);
 			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
 					.getAllClaimsByBox(coordinates);
 
-			GetClaimsInput claimToRetrieve = new GetClaimsInput();
 			claimToRetrieve.setClaims(listClaim);
 			claimToRetrieve.setMapView((View) params[1]);
 
@@ -97,13 +97,27 @@ public class GetAllClaimsTask extends
 		Toast toast;
 
 		if (input.getClaims() == null || input.getClaims().size() == 0) {
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources()
-							.getString(R.string.message_no_claim_to_download),
-					Toast.LENGTH_LONG);
+
+			if (!OpenTenureApplication.getInstance().isOnline()) {
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.message_connection_error),
+						Toast.LENGTH_LONG);
+
+			} else {
+				toast = Toast.makeText(
+						OpenTenureApplication.getContext(),
+						OpenTenureApplication
+								.getContext()
+								.getResources()
+								.getString(
+										R.string.message_no_claim_to_download),
+						Toast.LENGTH_LONG);
+
+			}
+
 			toast.show();
-			
-			
+
 			View mapView = input.getMapView();
 
 			if (mapView != null) {
@@ -114,13 +128,11 @@ public class GetAllClaimsTask extends
 
 				TextView label = (TextView) mapView
 						.findViewById(R.id.download_claim_label);
-				label.setVisibility(View.GONE);				
+				label.setVisibility(View.GONE);
 			}
-			
+
 			return;
 		}
-
-
 
 		GetClaimsTask task = new GetClaimsTask();
 		task.execute(input);
