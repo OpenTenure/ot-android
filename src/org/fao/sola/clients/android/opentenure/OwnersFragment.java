@@ -82,7 +82,15 @@ public class OwnersFragment extends ListFragment {
 		switch (item.getItemId()) {
 		case R.id.action_new:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
-			if (claim.getAvailableShares() > 0) {
+			if(claim == null){
+				
+				Toast toast = Toast.makeText(rootView.getContext(),
+						R.string.message_save_claim_before_adding_content,
+						Toast.LENGTH_LONG);
+				toast.show();
+				
+			}
+			else if (claim.getAvailableShares() > 0) {
 
 				Intent intent = new Intent(rootView.getContext(),
 						ShareDetailsActivity.class);
