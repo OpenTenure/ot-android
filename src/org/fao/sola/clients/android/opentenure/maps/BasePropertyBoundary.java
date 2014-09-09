@@ -149,8 +149,7 @@ public class BasePropertyBoundary {
 				case reviewed:
 					color = context.getResources().getColor(
 							R.color.status_reviewed);
-					break;	
-					
+					break;					
 				case challenged:
 					color = context.getResources().getColor(
 							R.color.status_challenged);
