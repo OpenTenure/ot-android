@@ -260,7 +260,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
 			sv.setContentTitle(getString(R.string.title_claim_map)
-					.toUpperCase());
+					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
@@ -282,7 +282,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
 			sv.setContentTitle(getString(R.string.title_claim_documents)
-					.toUpperCase());
+					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_document_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
@@ -306,7 +306,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
 			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
-					.toUpperCase());
+					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_adjacencies_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
 			mViewPager.setCurrentItem(4);
@@ -315,7 +315,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
 			sv.setContentTitle(getString(R.string.title_claim_challenges)
-					.toUpperCase());
+					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_challenges_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
 			mViewPager.setCurrentItem(5);
@@ -324,7 +324,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(6)), true);
 			sv.setContentTitle(getString(R.string.title_claim_owners)
-					.toUpperCase());
+					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_shares_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(6));
 			mViewPager.setCurrentItem(6);
