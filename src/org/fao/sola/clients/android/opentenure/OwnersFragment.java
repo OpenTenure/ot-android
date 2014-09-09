@@ -87,8 +87,7 @@ public class OwnersFragment extends ListFragment {
 				Toast toast = Toast.makeText(rootView.getContext(),
 						R.string.message_save_claim_before_adding_content,
 						Toast.LENGTH_LONG);
-				toast.show();
-				
+				toast.show();				
 			}
 			else if (claim.getAvailableShares() > 0) {
 

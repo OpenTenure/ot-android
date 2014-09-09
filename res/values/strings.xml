@@ -188,6 +188,7 @@
     <string name="message_error_withdraw_claim">Error withdrawing claim : </string>
     <string name="message_withdrawn_claim">Claim correctly withdrawn</string>
     <string name="message_deleted_claim">Claim correctly deleted locally</string>
+    <string name="message_error_deleting_claim">Error deleting claim locally</string>
     <string name="message_save_changes">Do you want save changes ?</string>
     <string name="message_claim_modified">Claim modified</string>
     <string name="message_entity_type">Which kind of entity ?</string>
