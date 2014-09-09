@@ -191,6 +191,7 @@
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
     <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>
+    <string name="message_error_deleting_claim">Errore cancellando il claim localment</string>
     <string name="message_withdrawn_claim">Claim correttamente ritirato</string>
     <string name="message_entity_type">Che tipo di entità ?</string>
     <string name="yes">Si</string>

@@ -139,6 +139,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					.findViewById(R.id.status_challenged);
 			vh.iconWithdrawn = (ImageView) convertView
 					.findViewById(R.id.status_withdrawn);
+			vh.iconReviewed = (ImageView) convertView
+					.findViewById(R.id.status_reviewed);
 			vh.challengeExpiryDate = (TextView) convertView
 					.findViewById(R.id.claim_challenging_time);
 			vh.picture = (ImageView) convertView
@@ -157,6 +159,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.iconModerated.setVisibility(View.GONE);
 			vh.iconChallenged.setVisibility(View.GONE);
 			vh.iconWithdrawn.setVisibility(View.GONE);
+			vh.iconReviewed.setVisibility(View.GONE);
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
 
@@ -344,6 +347,18 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		if (claim.getStatus().equals(ClaimStatus._WITHDRAWN)) {
 
 			vh.iconWithdrawn.setVisibility(View.VISIBLE);
+			vh.number.setTextSize(8);
+			vh.number.setText(claims.get(position).getNumber());
+			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
+			vh.status.setVisibility(View.GONE);
+			vh.bar.setVisibility(View.GONE);
+			vh.send.setVisibility(View.INVISIBLE);
+
+		}
+		
+		if (claim.getStatus().equals(ClaimStatus._REVIEWED)) {
+
+			vh.iconReviewed.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
 			vh.number.setText(claims.get(position).getNumber());
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);

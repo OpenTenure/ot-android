@@ -134,6 +134,16 @@
         android:contentDescription="@string/claimant_picture"
         android:src="@drawable/ic_withdrawn"
         android:visibility="gone" />
+    
+     <ImageView
+        android:id="@+id/status_reviewed"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="2"
+        android:contentDescription="@string/claimant_picture"
+        android:src="@drawable/ic_rejected"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/action_submit_to_server"

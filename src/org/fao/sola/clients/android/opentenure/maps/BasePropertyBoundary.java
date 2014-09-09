@@ -146,6 +146,11 @@ public class BasePropertyBoundary {
 					color = context.getResources().getColor(
 							R.color.status_moderated);
 					break;
+				case reviewed:
+					color = context.getResources().getColor(
+							R.color.status_reviewed);
+					break;	
+					
 				case challenged:
 					color = context.getResources().getColor(
 							R.color.status_challenged);
@@ -199,6 +204,10 @@ public class BasePropertyBoundary {
 					color = context.getResources().getColor(
 							R.color.status_challenged);
 					break;
+				case reviewed:
+					color = context.getResources().getColor(
+							R.color.status_reviewed);
+					break;	
 				default:
 					color = context.getResources().getColor(
 							R.color.status_created);

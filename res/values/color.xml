@@ -8,9 +8,10 @@
     <color name="dark_background_opentenure">#B7CBA4</color>
     <color name="background_tab_pressed">#6633B5E5</color>
     <color name="status_created">#217C95</color>
-    <color name="status_unmoderated">#FF9D36</color>   
+    <color name="status_unmoderated">#FFE900</color>   
     <color name="status_challenged">#CC0000</color>   
-    <color name="status_moderated">#00DB00</color>
+    <color name="status_moderated">#4EAD00</color>
+    <color name="status_reviewed">#7BC261</color>
     <color name="status_withdrawn">#722E1E</color> 
-    <color name="community_area">#722A1A</color>   
+    <color name="community_area">#722A1A</color>
 </resources>
