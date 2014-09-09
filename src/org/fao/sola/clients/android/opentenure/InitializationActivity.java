@@ -39,10 +39,12 @@ import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
@@ -100,7 +102,14 @@ public class InitializationActivity extends Activity {
 		}else{
 			Log.d(this.getClass().getName(), "db not encrypted");
 			checkPerformDbUpgrades();
-			new StartOpenTenure().execute();
+			StartOpenTenure start = new StartOpenTenure();
+			SharedPreferences OpenTenurePreferences = PreferenceManager
+					.getDefaultSharedPreferences(this);
+			String formUrl = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.FORM_URL_PREF,
+					"http://192.168.1.101:8080/DynamicFormGeneration/templateServlet");
+			start.setFormUrl(formUrl);
+			start.execute();
 		}
 		
 	}
@@ -119,6 +128,18 @@ public class InitializationActivity extends Activity {
 		
 	}
 	private class StartOpenTenure extends AsyncTask<Void, Void, Void> {
+		
+		private String formUrl;
+		public void setFormUrl(String formUrl) {
+			this.formUrl = formUrl;
+		}
+
+		public void setCommunityServerBaseUrl(String communityServerBaseUrl) {
+			this.communityServerBaseUrl = communityServerBaseUrl;
+		}
+
+		private String communityServerBaseUrl;
+		
 
 		@Override
 		protected void onPreExecute() {
@@ -175,6 +196,7 @@ public class InitializationActivity extends Activity {
 				Log.d(this.getClass().getName(), "starting tasks for form retrieval");
 
 				FormRetriever formRetriever = new FormRetriever();
+				formRetriever.setFormUrl(formUrl);
 				formRetriever.execute();
 			}
 			

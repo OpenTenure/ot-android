@@ -1,0 +1,46 @@
+package org.fao.sola.clients.android.opentenure.form.constraint;
+
+import java.text.MessageFormat;
+
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldType;
+import org.fao.sola.clients.android.opentenure.form.FieldValue;
+import org.fao.sola.clients.android.opentenure.form.FieldValueType;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
+
+@JsonTypeName("NotNullConstraint")
+public class NotNullConstraint extends FieldConstraint {
+
+	public NotNullConstraint(){
+		super();
+		type=FieldConstraintType.NOT_NULL;
+		addApplicableType(FieldType.DATE);
+		addApplicableType(FieldType.DECIMAL);
+		addApplicableType(FieldType.DOCUMENT);
+		addApplicableType(FieldType.GEOMETRY);
+		addApplicableType(FieldType.INTEGER);
+		addApplicableType(FieldType.SNAPSHOT);
+		addApplicableType(FieldType.TEXT);
+		addApplicableType(FieldType.TIME);
+		this.errorMsg = "Value of {0} is mandatory";
+	}
+
+	public NotNullConstraint(NotNullConstraint nnc){
+		super(nnc);
+	}
+
+	@Override
+	public boolean check(FieldValue fieldValue) {
+		displayErrorMsg = null;
+		if(fieldValue == null
+				|| (fieldValue.getBooleanPayload()==null && fieldValue.getType() == FieldValueType.BOOL)
+				|| (fieldValue.getBigDecimalPayload()==null && fieldValue.getType() == FieldValueType.NUMBER)
+				|| (fieldValue.getStringPayload()==null && fieldValue.getType() == FieldValueType.TEXT)){
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName);
+			return false;
+		}
+		return true;
+	}
+}
