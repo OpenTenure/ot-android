@@ -145,7 +145,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 		}
 
-		if (!Person.getIdsWithClaims().contains(person.getPersonId())
+		if (person!= null && !Person.getIdsWithClaims().contains(person.getPersonId())
 				&& !Person.getIdsWithShares().contains(person.getPersonId())
 				&& mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 

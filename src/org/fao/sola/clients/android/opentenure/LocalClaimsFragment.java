@@ -348,6 +348,8 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	public void refresh() {
+		
+		System.out.println("REFRESH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 		update();
 	}

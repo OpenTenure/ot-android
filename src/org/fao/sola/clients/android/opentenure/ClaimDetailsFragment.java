@@ -607,6 +607,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+		claim.setVersion("0");
 
 		if (claim.create() == 1) {
 

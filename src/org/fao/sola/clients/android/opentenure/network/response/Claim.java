@@ -42,7 +42,17 @@ public class Claim {
 		this.statusCode = statusCode;
 	}
 	
+	public String getVersion() {
+		return version;
+	}
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+
+
 	String id ;
 	String statusCode;
+	String version;
 
 }

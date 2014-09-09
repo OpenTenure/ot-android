@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment;
@@ -50,21 +49,19 @@ import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
-import org.fao.sola.clients.android.opentenure.network.GetClaims;
-import org.fao.sola.clients.android.opentenure.network.GetClaimsTask;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import android.util.Log;
 
 public class SaveDownloadedClaim {
 
+	/**
+	 * 
+	 * Parsing the downloaded Claim and saving it to DB
+	 **/
+
 	public static boolean save(Claim downloadedClaim) {
-		/**
-		 * 
-		 * Parsing the downloaded Claim and saving it to DB
-		 * 
-		 **/
+
 		TimeZone tz = TimeZone.getTimeZone("UTC");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		sdf.setTimeZone(tz);
@@ -99,10 +96,8 @@ public class SaveDownloadedClaim {
 		// }
 
 		/*
-		 * First of all che if claim is challenged In case of challenge, need to
-		 * download ad save the claim challenging
-		 * 
-		 * 
+		 * First of all cheks if claim is challenging another claim. In case of
+		 * challenge, need to download ad save the claim challenged
 		 * 
 		 * 
 		 * We should set the challenged claim but if is not in the right order
@@ -113,7 +108,7 @@ public class SaveDownloadedClaim {
 				&& !downloadedClaim.getChallengedClaimId().equals("")) {
 
 			/*
-			 * The downloaded claim gat a challenging . Check if the challenging
+			 * The downloaded claim got a challenging . Check if the challenged
 			 * is already present locally
 			 */
 			org.fao.sola.clients.android.opentenure.model.Claim challenged = org.fao.sola.clients.android.opentenure.model.Claim
@@ -121,12 +116,8 @@ public class SaveDownloadedClaim {
 			if (challenged == null) {
 				/*
 				 * here the case in which the claim challenged is not already
-				 * present locally
-				 */
-
-				/*
-				 * Making a call to GetClaimsTask to retrieve the challenged
-				 * claim
+				 * present locally. Making a call to GetClaimsTask to retrieve
+				 * the challenged claim
 				 */
 
 				try {
@@ -229,6 +220,7 @@ public class SaveDownloadedClaim {
 			claimDB.setLandUse(downloadedClaim.getLandUseCode());
 			claimDB.setNotes(downloadedClaim.getNotes());
 			claimDB.setRecorderName(downloadedClaim.getRecorderName());
+			claimDB.setVersion(downloadedClaim.getVersion());
 
 			if (downloadedClaim.getStartDate() != null) {
 				date = sdf.parse(downloadedClaim.getStartDate());
@@ -266,7 +258,11 @@ public class SaveDownloadedClaim {
 					.getEastAdjacency());
 			adjacenciesNotes.setWestAdjacency(downloadedClaim
 					.getWestAdjacency());
-			adjacenciesNotes.create();
+
+			if (AdjacenciesNotes.getAdjacenciesNotes(downloadedClaim.getId()) == null)
+				adjacenciesNotes.create();
+			else
+				AdjacenciesNotes.updateAdjacenciesNotes(adjacenciesNotes);
 
 			if (downloadedClaim.getGpsGeometry().startsWith("POINT"))
 				Vertex.storeWKT(claimDB.getClaimId(),
@@ -298,13 +294,25 @@ public class SaveDownloadedClaim {
 				attachmentDB.setFileType(attachment.getTypeCode());
 				attachmentDB.setMD5Sum(attachment.getMd5());
 				attachmentDB.setMimeType(attachment.getMimeType());
-				attachmentDB.setPath("");
 				attachmentDB.setStatus(AttachmentStatus._UPLOADED);
 				attachmentDB.setSize(attachment.getSize());
 
-				org.fao.sola.clients.android.opentenure.model.Attachment
-						.createAttachment(attachmentDB);
+				org.fao.sola.clients.android.opentenure.model.Attachment alreadyPresent = org.fao.sola.clients.android.opentenure.model.Attachment
+						.getAttachment(attachment.getId());
 
+				if (alreadyPresent == null) {
+
+					attachmentDB.setPath("");
+
+					org.fao.sola.clients.android.opentenure.model.Attachment
+							.createAttachment(attachmentDB);
+				} else {
+
+					attachmentDB.setPath(alreadyPresent.getPath());
+
+					org.fao.sola.clients.android.opentenure.model.Attachment
+							.updateAttachment(attachmentDB);
+				}
 			}
 
 			List<Location> locations = downloadedClaim.getLocations();
@@ -327,6 +335,32 @@ public class SaveDownloadedClaim {
 
 			List<Share> shares = downloadedClaim.getShares();
 
+			List<ShareProperty> localShares = ShareProperty
+					.getShares(downloadedClaim.getId());
+			for (Iterator iterator = localShares.iterator(); iterator.hasNext();) {
+				ShareProperty shareProperty = (ShareProperty) iterator.next();
+
+				if (shares.indexOf(shareProperty) == -1) {
+					/*
+					 * In this case the share shall be removed togheter with his
+					 * owners
+					 */
+
+					List<Owner> owners = Owner.getOwners(shareProperty.getId());
+					for (Iterator iterator2 = owners.iterator(); iterator2
+							.hasNext();) {
+						Owner owner = (Owner) iterator2.next();
+						Person personTD = Person.getPerson(owner.getPersonId());
+						owner.delete();
+						personTD.delete();
+					}
+
+					shareProperty.deleteShare();
+
+				}
+
+			}
+
 			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
 				Share share = (Share) iterator.next();
 
@@ -343,6 +377,26 @@ public class SaveDownloadedClaim {
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Person> sharePersons = share
 						.getOwners();
+
+				if (ShareProperty.getShare(share.getId()) != null) {
+					List<Owner> localOwners = Owner.getOwners(share.getId());
+
+					for (Iterator iteratorT = localOwners.iterator(); iteratorT
+							.hasNext();) {
+						Owner ownerT = (Owner) iteratorT.next();
+
+						if (sharePersons.indexOf(ownerT) == -1) {
+							Person personTBD = Person.getPerson(ownerT
+									.getPersonId());
+
+							ownerT.delete();
+							personTBD.delete();
+
+						}
+
+					}
+
+				}
 
 				for (Iterator iterator2 = sharePersons.iterator(); iterator2
 						.hasNext();) {

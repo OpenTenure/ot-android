@@ -32,8 +32,17 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.SaveDownloadedClaim;
+import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
+import org.fao.sola.clients.android.opentenure.model.Adjacency;
+import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
@@ -66,32 +75,151 @@ public class GetClaimsTask extends
 		input.setDownloaded(0);
 
 		for (Iterator iterator = claims.iterator(); iterator.hasNext();) {
-			Claim claim = (Claim) iterator.next();
+			Claim claimToDownload = (Claim) iterator.next();
 
-			org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim downloadedClaim = CommunityServerAPI
-					.getClaim(claim.getId());
+			/* For each claim downloadable check the status and the version */
 
-			if (downloadedClaim == null) {
-				success = false;
+			org.fao.sola.clients.android.opentenure.model.Claim claim = org.fao.sola.clients.android.opentenure.model.Claim
+					.getClaim(claimToDownload.getId());
 
-			} else {
-				success = SaveDownloadedClaim.save(downloadedClaim);
-			}
+			if (claim != null
+					&& (claimToDownload.getStatusCode().equals(
+							ClaimStatus._WITHDRAWN) || claimToDownload
+							.getStatusCode().equals(ClaimStatus._REJECTED))) {
 
-			if (success == false) {
+				/* In this case the claim will be removed locally */
+				Log.d(this.getClass().getName(), "The claim  "
+						+ claimToDownload.getId() + " should be deleted");
 
-				input.setResult(success);
-				i++;
+				List<ShareProperty> list = ShareProperty.getShares(claim
+						.getClaimId());
 
-			} else {
+				for (Iterator iterator2 = list.iterator(); iterator2.hasNext();) {
+					ShareProperty share = (ShareProperty) iterator2.next();
+					share.deleteShare();
+					List<Owner> OwnersTBD = Owner.getOwners(share.getId());
+					for (Iterator iteratorT = OwnersTBD.iterator(); iteratorT
+							.hasNext();) {
+						Owner owner = (Owner) iteratorT.next();
+						Person personTBD = Person
+								.getPerson(owner.getPersonId());
+						owner.delete();
+						personTBD.delete();
+
+					}
+				}
+
+				List<Vertex> vertexList = claim.getVertices();
+				for (Iterator iterator2 = vertexList.iterator(); iterator2
+						.hasNext();) {
+					Vertex vertex = (Vertex) iterator2.next();
+					vertex.delete();
+				}
+
+				List<Attachment> attachments = claim.getAttachments();
+
+				for (Iterator iterator2 = attachments.iterator(); iterator2
+						.hasNext();) {
+					Attachment attachment = (Attachment) iterator2.next();
+
+					attachment.delete();
+
+				}
+
+				List<PropertyLocation> locations = claim.getPropertyLocations();
+				for (Iterator iterator2 = locations.iterator(); iterator2
+						.hasNext();) {
+					PropertyLocation location = (PropertyLocation) iterator2
+							.next();
+					location.delete();
+				}
+
+				List<Adjacency> adjacencies = Adjacency.getAdjacencies(claim
+						.getClaimId());
+				for (Iterator iterator2 = adjacencies.iterator(); iterator2
+						.hasNext();) {
+					Adjacency adjacency = (Adjacency) iterator2.next();
+
+					adjacency.delete();
+
+				}
+
+				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
+						.getAdjacenciesNotes(claim.getClaimId());
+				if (adjacenciesNotes != null)
+					adjacenciesNotes.delete();
+
+				if (claim.delete() != 0) {
+
+					FileSystemUtilities.deleteClaim(claim.getClaimId());
+				}
 
 				i++;
 				input.setDownloaded(input.getDownloaded() + 1);
 				publishProgress(input);
 
 			}
+			if (claim == null
+					&& (claimToDownload.getStatusCode().equals(
+							ClaimStatus._WITHDRAWN) || claimToDownload
+							.getStatusCode().equals(ClaimStatus._REJECTED))) {
 
+				Log.d(this.getClass().getName(),
+						"The claim in not present locally  "
+								+ claimToDownload.getId()
+								+ "but shall not be downloaded");
+
+				/*
+				 * In this case the claim is not present locally and due is
+				 * stage the client does not have to retrieve it
+				 */
+
+				i++;
+				input.setDownloaded(input.getDownloaded() + 1);
+				publishProgress(input);
+
+			} else if ((claim == null)
+					|| (!claimToDownload.getVersion()
+							.equals(claim.getVersion()))) {
+
+				Log.d(this.getClass().getName(), "The claim  "
+						+ claimToDownload.getId() + " shall be downloaded");
+
+				org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim downloadedClaim = CommunityServerAPI
+						.getClaim(claimToDownload.getId());
+
+				if (downloadedClaim == null) {
+					success = false;
+
+				} else {
+					success = SaveDownloadedClaim.save(downloadedClaim);
+				}
+
+				if (success == false) {
+
+					input.setResult(success);
+					i++;
+
+				} else {
+
+					i++;
+					input.setDownloaded(input.getDownloaded() + 1);
+					publishProgress(input);
+
+				}
+
+			}
+
+			else {
+				Log.d(this.getClass().getName(), "The claim  "
+						+ claimToDownload.getId() + " shall not be downloaded");
+
+				i++;
+				input.setDownloaded(input.getDownloaded() + 1);
+				publishProgress(input);
+			}
 		}
+
 		return input;
 
 	}
@@ -126,14 +254,15 @@ public class GetClaimsTask extends
 
 		if (input.isResult()) {
 
+			OpenTenureApplication.getMapFragment().refreshMap();
+			OpenTenureApplication.getPersonsFragment().refresh();
+
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
 							.getString(R.string.message_claims_downloaded),
 					Toast.LENGTH_LONG);
-			toast.show();
 
-			OpenTenureApplication.getMapFragment().refreshMap();
-			OpenTenureApplication.getPersonsFragment().refresh();
+			toast.show();
 
 			View mapView = input.getMapView();
 
@@ -158,8 +287,7 @@ public class GetClaimsTask extends
 							.getString(
 									R.string.message_error_downloading_claims),
 					input.getDownloaded());
-			
-			
+
 			OpenTenureApplication.getMapFragment().refreshMap();
 			OpenTenureApplication.getPersonsFragment().refresh();
 

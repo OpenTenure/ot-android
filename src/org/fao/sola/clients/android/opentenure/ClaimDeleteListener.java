@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
+import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -68,9 +69,12 @@ public class ClaimDeleteListener implements OnClickListener {
 		// TODO Auto-generated method stub
 
 		final Claim claim = Claim.getClaim(claimId);
+		boolean onlyLocal = true;
 
 		if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
-				|| claim.getStatus().equals(ClaimStatus._CHALLENGED)) {
+				|| claim.getStatus().equals(ClaimStatus._CHALLENGED)
+				|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)
+				|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)) {
 			if (!OpenTenureApplication.isLoggedin()) {
 
 				Toast toast = Toast.makeText(v.getContext(),
@@ -78,175 +82,214 @@ public class ClaimDeleteListener implements OnClickListener {
 				toast.show();
 				return;
 
-			} else {
+			} else if (OpenTenureApplication.getUsername().equals(
+					claim.getRecorderName())) {
+				onlyLocal = false;
 
-				if (claimId != null) {
+			}
+		}
 
-					// Here the withdrawn case
-					// custom dialog
-					final Dialog dialog = new Dialog(v.getContext());
-					dialog.setContentView(R.layout.custom_remove_claim);
-					dialog.setTitle(R.string.withdraw_claim);
+		if (!onlyLocal) {
+			if (claimId != null) {
 
-					// Confirm Dialog
-					TextView message = (TextView) dialog
-							.findViewById(R.id.remove_quest);
-					message.setTextSize(30);
+				// Here the withdrawn case
+				// custom dialog
+				final Dialog dialog = new Dialog(v.getContext());
+				dialog.setContentView(R.layout.custom_remove_claim);
+				dialog.setTitle(R.string.withdraw_claim);
 
-					// Confirm Button
+				// Confirm Dialog
+				TextView message = (TextView) dialog
+						.findViewById(R.id.remove_quest);
+				message.setTextSize(30);
 
-					final Button confirmButton = (Button) dialog
-							.findViewById(R.id.ClaimWithdrawnConfirm);
-					confirmButton.setText(R.string.confirm);
+				// Confirm Button
 
-					confirmButton
-							.setOnClickListener(new View.OnClickListener() {
+				final Button confirmButton = (Button) dialog
+						.findViewById(R.id.ClaimWithdrawnConfirm);
+				confirmButton.setText(R.string.confirm);
 
-								@Override
-								public void onClick(View v) {
-									// TODO Auto-generated method stub
+				confirmButton.setOnClickListener(new View.OnClickListener() {
 
-									// Here the community server call
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
 
-									WithdrawClaimTask wdc = new WithdrawClaimTask();
-									wdc.execute(claimId);
+						// Here the community server call
 
-									dialog.dismiss();
+						WithdrawClaimTask wdc = new WithdrawClaimTask();
+						wdc.execute(claimId);
 
-								}
-							});
+						dialog.dismiss();
 
-					// Delete locally Button
+					}
+				});
 
-					final Button deleteLocally = (Button) dialog
-							.findViewById(R.id.ClaimDeleteLocally);
-					deleteLocally.setText(R.string.delete_locally);
+				// Delete locally Button
 
-					deleteLocally
-							.setOnClickListener(new View.OnClickListener() {
+				final Button deleteLocally = (Button) dialog
+						.findViewById(R.id.ClaimDeleteLocally);
+				deleteLocally.setText(R.string.delete_locally);
 
-								@Override
-								public void onClick(View v) {
-									// TODO Auto-generated method stub
+				deleteLocally.setOnClickListener(new View.OnClickListener() {
 
-									List<ShareProperty> list = ShareProperty.getShares(claimId);
-									for (Iterator iterator = list.iterator(); iterator
-											.hasNext();) {
-										ShareProperty share = (ShareProperty) iterator.next();
-										share.deleteShare();
-									}
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
 
-									List<Vertex> vertexList = claim
-											.getVertices();
-									for (Iterator iterator = vertexList
-											.iterator(); iterator.hasNext();) {
-										Vertex vertex = (Vertex) iterator
-												.next();
-										vertex.delete();
-									}
+						Person claimant = claim.getPerson();
 
-									List<Attachment> attachments = claim
-											.getAttachments();
+						List<ShareProperty> list = ShareProperty
+								.getShares(claimId);
+						for (Iterator iterator = list.iterator(); iterator
+								.hasNext();) {
+							ShareProperty share = (ShareProperty) iterator
+									.next();
 
-									for (Iterator iterator = attachments
-											.iterator(); iterator.hasNext();) {
-										Attachment attachment = (Attachment) iterator
-												.next();
+							List<Owner> owners = Owner.getOwners(share.getId());
 
-										attachment.delete();
+							share.deleteShare();
 
-									}
-									
-									List<PropertyLocation> locations = claim.getPropertyLocations();
-									for (Iterator iterator = locations.iterator(); iterator
-											.hasNext();) {
-										PropertyLocation location = (PropertyLocation) iterator.next();
-										location.delete();
-									}
+							if (!claim.getStatus().equals(ClaimStatus._CREATED)
+									&& !claim.getStatus().equals(
+											ClaimStatus._UPLOAD_INCOMPLETE)
+									&& !claim.getStatus().equals(
+											ClaimStatus._UPLOAD_ERROR)) {
 
-									List<Adjacency> adjacencies = Adjacency
-											.getAdjacencies(claimId);
-									for (Iterator iterator = adjacencies
-											.iterator(); iterator.hasNext();) {
-										Adjacency adjacency = (Adjacency) iterator
-												.next();
+								for (Iterator iteratorO = owners.iterator(); iteratorO
+										.hasNext();) {
+									Owner owner = (Owner) iteratorO.next();
 
-										adjacency.delete();
-
-									}
-									
-									AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
-									if(adjacenciesNotes != null)
-										adjacenciesNotes.delete();
-
-									if (claim.delete() != 0) {
-
-										FileSystemUtilities
-												.deleteClaim(claimId);
-
-										OpenTenureApplication
-												.getLocalClaimsFragment()
-												.refresh();
-
-										dialog.dismiss();
-
-										Toast toast = Toast.makeText(
-												OpenTenureApplication
-														.getContext(),
-												OpenTenureApplication
-														.getContext()
-														.getResources()
-														.getString(
-																R.string.message_deleted_claim),
-												Toast.LENGTH_LONG);
-										toast.show();
-
-									} else {
-										
-										Toast toast = Toast.makeText(
-												OpenTenureApplication
-														.getContext(),
-												OpenTenureApplication
-														.getContext()
-														.getResources()
-														.getString(
-																R.string.message_deleted_claim),
-												Toast.LENGTH_LONG);
-										toast.show();
-										
-									}
+									Person person = Person.getPerson(owner
+											.getPersonId());
+									owner.delete();
+									person.delete();
 
 								}
-							});
 
-					// Cancel Button
+							}
 
-					final Button cancelButton = (Button) dialog
-							.findViewById(R.id.ClaimWithdrawnDelete);
-					cancelButton.setText(R.string.cancel);
+						}
 
-					cancelButton.setOnClickListener(new View.OnClickListener() {
+						List<Vertex> vertexList = claim.getVertices();
+						for (Iterator iterator = vertexList.iterator(); iterator
+								.hasNext();) {
+							Vertex vertex = (Vertex) iterator.next();
+							vertex.delete();
+						}
 
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
+						List<Attachment> attachments = claim.getAttachments();
+
+						for (Iterator iterator = attachments.iterator(); iterator
+								.hasNext();) {
+							Attachment attachment = (Attachment) iterator
+									.next();
+
+							attachment.delete();
+
+						}
+
+						List<PropertyLocation> locations = claim
+								.getPropertyLocations();
+						for (Iterator iterator = locations.iterator(); iterator
+								.hasNext();) {
+							PropertyLocation location = (PropertyLocation) iterator
+									.next();
+							location.delete();
+						}
+
+						List<Adjacency> adjacencies = Adjacency
+								.getAdjacencies(claimId);
+						for (Iterator iterator = adjacencies.iterator(); iterator
+								.hasNext();) {
+							Adjacency adjacency = (Adjacency) iterator.next();
+
+							adjacency.delete();
+
+						}
+
+						AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
+								.getAdjacenciesNotes(claimId);
+						if (adjacenciesNotes != null)
+							adjacenciesNotes.delete();
+
+						if (claim.delete() != 0) {
+
+							FileSystemUtilities.deleteClaim(claimId);
 
 							dialog.dismiss();
 
+							/*
+							 * Finally delete the claimant if is the case
+							 */
+
+							if (!claim.getStatus().equals(ClaimStatus._CREATED)
+									&& !claim.getStatus().equals(
+											ClaimStatus._UPLOAD_INCOMPLETE)
+									&& !claim.getStatus().equals(
+											ClaimStatus._UPLOAD_ERROR))
+								claimant.delete();
+							
+							OpenTenureApplication.getLocalClaimsFragment()
+							.refresh();
+
+
+							Toast toast = Toast.makeText(
+									OpenTenureApplication.getContext(),
+									OpenTenureApplication
+											.getContext()
+											.getResources()
+											.getString(
+													R.string.message_deleted_claim),
+									Toast.LENGTH_LONG);
+							toast.show();
+							
+							
+						} else {
+
+							Toast toast = Toast.makeText(
+									OpenTenureApplication.getContext(),
+									OpenTenureApplication
+											.getContext()
+											.getResources()
+											.getString(
+													R.string.message_error_deleting_claim),
+									Toast.LENGTH_LONG);
+							toast.show();
+
 						}
-					});
 
-					dialog.show();
-				} else {
-					Toast toast = Toast.makeText(v.getContext(),
-							R.string.message_save_claim_before_submit,
-							Toast.LENGTH_SHORT);
-					toast.show();
-				}
+					}
+				});
 
+				// Cancel Button
+
+				final Button cancelButton = (Button) dialog
+						.findViewById(R.id.ClaimWithdrawnDelete);
+				cancelButton.setText(R.string.cancel);
+
+				cancelButton.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+
+						dialog.dismiss();
+
+					}
+				});
+
+				dialog.show();
+			} else {
+				Toast toast = Toast.makeText(v.getContext(),
+						R.string.message_save_claim_before_submit,
+						Toast.LENGTH_SHORT);
+				toast.show();
 			}
 
-		} else {
+		}
+
+		else {
 
 			AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
 
@@ -259,25 +302,38 @@ public class ClaimDeleteListener implements OnClickListener {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							// TODO Auto-generated method stub
-							
-							
 
-							List<ShareProperty> list = ShareProperty.getShares(claimId);
+							List<ShareProperty> list = ShareProperty
+									.getShares(claimId);
+							
 							for (Iterator iterator = list.iterator(); iterator
 									.hasNext();) {
-								ShareProperty share = (ShareProperty) iterator.next();
-								
-								
-								List<Owner> owers = Owner.getOwners(share.getId());
-								
-								for (Iterator iterator2 = owers.iterator(); iterator2
-										.hasNext();) {
-									Owner owner = (Owner) iterator2.next();
-									owner.delete();
-									
-								}
-								
+								ShareProperty share = (ShareProperty) iterator
+										.next();
+
+								List<Owner> owners = Owner.getOwners(share.getId());
+
 								share.deleteShare();
+
+								if (!claim.getStatus().equals(ClaimStatus._CREATED)
+										&& !claim.getStatus().equals(
+												ClaimStatus._UPLOAD_INCOMPLETE)
+										&& !claim.getStatus().equals(
+												ClaimStatus._UPLOAD_ERROR)) {
+
+									for (Iterator iteratorO = owners.iterator(); iteratorO
+											.hasNext();) {
+										Owner owner = (Owner) iteratorO.next();
+
+										Person person = Person.getPerson(owner
+												.getPersonId());
+										owner.delete();
+										person.delete();
+
+									}
+
+								}
+
 							}
 
 							List<Vertex> vertexList = claim.getVertices();
@@ -286,11 +342,13 @@ public class ClaimDeleteListener implements OnClickListener {
 								Vertex vertex = (Vertex) iterator.next();
 								vertex.delete();
 							}
-							
-							List<PropertyLocation> locations = claim.getPropertyLocations();
+
+							List<PropertyLocation> locations = claim
+									.getPropertyLocations();
 							for (Iterator iterator = locations.iterator(); iterator
 									.hasNext();) {
-								PropertyLocation location = (PropertyLocation) iterator.next();
+								PropertyLocation location = (PropertyLocation) iterator
+										.next();
 								location.delete();
 							}
 
@@ -316,26 +374,34 @@ public class ClaimDeleteListener implements OnClickListener {
 								adjacency.delete();
 
 							}
-							
-							AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes.getAdjacenciesNotes(claimId);
-							if(adjacenciesNotes != null)
-								adjacenciesNotes.delete();			
-							
-							
+
+							AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
+									.getAdjacenciesNotes(claimId);
+							if (adjacenciesNotes != null)
+								adjacenciesNotes.delete();
+
+							Person claimant = claim.getPerson();
+
 							if (claim.delete() != 0) {
 
-								FileSystemUtilities
-										.deleteClaim(claimId);
-
-								OpenTenureApplication
-										.getLocalClaimsFragment()
-										.refresh();
+								FileSystemUtilities.deleteClaim(claimId);
 
 								dialog.dismiss();
 
+								/* Finally delete claimant if is the case */
+								if (!claim.getStatus().equals(ClaimStatus._CREATED)
+										&& !claim.getStatus().equals(
+												ClaimStatus._UPLOAD_INCOMPLETE)
+										&& !claim.getStatus().equals(
+												ClaimStatus._UPLOAD_ERROR))
+									claimant.delete();
+								
+								OpenTenureApplication.getLocalClaimsFragment()
+								.refresh();
+
+
 								Toast toast = Toast.makeText(
-										OpenTenureApplication
-												.getContext(),
+										OpenTenureApplication.getContext(),
 										OpenTenureApplication
 												.getContext()
 												.getResources()
@@ -345,18 +411,17 @@ public class ClaimDeleteListener implements OnClickListener {
 								toast.show();
 
 							} else {
-								
+
 								Toast toast = Toast.makeText(
-										OpenTenureApplication
-												.getContext(),
+										OpenTenureApplication.getContext(),
 										OpenTenureApplication
 												.getContext()
 												.getResources()
 												.getString(
-														R.string.message_deleted_claim),
+														R.string.message_error_deleting_claim),
 										Toast.LENGTH_LONG);
 								toast.show();
-								
+
 							}
 
 						}
@@ -377,5 +442,4 @@ public class ClaimDeleteListener implements OnClickListener {
 		}
 
 	}
-
 }
