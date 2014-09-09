@@ -393,12 +393,16 @@ public class CommunityServerAPI {
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_GETCLAIM,
 				claimId);
 		HttpGet request = new HttpGet(url);
+		
+		CookieStore CS = OpenTenureApplication.getCoockieStore();
+		HttpContext context = new BasicHttpContext();
+		context.setAttribute(ClientContext.COOKIE_STORE, CS);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
 		/* Calling the Server.... */
 		try {
-			HttpResponse response = client.execute(request);
+			HttpResponse response = client.execute(request,context);
 
 			Log.d("CommunityServerAPI",
 					"GET Claim status line " + response.getStatusLine());

@@ -31,14 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
+import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
@@ -123,6 +127,38 @@ public class MainMapFragment extends SupportMapFragment implements
 	};
 
 	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		MenuItem itemIn;
+		MenuItem itemOut;
+
+		try {
+			Thread.sleep(400);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		Log.d(this.getClass().getName(), "Is the user logged in ? : "
+				+ OpenTenureApplication.isLoggedin());
+
+		if (OpenTenureApplication.isLoggedin()) {
+			itemIn = menu.getItem(2);
+			itemIn.setVisible(false);
+			itemOut = menu.getItem(3);
+			itemOut.setVisible(true);
+
+		} else {
+
+			itemIn = menu.getItem(2);
+			itemIn.setVisible(true);
+			itemOut = menu.getItem(3);
+			itemOut.setVisible(false);
+		}
+
+		super.onPrepareOptionsMenu(menu);
+
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -134,10 +170,11 @@ public class MainMapFragment extends SupportMapFragment implements
 				.getResources().getString(R.string.map_provider_google_normal));
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
-	    ClusteringSettings settings = new ClusteringSettings();
-	    settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
-	    settings.addMarkersDynamically(true);
-	    map.setClustering(settings);
+		ClusteringSettings settings = new ClusteringSettings();
+		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(
+				getResources()));
+		settings.addMarkersDynamically(true);
+		map.setClustering(settings);
 		reloadVisibleProperties();
 
 		lh = new LocationHelper((LocationManager) getActivity()
@@ -211,10 +248,11 @@ public class MainMapFragment extends SupportMapFragment implements
 	public void onStart() {
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
-	    ClusteringSettings settings = new ClusteringSettings();
-	    settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
-	    settings.addMarkersDynamically(true);
-	    map.setClustering(settings);
+		ClusteringSettings settings = new ClusteringSettings();
+		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(
+				getResources()));
+		settings.addMarkersDynamically(true);
+		map.setClustering(settings);
 		super.onStart();
 
 	}
@@ -413,7 +451,8 @@ public class MainMapFragment extends SupportMapFragment implements
 											.getString(R.string.title_i_m_here))
 									.icon(BitmapDescriptorFactory
 											.fromResource(R.drawable.ic_menu_mylocation)));
-					myLocation.setClusterGroup(Constants.MY_LOCATION_MARKERS_GROUP);
+					myLocation
+							.setClusterGroup(Constants.MY_LOCATION_MARKERS_GROUP);
 					lh.setCustomListener(myLocationListener);
 					isFollowing = true;
 
@@ -427,22 +466,60 @@ public class MainMapFragment extends SupportMapFragment implements
 
 		case R.id.action_download_claims:
 
-			ProgressBar bar = (ProgressBar) mapView
-					.findViewById(R.id.progress_bar);
+			if (!OpenTenureApplication.isLoggedin()) {
+				Toast toast = Toast.makeText(
+						OpenTenureApplication.getContext(),
+						R.string.message_login_before, Toast.LENGTH_LONG);
+				toast.show();
+				return true;
+			}
 
-			bar.setVisibility(View.VISIBLE);
-			bar.setProgress(0);
+			else {
+				ProgressBar bar = (ProgressBar) mapView
+						.findViewById(R.id.progress_bar);
 
-			TextView label = (TextView) mapView
-					.findViewById(R.id.download_claim_label);
-			label.setVisibility(View.VISIBLE);
+				bar.setVisibility(View.VISIBLE);
+				bar.setProgress(0);
 
-			OpenTenureApplication.setMapFragment(this);
+				TextView label = (TextView) mapView
+						.findViewById(R.id.download_claim_label);
+				label.setVisibility(View.VISIBLE);
 
-			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+				OpenTenureApplication.setMapFragment(this);
 
-			GetAllClaimsTask task = new GetAllClaimsTask();
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds, mapView);
+				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+
+				GetAllClaimsTask task = new GetAllClaimsTask();
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
+						mapView);
+
+				return true;
+			}
+		case R.id.action_login:
+
+			OpenTenureApplication.setActivity(getActivity());
+
+			Context context = getActivity().getApplicationContext();
+			Intent intent2 = new Intent(context, LoginActivity.class);
+			startActivity(intent2);
+
+			OpenTenureApplication.setActivity(getActivity());
+
+			return false;
+
+		case R.id.action_logout:
+
+			try {
+
+				LogoutTask logoutTask = new LogoutTask();
+
+				logoutTask.execute(getActivity());
+
+			} catch (Exception e) {
+				Log.d("Details", "An error ");
+
+				e.printStackTrace();
+			}
 
 			return true;
 		default:
@@ -564,7 +641,7 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	public void refreshMap() {
-		
+
 		hideVisibleProperties();
 
 		allClaims = Claim.getAllClaims();
@@ -574,21 +651,17 @@ public class MainMapFragment extends SupportMapFragment implements
 					mapView.getContext(), map, claim));
 		}
 
-		
 		showVisibleProperties();
 		drawAreaOfInterest();
-		//redrawVisibleProperties();
-		
-		
+		// redrawVisibleProperties();
 
 		return;
 	}
-	
-	private void drawAreaOfInterest(){
+
+	private void drawAreaOfInterest() {
 		CommunityArea area = new CommunityArea(map);
 		area.drawInterestArea();
-		
-		
+
 	}
 
 }
