@@ -28,18 +28,16 @@
 package org.fao.sola.clients.android.opentenure.form.server;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
+import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 
 public class FormRetriever extends AsyncTask<Void, Void, Void> {
 
@@ -48,45 +46,15 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 		this.formUrl = formUrl;
 	}
 
-	private static final String file = "form.json";
-
 	public FormRetriever() {
 	}
 	
-	public static FormTemplate getTemplate(){
-        StringBuffer buffer = new StringBuffer();
-        String dir = Environment.getExternalStorageDirectory()+"/Open Tenure/forms/";
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(dir+file));
-            String line;
-            while ((line = br.readLine()) != null) {
-                buffer.append(line);
-            }
-            return FormTemplate.fromJson(buffer.toString());
-        } catch (IOException e) {
-            return null;
-        } catch (OutOfMemoryError e) {
-            return null;
-        } finally {
-            if (br != null) try { br.close(); } catch (Exception ignored) {}
-        }
-
-	}
-
 	protected void onPreExecute() {
 	}
 
 	protected Void doInBackground(Void... params) {
 
-		FileOutputStream fos = null;
 		InputStream is = null;
-
-		String dir = Environment.getExternalStorageDirectory()+"/Open Tenure/forms/";
-		File formDir = new File(dir);
-		formDir.mkdirs();
-
-		File outputFile = new File(dir, file);
 
 		try {
 
@@ -94,22 +62,14 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 			HttpURLConnection c = (HttpURLConnection) url
 					.openConnection();
 			c.connect();
-			fos = new FileOutputStream(outputFile);
 			is = c.getInputStream();
-
-			byte[] buffer = new byte[1024];
-			int len1 = 0;
-			while ((len1 = is.read(buffer)) != -1) {
-				fos.write(buffer, 0, len1);
-			}
-			fos.close();
+			String body = getBody(is);
+			FormTemplate ft = FormTemplate.fromJson(body);
+			SurveyFormTemplate.saveFormTemplate(ft);
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if(fos!=null){
-				try {fos.close();} catch (IOException ignore) {}
-			}
 			if (is != null) {
 				try {
 					is.close();
@@ -119,6 +79,40 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 		}
 		return null;
 
+	}
+
+	private String getBody(InputStream inputStream) throws IOException {
+
+		String body = null;
+		StringBuilder stringBuilder = new StringBuilder();
+		BufferedReader bufferedReader = null;
+
+		try {
+			if (inputStream != null) {
+				bufferedReader = new BufferedReader(new InputStreamReader(
+						inputStream));
+				char[] charBuffer = new char[128];
+				int bytesRead = -1;
+				while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+					stringBuilder.append(charBuffer, 0, bytesRead);
+				}
+			} else {
+				stringBuilder.append("");
+			}
+		} catch (IOException ex) {
+			throw ex;
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (IOException ex) {
+					throw ex;
+				}
+			}
+		}
+
+		body = stringBuilder.toString();
+		return body;
 	}
 
 	protected void onPostExecute(String result) {

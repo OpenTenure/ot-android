@@ -38,15 +38,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 
-public class Configuration {
+public class SurveyFormTemplate {
+	
+	private static final String default_template = "template";
 
-	public String getConfigurationId() {
-		return configurationId;
+	public String getSurveyFormTemplateId() {
+		return surveyFormTemplateId;
 	}
 
-	public void setConfigurationId(String configurationId) {
-		this.configurationId = configurationId;
+	public void setSurveyFormTemplateId(String surveyFormTemplateId) {
+		this.surveyFormTemplateId = surveyFormTemplateId;
 	}
 
 	public String getName() {
@@ -65,17 +68,17 @@ public class Configuration {
 		this.value = value;
 	}
 
-	String configurationId;
+	String surveyFormTemplateId;
 	String name;
 	String value;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Configuration() {
-		this.configurationId = UUID.randomUUID().toString();
+	public SurveyFormTemplate() {
+		this.surveyFormTemplateId = UUID.randomUUID().toString();
 	}
 
-	public static int createConfiguration(Configuration cfg) {
+	public static int createSurveyFormTemplate(SurveyFormTemplate cfg) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -85,8 +88,8 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, cfg.getConfigurationId());
+					.prepareStatement("INSERT INTO SURVEY_FORM_TEMPLATE(SURVEY_FORM_TEMPLATE_ID, NAME, VALUE) VALUES (?,?,?)");
+			statement.setString(1, cfg.getSurveyFormTemplateId());
 			statement.setString(2, cfg.getName());
 			statement.setCharacterStream(3, new StringReader(cfg.getValue()));
 			result = statement.executeUpdate();
@@ -120,8 +123,8 @@ public class Configuration {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("INSERT INTO SURVEY_FORM_TEMPLATE(SURVEY_FORM_TEMPLATE_ID, NAME, VALUE) VALUES (?,?,?)");
+			statement.setString(1, getSurveyFormTemplateId());
 			statement.setString(2, getName());
 			statement.setCharacterStream(3, new StringReader(getValue()));
 			result = statement.executeUpdate();
@@ -147,7 +150,7 @@ public class Configuration {
 		return result;
 	}
 
-	public static int deleteConfiguration(Configuration cfg) {
+	public static int deleteSurveyFormTemplate(SurveyFormTemplate cfg) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -157,8 +160,8 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, cfg.getConfigurationId());
+					.prepareStatement("DELETE SURVEY_FORM_TEMPLATE WHERE SURVEY_FORM_TEMPLATE_ID=?");
+			statement.setString(1, cfg.getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -191,8 +194,8 @@ public class Configuration {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("DELETE SURVEY_FORM_TEMPLATE WHERE SURVEY_FORM_TEMPLATE_ID=?");
+			statement.setString(1, getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -215,7 +218,7 @@ public class Configuration {
 		return result;
 	}
 
-	public static int updateConfiguration(Configuration cfg) {
+	public static int updateSurveyFormTemplate(SurveyFormTemplate cfg) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -225,10 +228,10 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
+					.prepareStatement("UPDATE SURVEY_FORM_TEMPLATE SET NAME=?, VALUE=? WHERE SURVEY_FORM_TEMPLATE_ID=?");
 			statement.setString(1, cfg.getName());
 			statement.setCharacterStream(2, new StringReader(cfg.getValue()));
-			statement.setString(3, cfg.getConfigurationId());
+			statement.setString(3, cfg.getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -260,10 +263,10 @@ public class Configuration {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
+					.prepareStatement("UPDATE SURVEY_FORM_TEMPLATE SET NAME=?, VALUE=? WHERE SURVEY_FORM_TEMPLATE_ID=?");
 			statement.setString(1, getName());
 			statement.setCharacterStream(2, new StringReader(getValue()));
-			statement.setString(3, getConfigurationId());
+			statement.setString(3, getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -286,7 +289,7 @@ public class Configuration {
 		return result;
 	}
 
-	public static String getConfigurationValue(String name) {
+	public static String getSurveyFormTemplateValue(String name) {
 		String val = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -297,12 +300,14 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
+					.prepareStatement("SELECT VALUE FROM SURVEY_FORM_TEMPLATE WHERE NAME=?");
 			statement.setString(1, name);
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				Clob clob = rs.getClob(1);
-				val = clob.getSubString(1L, (int)clob.length());
+				if(clob != null){
+					val = clob.getSubString(1L, (int)clob.length());
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -330,9 +335,14 @@ public class Configuration {
 		}
 		return val;
 	}
+	
+	public static FormTemplate getDefaultSurveyFormTemplate() {
+		return getSurveyFormTemplateByName(default_template).getFormTemplate();
+	}
 
-	public static Configuration getConfigurationByName(String name) {
-		Configuration cfg = null;
+
+	public static SurveyFormTemplate getSurveyFormTemplateByName(String name) {
+		SurveyFormTemplate cfg = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -342,15 +352,17 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.CONFIGURATION_ID, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
+					.prepareStatement("SELECT SURVEY_FORM_TEMPLATE_ID, VALUE FROM SURVEY_FORM_TEMPLATE WHERE NAME=?");
 			statement.setString(1, name);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				cfg = new Configuration();
-				cfg.setConfigurationId(rs.getString(1));
+				cfg = new SurveyFormTemplate();
+				cfg.setSurveyFormTemplateId(rs.getString(1));
 				cfg.setName(name);
 				Clob clob = rs.getClob(2);
-				cfg.setValue(clob.getSubString(1L, (int)clob.length()));
+				if(clob != null){
+					cfg.setValue(clob.getSubString(1L, (int)clob.length()));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -379,7 +391,7 @@ public class Configuration {
 		return cfg;
 	}
 
-	public static Map<String, String> getConfigurationValues() {
+	public static Map<String, String> getSurveyFormTemplateValues() {
 		Map<String, String> cfg = new HashMap<String, String>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -390,12 +402,14 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG");
+					.prepareStatement("SELECT NAME, VALUE FROM SURVEY_FORM_TEMPLATE");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				String key = rs.getString(1);
 				Clob clob = rs.getClob(2);
-				cfg.put(key, clob.getSubString(1L, (int)clob.length()));
+				if(clob != null){
+					cfg.put(key, clob.getSubString(1L, (int)clob.length()));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -424,8 +438,8 @@ public class Configuration {
 		return cfg;
 	}
 
-	public static Configuration getConfiguration(String configurationId) {
-		Configuration cfg = null;
+	public static SurveyFormTemplate getSurveyFormTemplate(String surveyFormTemplateId) {
+		SurveyFormTemplate cfg = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -435,15 +449,17 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.CONFIGURATION_ID=?");
-			statement.setString(1, configurationId);
+					.prepareStatement("SELECT NAME, VALUE FROM SURVEY_FORM_TEMPLATE WHERE SURVEY_FORM_TEMPLATE_ID=?");
+			statement.setString(1, surveyFormTemplateId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				cfg = new Configuration();
-				cfg.setConfigurationId(configurationId);
+				cfg = new SurveyFormTemplate();
+				cfg.setSurveyFormTemplateId(surveyFormTemplateId);
 				cfg.setName(rs.getString(1));
 				Clob clob = rs.getClob(2);
-				cfg.setValue(clob.getSubString(1L, (int)clob.length()));
+				if(clob != null){
+					cfg.setValue(clob.getSubString(1L, (int)clob.length()));
+				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -470,6 +486,43 @@ public class Configuration {
 			}
 		}
 		return cfg;
+	}
+	
+	public FormTemplate getFormTemplate(){
+		return FormTemplate.fromJson(value);
+	}
+
+	public static int saveFormTemplate(FormTemplate surveyFormTemplate){
+		String name = null;
+		SurveyFormTemplate sft =  null;
+		if(surveyFormTemplate != null){
+			name = surveyFormTemplate.getName();
+			sft =  SurveyFormTemplate.getSurveyFormTemplateByName(name);
+			if(sft != null){
+				sft.setValue(surveyFormTemplate.toJson());
+				return sft.update();
+			}else{
+				sft = new SurveyFormTemplate();
+				sft.setName(surveyFormTemplate.getName());
+				sft.setValue(surveyFormTemplate.toJson());
+				return sft.create();
+			}
+		}
+		return 0;
+	}
+
+	public static FormTemplate getFormTemplate(String surveyFormTemplateId){
+		SurveyFormTemplate sft = SurveyFormTemplate.getSurveyFormTemplate(surveyFormTemplateId);
+		return FormTemplate.fromJson(sft.getValue());
+	}
+
+	public static FormTemplate getFormTemplateByName(String name){
+		SurveyFormTemplate sft = SurveyFormTemplate.getSurveyFormTemplateByName(name);
+		if(sft != null){
+			return FormTemplate.fromJson(sft.getValue());
+		}else{
+			return new FormTemplate();
+		}
 	}
 
 }

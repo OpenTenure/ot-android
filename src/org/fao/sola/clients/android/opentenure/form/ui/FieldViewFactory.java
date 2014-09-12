@@ -89,7 +89,7 @@ public class FieldViewFactory {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
-				payload.getValue().setStringPayload(names.get(arg2));
+				payload.setStringPayload(names.get(arg2));
 				FieldConstraint constraint;
 				if ((constraint = field.getFailedConstraint(payload)) != null) {
 					((TextView) arg0.getChildAt(0)).setTextColor(Color.RED);
@@ -103,8 +103,6 @@ public class FieldViewFactory {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-
 			}
 		});
 		spinner.setAdapter(spinnerArrayAdapter);
@@ -134,9 +132,9 @@ public class FieldViewFactory {
 			public void afterTextChanged(Editable s) {
 
 				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.getValue().setStringPayload(null);
+					payload.setStringPayload(null);
 				} else {
-					payload.getValue().setStringPayload(s.toString());
+					payload.setStringPayload(s.toString());
 				}
 
 				FieldConstraint constraint;
@@ -183,9 +181,9 @@ public class FieldViewFactory {
 			@Override
 			public void afterTextChanged(Editable s) {
 				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.getValue().setBigDecimalPayload(null);
+					payload.setBigDecimalPayload(null);
 				} else {
-					payload.getValue().setBigDecimalPayload(
+					payload.setBigDecimalPayload(
 							new BigDecimal(Double.parseDouble(s.toString())));
 				}
 
@@ -230,7 +228,7 @@ public class FieldViewFactory {
 			@Override
 			public void onClick(View v) {
 				if (((CheckBox) v).isChecked()) {
-					payload.getValue().setBooleanPayload(Boolean.valueOf(true));
+					payload.setBooleanPayload(Boolean.valueOf(true));
 				}
 			}
 
@@ -289,9 +287,9 @@ public class FieldViewFactory {
 			public void afterTextChanged(Editable s) {
 
 				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.getValue().setStringPayload(null);
+					payload.setStringPayload(null);
 				} else {
-					payload.getValue().setStringPayload(s.toString());
+					payload.setStringPayload(s.toString());
 				}
 
 				FieldConstraint constraint;
@@ -372,9 +370,9 @@ public class FieldViewFactory {
 			public void afterTextChanged(Editable s) {
 
 				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.getValue().setStringPayload(null);
+					payload.setStringPayload(null);
 				} else {
-					payload.getValue().setStringPayload(s.toString());
+					payload.setStringPayload(s.toString());
 				}
 
 				FieldConstraint constraint;

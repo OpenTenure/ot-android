@@ -31,8 +31,8 @@ import java.text.MessageFormat;
 
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValue;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -51,15 +51,15 @@ public class IntegerConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldValue fieldValue) {
+	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		try{
-			if(fieldValue.getBigDecimalPayload()!=null){
-				fieldValue.getBigDecimalPayload().intValueExact();
+			if(fieldPayload.getBigDecimalPayload()!=null){
+				fieldPayload.getBigDecimalPayload().intValueExact();
 				return true;
 			}
 		}catch(ArithmeticException ae){
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldValue.getBigDecimalPayload());
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getBigDecimalPayload());
 			return false;
 		}
 		return true;

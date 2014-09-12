@@ -27,8 +27,15 @@
  */
 package org.fao.sola.clients.android.opentenure.form.ui;
 
-public class SectionElementListTO {
+import java.io.Serializable;
 
+public class SectionElementListTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2761205962238033240L;
+	
 	public String getName() {
 		return name;
 	}

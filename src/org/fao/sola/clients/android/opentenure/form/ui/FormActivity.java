@@ -201,9 +201,9 @@ public class FormActivity extends FragmentActivity {
 				fragment = new SectionFragment(editedForm.getSections().get(position), sectionTemplate, mode);
 			}else{
 				if(editedForm.getSections().get(position).getElements().size()==0){
-					editedForm.getSections().get(position).getElements().add(new SectionElementPayload(sectionTemplate.getElementTemplate()));
+					editedForm.getSections().get(position).getElements().add(new SectionElementPayload(sectionTemplate));
 				}
-				fragment = new SectionElementFragment(editedForm.getSections().get(position).getElements().get(0), sectionTemplate.getElementTemplate(), mode);
+				fragment = new SectionElementFragment(editedForm.getSections().get(position).getElements().get(0), sectionTemplate, mode);
 			}
 			fragmentReferences.put(position, fragment);
 			return fragment;

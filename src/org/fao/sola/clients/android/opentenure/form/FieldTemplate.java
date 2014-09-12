@@ -54,7 +54,7 @@ public class FieldTemplate {
 	@JsonIgnore
 	private String id;
 	@JsonIgnore
-	private SectionElementTemplate sectionElement;
+	private SectionTemplate section;
 	protected String name;
 	protected String displayName;
 	protected String hint;
@@ -69,12 +69,12 @@ public class FieldTemplate {
 		this.id = id;
 	}
 
-	public SectionElementTemplate getSectionElement() {
-		return sectionElement;
+	public SectionTemplate getSection() {
+		return section;
 	}
 
-	public void setSectionElement(SectionElementTemplate schema) {
-		this.sectionElement = schema;
+	public void setSection(SectionTemplate schema) {
+		this.section = schema;
 	}
 
 	public String getName() {
@@ -183,7 +183,7 @@ public class FieldTemplate {
 
 	public FieldConstraint getFailedConstraint(FieldPayload payload) {
 		for(FieldConstraint fieldConstraint : constraints){
-			if(!fieldConstraint.check(payload.getValue())){
+			if(!fieldConstraint.check(payload)){
 				return fieldConstraint;
 			}
 		}

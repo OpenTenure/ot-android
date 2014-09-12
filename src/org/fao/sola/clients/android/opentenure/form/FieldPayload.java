@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.form;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,7 +46,10 @@ public class FieldPayload {
 	protected String name;
 	protected String displayName;
 	protected FieldType type;
-	protected FieldValue value;
+	private FieldValueType valueType;
+	private String stringPayload;
+	private BigDecimal bigDecimalPayload;
+	private Boolean booleanPayload;
 	
 	public String getId() {
 		return id;
@@ -87,26 +91,50 @@ public class FieldPayload {
 		this.type = type;
 	}
 
-	public FieldValue getValue() {
-		return value;
+	public FieldValueType getValueType() {
+		return valueType;
 	}
-	
-	public void setValue(FieldValue fieldValue) {
-		if(fieldValue!=null){
-			fieldValue.setId(getId());
-			fieldValue.setField(this);
-		}
-		this.value = fieldValue;
+	public void setValueType(FieldValueType type) {
+		this.valueType = type;
 	}
+
+	public String getStringPayload() {
+		return stringPayload;
+	}
+
+	public void setStringPayload(String stringPayload) {
+		this.stringPayload = stringPayload;
+	}
+
+	public BigDecimal getBigDecimalPayload() {
+		return bigDecimalPayload;
+	}
+
+	public void setBigDecimalPayload(BigDecimal bigDecimalPayload) {
+		this.bigDecimalPayload = bigDecimalPayload;
+	}
+
+	public Boolean getBooleanPayload() {
+		return booleanPayload;
+	}
+
+	public void setBooleanPayload(Boolean booleanPayload) {
+		this.booleanPayload = booleanPayload;
+	}
+
 	
 	@Override
 	public String toString() {
 		return "FieldPayload ["
-				+ "value=" + value
+				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
-				+ ", id=" + id
-				+ ", type=" + type + "]";
+				+ ", type=" + type
+				+ ", stringPayload=" + stringPayload
+				+ ", bigDecimalPayload=" + bigDecimalPayload
+				+ ", booleanPayload=" + booleanPayload
+				+ ", valueType=" + valueType
+				+ "]";
 	}
 	
 	public FieldPayload(){
@@ -123,9 +151,18 @@ public class FieldPayload {
 			this.displayName = new String(field.getDisplayName());
 		}
 		
-		this.value = new FieldValue(field.getValue());
-
 		this.type = field.getType();
+		if(field.getStringPayload() != null){
+			this.stringPayload = new String(field.getStringPayload());
+		}
+		if(field.getBigDecimalPayload() != null){
+			this.bigDecimalPayload = new BigDecimal(field.getBigDecimalPayload().toString());
+		}
+		if(field.getBooleanPayload() != null){
+			this.booleanPayload = Boolean.valueOf(field.getBooleanPayload());
+		}
+
+		this.valueType = field.getValueType();
 	}
 
 	public FieldPayload(FieldTemplate field){
@@ -138,31 +175,31 @@ public class FieldPayload {
 		}
 		switch(field.getType()){
 		case BOOL:
-			this.value = new FieldValue(FieldValueType.BOOL);
+			this.valueType = FieldValueType.BOOL;
 			break;
 		case DATE:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		case TIME:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		case DECIMAL:
-			this.value = new FieldValue(FieldValueType.NUMBER);
+			this.valueType = FieldValueType.NUMBER;
 			break;
 		case DOCUMENT:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		case GEOMETRY:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		case INTEGER:
-			this.value = new FieldValue(FieldValueType.NUMBER);
+			this.valueType = FieldValueType.NUMBER;
 			break;
 		case SNAPSHOT:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		case TEXT:
-			this.value = new FieldValue(FieldValueType.TEXT);
+			this.valueType = FieldValueType.TEXT;
 			break;
 		}
 		this.type = field.getType();

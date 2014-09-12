@@ -40,6 +40,7 @@ import org.fao.sola.clients.android.opentenure.form.ui.SectionFragment;
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -159,7 +160,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		super.onCreate(savedInstanceState);
 		
-		formTemplate = FormRetriever.getTemplate();
+		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
 		originalForm = new FormPayload(formTemplate);
 		editedForm = new FormPayload(originalForm);
 
@@ -460,9 +461,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					fragment = new SectionFragment(editedForm.getSections().get(sectionPosition), sectionTemplate, mode);
 				}else{
 					if(editedForm.getSections().get(sectionPosition).getElements().size()==0){
-						editedForm.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate.getElementTemplate()));
+						editedForm.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedForm.getSections().get(sectionPosition).getElements().get(0), sectionTemplate.getElementTemplate(), mode);
+					fragment = new SectionElementFragment(editedForm.getSections().get(sectionPosition).getElements().get(0), sectionTemplate, mode);
 				}
 			}
 				fragmentReferences.put(position, fragment);
@@ -472,7 +473,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
-			return 7 + formTemplate.getSections().size();
+			return 7 + editedForm.getSections().size();
 		}
 
 		@Override
@@ -499,7 +500,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			case 6:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
 			default:
-				return formTemplate.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
+				return editedForm.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
 			}
 		}
 	}
@@ -511,6 +512,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			Claim claim = Claim.getClaim(claimId);
 			setTitle(getResources().getString(R.string.app_name) + ": "
 					+ claim.getName());
+			originalForm = claim.getSurveyForm();
+			editedForm = new FormPayload(originalForm);
 		}
 	}
 

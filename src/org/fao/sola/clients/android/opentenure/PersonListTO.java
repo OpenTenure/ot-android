@@ -27,7 +27,14 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-public class PersonListTO {
+import java.io.Serializable;
+
+public class PersonListTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2447003746237485759L;
+	
 	public String getId() {
 		return id;
 	}

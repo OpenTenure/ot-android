@@ -34,8 +34,8 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValue;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -64,16 +64,16 @@ public class DateTimeFormatConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldValue fieldValue) {
+	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
-			String payload = fieldValue.getStringPayload();
+			String payload = fieldPayload.getStringPayload();
 			if(payload != null){
 				sdf.parse(payload);
 			}
 		} catch (ParseException e) {
-			displayErrorMsg = MessageFormat.format(errorMsg, fieldValue.getStringPayload(), displayName, format);
+			displayErrorMsg = MessageFormat.format(errorMsg, fieldPayload.getStringPayload(), displayName, format);
 			return false;
 		}
 		return true;

@@ -35,8 +35,8 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValue;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -71,10 +71,10 @@ public class OptionConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldValue fieldValue) {
+	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptions){
-			if(fieldConstraintOption.getName().equalsIgnoreCase(fieldValue.getStringPayload())){
+			if(fieldConstraintOption.getName().equalsIgnoreCase(fieldPayload.getStringPayload())){
 				return true;
 			}
 		}
@@ -82,7 +82,7 @@ public class OptionConstraint extends FieldConstraint {
 		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptions){
 			optionValues.add(fieldConstraintOption.getName());
 		}
-		displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldValue.getStringPayload(), Arrays.toString(optionValues.toArray()));
+		displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), Arrays.toString(optionValues.toArray()));
 		return false;
 	}
 }

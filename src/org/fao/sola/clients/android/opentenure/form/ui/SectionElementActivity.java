@@ -33,12 +33,12 @@ import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
-import org.fao.sola.clients.android.opentenure.form.SectionElementTemplate;
+import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -50,7 +50,7 @@ import com.astuetz.PagerSlidingTabStrip;
 
 public class SectionElementActivity extends FragmentActivity {
 
-	public static final String SECTION_ELEMENT_TEMPLATE_KEY = "sectionElementTemplate";
+	public static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
 	public static final String SECTION_ELEMENT_PAYLOAD_KEY = "sectionElementPayload";
 	public static final String MODE_KEY = "mode";
 	public static final int SECTION_ELEMENT_ACTIVITY_RESULT = 4321;
@@ -60,7 +60,7 @@ public class SectionElementActivity extends FragmentActivity {
 	private PagerSlidingTabStrip tabs;
 	private SectionElementPayload originalElement;
 	private SectionElementPayload editedElement;
-	private SectionElementTemplate elementTemplate;
+	private SectionTemplate elementTemplate;
 	private SectionElementFragment elementFragment;
 
 	@Override
@@ -84,7 +84,7 @@ public class SectionElementActivity extends FragmentActivity {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(SECTION_ELEMENT_PAYLOAD_KEY, editedElement.toJson());
-		outState.putString(SECTION_ELEMENT_TEMPLATE_KEY, elementTemplate.toJson());
+		outState.putString(SECTION_TEMPLATE_KEY, elementTemplate.toJson());
 		super.onSaveInstanceState(outState);
 
 	}
@@ -100,7 +100,7 @@ public class SectionElementActivity extends FragmentActivity {
 			savedElement = savedInstanceState
 					.getString(SECTION_ELEMENT_PAYLOAD_KEY);
 			savedElementTemplate = savedInstanceState
-					.getString(SECTION_ELEMENT_TEMPLATE_KEY);
+					.getString(SECTION_TEMPLATE_KEY);
 		}
 
 		String intentElement = getIntent().getExtras().getString(
@@ -115,14 +115,14 @@ public class SectionElementActivity extends FragmentActivity {
 		} else {
 			editedElement = new SectionElementPayload(originalElement);
 		}
-		String intentElementTemplate = getIntent().getExtras().getString(
-				SECTION_ELEMENT_TEMPLATE_KEY);
+		String intentTemplate = getIntent().getExtras().getString(
+				SECTION_TEMPLATE_KEY);
 		if (savedElementTemplate != null) {
-			elementTemplate = SectionElementTemplate
+			elementTemplate = SectionTemplate
 					.fromJson(savedElementTemplate);
 		} else {
-			elementTemplate = SectionElementTemplate
-					.fromJson(intentElementTemplate);
+			elementTemplate = SectionTemplate
+					.fromJson(intentTemplate);
 		}
 
 		elementFragment = new SectionElementFragment(editedElement,
@@ -216,7 +216,7 @@ public class SectionElementActivity extends FragmentActivity {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return elementTemplate.getDisplayName().toUpperCase(l);
+				return elementTemplate.getElementDisplayName().toUpperCase(l);
 			}
 			return null;
 		}

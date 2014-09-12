@@ -31,8 +31,8 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.form.SectionElementTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
+import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -51,18 +51,18 @@ import android.widget.Toast;
 public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO> {
 	private final Context context;
 	private List<SectionElementListTO> sectionElements;
-	private SectionElementTemplate elementTemplate;
+	private SectionTemplate elementTemplate;
 	private SectionPayload sectionPayload;
 	private LayoutInflater inflater;
 	private boolean readOnly;
 
-	public SectionElementListAdapter(Context context, List<SectionElementListTO> sectionElements, SectionPayload sectionPayload, SectionElementTemplate elementTemplate, boolean readOnly) {
+	public SectionElementListAdapter(Context context, List<SectionElementListTO> sectionElements, SectionPayload sectionPayload, SectionTemplate sectionTemplate, boolean readOnly) {
 		super(context, R.layout.multiple_field_group_list_item, sectionElements);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.sectionElements = sectionElements;
-		this.elementTemplate = elementTemplate;
+		this.elementTemplate = sectionTemplate;
 		this.sectionPayload = sectionPayload;
 		this.readOnly = readOnly;
 	}
@@ -100,7 +100,7 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 				Intent intent = new Intent(context,
 						SectionElementActivity.class);
 				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, sectionElements.get(position).getJson());
-				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_TEMPLATE_KEY, elementTemplate.toJson());
+				intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, elementTemplate.toJson());
 				intent.putExtra(SectionElementActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
 				context.startActivity(intent);
 			}

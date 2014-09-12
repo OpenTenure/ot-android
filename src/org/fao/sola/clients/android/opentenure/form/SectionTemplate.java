@@ -29,6 +29,9 @@ package org.fao.sola.clients.android.opentenure.form;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,7 +54,9 @@ public class SectionTemplate {
 	private String displayName;
 	private int minOccurrences;
 	private int maxOccurrences;
-	private SectionElementTemplate elementTemplate;
+	private String elementName;
+	private String elementDisplayName;
+	private List<FieldTemplate> fields;
 	
 	public String getId() {
 		return id;
@@ -101,16 +106,28 @@ public class SectionTemplate {
 		this.maxOccurrences = maxOccurrences;
 	}
 
-	public SectionElementTemplate getElementTemplate() {
-		return elementTemplate;
+	public String getElementName() {
+		return elementName;
 	}
 
-	public void setElementTemplate(SectionElementTemplate elementTemplate) {
-		if(elementTemplate != null){
-			elementTemplate.setId(getId());
-			elementTemplate.setSection(this);
-		}
-		this.elementTemplate = elementTemplate;
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+	public String getElementDisplayName() {
+		return elementDisplayName;
+	}
+
+	public void setElementDisplayName(String elementDisplayName) {
+		this.elementDisplayName = elementDisplayName;
+	}
+
+	public List<FieldTemplate> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<FieldTemplate> fields) {
+		this.fields = fields;
 	}
 
 	@Override
@@ -121,54 +138,37 @@ public class SectionTemplate {
 				+ ", displayName=" + displayName
 				+ ", minOccurrences=" + minOccurrences
 				+ ", maxOccurrences=" + maxOccurrences
-				+ ", elementTemplate=" + elementTemplate
+				+ ", elementName=" + elementName
+				+ ", elementDisplayName=" + elementDisplayName
+				+ ", fields=" + Arrays.toString(fields.toArray())
 				+ "]";
 	}
 
-	public SectionTemplate(String name, SectionElementTemplate elementTemplate){
-		this.id = UUID.randomUUID().toString();
-		this.name = name;
-		this.displayName = name;
-		this.elementTemplate = elementTemplate;
-		this.minOccurrences = 1;
-		this.maxOccurrences = 1;
-	}
-
-	public SectionTemplate(SectionElementTemplate elementTemplate){
-		this.id = UUID.randomUUID().toString();
-		this.elementTemplate = elementTemplate;
-	}
-
-	public SectionTemplate(String name, String displayName, SectionElementTemplate elementTemplate){
+	public SectionTemplate(String name, String displayName, String elementName, String elementDisplayName, int minOccurrences, int maxOccurrences){
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.displayName = displayName;
-		this.elementTemplate = elementTemplate;
-		this.minOccurrences = 1;
-		this.maxOccurrences = 1;
-	}
-
-	public SectionTemplate(String name, String displayName, int minOccurrences, int maxOccurrences, SectionElementTemplate elementTemplate){
-		this.id = UUID.randomUUID().toString();
-		this.name = name;
-		this.displayName = displayName;
-		this.elementTemplate = elementTemplate;
+		this.elementName = elementName;
+		this.elementDisplayName = elementDisplayName;
 		this.minOccurrences = minOccurrences;
 		this.maxOccurrences = maxOccurrences;
+		this.fields = new ArrayList<FieldTemplate>();
 	}
 
-	public SectionTemplate(String name){
+	public SectionTemplate(String name, String displayName){
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
-		this.displayName = name;
-		this.elementTemplate = null;
+		this.displayName = displayName;
+		this.elementName = name;
+		this.elementDisplayName = displayName;
+		this.fields = new ArrayList<FieldTemplate>();
 		this.minOccurrences = 1;
 		this.maxOccurrences = 1;
 	}
 
 	public SectionTemplate(){
 		this.id = UUID.randomUUID().toString();
-		this.elementTemplate = null;
+		this.fields = new ArrayList<FieldTemplate>();
 	}
 
 	public SectionTemplate(SectionTemplate sec){
@@ -177,18 +177,12 @@ public class SectionTemplate {
 		this.maxOccurrences = sec.maxOccurrences;
 		this.name = new String(sec.getName());
 		this.displayName = new String(sec.getDisplayName());
-		this.elementTemplate = new SectionElementTemplate(sec.getElementTemplate());
-	}
+		this.elementName = new String(sec.getElementName());
+		this.elementDisplayName = new String(sec.getElementDisplayName());
+		for(FieldTemplate fieldTemplate:sec.getFields()){
+			this.fields.add(new FieldTemplate(fieldTemplate));
+		}	}
 
-	public SectionTemplate(String name, String displayName){
-		this.id = UUID.randomUUID().toString();
-		this.name = name;
-		this.displayName = displayName;
-		this.elementTemplate = null;
-		this.minOccurrences = 1;
-		this.maxOccurrences = 1;
-	}
-	
 	public FieldConstraint getFailedConstraint(SectionPayload payload) {
 		
 		List<SectionElementPayload> elements = payload.getElements();
@@ -198,12 +192,12 @@ public class SectionTemplate {
 			constraint.setMinValue(BigDecimal.valueOf(minOccurrences));
 			constraint.setMaxValue(BigDecimal.valueOf(maxOccurrences));
 			FieldTemplate fieldTemplate = new IntegerField();
-			FieldValue fieldValue = new FieldValue();
-			fieldValue.setType(FieldValueType.NUMBER);
+			FieldPayload fieldValue = new FieldPayload();
+			fieldValue.setValueType(FieldValueType.NUMBER);
 			fieldValue.setBigDecimalPayload(new BigDecimal(elements.size()));
 			fieldTemplate.setName(name);
 			fieldTemplate.setDisplayName(displayName);
-			constraint.setErrorMsg("must contain between {1} and {2} items");
+			constraint.setErrorMsg("Must contain between {1} and {2} elements");
 			try {
 				fieldTemplate.addConstraint(constraint);
 			} catch (Exception e) {
@@ -213,12 +207,30 @@ public class SectionTemplate {
 			return constraint;
 		}
 		for(SectionElementPayload element:elements){
-			if(elementTemplate.getFailedConstraint(element) != null){
-				return elementTemplate.getFailedConstraint(element);
+			if(getFailedConstraint(element) != null){
+				return getFailedConstraint(element);
 			}
 		}
 		return null;
 	}
+	public void addField(FieldTemplate fieldTemplate) {
+		fields.add(fieldTemplate);
+	}
+
+	public FieldConstraint getFailedConstraint(SectionElementPayload payload) {
+
+		Iterator<FieldPayload> payloadIterator = payload.getFields().iterator();
+
+		for(FieldTemplate fieldTemplate : fields){
+			FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(payloadIterator.next());
+			if(fieldConstraint != null){
+				return fieldConstraint;
+			}
+		}
+		return null;
+	}
+
+
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
 		  try {

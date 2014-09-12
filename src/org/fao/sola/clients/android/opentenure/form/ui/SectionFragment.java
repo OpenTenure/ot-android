@@ -32,16 +32,15 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
-import org.fao.sola.clients.android.opentenure.R;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -79,9 +78,9 @@ public class SectionFragment extends ListFragment {
 			Intent intent = new Intent(rootView.getContext(),
 					SectionElementActivity.class);
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY,
-					new SectionElementPayload(sectionTemplate.getElementTemplate()).toJson());
-			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_TEMPLATE_KEY,
-					sectionTemplate.getElementTemplate().toJson());
+					new SectionElementPayload(sectionTemplate).toJson());
+			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY,
+					sectionTemplate.toJson());
 			intent.putExtra(SectionElementActivity.MODE_KEY, mode
 					.toString());
 			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_RESULT);
@@ -130,8 +129,15 @@ public class SectionFragment extends ListFragment {
 				fglto.setName(ownersListTOs.size() + "");
 				StringBuffer sb = new StringBuffer();
 				for(FieldPayload field:sectionElement.getFields()){
-					sb.append(field.getValue().getStringPayload());
-					sb.append(",");
+					if(sb.length() == 0){
+						sb.append(",");
+					}
+					if(field.getStringPayload() != null)
+						sb.append(field.getStringPayload());
+					if(field.getBigDecimalPayload() != null)
+						sb.append(field.getBigDecimalPayload());
+					if(field.getBooleanPayload() != null)
+						sb.append(field.getBooleanPayload());
 				}
 				fglto.setSlogan(sb.toString());
 				fglto.setJson(sectionElement.toJson());
@@ -141,9 +147,9 @@ public class SectionFragment extends ListFragment {
 			ArrayAdapter<SectionElementListTO> adapter = null;
 
 			if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
-				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate.getElementTemplate(), true);
+				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, true);
 			}else{
-				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate.getElementTemplate(), false);
+				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, false);
 			}
 
 			setListAdapter(adapter);

@@ -73,7 +73,7 @@ public class FieldConstraint {
 	@JsonIgnore
 	protected List<FieldType> applicableTypes;
 	protected List<FieldConstraintOption> fieldConstraintOptions;
-	protected boolean check(FieldValue fieldValue){
+	protected boolean check(FieldPayload fieldPayload){
 		displayErrorMsg = "You can't check a generic constraint";
 		return false;
 	}

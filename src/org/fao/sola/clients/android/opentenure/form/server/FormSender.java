@@ -28,11 +28,8 @@
 package org.fao.sola.clients.android.opentenure.form.server;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -45,15 +42,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 
 public class FormSender extends AsyncTask<Void, Void, Void> {
 
 	private static final String url = "http://192.168.1.101:8080/DynamicFormGeneration/payloadServlet";
-	private static final String file_extension = ".json";
 	private static final String charset = "UTF-8";
+
 	private String id;
 
 	public void setId(String id) {
@@ -68,48 +65,15 @@ public class FormSender extends AsyncTask<Void, Void, Void> {
 	}
 
 	public static FormPayload getPayload(String id) {
-		StringBuffer buffer = new StringBuffer();
-		String dir = Environment.getExternalStorageDirectory()
-				+ "/Open Tenure/forms/";
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(dir + id + file_extension));
-			String line;
-			while ((line = br.readLine()) != null) {
-				buffer.append(line);
-			}
-			return FormPayload.fromJson(buffer.toString());
-		} catch (IOException e) {
-			return null;
-		} catch (OutOfMemoryError e) {
-			return null;
-		} finally {
-			if (br != null)
-				try {
-					br.close();
-				} catch (Exception ignored) {
-				}
-		}
-
+		
+		Claim claim = Claim.getClaim(id);
+		return claim.getSurveyForm();
 	}
 
 	public static void savePayload(FormPayload payload, String id) {
-		String dir = Environment.getExternalStorageDirectory()
-				+ "/Open Tenure/forms/";
-		BufferedWriter bw = null;
-		try {
-			bw = new BufferedWriter(new FileWriter(dir + id + file_extension));
-			bw.write(payload.toJson());
-		} catch (IOException e) {
-		} catch (OutOfMemoryError e) {
-		} finally {
-			if (bw != null)
-				try {
-					bw.close();
-				} catch (Exception ignored) {
-				}
-		}
-
+		Claim claim = Claim.getClaim(id);
+		claim.setSurveyForm(payload);
+		claim.update();
 	}
 
 	protected void onPreExecute() {
@@ -117,18 +81,15 @@ public class FormSender extends AsyncTask<Void, Void, Void> {
 
 	protected Void doInBackground(Void... params) {
 
-		String dir = Environment.getExternalStorageDirectory()
-				+ "/Open Tenure/forms/";
-		OutputStream outputStream = null;
-		PrintWriter writer = null;
-
 		try {
 
 			MultipartUtility multipart = new MultipartUtility(url, charset);
 			
 			multipart.addFormField("id", id);
-			
-			multipart.addFilePart("form", new File(dir + id + file_extension), "application/json");
+			FormPayload payload = getPayload(id);
+			if(payload != null){
+				multipart.addJsonFormField("form", payload.toJson());
+			}
 
 			List<String> response = multipart.finish();
 			
@@ -140,16 +101,6 @@ public class FormSender extends AsyncTask<Void, Void, Void> {
 		
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			if (writer != null) {
-				writer.close();
-			}
-			if (outputStream != null) {
-				try {
-					outputStream.close();
-				} catch (IOException ignore) {
-				}
-			}
 		}
 		return null;
 
@@ -203,6 +154,22 @@ public class FormSender extends AsyncTask<Void, Void, Void> {
 			writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
 					.append(LINE_FEED);
 			writer.append("Content-Type: text/plain; charset=" + charset).append(
+					LINE_FEED);
+			writer.append(LINE_FEED);
+			writer.append(value).append(LINE_FEED);
+			writer.flush();
+		}
+
+		/**
+		 * Adds a json form field to the request
+		 * @param name field name
+		 * @param value field value
+		 */
+		public void addJsonFormField(String name, String value) {
+			writer.append("--" + boundary).append(LINE_FEED);
+			writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
+					.append(LINE_FEED);
+			writer.append("Content-Type: application/json; charset=" + charset).append(
 					LINE_FEED);
 			writer.append(LINE_FEED);
 			writer.append(value).append(LINE_FEED);

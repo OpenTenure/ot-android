@@ -31,7 +31,7 @@ import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
-import org.fao.sola.clients.android.opentenure.form.SectionElementTemplate;
+import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -51,9 +51,9 @@ public class SectionElementFragment extends Fragment {
 
 	private View rootView;
 	private SectionElementPayload editedElement;
-	private SectionElementTemplate elementTemplate;
+	private SectionTemplate elementTemplate;
 
-	public SectionElementFragment(SectionElementPayload section, SectionElementTemplate template, Mode mode){
+	public SectionElementFragment(SectionElementPayload section, SectionTemplate template, Mode mode){
 		this.elementTemplate = template;
 		this.editedElement = section;
 	}

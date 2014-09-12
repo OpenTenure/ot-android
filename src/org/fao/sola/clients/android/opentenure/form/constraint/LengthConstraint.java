@@ -32,8 +32,8 @@ import java.text.MessageFormat;
 
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValue;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -82,13 +82,13 @@ public class LengthConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldValue fieldValue) {
+	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
-		if ((minValue != null && fieldValue != null
-				&& fieldValue.getStringPayload() != null && minValue.compareTo(new BigDecimal(fieldValue.getStringPayload().length())) > 0)
-				|| (maxValue != null && fieldValue != null
-						&& fieldValue.getStringPayload() != null && maxValue.compareTo(new BigDecimal(fieldValue.getStringPayload().length())) < 0)) {
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldValue.getStringPayload().length(), fieldValue.getStringPayload(), minValue, maxValue);
+		if ((minValue != null && fieldPayload != null
+				&& fieldPayload.getStringPayload() != null && minValue.compareTo(new BigDecimal(fieldPayload.getStringPayload().length())) > 0)
+				|| (maxValue != null && fieldPayload != null
+						&& fieldPayload.getStringPayload() != null && maxValue.compareTo(new BigDecimal(fieldPayload.getStringPayload().length())) < 0)) {
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload().length(), fieldPayload.getStringPayload(), minValue, maxValue);
 			return false;
 		}
 		return true;

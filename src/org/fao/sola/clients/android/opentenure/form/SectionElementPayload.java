@@ -19,6 +19,7 @@ public class SectionElementPayload {
 	@JsonIgnore
 	private String id;
 	private String name;
+	private String displayName;
 	private List<FieldPayload> fields;
 
 	public String getId() {
@@ -29,6 +30,14 @@ public class SectionElementPayload {
 		this.id = id;
 	}
 
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public SectionElementPayload(){
 		this.id = UUID.randomUUID().toString();
 		this.fields = new ArrayList<FieldPayload>();
@@ -37,17 +46,19 @@ public class SectionElementPayload {
 	public SectionElementPayload(SectionElementPayload se){
 		this.id = UUID.randomUUID().toString();
 		this.name = new String(se.getName());
+		this.displayName = se.getDisplayName();
 		this.fields = new ArrayList<FieldPayload>();
 		for(FieldPayload fieldPayload:se.getFields()){
 			this.fields.add(new FieldPayload(fieldPayload));
 		}
 	}
 
-	public SectionElementPayload(SectionElementTemplate set) {
+	public SectionElementPayload(SectionTemplate st) {
 		this.id = UUID.randomUUID().toString();
-		this.name = new String(set.getName());
+		this.name = new String(st.getElementName());
+		this.displayName = st.getDisplayName();
 		this.fields = new ArrayList<FieldPayload>();
-		for(FieldTemplate ft:set.getFields()){
+		for(FieldTemplate ft:st.getFields()){
 			this.fields.add(new FieldPayload(ft));
 		}
 	}
@@ -57,6 +68,7 @@ public class SectionElementPayload {
 		return "SectionElementPayload ["
 				+ "id=" + id
 				+ ", name=" + name
+				+ ", displayName=" + displayName
 				+ ", fields=" + Arrays.toString(fields.toArray())
 				+ "]";
 	}

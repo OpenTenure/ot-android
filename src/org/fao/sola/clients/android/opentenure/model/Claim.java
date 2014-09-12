@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
+import java.io.StringReader;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,6 +42,7 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
 
 import android.content.Context;
 
@@ -51,6 +54,14 @@ public class Claim {
 	};
 
 	public static final int MAX_SHARES_PER_CLAIM = 100;
+
+	public FormPayload getSurveyForm() {
+		return surveyForm;
+	}
+
+	public void setSurveyForm(FormPayload surveyForm) {
+		this.surveyForm = surveyForm;
+	}
 
 	public String getName() {
 		return name;
@@ -261,7 +272,7 @@ public class Claim {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE,DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE,DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, claim.getClaimId());
 			statement.setString(2, claim.getStatus());
 			statement.setString(3, claim.getClaimNumber());
@@ -280,6 +291,12 @@ public class Claim {
 			statement.setString(11, claim.getNotes());
 			statement.setString(12, claim.getRecorderName());
 			statement.setString(13, claim.getVersion());
+			if (claim.getSurveyForm() != null) {
+				statement.setCharacterStream(14, new StringReader(claim.getSurveyForm().toJson()));
+
+			} else {
+				statement.setCharacterStream(14, null);
+			}
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -312,7 +329,7 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE,DATE_OF_START, LAND_USE, NOTES,RECORDER_NAME,VERSION) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM(CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, PERSON_ID, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE,DATE_OF_START, LAND_USE, NOTES,RECORDER_NAME,VERSION, SURVEY_FORM) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getClaimId());
 			statement.setString(2, getStatus());
 			statement.setString(3, getClaimNumber());
@@ -330,6 +347,12 @@ public class Claim {
 			statement.setString(11, getNotes());
 			statement.setString(12, getRecorderName());
 			statement.setString(13, getVersion());
+			if (getSurveyForm() != null) {
+				statement.setCharacterStream(14, new StringReader(getSurveyForm().toJson()));
+
+			} else {
+				statement.setCharacterStream(14, null);
+			}
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -362,7 +385,7 @@ public class Claim {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET STATUS=?, CLAIM_NUMBER=?, NAME=?, PERSON_ID=?, TYPE=?,CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=?, DATE_OF_START=?, LAND_USE=?, NOTES=?, RECORDER_NAME=?, VERSION=? WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, CLAIM_NUMBER=?, NAME=?, PERSON_ID=?, TYPE=?,CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=?, DATE_OF_START=?, LAND_USE=?, NOTES=?, RECORDER_NAME=?, VERSION=? , SURVEY_FORM=? WHERE CLAIM_ID=?");
 			statement.setString(1, claim.getStatus());
 			statement.setString(2, claim.getClaimNumber());
 			statement.setString(3, claim.getName());
@@ -380,6 +403,12 @@ public class Claim {
 			statement.setString(11, claim.getRecorderName());
 			statement.setString(12, claim.getVersion());
 			statement.setString(13, claim.getClaimId());
+			if (claim.getSurveyForm() != null) {
+				statement.setCharacterStream(14, new StringReader(claim.getSurveyForm().toJson()));
+
+			} else {
+				statement.setCharacterStream(14, null);
+			}
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -411,7 +440,7 @@ public class Claim {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM SET STATUS=?, CLAIM_NUMBER=?,NAME=?, PERSON_ID=?, TYPE=?, CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=?, DATE_OF_START=?, LAND_USE=?, NOTES=?, RECORDER_NAME=?, VERSION=?  WHERE CLAIM_ID=?");
+					.prepareStatement("UPDATE CLAIM SET STATUS=?, CLAIM_NUMBER=?,NAME=?, PERSON_ID=?, TYPE=?, CHALLENGED_CLAIM_ID=?, CHALLANGE_EXPIRY_DATE=?, DATE_OF_START=?, LAND_USE=?, NOTES=?, RECORDER_NAME=?, VERSION=?, SURVEY_FORM=?  WHERE CLAIM_ID=?");
 			statement.setString(1, getStatus());
 			statement.setString(2, getClaimNumber());
 			statement.setString(3, getName());
@@ -430,8 +459,12 @@ public class Claim {
 			statement.setString(11, getRecorderName());
 			statement.setString(12, getVersion());
 			statement.setString(13, getClaimId());
-			
+			if (getSurveyForm() != null) {
+				statement.setCharacterStream(14, new StringReader(getSurveyForm().toJson()));
 
+			} else {
+				statement.setCharacterStream(14, null);
+			}
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -465,7 +498,7 @@ public class Claim {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
@@ -484,6 +517,10 @@ public class Claim {
 				claim.setNotes(rs.getString(10));
 				claim.setRecorderName(rs.getString(11));
 				claim.setVersion(rs.getString(12));
+				Clob clob = rs.getClob(13);
+				if(clob != null){
+					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+				}
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setPropertyLocations(PropertyLocation
 						.getPropertyLocations(claimId));
@@ -491,8 +528,6 @@ public class Claim {
 				claim.setShares(ShareProperty.getShares(claimId));
 				claim.setAdditionalInfo(AdditionalInfo
 						.getClaimAdditionalInfo(claimId));
-				claim.setModifiable(claim.isModifiable());
-
 			}
 
 		} catch (SQLException e) {
@@ -697,12 +732,6 @@ public class Claim {
 			return false;
 		else return true;
 	}
-	
-	
-
-	public void setModifiable(boolean isModifiable) {
-		this.isModifiable = isModifiable;
-	}
 
 	private String claimId;
 	private String name;
@@ -724,7 +753,7 @@ public class Claim {
 	private String notes;
 	private String claimNumber;
 	private String recorderName;
-	private boolean isModifiable;
 	private String version;
+	private FormPayload surveyForm;
 
 }

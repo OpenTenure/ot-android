@@ -47,6 +47,8 @@ public class SectionPayload {
 	private FormPayload form;
 	private String name;
 	private String displayName;
+	private int minOccurrences;
+	private int maxOccurrences;
 	private List<SectionElementPayload> elements;
 	
 	public String getId() {
@@ -81,6 +83,22 @@ public class SectionPayload {
 		this.displayName = displayName;
 	}
 
+	public int getMinOccurrences() {
+		return minOccurrences;
+	}
+
+	public void setMinOccurrences(int minOccurrences) {
+		this.minOccurrences = minOccurrences;
+	}
+
+	public int getMaxOccurrences() {
+		return maxOccurrences;
+	}
+
+	public void setMaxOccurrences(int maxOccurrences) {
+		this.maxOccurrences = maxOccurrences;
+	}
+
 	public List<SectionElementPayload> getElements() {
 		return elements;
 	}
@@ -95,6 +113,8 @@ public class SectionPayload {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
+				+ ", minOccurrences=" + minOccurrences
+				+ ", maxOccurrences=" + maxOccurrences
 				+ ", elements=" + Arrays.toString(elements.toArray())
 				+ "]";
 	}
@@ -115,16 +135,20 @@ public class SectionPayload {
 		this.id = UUID.randomUUID().toString();
 		this.name = new String(sp.getName());
 		this.displayName = new String(sp.getDisplayName());
+		this.minOccurrences = sp.getMinOccurrences();
+		this.maxOccurrences = sp.getMaxOccurrences();
 		this.elements = new ArrayList<SectionElementPayload>();
 		for(SectionElementPayload sep:sp.getElements()){
 			this.elements.add(new SectionElementPayload(sep));
 		}
 	}
 
-	public SectionPayload(SectionTemplate sec){
+	public SectionPayload(SectionTemplate st){
 		this.id = UUID.randomUUID().toString();
-		this.name = new String(sec.getName());
-		this.displayName = new String(sec.getDisplayName());
+		this.name = new String(st.getName());
+		this.minOccurrences = st.getMinOccurrences();
+		this.maxOccurrences = st.getMaxOccurrences();
+		this.displayName = new String(st.getDisplayName());
 		this.elements = new ArrayList<SectionElementPayload>();
 	}
 
@@ -132,8 +156,8 @@ public class SectionPayload {
 		elements.add(element);
 	}
 
-	public void addElement(SectionElementTemplate sectionElementTemplate) {
-		this.addElement(new SectionElementPayload(sectionElementTemplate));
+	public void addElement(SectionTemplate sectionTemplate) {
+		this.addElement(new SectionElementPayload(sectionTemplate));
 	}
 
 	public String toJson() {

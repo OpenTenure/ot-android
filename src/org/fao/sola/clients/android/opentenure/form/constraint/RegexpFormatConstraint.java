@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValue;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -60,13 +60,13 @@ public class RegexpFormatConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldValue fieldValue) {
+	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		Pattern pattern = Pattern.compile(format);
-		if(pattern.matcher(fieldValue.getStringPayload()).matches()){
+		if(pattern.matcher(fieldPayload.getStringPayload()).matches()){
 			return true;
 		}else{
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldValue.getStringPayload(), format);
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
 			return false;
 		}
 	}
