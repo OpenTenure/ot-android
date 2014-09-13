@@ -43,7 +43,6 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
-import org.fao.sola.clients.android.opentenure.form.server.FormSender;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -51,8 +50,8 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.Activity;
@@ -607,6 +606,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
+		if(!isFormValid())
+			return 6;
+		claim.setSurveyForm(formDispatcher.getEditedFormPayload());
 		claim.setVersion("0");
 
 		if (claim.create() == 1) {
@@ -618,7 +620,6 @@ public class ClaimDetailsFragment extends Fragment {
 				return 0;
 
 			claimListener.onClaimSaved();
-			saveForm(claim.getClaimId());
 			return 1;
 
 		} else
@@ -681,31 +682,20 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 		}
+		if(!isFormValid())
+				return 3;
 
 		if (createPersonAsOwner(person) == 0)
 			return 0;
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
-		
-		saveForm(claim.getClaimId());
+		claim.setSurveyForm(formDispatcher.getEditedFormPayload());
 
 		return claim.update();
 
 	}
 	
-	private void saveForm(String claimId){
-		FormPayload formPayload = formDispatcher.getFormPayload();
-		FormTemplate formTemplate = formDispatcher.getFormTemplate();
-		FieldConstraint constraint = null;
-		if((constraint = formTemplate.getFailedConstraint(formPayload)) != null){
-			Toast.makeText(rootView.getContext(),
-					constraint.displayErrorMsg(), Toast.LENGTH_SHORT);
-		}else{
-			FormSender.savePayload(formPayload, claimId);
-		}
-	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
@@ -756,6 +746,7 @@ public class ClaimDetailsFragment extends Fragment {
 							R.string.message_error_startdate,
 							Toast.LENGTH_SHORT);
 					toast.show();
+				} else if (updated == 3) {
 				} else {
 					toast = Toast
 							.makeText(rootView.getContext(),
@@ -1016,6 +1007,8 @@ public class ClaimDetailsFragment extends Fragment {
 
 											}
 
+										}else{
+											changed = isFormChanged();
 										}
 
 									}
@@ -1071,7 +1064,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 			int value = 0;
 
-			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
+			for (Iterator<ShareProperty> iterator = shares.iterator(); iterator.hasNext();) {
 				ShareProperty shareProperty = (ShareProperty) iterator.next();
 				value = value + shareProperty.getShares();
 			}
@@ -1106,6 +1099,32 @@ public class ClaimDetailsFragment extends Fragment {
 			return 0;
 		}
 
+	}
+
+	private boolean isFormValid(){
+		FormPayload formPayload = formDispatcher.getEditedFormPayload();
+		FormTemplate formTemplate = formDispatcher.getFormTemplate();
+		FieldConstraint constraint = null;
+		if((constraint = formTemplate.getFailedConstraint(formPayload)) != null){
+			Toast.makeText(rootView.getContext(),
+					constraint.displayErrorMsg(), Toast.LENGTH_SHORT).show();
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+	private boolean isFormChanged(){
+		FormPayload editedFormPayload = formDispatcher.getEditedFormPayload();
+		FormPayload originalFormPayload = formDispatcher.getOriginalFormPayload();
+
+		if(((editedFormPayload != null) && (originalFormPayload == null))
+			|| ((editedFormPayload == null) && (originalFormPayload != null))
+			|| !editedFormPayload.toJson().equalsIgnoreCase(originalFormPayload.toJson())){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	private void updateDoB() {

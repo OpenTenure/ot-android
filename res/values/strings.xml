@@ -11,7 +11,7 @@
     <string name="action_remove_owner">Remove rights owner</string>
     <string name="action_remove_additional_info">Remove information</string>
     <string name="action_remove_claim">Remove claim</string>
-    <string name="action_remove_field_group">Remove item</string>
+    <string name="action_remove_section_element">Remove element</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
@@ -112,7 +112,7 @@
     <string name="password">Password</string>
     <string name="attachment_removed">The attachment has been removed</string>
     <string name="owner_removed">The owner has been removed</string>
-    <string name="field_group_removed">The field group has been removed from the form</string>
+    <string name="section_element_removed">The element has been removed</string>
     <string name="additional_info_removed">Information removed</string>
     <string name="message_saved">Saved</string>
     <string name="message_server_error_saving_claim">Server Internal Error</string>
@@ -165,6 +165,7 @@
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
     <string name="message_remove_owner">Remove owner?</string>
+    <string name="message_remove_section_element">Remove element?</string>
     <string name="message_remove_additional_info">Remove information?</string>
     <string name="message_not_supported_on_this_device">Not supported on this device</string>
     <string name="message_exit_dialog">Do you really want to quit the application?</string>

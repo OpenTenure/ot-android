@@ -31,6 +31,7 @@ import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 
 public interface FormDispatcher {
-	public FormPayload getFormPayload();
+	public FormPayload getEditedFormPayload();
+	public FormPayload getOriginalFormPayload();
 	public FormTemplate getFormTemplate();
 }

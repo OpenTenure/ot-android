@@ -14,7 +14,7 @@
     <string name="action_remove_owner">Rimuovi quote</string>
     <string name="action_remove_additional_info">Rimuovi informazione</string>
     <string name="action_remove_claim">Rimuovi claim</string>
-    <string name="action_remove_field_group">Rimuovi elemento</string>
+    <string name="action_remove_section_element">Rimuovi elemento</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
     <string name="action_save">Salva</string>
@@ -115,7 +115,7 @@
     <string name="password">Password</string>
     <string name="attachment_removed">Allegato rimosso</string>
     <string name="owner_removed">Quota rimossa</string>
-    <string name="field_group_removed">Gruppo di campi rimosso dal form</string>
+    <string name="section_element_removed">Elemento rimosso</string>
     <string name="additional_info_removed">Informazione rimossa</string>
     <string name="message_saved">Salvato</string>
     <string name="message_service_not_available">Servizio non disponibile</string>
@@ -164,6 +164,7 @@
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
+    <string name="message_remove_section_element">Rimuovere l\'elemento5?</string>
     <string name="message_added_attachment">L\' attachment e\' stato aggiunto al claim</string>
     <string name="message_adding_attachment_not_ok">Errore durante l\'aggiunta dell\' attachment al claim</string>
     <string name="message_remove_additional_info">Rimuovere l\'informazione?</string>

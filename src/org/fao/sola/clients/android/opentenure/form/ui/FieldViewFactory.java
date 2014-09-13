@@ -73,8 +73,12 @@ public class FieldViewFactory {
 
 		List<String> displayNames = new ArrayList<String>();
 		final List<String> names = new ArrayList<String>();
+		int selected = -1;
 
 		for (FieldConstraintOption option : options) {
+			if(payload.getStringPayload() != null && payload.getStringPayload().equals(option.getName())){
+				selected = names.size();
+			}
 			names.add(option.getName());
 			displayNames.add(option.getDisplayName());
 		}
@@ -106,6 +110,9 @@ public class FieldViewFactory {
 			}
 		});
 		spinner.setAdapter(spinnerArrayAdapter);
+		if(selected != -1){
+			spinner.setSelection(selected);
+		}
 
 		return spinner;
 	}
@@ -125,6 +132,9 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		text.setInputType(InputType.TYPE_CLASS_TEXT);
 		text.setHint(field.getHint());
+		if(payload.getStringPayload()!=null){
+			text.setText(payload.getStringPayload());
+		}
 		text.addTextChangedListener(new TextWatcher() {
 			long lastTime = System.currentTimeMillis();
 
@@ -175,6 +185,9 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		number.setHint(field.getHint());
+		if(payload.getStringPayload()!=null){
+			number.setText(payload.getStringPayload());
+		}
 		number.addTextChangedListener(new TextWatcher() {
 			long lastTime = System.currentTimeMillis();
 
@@ -223,6 +236,9 @@ public class FieldViewFactory {
 		bool.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		bool.setHint(field.getHint());
+		if(payload.getBooleanPayload()!=null){
+			bool.setSelected(payload.getBooleanPayload().booleanValue());
+		}
 		bool.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -253,6 +269,9 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
 		datetime.setHint(field.getHint());
+		if(payload.getStringPayload()!=null){
+			datetime.setText(payload.getStringPayload());
+		}
 		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
 			@Override
@@ -338,6 +357,9 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
 		datetime.setHint(field.getHint());
+		if(payload.getStringPayload()!=null){
+			datetime.setText(payload.getStringPayload());
+		}
 		final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
 			@Override

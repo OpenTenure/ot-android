@@ -39,7 +39,7 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_weight="1"
-      android:contentDescription="@string/action_remove_field_group"
+      android:contentDescription="@string/action_remove_section_element"
       android:src="@android:drawable/ic_delete" />
   
 </LinearLayout>

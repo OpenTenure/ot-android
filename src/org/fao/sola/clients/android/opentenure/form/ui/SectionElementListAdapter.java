@@ -99,6 +99,7 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 			public void onClick(View v) {
 				Intent intent = new Intent(context,
 						SectionElementActivity.class);
+				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, position);
 				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, sectionElements.get(position).getJson());
 				intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, elementTemplate.toJson());
 				intent.putExtra(SectionElementActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
@@ -115,11 +116,11 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 					AlertDialog.Builder removeOwnerDialog = new AlertDialog.Builder(
 							context);
 					removeOwnerDialog
-							.setTitle(R.string.action_remove_owner);
+							.setTitle(R.string.action_remove_section_element);
 					removeOwnerDialog.setMessage(sectionElements.get(position).getSlogan()
 							+ ": "
 							+ context.getResources().getString(
-									R.string.message_remove_owner));
+									R.string.message_remove_section_element));
 
 					removeOwnerDialog.setPositiveButton(
 							R.string.confirm,
@@ -131,7 +132,7 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 									sectionElements.remove(position);
 									sectionPayload.getElements().remove(position);
 									Toast.makeText(context,
-											R.string.owner_removed,
+											R.string.section_element_removed,
 											Toast.LENGTH_SHORT).show();
 									notifyDataSetChanged();
 								}

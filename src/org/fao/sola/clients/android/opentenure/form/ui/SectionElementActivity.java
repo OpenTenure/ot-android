@@ -50,10 +50,13 @@ import com.astuetz.PagerSlidingTabStrip;
 
 public class SectionElementActivity extends FragmentActivity {
 
+	public static final String SECTION_ELEMENT_POSITION_KEY = "sectionElementPosition";
+	public static final int SECTION_ELEMENT_POSITION_NEW = -1;
 	public static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
 	public static final String SECTION_ELEMENT_PAYLOAD_KEY = "sectionElementPayload";
 	public static final String MODE_KEY = "mode";
 	public static final int SECTION_ELEMENT_ACTIVITY_RESULT = 4321;
+	private int sectionElementPosition;
 	private ModeDispatcher.Mode mode;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
@@ -83,6 +86,7 @@ public class SectionElementActivity extends FragmentActivity {
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
+		outState.putInt(SECTION_ELEMENT_POSITION_KEY, sectionElementPosition);
 		outState.putString(SECTION_ELEMENT_PAYLOAD_KEY, editedElement.toJson());
 		outState.putString(SECTION_TEMPLATE_KEY, elementTemplate.toJson());
 		super.onSaveInstanceState(outState);
@@ -93,14 +97,26 @@ public class SectionElementActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		int savedPosition = SECTION_ELEMENT_POSITION_NEW;
 		String savedElement = null;
 		String savedElementTemplate = null;
 
 		if (savedInstanceState != null) {
+			savedPosition = savedInstanceState
+					.getInt(SECTION_ELEMENT_POSITION_KEY, SECTION_ELEMENT_POSITION_NEW);
 			savedElement = savedInstanceState
 					.getString(SECTION_ELEMENT_PAYLOAD_KEY);
 			savedElementTemplate = savedInstanceState
 					.getString(SECTION_TEMPLATE_KEY);
+		}
+
+		int intentPosition = getIntent().getExtras().getInt(
+				SECTION_ELEMENT_POSITION_KEY, SECTION_ELEMENT_POSITION_NEW);
+
+		if (savedPosition != -1) {
+			sectionElementPosition = savedPosition;
+		} else {
+			sectionElementPosition = intentPosition;
 		}
 
 		String intentElement = getIntent().getExtras().getString(
@@ -165,6 +181,8 @@ public class SectionElementActivity extends FragmentActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent resultIntent = new Intent();
+							resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
+									sectionElementPosition);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									elementFragment.getEditedElement().toJson());
 							setResult(SECTION_ELEMENT_ACTIVITY_RESULT,

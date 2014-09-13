@@ -402,13 +402,13 @@ public class Claim {
 			statement.setString(10, claim.getNotes());
 			statement.setString(11, claim.getRecorderName());
 			statement.setString(12, claim.getVersion());
-			statement.setString(13, claim.getClaimId());
 			if (claim.getSurveyForm() != null) {
-				statement.setCharacterStream(14, new StringReader(claim.getSurveyForm().toJson()));
+				statement.setCharacterStream(13, new StringReader(claim.getSurveyForm().toJson()));
 
 			} else {
-				statement.setCharacterStream(14, null);
+				statement.setCharacterStream(13, null);
 			}
+			statement.setString(14, claim.getClaimId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -458,13 +458,13 @@ public class Claim {
 			statement.setString(10, getNotes());
 			statement.setString(11, getRecorderName());
 			statement.setString(12, getVersion());
-			statement.setString(13, getClaimId());
 			if (getSurveyForm() != null) {
-				statement.setCharacterStream(14, new StringReader(getSurveyForm().toJson()));
+				statement.setCharacterStream(13, new StringReader(getSurveyForm().toJson()));
 
 			} else {
-				statement.setCharacterStream(14, null);
+				statement.setCharacterStream(13, null);
 			}
+			statement.setString(14, getClaimId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

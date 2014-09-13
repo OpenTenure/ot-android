@@ -34,7 +34,6 @@ import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
-import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.form.ui.SectionElementFragment;
 import org.fao.sola.clients.android.opentenure.form.ui.SectionFragment;
 import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment;
@@ -69,8 +68,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public static final String CREATE_CLAIM_ID = "create";
 	private ModeDispatcher.Mode mode;
 	private String claimId = null;
-	FormPayload originalForm;
-	FormPayload editedForm;
+	FormPayload originalFormPayload;
+	FormPayload editedFormPayload;
 	FormTemplate formTemplate;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -148,10 +147,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			firstRun.create();
 			result = "True";
 		}
-		// TODO THIS ROW MUST BE DELETED BEFORE PUSHING - IT IS USED FOR TESTING
-		// result = "True";
-		// System.out.println("QUI RESULT::  "+result);
-		// System.out.println("QUI firstRun.getValue()::  "+firstRun.getValue());
 		return result;
 	}
 
@@ -161,8 +156,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		super.onCreate(savedInstanceState);
 		
 		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
-		originalForm = new FormPayload(formTemplate);
-		editedForm = new FormPayload(originalForm);
+		originalFormPayload = new FormPayload(formTemplate);
+		editedFormPayload = new FormPayload(originalFormPayload);
 
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
@@ -458,22 +453,21 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					return null;
 				}
 				if(sectionTemplate.getMaxOccurrences() > 1){
-					fragment = new SectionFragment(editedForm.getSections().get(sectionPosition), sectionTemplate, mode);
+					fragment = new SectionFragment(editedFormPayload.getSections().get(sectionPosition), sectionTemplate, mode);
 				}else{
-					if(editedForm.getSections().get(sectionPosition).getElements().size()==0){
-						editedForm.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate));
+					if(editedFormPayload.getSections().get(sectionPosition).getElements().size()==0){
+						editedFormPayload.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedForm.getSections().get(sectionPosition).getElements().get(0), sectionTemplate, mode);
+					fragment = new SectionElementFragment(editedFormPayload.getSections().get(sectionPosition).getElements().get(0), sectionTemplate, mode);
 				}
 			}
-				fragmentReferences.put(position, fragment);
 			fragmentReferences.put(position, fragment);
 			return fragment;
 		}
 
 		@Override
 		public int getCount() {
-			return 7 + editedForm.getSections().size();
+			return 7 + editedFormPayload.getSections().size();
 		}
 
 		@Override
@@ -500,7 +494,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			case 6:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
 			default:
-				return editedForm.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
+				return editedFormPayload.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
 			}
 		}
 	}
@@ -512,8 +506,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			Claim claim = Claim.getClaim(claimId);
 			setTitle(getResources().getString(R.string.app_name) + ": "
 					+ claim.getName());
-			originalForm = claim.getSurveyForm();
-			editedForm = new FormPayload(originalForm);
+			if(claim.getSurveyForm()!=null){
+				originalFormPayload = claim.getSurveyForm();
+				editedFormPayload = new FormPayload(originalFormPayload);
+			}
 		}
 	}
 
@@ -536,13 +532,18 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	}
 
 	@Override
-	public FormPayload getFormPayload() {
-		return editedForm;
+	public FormPayload getEditedFormPayload() {
+		return editedFormPayload;
 	}
 
 	@Override
 	public FormTemplate getFormTemplate() {
 		return formTemplate;
+	}
+
+	@Override
+	public FormPayload getOriginalFormPayload() {
+		return originalFormPayload;
 	}
 
 }

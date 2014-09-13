@@ -77,6 +77,8 @@ public class SectionFragment extends ListFragment {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					SectionElementActivity.class);
+			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY,
+					SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY,
 					new SectionElementPayload(sectionTemplate).toJson());
 			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY,
@@ -99,8 +101,16 @@ public class SectionFragment extends ListFragment {
 			case SectionElementActivity.SECTION_ELEMENT_ACTIVITY_RESULT:
 				String fieldGroup = data
 				.getStringExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY);
-				SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
-				editedSection.getElements().add(newSectionElement);
+				int position = data
+				.getIntExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
+
+				if(position == SectionElementActivity.SECTION_ELEMENT_POSITION_NEW){
+					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
+					editedSection.getElements().add(newSectionElement);
+				}else{
+					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
+					editedSection.getElements().set(position, newSectionElement);
+				}
 				update();
 				break;
 			}
@@ -129,7 +139,7 @@ public class SectionFragment extends ListFragment {
 				fglto.setName(ownersListTOs.size() + "");
 				StringBuffer sb = new StringBuffer();
 				for(FieldPayload field:sectionElement.getFields()){
-					if(sb.length() == 0){
+					if(sb.length() != 0){
 						sb.append(",");
 					}
 					if(field.getStringPayload() != null)

@@ -52,6 +52,7 @@ public class SectionTemplate {
 	private FormTemplate form;
 	private String name;
 	private String displayName;
+	private String errorMsg = "{0} must contain between {2} and {3} elements";
 	private int minOccurrences;
 	private int maxOccurrences;
 	private String elementName;
@@ -122,6 +123,14 @@ public class SectionTemplate {
 		this.elementDisplayName = elementDisplayName;
 	}
 
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+
 	public List<FieldTemplate> getFields() {
 		return fields;
 	}
@@ -136,6 +145,7 @@ public class SectionTemplate {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
+				+ ", errorMsg=" + errorMsg
 				+ ", minOccurrences=" + minOccurrences
 				+ ", maxOccurrences=" + maxOccurrences
 				+ ", elementName=" + elementName
@@ -191,13 +201,17 @@ public class SectionTemplate {
 			IntegerRangeConstraint constraint = new IntegerRangeConstraint();
 			constraint.setMinValue(BigDecimal.valueOf(minOccurrences));
 			constraint.setMaxValue(BigDecimal.valueOf(maxOccurrences));
+			constraint.setName(name);
+			constraint.setDisplayName(displayName);
+			constraint.setErrorMsg(errorMsg);
 			FieldTemplate fieldTemplate = new IntegerField();
 			FieldPayload fieldValue = new FieldPayload();
+			fieldValue.setName(name);
+			fieldValue.setDisplayName(displayName);
 			fieldValue.setValueType(FieldValueType.NUMBER);
 			fieldValue.setBigDecimalPayload(new BigDecimal(elements.size()));
 			fieldTemplate.setName(name);
 			fieldTemplate.setDisplayName(displayName);
-			constraint.setErrorMsg("Must contain between {1} and {2} elements");
 			try {
 				fieldTemplate.addConstraint(constraint);
 			} catch (Exception e) {
