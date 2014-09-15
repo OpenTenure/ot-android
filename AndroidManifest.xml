@@ -58,12 +58,14 @@
         </activity>
         <activity
             android:name="org.fao.sola.clients.android.opentenure.OpenTenure"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="org.fao.sola.clients.android.opentenure.ClaimActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_claim"
             android:windowSoftInputMode="adjustPan" >
