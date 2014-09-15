@@ -467,18 +467,33 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
+				return 7 + getNumberOfSections();
+		}
+		
+		private int getNumberOfSections(){
 			if(editedFormPayload != null){
-				return 7 + editedFormPayload.getSections().size();
+				return editedFormPayload.getSections().size();
 			}else if(formTemplate != null){
-				return 7 + formTemplate.getSections().size();
+				return formTemplate.getSections().size();
 			}else{
-				return 7;
+				return 0;
+			}
+		}
+
+		private String getSectionTitle(int position){
+			if(editedFormPayload != null){
+				return editedFormPayload.getSections().get(position).getDisplayName().toUpperCase(Locale.US);
+			}else if(formTemplate != null){
+				return formTemplate.getSections().get(position).getDisplayName().toUpperCase(Locale.getDefault());
+			}else{
+				return "";
 			}
 		}
 
 		@Override
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
+
 			int sectionPosition = position - 7;
 
 			switch (position) {
@@ -500,7 +515,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			case 6:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
 			default:
-				return editedFormPayload.getSections().get(sectionPosition).getDisplayName().toUpperCase(l);
+				return getSectionTitle(sectionPosition);
 			}
 		}
 	}

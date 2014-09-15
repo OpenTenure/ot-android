@@ -337,7 +337,12 @@ public class SurveyFormTemplate {
 	}
 	
 	public static FormTemplate getDefaultSurveyFormTemplate() {
-		return getSurveyFormTemplateByName(default_template).getFormTemplate();
+		SurveyFormTemplate surveyFormTemplate = getSurveyFormTemplateByName(default_template);
+		if(surveyFormTemplate != null){
+			return surveyFormTemplate.getFormTemplate();
+		}else{
+			return new FormTemplate();
+		}
 	}
 
 
