@@ -39,17 +39,16 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
-import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class FileSystemUtilities {
 
@@ -308,10 +307,8 @@ public class FileSystemUtilities {
 			writer.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -449,28 +446,27 @@ public class FileSystemUtilities {
 		return true;
 	}
 
-	public static int getUploadProgress(Claim claim) {
+	public static int getUploadProgress(String claimId, String status, List<Attachment> attachments) {
 
 		int progress = 0;
 
-		if (claim.getAttachments().size() == 0)
+		if (attachments.size() == 0)
 			progress = 100;
 		else {
 			long totalSize = 0;
 			long uploadedSize = 0;
 
-			File claimfolder = getClaimFolder(claim.getClaimId());
+			File claimfolder = getClaimFolder(claimId);
 			File json = new File(claimfolder, "claim.json");
 			totalSize = totalSize + json.length();
 
-			if (claim.getStatus().equals(ClaimStatus._UPLOADING)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					|| claim.getStatus().equals(ClaimStatus._UPDATING)
-					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE))
+			if (status.equals(ClaimStatus._UPLOADING)
+					|| status.equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| status.equals(ClaimStatus._UPDATING)
+					|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
 				uploadedSize = uploadedSize + json.length();
 
-			List<Attachment> attachments = claim.getAttachments();
-			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
+			for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 

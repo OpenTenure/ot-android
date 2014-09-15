@@ -59,7 +59,6 @@ public class SaveAttachmentTask extends
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
-		// TODO Auto-generated method stub
 
 		ViewHolderResponse vhr = new ViewHolderResponse();
 
@@ -134,7 +133,7 @@ public class SaveAttachmentTask extends
 				claim.update();
 			}
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setTextColor(
@@ -177,7 +176,7 @@ public class SaveAttachmentTask extends
 				claim.update();
 			}
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setTextColor(
@@ -207,7 +206,7 @@ public class SaveAttachmentTask extends
 			String claimId = toUpdate.getClaimId();
 			claim = Claim.getClaim(claimId);
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getBar().setProgress(progress);
 
@@ -243,7 +242,7 @@ public class SaveAttachmentTask extends
 				List<Attachment> attachments = claim.getAttachments();
 
 				int action = 0;
-				for (Iterator iterator = attachments.iterator(); iterator
+				for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 					if (!attachment.getStatus().equals(
@@ -355,7 +354,7 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 			vh.getBar().setProgress(progress);
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -418,7 +417,7 @@ public class SaveAttachmentTask extends
 							Toast.LENGTH_LONG);
 			toast.show();
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setTextColor(
@@ -461,7 +460,7 @@ public class SaveAttachmentTask extends
 				claim.update();
 			}
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getBar().setProgress(progress);
 
@@ -517,7 +516,7 @@ public class SaveAttachmentTask extends
 
 			claim = Claim.getClaim(toUpdate.getClaimId());
 
-			progress = FileSystemUtilities.getUploadProgress(claim);
+			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 			vh.getBar().setProgress(progress);
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");

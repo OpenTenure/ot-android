@@ -58,7 +58,6 @@ public class SubmitClaimListener implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
 		doIt(v);
 	}
 
@@ -91,9 +90,10 @@ public class SubmitClaimListener implements OnClickListener {
 						"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
 				Log.d(this.getClass().getName(),
 						"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
+				
+				Claim claim = Claim.getClaim(claimId);
 
-				int progress = FileSystemUtilities.getUploadProgress(Claim
-						.getClaim(claimId));
+				int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus(), claim.getAttachments());
 
 				vh.getBar().setVisibility(View.VISIBLE);
 				vh.getBar().setProgress(progress);
@@ -115,7 +115,6 @@ public class SubmitClaimListener implements OnClickListener {
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 

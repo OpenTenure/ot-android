@@ -33,7 +33,6 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.button.listener.SubmitClaimListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -54,7 +53,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	private final List<ClaimListTO> originalClaims;
 	private List<ClaimListTO> filteredClaims;
 	private List<ClaimListTO> claims;
-	private ModeDispatcher.Mode mode;
 	LayoutInflater inflater;
 
 	public LocalClaimsListAdapter(Context context, List<ClaimListTO> claims,
@@ -66,7 +64,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		this.originalClaims = new ArrayList<ClaimListTO>(claims);
 		this.claims = claims;
 		this.filteredClaims = null;
-		this.mode = mode;
 	}
 
 	@Override
@@ -118,8 +115,6 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
-
-		Claim claim = Claim.getClaim(claims.get(position).getId());
 
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.claims_list_item, parent,
@@ -191,7 +186,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
@@ -215,7 +210,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
@@ -273,7 +268,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
@@ -295,7 +290,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);

@@ -315,6 +315,7 @@ public class LocalClaimsFragment extends ListFragment {
 				cto.setId(claim.getClaimId());
 				cto.setModifiable(claim.isModifiable());
 				cto.setPersonId(claim.getPerson().getPersonId());
+				cto.setAttachments(claim.getAttachments());
 
 				if (claim.getClaimNumber() != null)
 					cto.setNumber(claim.getClaimNumber());

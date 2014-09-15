@@ -31,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -46,7 +47,6 @@ import org.fao.sola.clients.android.opentenure.network.response.SaveClaimRespons
 import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
 import android.view.View;
-
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -61,7 +61,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
-		// TODO Auto-generated method stub
 		String claimId = (String) params[0];
 		ViewHolder vh = (ViewHolder) params[1];
 		String json = FileSystemUtilities.getJsonClaim(claimId);
@@ -126,8 +125,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
-
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
 
@@ -159,8 +156,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
-
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
@@ -191,8 +186,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
-
 			vh.getStatus().setText(ClaimStatus._UPLOAD_ERROR);
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
@@ -209,7 +202,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 				TimeZone tz = TimeZone.getTimeZone("UTC");
 				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss");
+						"yyyy-MM-dd'T'HH:mm:ss", Locale.US);
 				sdf.setTimeZone(tz);
 				Date date = sdf.parse(res.getChallengeExpiryDate());
 
@@ -351,14 +344,14 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			ViewHolder vh = vhr.getVh();
 
-			int progress = FileSystemUtilities.getUploadProgress(claim);
+			int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setVisibility(View.VISIBLE);
 
 			List<Attachment> list = res.getAttachments();
 
-			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			for (Iterator<Attachment> iterator = list.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();

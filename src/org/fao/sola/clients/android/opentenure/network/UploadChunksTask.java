@@ -107,7 +107,7 @@ public class UploadChunksTask extends
 					claim.update();
 				}
 
-				progress = FileSystemUtilities.getUploadProgress(claim);
+				progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 
 				vh.getBar().setProgress(progress);
 
@@ -218,7 +218,7 @@ public class UploadChunksTask extends
 					claim.update();
 				}
 
-				progress = FileSystemUtilities.getUploadProgress(claim);
+				progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
 				vh.getBar().setProgress(progress);
 
 				vh.getStatus()

@@ -28,6 +28,9 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.io.Serializable;
+import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.model.Attachment;
 
 public class ClaimListTO implements Serializable {
 	/**
@@ -83,12 +86,14 @@ public class ClaimListTO implements Serializable {
 		this.isModifiable = isModifiable;
 	}
 
-	private String number;
-	private String id;
-	private String slogan;
-	private String status;
-	private String remaingDays;
-	private String personId;
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
+	}
+
 	public String getPersonId() {
 		return personId;
 	}
@@ -97,6 +102,13 @@ public class ClaimListTO implements Serializable {
 		this.personId = personId;
 	}
 
+	private String number;
+	private String id;
+	private String slogan;
+	private String status;
+	private String remaingDays;
+	private String personId;
+	private List<Attachment> attachments;
 	private boolean isModifiable;
 
 }

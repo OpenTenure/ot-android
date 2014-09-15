@@ -215,7 +215,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
-				int progress = FileSystemUtilities.getUploadProgress(claim);
+				int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(),claim.getAttachments());
 
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);

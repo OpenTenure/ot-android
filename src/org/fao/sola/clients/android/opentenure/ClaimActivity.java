@@ -529,7 +529,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					+ claim.getName());
 			if(claim.getSurveyForm()!=null){
 				originalFormPayload = claim.getSurveyForm();
-				editedFormPayload = new FormPayload(originalFormPayload);
+				if(originalFormPayload != null){
+					editedFormPayload = new FormPayload(originalFormPayload);
+				}else{
+					originalFormPayload = new FormPayload();
+					originalFormPayload.setTemplate(new FormTemplate());
+					editedFormPayload = new FormPayload();
+					editedFormPayload.setTemplate(new FormTemplate());
+				}
 			}
 		}
 	}
