@@ -159,18 +159,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
 
-		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		mViewPager = (ViewPager) findViewById(R.id.claim_pager);
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		mViewPager.setAdapter(mSectionsPagerAdapter);
-		tabs.setIndicatorColor(getResources().getColor(
-				R.color.ab_tab_indicator_opentenure));
-		tabs.setViewPager(mViewPager);
-
 		String savedInstanceClaimId = null;
 
+		// Setup the form before creating the section adapter
+		
 		if (savedInstanceState != null) {
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
@@ -188,6 +180,16 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
 		originalFormPayload = new FormPayload(formTemplate,getClaimId());
 		editedFormPayload = new FormPayload(originalFormPayload);
+
+		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		mViewPager = (ViewPager) findViewById(R.id.claim_pager);
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
+
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		tabs.setIndicatorColor(getResources().getColor(
+				R.color.ab_tab_indicator_opentenure));
+		tabs.setViewPager(mViewPager);
 
 		// ShowCase Main
 		if (getFirstRun().contentEquals("True")) {
