@@ -115,14 +115,15 @@ public class FormPayload {
 
 	public FormPayload(){
 		this.id = UUID.randomUUID().toString();
+		this.template = new FormTemplate();
 		this.sections = new ArrayList<SectionPayload>();
 	}
 	
 	public FormPayload(FormPayload form){
 		this.id = UUID.randomUUID().toString();
 		this.claimId = form.getClaimId();
-		this.formTemplateName = form.getTemplate().getName();
 		this.template = form.getTemplate();
+		this.template = new FormTemplate();
 		this.sections = new ArrayList<SectionPayload>();
 		for(SectionPayload sectionTemplate:form.getSections()){
 			this.sections.add(new SectionPayload(sectionTemplate));

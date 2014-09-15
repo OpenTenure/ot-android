@@ -520,6 +520,8 @@ public class Claim {
 				Clob clob = rs.getClob(13);
 				if(clob != null){
 					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+				}else{
+					claim.setSurveyForm(new FormPayload());
 				}
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setPropertyLocations(PropertyLocation
