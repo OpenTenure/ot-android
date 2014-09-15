@@ -467,7 +467,13 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
-			return 7 + editedFormPayload.getSections().size();
+			if(editedFormPayload != null){
+				return 7 + editedFormPayload.getSections().size();
+			}else if(formTemplate != null){
+				return 7 + formTemplate.getSections().size();
+			}else{
+				return 7;
+			}
 		}
 
 		@Override
