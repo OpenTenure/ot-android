@@ -85,11 +85,6 @@ public class SubmitClaimListener implements OnClickListener {
 					return;
 
 				}
-				// TODO Remove this once the form payload is made part of the claim
-				FormSender fs = new FormSender();
-				fs.setId(claimId);
-				fs.execute();
-
 				JsonUtilities.createClaimJson(claimId);
 
 				Log.d(this.getClass().getName(),
@@ -126,6 +121,11 @@ public class SubmitClaimListener implements OnClickListener {
 
 				SaveClaimTask saveClaimtask = new SaveClaimTask();
 				saveClaimtask.execute(claimId, vh);
+
+				// TODO Remove this once the form payload is made part of the claim
+				FormSender fs = new FormSender();
+				fs.setId(claimId);
+				fs.execute();
 
 			} else {
 				Toast toast = Toast.makeText(v.getContext(),

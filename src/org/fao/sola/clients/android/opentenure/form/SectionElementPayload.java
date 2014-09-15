@@ -18,8 +18,6 @@ public class SectionElementPayload {
 	private SectionPayload section;
 	@JsonIgnore
 	private String id;
-	private String name;
-	private String displayName;
 	private List<FieldPayload> fields;
 
 	public String getId() {
@@ -30,14 +28,6 @@ public class SectionElementPayload {
 		this.id = id;
 	}
 
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
 	public SectionElementPayload(){
 		this.id = UUID.randomUUID().toString();
 		this.fields = new ArrayList<FieldPayload>();
@@ -45,8 +35,6 @@ public class SectionElementPayload {
 
 	public SectionElementPayload(SectionElementPayload se){
 		this.id = UUID.randomUUID().toString();
-		this.name = new String(se.getName());
-		this.displayName = se.getDisplayName();
 		this.fields = new ArrayList<FieldPayload>();
 		for(FieldPayload fieldPayload:se.getFields()){
 			this.fields.add(new FieldPayload(fieldPayload));
@@ -55,8 +43,6 @@ public class SectionElementPayload {
 
 	public SectionElementPayload(SectionTemplate st) {
 		this.id = UUID.randomUUID().toString();
-		this.name = new String(st.getElementName());
-		this.displayName = st.getDisplayName();
 		this.fields = new ArrayList<FieldPayload>();
 		for(FieldTemplate ft:st.getFields()){
 			this.fields.add(new FieldPayload(ft));
@@ -67,18 +53,8 @@ public class SectionElementPayload {
 	public String toString() {
 		return "SectionElementPayload ["
 				+ "id=" + id
-				+ ", name=" + name
-				+ ", displayName=" + displayName
 				+ ", fields=" + Arrays.toString(fields.toArray())
 				+ "]";
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public List<FieldPayload> getFields() {

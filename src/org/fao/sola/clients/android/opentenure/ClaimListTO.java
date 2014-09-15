@@ -75,10 +75,28 @@ public class ClaimListTO implements Serializable {
 		this.number = number;
 	}
 
+	public boolean isModifiable() {
+		return isModifiable;
+	}
+
+	public void setModifiable(boolean isModifiable) {
+		this.isModifiable = isModifiable;
+	}
+
 	private String number;
 	private String id;
 	private String slogan;
 	private String status;
 	private String remaingDays;
+	private String personId;
+	public String getPersonId() {
+		return personId;
+	}
+
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	private boolean isModifiable;
 
 }

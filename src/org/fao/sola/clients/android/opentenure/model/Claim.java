@@ -678,6 +678,49 @@ public class Claim {
 		return claims;
 	}
 
+	public static int getNumberOfClaims() {
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+		int result = 0;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT COUNT 'x' FROM CLAIM");
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
 	public int delete() {
 		int result = 0;
 		Connection localConnection = null;

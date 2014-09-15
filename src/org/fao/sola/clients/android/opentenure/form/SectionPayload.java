@@ -47,6 +47,8 @@ public class SectionPayload {
 	private FormPayload form;
 	private String name;
 	private String displayName;
+	private String elementName;
+	private String elementDisplayName;
 	private int minOccurrences;
 	private int maxOccurrences;
 	private List<SectionElementPayload> elements;
@@ -83,6 +85,22 @@ public class SectionPayload {
 		this.displayName = displayName;
 	}
 
+	public String getElementName() {
+		return elementName;
+	}
+
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+
+	public String getElementDisplayName() {
+		return elementDisplayName;
+	}
+
+	public void setElementDisplayName(String elementDisplayName) {
+		this.elementDisplayName = elementDisplayName;
+	}
+
 	public int getMinOccurrences() {
 		return minOccurrences;
 	}
@@ -113,6 +131,8 @@ public class SectionPayload {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
+				+ ", elementName=" + elementName
+				+ ", elementDisplayName=" + elementDisplayName
 				+ ", minOccurrences=" + minOccurrences
 				+ ", maxOccurrences=" + maxOccurrences
 				+ ", elements=" + Arrays.toString(elements.toArray())
@@ -135,6 +155,8 @@ public class SectionPayload {
 		this.id = UUID.randomUUID().toString();
 		this.name = new String(sp.getName());
 		this.displayName = new String(sp.getDisplayName());
+		this.elementName = new String(sp.getElementName());
+		this.elementDisplayName = new String(sp.getElementDisplayName());
 		this.minOccurrences = sp.getMinOccurrences();
 		this.maxOccurrences = sp.getMaxOccurrences();
 		this.elements = new ArrayList<SectionElementPayload>();
@@ -146,6 +168,8 @@ public class SectionPayload {
 	public SectionPayload(SectionTemplate st){
 		this.id = UUID.randomUUID().toString();
 		this.name = new String(st.getName());
+		this.elementName = new String(st.getElementName());
+		this.elementDisplayName = new String(st.getElementDisplayName());
 		this.minOccurrences = st.getMinOccurrences();
 		this.maxOccurrences = st.getMaxOccurrences();
 		this.displayName = new String(st.getDisplayName());

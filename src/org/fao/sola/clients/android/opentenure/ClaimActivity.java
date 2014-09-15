@@ -155,10 +155,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		super.onCreate(savedInstanceState);
 		
-		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
-		originalFormPayload = new FormPayload(formTemplate);
-		editedFormPayload = new FormPayload(originalFormPayload);
-
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
@@ -188,6 +184,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setClaimId(intentClaimId);
 
 		}
+
+		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
+		originalFormPayload = new FormPayload(formTemplate,getClaimId());
+		editedFormPayload = new FormPayload(originalFormPayload);
 
 		// ShowCase Main
 		if (getFirstRun().contentEquals("True")) {

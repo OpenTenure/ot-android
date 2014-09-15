@@ -68,7 +68,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	// SHOWCASE VARIABLES
 	ShowcaseView sv;
 	private int counter = 0;
-	int claimList =0;
+	int numberOfClaims =0;
 	private final ApiUtils apiUtils = new ApiUtils();
 	public static final String FIRST_RUN_OT_ACTIVITY = "__FIRST_RUN_OT_ACTIVITY__";
     // END SHOW CASE
@@ -244,9 +244,9 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			mViewPager.setCurrentItem(3);
 			break;
 		case 7:
-			List<Claim> claims = Claim.getAllClaims();
-			claimList =claims.size();
-			if (claimList>0) {
+			numberOfClaims = Claim.getNumberOfClaims();
+
+			if (numberOfClaims>0) {
 				sv.setShowcase(
 						new ViewTarget(mViewPager), true);
 				sv.setContentTitle("  ");
@@ -262,7 +262,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			break;
 		
 		case 8:
-			if (claimList>0) {
+			if (numberOfClaims>0) {
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_new)), true);
 				sv.setContentText(getString(R.string.showcase_actionClaims_message));
 				sv.setButtonText(getString(R.string.close));

@@ -313,6 +313,8 @@ public class LocalClaimsFragment extends ListFragment {
 
 				cto.setSlogan(slogan);
 				cto.setId(claim.getClaimId());
+				cto.setModifiable(claim.isModifiable());
+				cto.setPersonId(claim.getPerson().getPersonId());
 
 				if (claim.getClaimNumber() != null)
 					cto.setNumber(claim.getClaimNumber());

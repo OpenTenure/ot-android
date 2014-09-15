@@ -44,7 +44,7 @@ public class FormPayload {
 	public String toString() {
 		return "FormPayload ["
 				+ "sections=" + Arrays.toString(sections.toArray())
-				+ ", name=" + name
+				+ ", claimId=" + claimId
 				+ ", id=" + id
 				+ "]";
 	}
@@ -53,7 +53,8 @@ public class FormPayload {
 	private String id;
 	@JsonIgnore
 	private FormTemplate template;
-	private String name;
+	private String claimId;
+	private String formTemplateName;
 	private List<SectionPayload> sections;
 	
 	public String getId() {
@@ -64,33 +65,44 @@ public class FormPayload {
 		this.id = id;
 	}
 
+	public String getFormTemplateName() {
+		return formTemplateName;
+	}
+
+	public void setFormTemplateName(String formTemplateName) {
+		this.formTemplateName = formTemplateName;
+	}
+
 	public FormTemplate getTemplate() {
 		return template;
 	}
 
 	public void setTemplate(FormTemplate template) {
 		this.template = template;
+		this.formTemplateName = template.getName();
 	}
 
-	public FormPayload(String name){
-		this.name = name;
+	public FormPayload(String claimId){
+		this.claimId = claimId;
 		this.sections = new ArrayList<SectionPayload>();
 	}
 
-	public FormPayload(FormTemplate template){
-		this.name = template.getName();
+	public FormPayload(FormTemplate template, String claimId){
+		this.claimId = claimId;
+		this.formTemplateName = template.getName();
+		this.template = template;
 		this.sections = new ArrayList<SectionPayload>();
 		for(SectionTemplate sectionTemplate:template.getSections()){
 			this.sections.add(new SectionPayload(sectionTemplate));
 		}
 	}
 
-	public String getName() {
-		return name;
+	public String getClaimId() {
+		return claimId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
 	}
 
 	public List<SectionPayload> getSections() {
@@ -108,7 +120,9 @@ public class FormPayload {
 	
 	public FormPayload(FormPayload form){
 		this.id = UUID.randomUUID().toString();
-		this.name = form.getName();
+		this.claimId = form.getClaimId();
+		this.formTemplateName = form.getTemplate().getName();
+		this.template = form.getTemplate();
 		this.sections = new ArrayList<SectionPayload>();
 		for(SectionPayload sectionTemplate:form.getSections()){
 			this.sections.add(new SectionPayload(sectionTemplate));

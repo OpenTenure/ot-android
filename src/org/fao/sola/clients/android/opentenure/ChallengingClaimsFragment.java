@@ -112,6 +112,7 @@ public class ChallengingClaimsFragment extends ListFragment {
 				ClaimListTO cto = new ClaimListTO();
 				cto.setSlogan(challengingClaim.getName() + ", " + getResources().getString(R.string.by) + ": " + challengingClaim.getPerson().getFirstName()+ " " + challengingClaim.getPerson().getLastName());
 				cto.setId(challengingClaim.getClaimId());
+				cto.setModifiable(challengingClaim.isModifiable());
 				if(challengingClaim.getStatus().equals(ClaimStatus._UPLOADING)) 
 					cto.setStatus(challengingClaim.getStatus());
 				else if(challengingClaim.getStatus().equals(ClaimStatus._UNMODERATED)){
