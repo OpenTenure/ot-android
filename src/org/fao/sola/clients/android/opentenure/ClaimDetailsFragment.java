@@ -238,20 +238,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 							// SOLA DB cannot store the same person twice
 
-							ArrayList<String> idsWithClaims = Person
-									.getIdsWithClaims();
-
-							ArrayList<String> idsWithShares = Person
-									.getIdsWithShares();
-
-							ArrayList<String> excludeList = new ArrayList<String>();
-
-							excludeList.addAll(idsWithClaims);
-							excludeList.addAll(idsWithShares);
+							ArrayList<String> idsWithSharesOrClaims = Person
+									.getIdsWithSharesOrClaims();
 
 							intent.putStringArrayListExtra(
 									SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-									excludeList);
+									idsWithSharesOrClaims);
 
 							startActivityForResult(
 									intent,

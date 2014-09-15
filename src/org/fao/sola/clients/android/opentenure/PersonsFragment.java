@@ -111,8 +111,6 @@ public class PersonsFragment extends ListFragment {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stu
-
 							Intent intent = new Intent(rootView.getContext(),
 									PersonActivity.class);
 							intent.putExtra(PersonActivity.PERSON_ID_KEY,
@@ -130,8 +128,6 @@ public class PersonsFragment extends ListFragment {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-
 							Intent intent = new Intent(rootView.getContext(),
 									PersonActivity.class);
 							intent.putExtra(PersonActivity.PERSON_ID_KEY,
@@ -201,7 +197,7 @@ public class PersonsFragment extends ListFragment {
 			((PersonsListAdapter) getListAdapter()).getFilter().filter(filter);
 		}
 		
-		// Setted this reference  at Application level to refresh 
+		// Set this reference at Application level to refresh 
 		OpenTenureApplication.setPersonsFragment(this);
 
 		return rootView;
@@ -239,6 +235,7 @@ public class PersonsFragment extends ListFragment {
 
 	protected void update() {
 		List<Person> persons = Person.getAllPersons();
+		List<String> idsWithClaimOrShare = Person.getIdsWithSharesOrClaims();
 		List<PersonListTO> personListTOs = new ArrayList<PersonListTO>();
 
 		for (Person person : persons) {
@@ -248,6 +245,11 @@ public class PersonsFragment extends ListFragment {
 				pto.setSlogan(person.getFirstName() + " "
 						+ person.getLastName());
 				personListTOs.add(pto);
+				if(idsWithClaimOrShare.contains(person.getPersonId())){
+					pto.setHasClaimOrShare(true);
+				}else{
+					pto.setHasClaimOrShare(false);
+				}
 			}
 		}
 		ArrayAdapter<PersonListTO> adapter = new PersonsListAdapter(

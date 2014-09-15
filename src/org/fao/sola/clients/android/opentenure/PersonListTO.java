@@ -47,7 +47,15 @@ public class PersonListTO implements Serializable {
 	public void setSlogan(String slogan) {
 		this.slogan = slogan;
 	}
+
+	public boolean hasClaimOrShare() {
+		return hasClaimOrShare;
+	}
+	public void setHasClaimOrShare(boolean hasClaimOrShare) {
+		this.hasClaimOrShare = hasClaimOrShare;
+	}
+	
 	private String id;
 	private String slogan;
-	
+	private boolean hasClaimOrShare;
 }

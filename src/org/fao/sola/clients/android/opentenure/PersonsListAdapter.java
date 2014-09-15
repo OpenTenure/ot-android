@@ -38,14 +38,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		Filterable {
@@ -125,8 +122,6 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 		ViewHolder vh;
 
-		Person person = Person.getPerson(persons.get(position).getId());
-
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.persons_list_item, parent,
 					false);
@@ -145,8 +140,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 
 		}
 
-		if (person!= null && !Person.getIdsWithClaims().contains(person.getPersonId())
-				&& !Person.getIdsWithShares().contains(person.getPersonId())
+		if (!persons.get(position).hasClaimOrShare()
 				&& mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 
 			vh.remove.setOnClickListener(new DeletePersonListener(persons.get(

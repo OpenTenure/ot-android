@@ -140,18 +140,10 @@ public class ShareDetailsFragment extends Fragment {
 
 				// SOLA DB cannot store the same person twice
 
-				ArrayList<String> idsWithClaims = Person.getIdsWithClaims();
-
-				ArrayList<String> idsWithShares = Person.getIdsWithShares();
-
-				ArrayList<String> excludeList = new ArrayList<String>();
-
-				excludeList.addAll(idsWithClaims);
-				excludeList.addAll(idsWithShares);
-
+				ArrayList<String> idsWithSaresOrClaims = Person.getIdsWithSharesOrClaims();
 				intent.putStringArrayListExtra(
 						SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-						excludeList);
+						idsWithSaresOrClaims);
 
 				startActivityForResult(intent,
 						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
