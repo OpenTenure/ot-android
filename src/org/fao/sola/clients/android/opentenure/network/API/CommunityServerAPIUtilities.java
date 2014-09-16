@@ -38,53 +38,53 @@ import android.util.Log;
 
 public class CommunityServerAPIUtilities {
 
-	public static final String HTTPS_LOGIN = "https://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
-	public static final String HTTP_LOGIN = "http://ot.flossola.org/ws/en-us/auth/login?username=%s&password=%s";
+	public static final String HTTPS_LOGIN = "%s/ws/%s/auth/login?username=%s&password=%s";
+	public static final String HTTP_LOGIN = "%s/ws/%s/auth/login?username=%s&password=%s";
 
-	public static final String HTTPS_LOGOUT = "https://ot.flossola.org/ws/en-us/auth/logout";
-	public static final String HTTP_LOGOUT = "http://ot.flossola.org/ws/en-us/auth/logout";
+	public static final String HTTPS_LOGOUT = "%s/ws/%s/auth/logout";
+	public static final String HTTP_LOGOUT = "%s/ws/%s/auth/logout";
 
-	public static final String HTTPS_GETCLAIM = "https://ot.flossola.org/ws/en-us/claim/getClaim/%s";
-	public static final String HTTP_GETCLAIM = "http://ot.flossola.org/ws/en-us/claim/getClaim/%s";
+	public static final String HTTPS_GETCLAIM = "%s/ws/%s/claim/getClaim/%s";
+	public static final String HTTP_GETCLAIM = "%s/ws/%s/claim/getClaim/%s";
 
-	public static final String HTTPS_GETATTACHMENT = "https://ot.flossola.org/claim/getAttachment?id=%s";
-	public static final String HTTP_GETATTACHMENT = "http://ot.flossola.org/claim/getAttachment?id=%s";
+	public static final String HTTPS_GETATTACHMENT = "%s/claim/getAttachment?id=%s";
+	public static final String HTTP_GETATTACHMENT = "%s/claim/getAttachment?id=%s";
 
-	public static final String HTTPS_SAVECLAIM = "https://ot.flossola.org/ws/en-us/claim/saveClaim";
-	public static final String HTTP_SAVECLAIM = "http://ot.flossola.org/ws/en-us/claim/saveClaim";
+	public static final String HTTPS_SAVECLAIM = "%s/ws/%s/claim/saveClaim";
+	public static final String HTTP_SAVECLAIM = "%s/ws/%s/claim/saveClaim";
 
-	public static final String HTTPS_SAVEATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/saveAttachment";
-	public static final String HTTP_SAVEATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/saveAttachment";
+	public static final String HTTPS_SAVEATTACHMENT = "%s/ws/%s/claim/saveAttachment";
+	public static final String HTTP_SAVEATTACHMENT = "%s/ws/%s/claim/saveAttachment";
 
-	public static final String HTTPS_UPLOADCHUNK = "https://ot.flossola.org/ws/en-us/claim/uploadChunk";
-	public static final String HTTP_UPLOADCHUNK = "http://ot.flossola.org/ws/en-us/claim/uploadChunk";
+	public static final String HTTPS_UPLOADCHUNK = "%s/ws/%s/claim/uploadChunk";
+	public static final String HTTP_UPLOADCHUNK = "%s/ws/%s/claim/uploadChunk";
 
-	public static final String HTTPS_GETALLCLAIMS = "https://ot.flossola.org/ws/en-us/claim/getAllClaims";
-	public static final String HTTP_GETALLCLAIMS = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
+	public static final String HTTPS_GETALLCLAIMS = "%s/ws/%s/claim/getAllClaims";
+	public static final String HTTP_GETALLCLAIMS = "%s/ws/%s/claim/getAllClaims";
 
-	public static final String HTTPS_GETALLCLAIMSBYBOX = "https://ot.flossola.org/ws/en-us/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
-	public static final String HTTP_GETALLCLAIMSBYBOX = "http://ot.flossola.org/ws/en-us/claim/getAllClaims";
+	public static final String HTTPS_GETALLCLAIMSBYBOX = "%s/ws/%s/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
+	public static final String HTTP_GETALLCLAIMSBYBOX = "%s/ws/%s/claim/getAllClaims";
 	
-	public static final String HTTPS_GETCLAIMTYPES = "https://ot.flossola.org/ws/en-us/ref/getclaimtypes";
-	public static final String HTTP_GETCLAIMTYPES = "http://ot.flossola.org/ws/en-us/ref/getclaimtypes";
+	public static final String HTTPS_GETCLAIMTYPES = "%s/ws/%s/ref/getclaimtypes";
+	public static final String HTTP_GETCLAIMTYPES = "%s/ws/%s/ref/getclaimtypes";
 	
-	public static final String HTTPS_GETDOCUMENTYPES = "https://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
-	public static final String HTTP_GETDOCUMENTYPES = "http://ot.flossola.org/ws/en-us/ref/getdocumenttypes";
+	public static final String HTTPS_GETDOCUMENTYPES = "%s/ws/%s/ref/getdocumenttypes";
+	public static final String HTTP_GETDOCUMENTYPES = "%s/ws/%s/ref/getdocumenttypes";
 	
-	public static final String HTTPS_GETIDTYPES = "https://ot.flossola.org/ws/en-us/ref/getidtypes";
-	public static final String HTTP_GETIDTYPES = "http://ot.flossola.org/ws/en-us/ref/getidtypes";
+	public static final String HTTPS_GETIDTYPES = "%s/ws/%s/ref/getidtypes";
+	public static final String HTTP_GETIDTYPES = "%s/ws/%s/ref/getidtypes";
 	
-	public static final String HTTPS_GETLANDUSE = "https://ot.flossola.org/ws/en-us/ref/getlanduses";
-	public static final String HTTP_GETLANDUSE = "http://ot.flossola.org/ws/en-us/ref/getlanduses";
+	public static final String HTTPS_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
+	public static final String HTTP_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
 	
-	public static final String HTTPS_GETCOMMUNITYAREA = "https://ot.flossola.org/ws/en-us/ref/getcommunityarea";
-	public static final String HTTP_GETCOMMUNITYAREA = "http://ot.flossola.org/ws/en-us/ref/getcommunityarea";
+	public static final String HTTPS_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
+	public static final String HTTP_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	
-	public static final String HTTPS_WITHDRAWCLAIM = "https://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
-	public static final String HTTP_WITHDRAWCLAIM = "http://ot.flossola.org/ws/en-us/claim/withdrawclaim/%s";
+	public static final String HTTPS_WITHDRAWCLAIM = "%s/ws/%s/claim/withdrawclaim/%s";
+	public static final String HTTP_WITHDRAWCLAIM = "%s/ws/%s/claim/withdrawclaim/%s";
 	
-	public static final String HTTPS_ADDCLAIMATTACHMENT = "https://ot.flossola.org/ws/en-us/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
-	public static final String HTTP_ADDCLAIMATTACHMENT = "http://ot.flossola.org/ws/en-us/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
+	public static final String HTTPS_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
+	public static final String HTTP_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];

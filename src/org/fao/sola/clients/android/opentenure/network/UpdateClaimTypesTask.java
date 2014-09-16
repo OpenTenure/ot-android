@@ -31,12 +31,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-
 
 /**
  * Task called to initialize the Application with the values of Types of claim
@@ -55,8 +56,6 @@ public class UpdateClaimTypesTask extends
 
 	@Override
 	protected void onPostExecute(List<ClaimType> types) {
-		
-		
 
 		if (types != null && (types.size() > 0)) {
 
@@ -65,18 +64,48 @@ public class UpdateClaimTypesTask extends
 
 				org.fao.sola.clients.android.opentenure.model.ClaimType type = new org.fao.sola.clients.android.opentenure.model.ClaimType();
 
-				
 				type.setDescription(claimType.getDescription());
 				type.setType(claimType.getCode());
 				type.setDisplayValue(claimType.getDisplayValue());
-				type.add();
+
+				if (org.fao.sola.clients.android.opentenure.model.ClaimType
+						.getClaimType(claimType.getCode()) == null)
+					type.add();
+				else
+					type.updadateClaimType();
 
 			}
-			
-			OpenTenureApplication.getInstance().setCheckedTypes(true);			
+
+			OpenTenureApplication.getInstance().setCheckedTypes(true);
+
+			synchronized (OpenTenureApplication.getLocale()) {
+
+				if (OpenTenureApplication.getInstance()
+						.isCheckedCommunityArea()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedDocTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedIdTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedLandUses()
+
+				)
+
+					OpenTenureApplication.getInstance().setInitialized(true);
+
+				Configuration conf = Configuration
+						.getConfigurationByName("isInitialized");
+				conf.setValue("true");
+				conf.update();
+
+				FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+						.getNewsFragment();
+				if (fa != null)
+					fa.invalidateOptionsMenu();
+
+			}
 
 		}
-		
 
 	}
 

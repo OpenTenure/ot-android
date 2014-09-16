@@ -343,5 +343,85 @@ public class IdType {
 		return null;
 
 	}
+	
+	public static IdType getIdType(String type) {
+		ResultSet result = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		IdType idType = new IdType();
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM ID_TYPE WHERE TYPE=?");
+			statement.setString(1, type);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+
+				idType.setCode(result.getString(1));
+				idType.setDescription(result.getString(2));
+				idType.setDisplayValue(result.getString(3));
+				
+				return idType;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+	}
+	
+	public int updadateIdType() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE ID_TYPE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
+			statement.setString(1, getCode());
+			statement.setString(2, getDescription());
+			statement.setString(3, getDisplayValue());
+			statement.setString(4, getCode());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
 
 }

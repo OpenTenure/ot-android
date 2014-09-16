@@ -52,7 +52,6 @@ import android.widget.Toast;
 
 public class InitializationActivity extends Activity {
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,7 +66,8 @@ public class InitializationActivity extends Activity {
 			AlertDialog.Builder dbPasswordDialog = new AlertDialog.Builder(this);
 			dbPasswordDialog.setTitle(R.string.message_db_locked);
 			final EditText dbPasswordInput = new EditText(this);
-			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT
+					| InputType.TYPE_TEXT_VARIATION_PASSWORD);
 			dbPasswordDialog.setView(dbPasswordInput);
 			dbPasswordDialog.setMessage(getResources().getString(
 					R.string.message_db_password));
@@ -79,12 +79,12 @@ public class InitializationActivity extends Activity {
 						public void onClick(DialogInterface dialog, int which) {
 							db.setPassword(dbPasswordInput.getText().toString());
 							db.open();
-							if(db.isOpen()){
+							if (db.isOpen()) {
 								Log.d(this.getClass().getName(), "db opened");
 								new StartOpenTenure().execute();
-							}else
-							{
-								Log.d(this.getClass().getName(), "db is still close");
+							} else {
+								Log.d(this.getClass().getName(),
+										"db is still close");
 								finish();
 							}
 						}
@@ -94,42 +94,44 @@ public class InitializationActivity extends Activity {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							Log.d(this.getClass().getName(), "password not provided");
+							Log.d(this.getClass().getName(),
+									"password not provided");
 							finish();
 						}
 					});
 			dbPasswordDialog.show();
-		}else{
+		} else {
 			Log.d(this.getClass().getName(), "db not encrypted");
 			checkPerformDbUpgrades();
 			StartOpenTenure start = new StartOpenTenure();
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
-			String formUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.FORM_URL_PREF,
-					"http://192.168.1.101:8080/DynamicFormGeneration/templateServlet");
+			String formUrl = OpenTenurePreferences
+					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
+							"http://192.168.1.101:8080/DynamicFormGeneration/templateServlet");
 			start.setFormUrl(formUrl);
 			start.execute();
 		}
-		
+
 	}
-	private void checkPerformDbUpgrades(){
+
+	private void checkPerformDbUpgrades() {
 		// Check for pending upgrades
-		if(OpenTenureApplication.getInstance().getDatabase().getUpgradePath().size() > 0){
-			Toast.makeText(this,
-					R.string.message_check_upgrade_db, Toast.LENGTH_LONG)
-					.show();
+		if (OpenTenureApplication.getInstance().getDatabase().getUpgradePath()
+				.size() > 0) {
+			Toast.makeText(this, R.string.message_check_upgrade_db,
+					Toast.LENGTH_LONG).show();
 			OpenTenureApplication.getInstance().getDatabase().performUpgrade();
-			Log.d(this.getClass().getName(),
-					"DB upgraded to version: " + Configuration.getConfigurationValue("DBVERSION"));
+			Log.d(this.getClass().getName(), "DB upgraded to version: "
+					+ Configuration.getConfigurationValue("DBVERSION"));
 		}
 
-
-		
 	}
-	private class StartOpenTenure extends AsyncTask<Void, Void, Void> {
-		
+
+	public class StartOpenTenure extends AsyncTask<Void, Void, Void> {
+
 		private String formUrl;
+
 		public void setFormUrl(String formUrl) {
 			this.formUrl = formUrl;
 		}
@@ -139,7 +141,6 @@ public class InitializationActivity extends Activity {
 		}
 
 		private String communityServerBaseUrl;
-		
 
 		@Override
 		protected void onPreExecute() {
@@ -155,9 +156,23 @@ public class InitializationActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			Log.d(this.getClass().getName(), "starting tasks for static data download");
+			Log.d(this.getClass().getName(),
+					"starting tasks for static data download");
+
+			Configuration conf = Configuration
+					.getConfigurationByName("isInitialized");
+			if (conf == null) {
+
+				conf = new Configuration();
+				conf.setName("isInitialized");
+				conf.setValue("false");
+				conf.create();
+
+			}
+
 			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-				Log.d(this.getClass().getName(), "starting tasks for claim type download");
+				Log.d(this.getClass().getName(),
+						"starting tasks for claim type download");
 
 				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
 				updateCT.execute();
@@ -165,7 +180,8 @@ public class InitializationActivity extends Activity {
 			}
 
 			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
-				Log.d(this.getClass().getName(), "starting tasks for document type download");
+				Log.d(this.getClass().getName(),
+						"starting tasks for document type download");
 
 				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
 				updateCT.execute();
@@ -173,34 +189,35 @@ public class InitializationActivity extends Activity {
 			}
 
 			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
-				Log.d(this.getClass().getName(), "starting tasks for ID type download");
+				Log.d(this.getClass().getName(),
+						"starting tasks for ID type download");
 
 				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
 				updateIdType.execute();
-
 			}
-
 			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
-				Log.d(this.getClass().getName(), "starting tasks for land use type download");
+				Log.d(this.getClass().getName(),
+						"starting tasks for land use type download");
 
 				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
 				updateLu.execute();
 			}
 			if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
-				Log.d(this.getClass().getName(), "starting tasks for community area download");
+				Log.d(this.getClass().getName(),
+						"starting tasks for community area download");
 
 				UpdateCommunityArea updateArea = new UpdateCommunityArea();
 				updateArea.execute();
 			}
 			if (!OpenTenureApplication.getInstance().isCheckedForm()) {
-				Log.d(this.getClass().getName(), "starting tasks for form retrieval");
+				Log.d(this.getClass().getName(),
+						"starting tasks for form retrieval");
 
-				FormRetriever formRetriever = new FormRetriever();
-				formRetriever.setFormUrl(formUrl);
-				formRetriever.execute();
+				 FormRetriever formRetriever = new FormRetriever();
+				 formRetriever.setFormUrl(formUrl);
+				 formRetriever.execute();
 			}
-			
-			
+
 			Intent i = new Intent(InitializationActivity.this, OpenTenure.class);
 			startActivity(i);
 			finish();

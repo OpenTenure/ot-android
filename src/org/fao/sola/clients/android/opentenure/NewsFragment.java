@@ -30,16 +30,32 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.button.listener.InitializationAlertListener;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
+import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.AlertInitializationTask;
+import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,11 +65,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class NewsFragment extends ListFragment {
 	private View rootView;
+	MenuItem alert;
 
 	public NewsFragment() {
 	}
@@ -62,6 +80,18 @@ public class NewsFragment extends ListFragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.news, menu);
 
+		alert = menu.getItem(2);
+		alert.setVisible(false);
+
+		OpenTenureApplication.setNewsFragment(getActivity());
+
+		if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+				"isInitialized").getValue())) {
+			alert.setVisible(true);
+		} else {
+			alert.setVisible(false);
+
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -77,6 +107,101 @@ public class NewsFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+
+		case R.id.action_alert:
+
+			Log.d(this.getClass().getName(),
+					"starting tasks for static data download");
+
+			ProgressBar bar = (ProgressBar) rootView
+					.findViewById(R.id.progress_bar);
+
+			Configuration conf = Configuration
+					.getConfigurationByName("isInitialized");
+
+			if (conf == null) {
+
+				conf = new Configuration();
+				conf.setName("isInitialized");
+				conf.setValue("false");
+				conf.create();
+
+			}
+
+			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for claim type download");
+
+				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
+				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+			}
+
+			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for document type download");
+
+				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
+				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+			}
+
+			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for ID type download");
+
+				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
+				updateIdType.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for land use type download");
+
+				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
+				updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for community area download");
+
+				UpdateCommunityArea updateArea = new UpdateCommunityArea();
+				updateArea.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			if (!OpenTenureApplication.getInstance().isCheckedForm()) {
+				Log.d(this.getClass().getName(),
+						"starting tasks for form retrieval");
+
+				// FormRetriever formRetriever = new FormRetriever();
+				// formRetriever.setFormUrl(formUrl);
+				// formRetriever.execute();
+			}
+
+			GetClaimsInput input = new GetClaimsInput();
+			input.setMapView(rootView);
+
+			AlertInitializationTask fakeTask = new AlertInitializationTask(this.getActivity());
+			fakeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, input);
+
+			// AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+			// rootView.getContext());
+			// alertDialog.setTitle(R.string.message_title_app_not_initialized);
+			// alertDialog.setMessage(getResources().getString(
+			// R.string.message_app_not_initialized));
+			//
+			// alertDialog.setPositiveButton(R.string.confirm,
+			// new OnClickListener() {
+			// @Override
+			// public void onClick(DialogInterface dialog,
+			// int which) {
+			// AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(
+			// rootView.getContext());
+			//
+			// return;
+			//
+			// }});
+			//
+			// alertDialog.show();
+			return true;
 
 		case R.id.action_lock:
 			if (OpenTenureApplication.getInstance().getDatabase().isOpen()) {
@@ -97,6 +222,7 @@ public class NewsFragment extends ListFragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
+
 								AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(
 										rootView.getContext());
 								newPasswordDialog
@@ -163,8 +289,8 @@ public class NewsFragment extends ListFragment {
 																					.show();
 
 																		} else {
-																			if("".equalsIgnoreCase(newPassword)){
-																				newPassword=null;
+																			if ("".equalsIgnoreCase(newPassword)) {
+																				newPassword = null;
 																			}
 																			OpenTenureApplication
 																					.getInstance()
@@ -262,7 +388,8 @@ public class NewsFragment extends ListFragment {
 				.getDefaultSharedPreferences(rootView.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "http://ot.flossola.org");
+				OpenTenurePreferencesActivity.CS_URL_PREF,
+				"http://ot.flossola.org");
 		urls.add(csUrl);
 		urls.add("http://www.flossola.org/home");
 		urls.add("http://www.flossola.org/home");

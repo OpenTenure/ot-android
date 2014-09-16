@@ -336,4 +336,93 @@ public class ClaimType {
 
 	}
 
+	public static ClaimType getClaimType(String value) {
+
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT TYPE, DISPLAY_VALUE, DESCRIPTION FROM CLAIM_TYPE CT WHERE TYPE = ?");
+			statement.setString(1, value);
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				ClaimType claimType = new ClaimType();
+				claimType.setType(rs.getString(1));
+				claimType.setDescription(rs.getString(2));
+				
+				return claimType;
+			}
+			return null;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+
+	}
+	
+	public int updadateClaimType() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE CLAIM_TYPE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
+			statement.setString(1, getType());
+			statement.setString(2, getDescription());
+			statement.setString(3, getDisplayValue());
+			statement.setString(4, getType());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+	
 }

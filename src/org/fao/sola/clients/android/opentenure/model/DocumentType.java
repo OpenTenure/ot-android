@@ -123,7 +123,7 @@ public class DocumentType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
 			statement.setString(1, docType.getCode());
 			statement.setString(2, docType.getDescription());
@@ -150,6 +150,86 @@ public class DocumentType {
 		}
 		return result;
 
+	}
+
+	public static DocumentType getDocumentType(String code) {
+		ResultSet result = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		DocumentType documentType = new DocumentType();
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CODE, DESCRIPTION, DISPLAY_VALUE FROM DOCUMENT_TYPE WHERE CODE=?");
+			statement.setString(1, code);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+
+				documentType.setCode(result.getString(1));
+				documentType.setDescription(result.getString(2));
+				documentType.setDisplayValue(result.getString(3));
+				
+				return documentType;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+	}
+
+	public int updadateDocumentType() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE DOCUMENT_TYPE SET CODE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE CODE = ?");
+			statement.setString(1, getCode());
+			statement.setString(2, getDescription());
+			statement.setString(3, getDisplayValue());
+			statement.setString(4, getCode());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
 	}
 
 	public List<DocumentType> getDocumentTypes() {
@@ -249,7 +329,7 @@ public class DocumentType {
 		PreparedStatement statement = null;
 
 		try {
-			
+
 			localConnection = db.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT CODE FROM DOCUMENT_TYPE CT WHERE DISPLAY_VALUE = ?");
@@ -288,8 +368,7 @@ public class DocumentType {
 		return null;
 
 	}
-	
-	
+
 	public String getDisplayVauebyType(String value) {
 
 		ResultSet rs = null;
@@ -297,7 +376,7 @@ public class DocumentType {
 		PreparedStatement statement = null;
 
 		try {
-			
+
 			localConnection = db.getConnection();
 			statement = localConnection
 					.prepareStatement("SELECT DISPLAY_VALUE FROM DOCUMENT_TYPE CT WHERE CODE = ?");

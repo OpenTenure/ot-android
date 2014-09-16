@@ -193,6 +193,12 @@
     <string name="message_save_changes">Do you want save changes ?</string>
     <string name="message_claim_modified">Claim modified</string>
     <string name="message_entity_type">Which kind of entity ?</string>
+    <string name="message_title_app_not_initialized">The application is not initialized</string>
+    <string name="message_app_not_initialized_network">The network\'s connection is not available</string>
+    <string name="message_app_not_yet_initialized">The application is not yet initialized</string>
+    <string name="message_app_not_initialized">Check in \'Settings\'that the settings of your Open Tenure Community Server are correct and run again the initialization process</string>
+    <string name="message_title_app_initialized">The application is initialized</string>
+    <string name="message_app_initialized">The app is ready to work and communicate to the Open Tenure Community Server </string>
     
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
     <string name="yes">Yes</string>

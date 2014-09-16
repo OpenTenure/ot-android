@@ -31,16 +31,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 import org.fao.sola.clients.android.opentenure.network.response.IdType;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 
-public class UpdateIdTypesTask extends
-AsyncTask<String, Void, List<IdType>>{
-	
-	
+public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
+
 	@Override
 	protected List<IdType> doInBackground(String... params) {
 		List<IdType> types = CommunityServerAPI.getIdTypes();
@@ -48,11 +48,9 @@ AsyncTask<String, Void, List<IdType>>{
 		// TODO Auto-generated method stub
 		return types;
 	}
-	
+
 	@Override
 	protected void onPostExecute(List<IdType> types) {
-		
-		
 
 		if (types != null && (types.size() > 0)) {
 
@@ -61,18 +59,48 @@ AsyncTask<String, Void, List<IdType>>{
 
 				org.fao.sola.clients.android.opentenure.model.IdType type = new org.fao.sola.clients.android.opentenure.model.IdType();
 
-				
 				type.setDescription(idType.getDescription());
 				type.setCode(idType.getCode());
 				type.setDisplayValue(idType.getDisplayValue());
-				type.add();
+				if (org.fao.sola.clients.android.opentenure.model.IdType
+						.getIdType(idType.getCode()) == null)
+
+					type.add();
+				else
+					type.updadateIdType();
 
 			}
-			
-			OpenTenureApplication.getInstance().setCheckedIdTypes(true);		
+
+			OpenTenureApplication.getInstance().setCheckedIdTypes(true);
+
+			synchronized (OpenTenureApplication.getLocale()) {
+
+				if (OpenTenureApplication.getInstance()
+						.isCheckedCommunityArea()
+						&& OpenTenureApplication.getInstance().isCheckedTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedDocTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedLandUses()
+
+				)
+					System.out
+							.println("FINALMENTE E' INIZIALIZZATO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+
+				OpenTenureApplication.getInstance().setInitialized(true);
+
+				Configuration conf = Configuration
+						.getConfigurationByName("isInitialized");
+				conf.setValue("true");
+				conf.update();
+
+				FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+						.getNewsFragment();
+				if (fa != null)
+					fa.invalidateOptionsMenu();
+			}
 
 		}
-		
 
 	}
 

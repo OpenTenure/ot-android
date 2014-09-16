@@ -34,6 +34,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
@@ -56,6 +57,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LocalClaimsFragment extends ListFragment {
 
@@ -116,8 +118,7 @@ public class LocalClaimsFragment extends ListFragment {
 				itemOut.setVisible(false);
 			}
 		}
-        
-		
+
 		super.onPrepareOptionsMenu(menu);
 
 	}
@@ -140,6 +141,21 @@ public class LocalClaimsFragment extends ListFragment {
 
 		switch (item.getItemId()) {
 		case R.id.action_new:
+
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
+
 			Intent intent = new Intent(rootView.getContext(),
 					ClaimActivity.class);
 
@@ -351,8 +367,6 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	public void refresh() {
-		
-		System.out.println("REFRESH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 		update();
 	}
