@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
@@ -51,6 +52,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PersonsFragment extends ListFragment {
 
@@ -99,6 +101,19 @@ public class PersonsFragment extends ListFragment {
 		switch (item.getItemId()) {
 		case R.id.action_new:
 			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 			
 			
 			AlertDialog.Builder dialog = new AlertDialog.Builder(rootView.getContext());

@@ -224,6 +224,7 @@ public class GetClaimsTask extends
 
 	}
 
+	@Override
 	protected void onProgressUpdate(GetClaimsInput... progress) {
 
 		GetClaimsInput input = progress[0];

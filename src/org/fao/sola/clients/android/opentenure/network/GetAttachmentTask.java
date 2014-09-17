@@ -60,7 +60,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 		// TODO Auto-generated method stub
 
 		GetAttachmentResponse res = null;
-		int lenght = 10000; /* Should be setted by property */
+		int lenght = 1000; /* Should be setted by property */
 		long offSet = 0;
 		Object[] result = new Object[2];
 

@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.protocol.ClientContext;
@@ -39,268 +40,304 @@ import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.Database;
 
-
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
-
 public class OpenTenureApplication extends Application {
 
-	    private static OpenTenureApplication sInstance;
-	    private Database database;
-	    private static Context context;
-	    private boolean checkedTypes = false;
-	    private boolean checkedDocTypes = false;
-	    private boolean checkedIdTypes = false;
-	    private boolean checkedLandUses = false;
-	    private boolean checkedCommunityArea = false;
-	    private boolean checkedForm = false;
-	    
-	    
-	    private static boolean loggedin ;
-	    private static String username;
-	    private static Activity activity;
-		private static List<ClaimType> claimTypes;
-		private static AndroidHttpClient mHttpClient;
-		private static CookieStore cookieStore;
-		private static HttpContext http_context;
-		private static MainMapFragment mapFragment;
-		private static PersonsFragment personsFragment;
-		private static View personsView;
-		private static LocalClaimsFragment localClaimsFragment;
-		
-		
+	private static OpenTenureApplication sInstance;
+	private Database database;
+	private static Context context;
+	private boolean checkedTypes = false;
+	private boolean checkedDocTypes = false;
+	private boolean checkedIdTypes = false;
+	private boolean checkedLandUses = false;
+	private boolean checkedCommunityArea = false;
+	private boolean checkedForm = false;
+	private boolean initialized = false;
 
-	    public static OpenTenureApplication getInstance() {
-	      return sInstance;
-	    }
+	private static String localization;
+	private static Locale locale;
+	private static boolean loggedin;
+	private static String username;
+	private static Activity activity;
+	private static List<ClaimType> claimTypes;
+	private static AndroidHttpClient mHttpClient;
+	private static CookieStore cookieStore;
+	private static HttpContext http_context;
+	private static MainMapFragment mapFragment;
+	private static PersonsFragment personsFragment;
+	private static View personsView;
+	private static LocalClaimsFragment localClaimsFragment;
+	private static FragmentActivity newsFragmentActivity;
 
-	    public Database getDatabase(){
-	        return database;
-	    }
-	    
-		public boolean isOnline() {
-			ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo netInfo = cm.getActiveNetworkInfo();
-			if (netInfo != null && netInfo.isConnected()) {
-				return true;
-			}
-			return false;
+	public static OpenTenureApplication getInstance() {
+		return sInstance;
+	}
+
+	public Database getDatabase() {
+		return database;
+	}
+
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo netInfo = cm.getActiveNetworkInfo();
+		if (netInfo != null && netInfo.isConnected()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		sInstance = this;
+		sInstance.initializeInstance();
+		context = getApplicationContext();
+		locale = getResources().getConfiguration().locale;
+		setLocalization(locale);
+
+		FileSystemUtilities.createClaimsFolder();
+		FileSystemUtilities.createClaimantsFolder();
+		FileSystemUtilities.createOpenTenureFolder();
+
+	}
+
+	protected void initializeInstance() {
+		// Start without a DB encryption password
+		database = new Database(getApplicationContext(), "");
+
+	}
+
+	public static HttpContext getHttp_context() {
+		return http_context;
+	}
+
+	public static void setHttp_context(HttpContext http_context) {
+		OpenTenureApplication.http_context = http_context;
+	}
+
+	public static CookieStore getCoockieStore() {
+		if (cookieStore != null)
+			return cookieStore;
+		else {
+			cookieStore = new BasicCookieStore();
+			return cookieStore;
 		}
 
-	    @Override
-	    public void onCreate() {
-	      super.onCreate();  
-	      sInstance = this;
-	      sInstance.initializeInstance();
-	      context = getApplicationContext();	 
-	      
-	      
-	      FileSystemUtilities.createClaimsFolder();
-		  FileSystemUtilities.createClaimantsFolder();
-		  FileSystemUtilities.createOpenTenureFolder();
-		  
-		 
+	}
 
-		  		  
-	    }
+	public static void setCoockieStore(CookieStore coockieStore) {
+		OpenTenureApplication.cookieStore = coockieStore;
+	}
 
-	    protected void initializeInstance() {
-	        // Start without a DB encryption password
-	    	database = new Database(getApplicationContext(),"");
+	public static boolean isLoggedin() {
+		return loggedin;
+	}
 
-	    }
-	    
-	    public static HttpContext getHttp_context() {
-			return http_context;
-		}
+	public static void setLoggedin(boolean loggedin) {
+		OpenTenureApplication.loggedin = loggedin;
+	}
 
+	public static String getUsername() {
+		return username;
+	}
 
-		public static void setHttp_context(HttpContext http_context) {
-			OpenTenureApplication.http_context = http_context;
-		}
+	public static void setUsername(String username) {
+		OpenTenureApplication.username = username;
+	}
 
+	public static Context getContext() {
+		return context;
+	}
 
-		public static CookieStore getCoockieStore() {
-			if( cookieStore != null)
-				return cookieStore;
-			else{			
-				cookieStore = new BasicCookieStore();
-				return cookieStore;
-			}
-				
-		}
+	public static void setContext(Context context) {
+		OpenTenureApplication.context = context;
+	}
 
-		public static void setCoockieStore(CookieStore coockieStore) {
-			OpenTenureApplication.cookieStore = coockieStore;
-		}
+	public boolean isCheckedDocTypes() {
+		return checkedDocTypes;
+	}
 
-		public static boolean isLoggedin() {
-			return loggedin;
-		}
+	public void setCheckedDocTypes(boolean checkedDocTypes) {
+		this.checkedDocTypes = checkedDocTypes;
+	}
 
-		public static void setLoggedin(boolean loggedin) {
-			OpenTenureApplication.loggedin = loggedin;
-		}
-		
-		public static String getUsername() {
-			return username;
-		}
+	/*
+	 * Return the single instance of the inizialized HttpClient that handle
+	 * connection and session to the server
+	 */
+	public static synchronized AndroidHttpClient getHttpClient() {
 
-		public static void setUsername(String username) {
-			OpenTenureApplication.username = username;
-		}
-		
-		public static Context getContext() {
-			return context;
-		}
-
-		public static void setContext(Context context) {
-			OpenTenureApplication.context = context;
-		}
-
-
-
-		public boolean isCheckedDocTypes() {
-			return checkedDocTypes;
-		}
-
-		public void setCheckedDocTypes(boolean checkedDocTypes) {
-			this.checkedDocTypes = checkedDocTypes;
-		}
-
-		/*
-		 * Return the single instance of the inizialized HttpClient
-		 * that handle connection and session to the server 
-		 *  
-		 */
-		public static synchronized AndroidHttpClient getHttpClient() {
-			        	 
-						if(mHttpClient != null)
-			        	 return mHttpClient;
-						else 
-							return prepareClient();
-			     }		
-		
-		
-		public static Activity getActivity() {
-			return activity;
-		}
-
-		public static void setActivity(Activity activity) {
-			OpenTenureApplication.activity = activity;
-		}
-		public static MainMapFragment getMapFragment() {
-			return mapFragment;
-		}
-
-		public static void setMapFragment(MainMapFragment mapFragment) {
-			OpenTenureApplication.mapFragment = mapFragment;
-		}
-
-		public boolean isCheckedTypes() {
-			return checkedTypes;
-		}
-
-		public boolean isCheckedIdTypes() {
-			return checkedIdTypes;
-		}
-
-		public void setCheckedIdTypes(boolean checkedIdTypes) {
-			this.checkedIdTypes = checkedIdTypes;
-		}
-
-		public boolean isCheckedLandUses() {
-			return checkedLandUses;
-		}
-
-		public void setCheckedLandUses(boolean checkedLandUses) {
-			this.checkedLandUses = checkedLandUses;
-		}
-
-		public boolean isCheckedForm() {
-			return checkedForm;
-		}
-
-		public void setCheckedForm(boolean checkedForm) {
-			this.checkedForm = checkedForm;
-		}
-
-		public void setCheckedTypes(boolean checkedTypes) {
-			this.checkedTypes = checkedTypes;
-		}
-
-		public static View getPersonsView() {
-			return personsView;
-		}
-
-		public static void setPersonsView(View personsView) {
-			OpenTenureApplication.personsView = personsView;
-		}
-
-		public static List<ClaimType> getClaimTypes() {
-			return claimTypes;
-		}
-
-		public static void setClaimTypes(List<ClaimType> claimTypes) {
-			OpenTenureApplication.claimTypes = claimTypes;
-		}
-
-		public static PersonsFragment getPersonsFragment() {
-			return personsFragment;
-		}
-
-		public static void setPersonsFragment(PersonsFragment personsFragment) {
-			OpenTenureApplication.personsFragment = personsFragment;
-		}
-		
-		public boolean isCheckedCommunityArea() {
-			return checkedCommunityArea;
-		}
-
-		public void setCheckedCommunityArea(boolean checkedCommunityArea) {
-			this.checkedCommunityArea = checkedCommunityArea;
-		}
-
-		public static LocalClaimsFragment getLocalClaimsFragment() {
-			return localClaimsFragment;
-		}
-
-		public static void setLocalClaimsFragment(
-				LocalClaimsFragment localClaimsFragment) {
-			OpenTenureApplication.localClaimsFragment = localClaimsFragment;
-		}
-
-		/*
-		 * Initialize the single istance of AndroidHttpClient that will 
-		 * handle the connections to the server
-		 *  
-		 */
-		private static AndroidHttpClient  prepareClient(){
-			
-			
-			try {
-				
-				mHttpClient = AndroidHttpClient.newInstance("Android");
-		        http_context = new BasicHttpContext(); 				
-		         
-			    cookieStore = new BasicCookieStore();
-			    http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
-			    Log.d("OpenTEnureApplication","Inizialized HTTP Client");
-				
-			} catch (Throwable e) {
-				e.printStackTrace();			
-				
-			}
+		if (mHttpClient != null)
 			return mHttpClient;
-			
+		else
+			return prepareClient();
+	}
+
+	public static Activity getActivity() {
+		return activity;
+	}
+
+	public static void setActivity(Activity activity) {
+		OpenTenureApplication.activity = activity;
+	}
+
+	public static MainMapFragment getMapFragment() {
+		return mapFragment;
+	}
+
+	public static void setMapFragment(MainMapFragment mapFragment) {
+		OpenTenureApplication.mapFragment = mapFragment;
+	}
+
+	public boolean isCheckedTypes() {
+		return checkedTypes;
+	}
+
+	public boolean isCheckedIdTypes() {
+		return checkedIdTypes;
+	}
+
+	public void setCheckedIdTypes(boolean checkedIdTypes) {
+		this.checkedIdTypes = checkedIdTypes;
+	}
+
+	public boolean isCheckedLandUses() {
+		return checkedLandUses;
+	}
+
+	public void setCheckedLandUses(boolean checkedLandUses) {
+		this.checkedLandUses = checkedLandUses;
+	}
+
+	public boolean isCheckedForm() {
+		return checkedForm;
+	}
+
+	public void setCheckedForm(boolean checkedForm) {
+		this.checkedForm = checkedForm;
+	}
+
+	public void setCheckedTypes(boolean checkedTypes) {
+		this.checkedTypes = checkedTypes;
+	}
+
+	public static View getPersonsView() {
+		return personsView;
+	}
+
+	public static void setPersonsView(View personsView) {
+		OpenTenureApplication.personsView = personsView;
+	}
+
+	public static List<ClaimType> getClaimTypes() {
+		return claimTypes;
+	}
+
+	public static void setClaimTypes(List<ClaimType> claimTypes) {
+		OpenTenureApplication.claimTypes = claimTypes;
+	}
+
+	public static PersonsFragment getPersonsFragment() {
+		return personsFragment;
+	}
+
+	public static void setPersonsFragment(PersonsFragment personsFragment) {
+		OpenTenureApplication.personsFragment = personsFragment;
+	}
+
+	public boolean isCheckedCommunityArea() {
+		return checkedCommunityArea;
+	}
+
+	public void setCheckedCommunityArea(boolean checkedCommunityArea) {
+		this.checkedCommunityArea = checkedCommunityArea;
+	}
+
+	public static LocalClaimsFragment getLocalClaimsFragment() {
+		return localClaimsFragment;
+	}
+
+	public static Locale getLocale() {
+		return locale;
+	}
+
+	public static void setLocale(Locale locale) {
+		OpenTenureApplication.locale = locale;
+	}
+
+	public static FragmentActivity getNewsFragment() {
+		return newsFragmentActivity;
+	}
+
+	public static void setNewsFragment(FragmentActivity newsFragment) {
+		OpenTenureApplication.newsFragmentActivity = newsFragment;
+	}
+
+	public static String getLocalization() {
+		return localization;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
+	}
+
+	public void setInitialized(boolean initialized) {
+		this.initialized = initialized;
+	}
+
+	public static void setLocalization(String localization) {
+		OpenTenureApplication.localization = localization;
+	}
+
+	public static void setLocalization(Locale locale) {
+
+		locale.getDisplayLanguage();
+
+		OpenTenureApplication.localization = locale.getLanguage().toLowerCase()
+				+ "-" + locale.getCountry().toLowerCase();
+
+		/* to remove in the future */
+		if (!OpenTenureApplication.localization.equals("en-us"))
+			OpenTenureApplication.localization = "en-us";
+
+	}
+
+	public static void setLocalClaimsFragment(
+			LocalClaimsFragment localClaimsFragment) {
+		OpenTenureApplication.localClaimsFragment = localClaimsFragment;
+	}
+
+	/*
+	 * Initialize the single istance of AndroidHttpClient that will handle the
+	 * connections to the server
+	 */
+	private static AndroidHttpClient prepareClient() {
+
+		try {
+
+			mHttpClient = AndroidHttpClient.newInstance("Android");
+			http_context = new BasicHttpContext();
+
+			cookieStore = new BasicCookieStore();
+			http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+
+			Log.d("OpenTEnureApplication", "Inizialized HTTP Client");
+
+		} catch (Throwable e) {
+			e.printStackTrace();
+
 		}
-	    
+		return mHttpClient;
+
+	}
+
 }

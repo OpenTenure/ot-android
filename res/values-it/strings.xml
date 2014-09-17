@@ -185,13 +185,22 @@
     <string name="message_error_mandatory_field_last_name">Riempire il campo obbligatorio cognome prima di salvare</string>
     <string name="message_error_mandatory_field_gender">Riempire il campo obbligatorio genere prima di salvare</string>    
     <string name="message_error_mandatory_birthdate">Data di nascita non e\' in un formato corretto o e\' vuota</string>
-     <string name="message_error_startdate">Data di inizio diritto non e\' in un formato corretto o e\' vuota</string>
+    <string name="message_error_startdate">Data di inizio diritto non e\' in un formato corretto o e\' vuota</string>
+    <string name="message_title_app_not_initialized">L\'applicazione non e\' inizializzata</string>
+    <string name="message_app_not_initialized_network">La connessione alla rete non e\' disponibile</string>
+    <string name="message_app_not_initialized">Controlla i parametri del tuo Open Tenure Community Server in \'Impostazioni\' e ripeti il processo di inizializazione</string>
+    <string name="message_title_app_initialized">L\'applicazione e\' inizializzata</string>
+    <string name="message_app_initialized">L\'applicazione è pronta per lavorare e comunicare con l\'Open Tenure Community Server </string>
+    <string name="message_title_app_initializing">Inizializzando l\'applicazione</string>
+    <string name="message_app_initializing">Attendere...</string>
+    <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
     <string name="message_save_changes">Vuoi salvare i cambiamenti ?</string>
     <string name="message_adjacencies_saved">Adiacenze salvate</string>
     <string name="message_adjacencies_not_saved">Adiacenze non salvate</string>
     <string name="message_claim_modified">Claim modificato</string>
+    
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
 	<string name="tiles_queued">%d immagini sono gia\' in attesa di download, la richiesta sara\' accodata</string>
 	<string name="all_tiles_downloaded">Tutte le immagini per quest\'area sono state scaricate</string>

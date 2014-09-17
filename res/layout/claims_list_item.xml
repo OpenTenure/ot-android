@@ -17,8 +17,7 @@
         <TextView
             android:id="@+id/claim_id"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:text="@string/title_item" 
@@ -27,8 +26,7 @@
         <TextView
             android:id="@+id/claim_number"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:text="@string/title_item" />
@@ -36,8 +34,7 @@
         <TextView
             android:id="@+id/claim_slogan"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:text="@string/title_item" />
@@ -45,8 +42,7 @@
         <TextView
             android:id="@+id/claim_challenging_time"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:paddingTop="5sp"
@@ -55,8 +51,7 @@
         <TextView
             android:id="@+id/claim_status"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|bottom"
             android:paddingTop="10sp"

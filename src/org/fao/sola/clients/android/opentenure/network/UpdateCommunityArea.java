@@ -32,6 +32,7 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
@@ -69,6 +70,33 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 
 				OpenTenureApplication.getInstance().setCheckedCommunityArea(
 						true);
+
+				synchronized (OpenTenureApplication.getLocale()) {
+
+					if (OpenTenureApplication.getInstance()
+							.isCheckedCommunityArea()
+							&& OpenTenureApplication.getInstance()
+									.isCheckedTypes()
+							&& OpenTenureApplication.getInstance()
+									.isCheckedIdTypes()
+							&& OpenTenureApplication.getInstance()
+									.isCheckedCommunityArea()
+
+					)
+
+						OpenTenureApplication.getInstance()
+								.setInitialized(true);
+
+					Configuration conf = Configuration
+							.getConfigurationByName("isInitialized");
+					conf.setValue("true");
+					conf.update();
+
+					FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+							.getNewsFragment();
+					if (fa != null)
+						fa.invalidateOptionsMenu();
+				}
 
 			} catch (Exception e) {
 				// TODO: handle exception

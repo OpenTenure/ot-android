@@ -344,5 +344,86 @@ public class LandUse {
 		return null;
 
 	}
+	
+	public static LandUse getLandUse(String type) {
+		ResultSet result = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		LandUse landUse = new LandUse();
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM LAND_USE WHERE TYPE=?");
+			statement.setString(1, type);
+
+			result = statement.executeQuery();
+
+			if (result.next()) {
+
+				landUse.setCode(result.getString(1));
+				landUse.setDescription(result.getString(2));
+				landUse.setDisplayValue(result.getString(3));
+				
+				return landUse;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+	}
+	
+	public int updadateLandUse() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE LAND_USE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
+			statement.setString(1, getCode());
+			statement.setString(2, getDescription());
+			statement.setString(3, getDisplayValue());
+			statement.setString(4, getCode());
+
+			result = statement.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
 
 }
