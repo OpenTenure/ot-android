@@ -84,9 +84,7 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 								.isCheckedLandUses()
 
 				)
-					System.out
-							.println("FINALMENTE E' INIZIALIZZATO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
-
+					
 				OpenTenureApplication.getInstance().setInitialized(true);
 
 				Configuration conf = Configuration

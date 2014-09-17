@@ -513,7 +513,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 				LogoutTask logoutTask = new LogoutTask();
 
-				logoutTask.execute(getActivity());
+				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getActivity());
 
 			} catch (Exception e) {
 				Log.d("Details", "An error ");

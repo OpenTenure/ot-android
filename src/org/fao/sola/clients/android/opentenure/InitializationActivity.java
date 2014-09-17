@@ -175,7 +175,7 @@ public class InitializationActivity extends Activity {
 						"starting tasks for claim type download");
 
 				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.execute();
+				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 			}
 
@@ -184,7 +184,7 @@ public class InitializationActivity extends Activity {
 						"starting tasks for document type download");
 
 				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
-				updateCT.execute();
+				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 			}
 
@@ -193,21 +193,21 @@ public class InitializationActivity extends Activity {
 						"starting tasks for ID type download");
 
 				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-				updateIdType.execute();
+				updateIdType.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
 				Log.d(this.getClass().getName(),
 						"starting tasks for land use type download");
 
 				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-				updateLu.execute();
+				updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 			if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
 				Log.d(this.getClass().getName(),
 						"starting tasks for community area download");
 
 				UpdateCommunityArea updateArea = new UpdateCommunityArea();
-				updateArea.execute();
+				updateArea.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 			if (!OpenTenureApplication.getInstance().isCheckedForm()) {
 				Log.d(this.getClass().getName(),

@@ -71,10 +71,10 @@ public class UploadChunksTask extends
 
 		if (res.getSuccess()) {
 
-			/**
+			/*
 			 * All the Chunk of the claim are uploaded . Call SaveAttachment to
 			 * close the flow. There 's the risk of a infinite loop
-			 ***/
+			 **/
 
 			SaveAttachmentTask sat = new SaveAttachmentTask();
 			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
