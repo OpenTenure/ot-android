@@ -425,7 +425,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public Fragment getItem(int position) {
 
 			Fragment fragment;
-			int sectionPosition = position - 7;
+			int sectionPosition = position - 6;
 
 			switch (position) {
 			case 0:
@@ -438,15 +438,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new ClaimDocumentsFragment();
 				break;
 			case 3:
-				fragment = new ClaimAdditionalInfoFragments();
-				break;
-			case 4:
 				fragment = new AdjacentClaimsFragment();
 				break;
-			case 5:
+			case 4:
 				fragment = new ChallengingClaimsFragment();
 				break;
-			case 6:
+			case 5:
 				fragment = new OwnersFragment();
 				break;
 			default:
@@ -469,7 +466,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
-				return 7 + getNumberOfSections();
+				return 6 + getNumberOfSections();
 		}
 		
 		private int getNumberOfSections(){
@@ -496,7 +493,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 
-			int sectionPosition = position - 7;
+			int sectionPosition = position - 6;
 
 			switch (position) {
 			case 0:
@@ -506,15 +503,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			case 2:
 				return getString(R.string.title_claim_documents).toUpperCase(l);
 			case 3:
-				return getString(R.string.title_claim_additional_info)
-						.toUpperCase(l);
-			case 4:
 				return getString(R.string.title_claim_adjacencies).toUpperCase(
 						l);
-			case 5:
+			case 4:
 				return getString(R.string.title_claim_challenges)
 						.toUpperCase(l);
-			case 6:
+			case 5:
 				return getString(R.string.title_claim_owners).toUpperCase(l);
 			default:
 				return getSectionTitle(sectionPosition);

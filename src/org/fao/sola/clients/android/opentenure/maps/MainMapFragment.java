@@ -141,16 +141,16 @@ public class MainMapFragment extends SupportMapFragment implements
 				+ OpenTenureApplication.isLoggedin());
 
 		if (OpenTenureApplication.isLoggedin()) {
-			itemIn = menu.getItem(2);
+			itemIn = menu.findItem(R.id.action_login);
 			itemIn.setVisible(false);
-			itemOut = menu.getItem(3);
+			itemOut = menu.findItem(R.id.action_logout);
 			itemOut.setVisible(true);
 
 		} else {
 
-			itemIn = menu.getItem(2);
+			itemIn = menu.findItem(R.id.action_login);
 			itemIn.setVisible(true);
-			itemOut = menu.getItem(3);
+			itemOut = menu.findItem(R.id.action_logout);
 			itemOut.setVisible(false);
 		}
 
@@ -549,7 +549,7 @@ public class MainMapFragment extends SupportMapFragment implements
 				
 				TileDownloadTask task = new TileDownloadTask();
 				task.setContext(getActivity().getBaseContext());
-				task.execute();
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),
 						R.string.zoom_level_too_low, Toast.LENGTH_SHORT)

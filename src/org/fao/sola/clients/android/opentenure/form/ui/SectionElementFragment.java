@@ -50,16 +50,18 @@ import android.widget.TextView;
 public class SectionElementFragment extends Fragment {
 
 	private View rootView;
-	private SectionElementPayload editedElement;
+	private SectionElementPayload elementPayload;
 	private SectionTemplate elementTemplate;
+	private Mode mode;
 
-	public SectionElementFragment(SectionElementPayload section, SectionTemplate template, Mode mode){
+	public SectionElementFragment(SectionElementPayload payload, SectionTemplate template, Mode mode){
 		this.elementTemplate = template;
-		this.editedElement = section;
+		this.elementPayload = payload;
+		this.mode = mode;
 	}
 
 	public SectionElementPayload getEditedElement() {
-		return editedElement;
+		return elementPayload;
 	}
 
 	public SectionElementFragment(){
@@ -95,28 +97,28 @@ public class SectionElementFragment extends Fragment {
 			// Add input field
 			switch(field.getType()){
 			case DATE:
-				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), field, editedElement.
-						getFields().get(i)));
+				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), field, elementPayload.
+						getFields().get(i), mode));
 				break;
 			case TIME:
-				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), field, editedElement.
-						getFields().get(i)));
+				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), field, elementPayload.
+						getFields().get(i), mode));
 				break;
 			case SNAPSHOT:
 			case DOCUMENT:
 			case GEOMETRY:
 			case TEXT:
-				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), field, editedElement.
-						getFields().get(i)));
+				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), field, elementPayload.
+						getFields().get(i), mode));
 				break;
 			case DECIMAL:
 			case INTEGER:
-				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, editedElement.
-						getFields().get(i)));
+				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, elementPayload.
+						getFields().get(i), mode));
 				break;
 			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, editedElement.
-						getFields().get(i)));
+				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, elementPayload.
+						getFields().get(i), mode));
 				break;
 			default:
 				break;

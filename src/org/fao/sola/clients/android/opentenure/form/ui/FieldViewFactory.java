@@ -34,6 +34,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
@@ -69,7 +70,7 @@ public class FieldViewFactory {
 
 	public static View getSpinner(final Activity activity,
 			List<FieldConstraintOption> options, final FieldTemplate field,
-			final FieldPayload payload) {
+			final FieldPayload payload, Mode mode) {
 
 		List<String> displayNames = new ArrayList<String>();
 		final List<String> names = new ArrayList<String>();
@@ -84,6 +85,11 @@ public class FieldViewFactory {
 		}
 
 		final Spinner spinner = new Spinner(activity);
+		
+		if(mode == Mode.MODE_RO){
+			spinner.setEnabled(false);   
+			spinner.setClickable(false); 
+		}
 
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
 				activity, android.R.layout.simple_spinner_dropdown_item,
@@ -118,12 +124,12 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForTextField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload) {
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		for (FieldConstraint constraint : field.getConstraints()) {
 			if (constraint instanceof OptionConstraint) {
 				return getSpinner(activity,
 						((OptionConstraint) constraint).getOptions(), field,
-						payload);
+						payload, mode);
 			}
 		}
 		final EditText text;
@@ -135,50 +141,55 @@ public class FieldViewFactory {
 		if(payload.getStringPayload()!=null){
 			text.setText(payload.getStringPayload());
 		}
-		text.addTextChangedListener(new TextWatcher() {
-			long lastTime = System.currentTimeMillis();
+		if(mode == Mode.MODE_RO){
+			text.setEnabled(false);   
+			text.setClickable(false); 
+		}else{
+			text.addTextChangedListener(new TextWatcher() {
+				long lastTime = System.currentTimeMillis();
 
-			@Override
-			public void afterTextChanged(Editable s) {
+				@Override
+				public void afterTextChanged(Editable s) {
 
-				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.setStringPayload(null);
-				} else {
-					payload.setStringPayload(s.toString());
-				}
-
-				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(payload)) != null) {
-					text.setTextColor(Color.RED);
-					if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-						Toast.makeText(activity.getBaseContext(),
-								constraint.displayErrorMsg(),
-								Toast.LENGTH_SHORT).show();
-						lastTime = System.currentTimeMillis();
+					if ("".toString().equalsIgnoreCase(s.toString())) {
+						payload.setStringPayload(null);
+					} else {
+						payload.setStringPayload(s.toString());
 					}
 
-				} else {
-					text.setTextColor(Color.BLACK);
+					FieldConstraint constraint;
+					if ((constraint = field.getFailedConstraint(payload)) != null) {
+						text.setTextColor(Color.RED);
+						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
+							Toast.makeText(activity.getBaseContext(),
+									constraint.displayErrorMsg(),
+									Toast.LENGTH_SHORT).show();
+							lastTime = System.currentTimeMillis();
+						}
+
+					} else {
+						text.setTextColor(Color.BLACK);
+					}
+
 				}
 
-			}
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-
-			}
-		});
+				}
+			});
+		}
 		return text;
 	}
 
 	public static View getViewForNumberField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload) {
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -188,49 +199,54 @@ public class FieldViewFactory {
 		if(payload.getStringPayload()!=null){
 			number.setText(payload.getStringPayload());
 		}
-		number.addTextChangedListener(new TextWatcher() {
-			long lastTime = System.currentTimeMillis();
+		if(mode == Mode.MODE_RO){
+			number.setEnabled(false);   
+			number.setClickable(false); 
+		}else{
+			number.addTextChangedListener(new TextWatcher() {
+				long lastTime = System.currentTimeMillis();
 
-			@Override
-			public void afterTextChanged(Editable s) {
-				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.setBigDecimalPayload(null);
-				} else {
-					payload.setBigDecimalPayload(
-							new BigDecimal(Double.parseDouble(s.toString())));
-				}
-
-				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(payload)) != null) {
-					number.setTextColor(Color.RED);
-					if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-						Toast.makeText(activity.getBaseContext(),
-								constraint.displayErrorMsg(),
-								Toast.LENGTH_SHORT).show();
-						lastTime = System.currentTimeMillis();
+				@Override
+				public void afterTextChanged(Editable s) {
+					if ("".toString().equalsIgnoreCase(s.toString())) {
+						payload.setBigDecimalPayload(null);
+					} else {
+						payload.setBigDecimalPayload(
+								new BigDecimal(Double.parseDouble(s.toString())));
 					}
-				} else {
-					number.setTextColor(Color.BLACK);
+
+					FieldConstraint constraint;
+					if ((constraint = field.getFailedConstraint(payload)) != null) {
+						number.setTextColor(Color.RED);
+						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
+							Toast.makeText(activity.getBaseContext(),
+									constraint.displayErrorMsg(),
+									Toast.LENGTH_SHORT).show();
+							lastTime = System.currentTimeMillis();
+						}
+					} else {
+						number.setTextColor(Color.BLACK);
+					}
+
 				}
 
-			}
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-
-			}
-		});
+				}
+			});
+		}
 		return number;
 	}
 
 	public static View getViewForBooleanField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload) {
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final CheckBox bool;
 		bool = new CheckBox(activity);
 		bool.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -239,21 +255,26 @@ public class FieldViewFactory {
 		if(payload.getBooleanPayload()!=null){
 			bool.setSelected(payload.getBooleanPayload().booleanValue());
 		}
-		bool.setOnClickListener(new OnClickListener() {
+		if(mode == Mode.MODE_RO){
+			bool.setEnabled(false);   
+			bool.setClickable(false); 
+		}else{
+			bool.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				if (((CheckBox) v).isChecked()) {
-					payload.setBooleanPayload(Boolean.valueOf(true));
+				@Override
+				public void onClick(View v) {
+					if (((CheckBox) v).isChecked()) {
+						payload.setBooleanPayload(Boolean.valueOf(true));
+					}
 				}
-			}
 
-		});
+			});
+		}
 		return bool;
 	}
 
 	public static View getViewForDateField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload) {
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getConstraints()) {
 			if (constraint instanceof DateTimeFormatConstraint
@@ -272,76 +293,81 @@ public class FieldViewFactory {
 		if(payload.getStringPayload()!=null){
 			datetime.setText(payload.getStringPayload());
 		}
-		final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+		if(mode == Mode.MODE_RO){
+			datetime.setEnabled(false);   
+			datetime.setClickable(false); 
+		}else{
+			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
-			@Override
-			public void onDateSet(DatePicker view, int year, int monthOfYear,
-					int dayOfMonth) {
-				localCalendar.set(Calendar.YEAR, year);
-				localCalendar.set(Calendar.MONTH, monthOfYear);
-				localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-				if (format != null) {
-					SimpleDateFormat sdf = new SimpleDateFormat(format,
-							Locale.US);
-					sdf.format(localCalendar.getTime());
-					datetime.setText(sdf.format(localCalendar.getTime()));
-				}
-			}
-
-		};
-
-		datetime.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				new DatePickerDialog(activity, date, localCalendar
-						.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
-						localCalendar.get(Calendar.DAY_OF_MONTH)).show();
-				return true;
-			}
-		});
-		datetime.addTextChangedListener(new TextWatcher() {
-			long lastTime = System.currentTimeMillis();
-			@Override
-			public void afterTextChanged(Editable s) {
-
-				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.setStringPayload(null);
-				} else {
-					payload.setStringPayload(s.toString());
-				}
-
-				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(payload)) != null) {
-					datetime.setTextColor(Color.RED);
-					if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-					Toast.makeText(activity.getBaseContext(),
-							constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
-							.show();
-					lastTime = System.currentTimeMillis();
+				@Override
+				public void onDateSet(DatePicker view, int year, int monthOfYear,
+						int dayOfMonth) {
+					localCalendar.set(Calendar.YEAR, year);
+					localCalendar.set(Calendar.MONTH, monthOfYear);
+					localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+					if (format != null) {
+						SimpleDateFormat sdf = new SimpleDateFormat(format,
+								Locale.US);
+						sdf.format(localCalendar.getTime());
+						datetime.setText(sdf.format(localCalendar.getTime()));
 					}
-				} else {
-					datetime.setTextColor(Color.BLACK);
 				}
 
-			}
+			};
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
+			datetime.setOnLongClickListener(new OnLongClickListener() {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+				@Override
+				public boolean onLongClick(View v) {
+					new DatePickerDialog(activity, date, localCalendar
+							.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
+							localCalendar.get(Calendar.DAY_OF_MONTH)).show();
+					return true;
+				}
+			});
+			datetime.addTextChangedListener(new TextWatcher() {
+				long lastTime = System.currentTimeMillis();
+				@Override
+				public void afterTextChanged(Editable s) {
 
-			}
-		});
+					if ("".toString().equalsIgnoreCase(s.toString())) {
+						payload.setStringPayload(null);
+					} else {
+						payload.setStringPayload(s.toString());
+					}
+
+					FieldConstraint constraint;
+					if ((constraint = field.getFailedConstraint(payload)) != null) {
+						datetime.setTextColor(Color.RED);
+						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
+						Toast.makeText(activity.getBaseContext(),
+								constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
+								.show();
+						lastTime = System.currentTimeMillis();
+						}
+					} else {
+						datetime.setTextColor(Color.BLACK);
+					}
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
+
+				}
+			});
+		}
 		return datetime;
 	}
 
 	public static View getViewForTimeField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload) {
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getConstraints()) {
 			if (constraint instanceof DateTimeFormatConstraint
@@ -360,69 +386,75 @@ public class FieldViewFactory {
 		if(payload.getStringPayload()!=null){
 			datetime.setText(payload.getStringPayload());
 		}
-		final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
+		if(mode == Mode.MODE_RO){
+			datetime.setEnabled(false);   
+			datetime.setClickable(false); 
+		}else{
+			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
-			@Override
-			public void onTimeSet(TimePicker view, int hour, int min) {
-				localCalendar.set(Calendar.HOUR_OF_DAY, hour);
-				localCalendar.set(Calendar.MINUTE, min);
-				if (format != null) {
-					SimpleDateFormat sdf = new SimpleDateFormat(format,
-							Locale.US);
-					sdf.format(localCalendar.getTime());
-					datetime.setText(sdf.format(localCalendar.getTime()));
-				}
-			}
-
-		};
-
-		datetime.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				new TimePickerDialog(activity, time, localCalendar
-						.get(Calendar.HOUR_OF_DAY), localCalendar
-						.get(Calendar.MINUTE), true).show();
-				return true;
-			}
-		});
-		datetime.addTextChangedListener(new TextWatcher() {
-			long lastTime = System.currentTimeMillis();
-			@Override
-			public void afterTextChanged(Editable s) {
-
-				if ("".toString().equalsIgnoreCase(s.toString())) {
-					payload.setStringPayload(null);
-				} else {
-					payload.setStringPayload(s.toString());
-				}
-
-				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(payload)) != null) {
-					datetime.setTextColor(Color.RED);
-					if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-					Toast.makeText(activity.getBaseContext(),
-							constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
-							.show();
-					lastTime = System.currentTimeMillis();
+				@Override
+				public void onTimeSet(TimePicker view, int hour, int min) {
+					localCalendar.set(Calendar.HOUR_OF_DAY, hour);
+					localCalendar.set(Calendar.MINUTE, min);
+					if (format != null) {
+						SimpleDateFormat sdf = new SimpleDateFormat(format,
+								Locale.US);
+						sdf.format(localCalendar.getTime());
+						datetime.setText(sdf.format(localCalendar.getTime()));
 					}
-				} else {
-					datetime.setTextColor(Color.BLACK);
 				}
 
-			}
+			};
 
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
+			datetime.setOnLongClickListener(new OnLongClickListener() {
 
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+				@Override
+				public boolean onLongClick(View v) {
+					new TimePickerDialog(activity, time, localCalendar
+							.get(Calendar.HOUR_OF_DAY), localCalendar
+							.get(Calendar.MINUTE), true).show();
+					return true;
+				}
+			});
+			datetime.addTextChangedListener(new TextWatcher() {
+				long lastTime = System.currentTimeMillis();
+				@Override
+				public void afterTextChanged(Editable s) {
 
-			}
-		});
+					if ("".toString().equalsIgnoreCase(s.toString())) {
+						payload.setStringPayload(null);
+					} else {
+						payload.setStringPayload(s.toString());
+					}
+
+					FieldConstraint constraint;
+					if ((constraint = field.getFailedConstraint(payload)) != null) {
+						datetime.setTextColor(Color.RED);
+						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
+						Toast.makeText(activity.getBaseContext(),
+								constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
+								.show();
+						lastTime = System.currentTimeMillis();
+						}
+					} else {
+						datetime.setTextColor(Color.BLACK);
+					}
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
+
+				}
+			});
+		}
+
 		return datetime;
 	}
 }
