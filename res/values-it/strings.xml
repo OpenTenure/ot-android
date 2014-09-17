@@ -192,7 +192,7 @@
     <string name="message_title_app_initialized">L\'applicazione e\' inizializzata</string>
     <string name="message_app_initialized">L\'applicazione è pronta per lavorare e comunicare con l\'Open Tenure Community Server </string>
     <string name="message_title_app_initializing">Sto inizializzando OpenTenure</string>
-    <string name="message_app_initializing">Attendere...</string>
+    <string name="message_app_initializing">Attendere&#8230;</string>
     <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
