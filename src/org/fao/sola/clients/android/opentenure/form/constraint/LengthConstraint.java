@@ -45,7 +45,7 @@ public class LengthConstraint extends FieldConstraint {
 		type = FieldConstraintType.LENGTH;
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.DOCUMENT);
-		this.errorMsg = "length {1} of value {2} in {0} is not between {3} and {4}";
+		this.errorMsg = "Length {1} of value {2} in {0} is not between {3} and {4}";
 	}
 
 	public LengthConstraint(LengthConstraint lc) {

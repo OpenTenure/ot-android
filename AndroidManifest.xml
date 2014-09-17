@@ -77,12 +77,14 @@
         </activity>
         <activity
             android:name="org.fao.sola.clients.android.opentenure.SelectClaimActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_select_claim"
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
             android:name="org.fao.sola.clients.android.opentenure.SelectPersonActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_select_person"
             android:windowSoftInputMode="adjustPan" >

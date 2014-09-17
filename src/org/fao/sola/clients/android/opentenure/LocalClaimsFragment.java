@@ -308,7 +308,7 @@ public class LocalClaimsFragment extends ListFragment {
 					slogan = slogan
 							+ "\r\n"
 							+ OpenTenureApplication.getContext().getResources()
-									.getString(R.string.recordered_by) + " "
+									.getString(R.string.recorded_by) + " "
 							+ claim.getRecorderName();
 
 				cto.setSlogan(slogan);

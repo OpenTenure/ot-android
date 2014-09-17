@@ -31,12 +31,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
-import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.Tile;
 import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
@@ -377,10 +377,10 @@ public class MainMapFragment extends SupportMapFragment implements
 					.getDefaultSharedPreferences(mapView.getContext());
 			String geoServerUrl = OpenTenurePreferences.getString(
 					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-					"http://192.168.56.1:8085/geoserver/nz");
+					"http://demo.flossola.org/geoserver/sola");
 			String geoServerLayer = OpenTenurePreferences.getString(
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-					"nz:orthophoto");
+					"sola:nz_orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
 							geoServerUrl, geoServerLayer)));
@@ -519,6 +519,41 @@ public class MainMapFragment extends SupportMapFragment implements
 				Log.d("Details", "An error ");
 
 				e.printStackTrace();
+			}
+
+			return true;
+		case R.id.action_download_tiles:
+
+			int zoom = (int) map.getCameraPosition().zoom;
+			if ( zoom >= 17) {
+				int tilesToDownload = Tile.getTilesToDownload(); 
+				if(tilesToDownload > 0){
+					Toast.makeText(getActivity().getBaseContext(),
+							String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_SHORT)
+							.show();
+				}
+				SharedPreferences OpenTenurePreferences = PreferenceManager
+						.getDefaultSharedPreferences(mapView.getContext());
+				String geoServerUrl = OpenTenurePreferences.getString(
+						OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
+						"http://demo.flossola.org/geoserver/sola");
+				String geoServerLayer = OpenTenurePreferences.getString(
+						OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
+						"sola:nz_orthophoto");
+				WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,
+								geoServerUrl, geoServerLayer);
+				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, zoom,21);
+				Tile.createTiles(tiles);
+				Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
+				
+				TileDownloadTask task = new TileDownloadTask();
+				task.setContext(getActivity().getBaseContext());
+				task.execute();
+			} else {
+				Toast.makeText(getActivity().getBaseContext(),
+						R.string.zoom_level_too_low, Toast.LENGTH_SHORT)
+						.show();
 			}
 
 			return true;

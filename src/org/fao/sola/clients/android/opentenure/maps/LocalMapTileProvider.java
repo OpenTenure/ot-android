@@ -32,7 +32,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import android.os.Environment;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
@@ -54,7 +54,7 @@ public class LocalMapTileProvider implements TileProvider {
     private byte[] readTileImage(int x, int y, int zoom) {
         InputStream in = null;
         ByteArrayOutputStream buffer = null;
-	String tileFileName = Environment.getExternalStorageDirectory()+"/Open Tenure/tiles/" + zoom + "/" + x + "/" + y + ".png";
+        String tileFileName = OpenTenureApplication.getContext().getExternalFilesDir(null).getAbsolutePath()+"/tiles/" + zoom + "/" + x + "/" + y + ".png";
 
         try {
             in = new FileInputStream(tileFileName);

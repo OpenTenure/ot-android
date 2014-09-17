@@ -8,6 +8,7 @@
     <string name="action_new">Aggiungi</string>
     <string name="action_done">Fatto</string>
     <string name="action_login">Log In</string>
+    <string name="action_download_tiles">Scarica mappe offline</string>
     <string name="action_logout">Log Out</string>
     <string name="action_print">Stampa</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
@@ -109,7 +110,7 @@
     <string name="place_of_birth">Luogo di nascita</string>
     <string name="place_of_birth_label">Luogo di nascita *</string>
     <string name="date_of_establishment_label">Data di costituzione</string>
-    <string name="recordered_by">Registrato da : </string>
+    <string name="recorded_by">Registrato da : </string>
     <string name="mobile_phone_number">Telefono mobile</string>
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
@@ -192,6 +193,10 @@
     <string name="message_adjacencies_not_saved">Adiacenze non salvate</string>
     <string name="message_claim_modified">Claim modificato</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
+	<string name="tiles_queued">%d immagini sono gia\' in attesa di download, la richiesta sara\' accodata</string>
+	<string name="all_tiles_downloaded">Tutte le immagini per quest\'area sono state scaricate</string>
+	<string name="not_all_tiles_downloaded">Il %.2f percento delle immagini per quest\'area e\' stato scaricato. Verificare che il risultato sia soddisfacente o ripetere l\'operazione</string>
+	<string name="zoom_level_too_low">L\'area è troppo estesa. Aumenta il livello di zoom prima di scaricare i dati locali per la mappa</string>
     <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>
     <string name="message_error_deleting_claim">Errore cancellando il claim localment</string>

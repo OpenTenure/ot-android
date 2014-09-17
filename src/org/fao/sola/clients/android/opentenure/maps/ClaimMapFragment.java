@@ -526,10 +526,10 @@ public class ClaimMapFragment extends Fragment implements
 					.getDefaultSharedPreferences(mapView.getContext());
 			String geoServerUrl = OpenTenurePreferences.getString(
 					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-					"http://192.168.56.1:8085/geoserver/nz");
+					"http://demo.flossola.org/geoserver/sola");
 			String geoServerLayer = OpenTenurePreferences.getString(
 					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-					"nz:orthophoto");
+					"sola:nz_orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
 							geoServerUrl, geoServerLayer)));

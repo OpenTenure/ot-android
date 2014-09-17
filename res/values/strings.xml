@@ -15,6 +15,7 @@
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
+    <string name="action_download_tiles">Download offline tiles</string>
     <string name="action_logout">Log Out</string>
     <string name="action_print">Print</string>
     <string name="action_save">Save</string>
@@ -106,7 +107,7 @@
     <string name="place_of_birth">Place of birth</string>
     <string name="place_of_birth_label">Place of birth *</string>
     <string name="date_of_establishment_label">Date of Establishment</string>
-    <string name="recordered_by">Recordered by : </string>
+    <string name="recorded_by">Recorded by : </string>
     <string name="mobile_phone_number">Mobile phone number</string>
     <string name="contact_phone_number">Contact phone number</string>
     <string name="password">Password</string>
@@ -193,9 +194,12 @@
     <string name="message_save_changes">Do you want save changes ?</string>
     <string name="message_claim_modified">Claim modified</string>
     <string name="message_entity_type">Which kind of entity ?</string>
-    
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
-    <string name="yes">Yes</string>
+	<string name="tiles_queued">%d tiles are already downloading, the request has been queued</string>
+	<string name="all_tiles_downloaded">All tiles for this map area have been downloaded</string>
+	<string name="not_all_tiles_downloaded">%.2f percent of the tiles for this map area has been downloaded. Check that you are happy with the result or retry downloading them</string>
+	<string name="zoom_level_too_low">The area is too large. Increase the zoom level before downloading local data for the map</string>
+	<string name="yes">Yes</string>
     <string name="person">Person</string>
     <string name="group">Group</string>
     <string name="no">No</string>

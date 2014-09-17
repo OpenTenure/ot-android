@@ -1,14 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_download_tiles"
+          android:icon="@drawable/ic_download_file"
+          android:title="@string/action_download_tiles"
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/action_login"
           android:icon="@drawable/login_door"
           android:title="@string/action_login"
-          android:showAsAction="ifRoom" 
-          />
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout"
           android:icon="@drawable/logout_door"
           android:title="@string/action_logout"          
-          android:showAsAction="ifRoom" 
-          />
+          android:showAsAction="ifRoom" />
     <item android:id="@+id/action_center_and_follow"
           android:icon="@android:drawable/ic_menu_mylocation"
           android:title="@string/action_center"

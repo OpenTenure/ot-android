@@ -27,12 +27,20 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.Tile;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.UrlTileProvider;
 
 public class WmsMapTileProvider extends UrlTileProvider{
@@ -50,6 +58,16 @@ public class WmsMapTileProvider extends UrlTileProvider{
 	public static final int MINY = 1;
 	public static final int MAXX = 2;
 	public static final int MAXY = 3;
+
+	// array indexes for array to hold tile x y.
+	public static final int X = 0;
+	public static final int Y = 1;
+
+	// array indexes for array to hold tile x y.
+	public static final int NORTH_EAST_X = 0;
+	public static final int NORTH_EAST_Y = 1;
+	public static final int SOUTH_WEST_X = 2;
+	public static final int SOUTH_WEST_Y = 3;
 
     private static final String version = "1.1.0";
     private static final String request = "GetMap";
@@ -74,6 +92,11 @@ public class WmsMapTileProvider extends UrlTileProvider{
 	            "&width=" + Integer.toString(width) + 
 	            "&height=" + Integer.toString(height);
 	}
+    
+    private String getUrl(double[] bbox){
+        return String.format(Locale.US, URL_STRING, bbox[MINX], 
+                bbox[MINY], bbox[MAXX], bbox[MAXY]);
+    }
 
     @Override
     public synchronized URL getTileUrl(int x, int y, int zoom) {
@@ -82,8 +105,7 @@ public class WmsMapTileProvider extends UrlTileProvider{
 
             double[] bbox = getBoundingBox(x, y, zoom);
 
-            String urlString = String.format(Locale.US, URL_STRING, bbox[MINX], 
-                    bbox[MINY], bbox[MAXX], bbox[MAXY]);
+            String urlString = getUrl(bbox);
 
             Log.d("GeoServerTileURL", urlString);
 
@@ -95,9 +117,6 @@ public class WmsMapTileProvider extends UrlTileProvider{
             catch (MalformedURLException e) {
                 throw new AssertionError(e);
             }
-            // Only refresh cached tiles if older than one week (in milliseconds)
-            new WmsMapTileCacher(URL_STRING, zoom, 4, true, x, y, 7*24*60*60*1000).execute();
-
             return url;
         }
         catch (RuntimeException e) {
@@ -107,10 +126,10 @@ public class WmsMapTileProvider extends UrlTileProvider{
 
     }
     
-    // Return a web Mercator bounding box given tile x/y indexes and a zoom
-	// level.
+    // Returns bounding box given tile x/y indexes and a zoom level.
 	public static double[] getBoundingBox(int x, int y, int zoom) {
-	    double tileSize = MAP_SIZE / Math.pow(2, zoom);
+
+		double tileSize = MAP_SIZE / Math.pow(2, zoom);
 	    double minx = TILE_ORIGIN[ORIG_X] + x * tileSize;
 	    double maxx = TILE_ORIGIN[ORIG_X] + (x+1) * tileSize;
 	    double miny = TILE_ORIGIN[ORIG_Y] - (y+1) * tileSize;
@@ -125,4 +144,86 @@ public class WmsMapTileProvider extends UrlTileProvider{
 	    return bbox;
 	}
 
+	public static int[] getXY(LatLng northeast, LatLng southwest, int zoom) {
+		double tileSize = MAP_SIZE / Math.pow(2, zoom);
+		int[] tile = new int[4];
+		tile[NORTH_EAST_X] = BigDecimal.valueOf((northeast.longitude - TILE_ORIGIN[ORIG_X]) / tileSize).intValue();
+		tile[NORTH_EAST_Y] = - BigDecimal.valueOf((northeast.latitude - TILE_ORIGIN[ORIG_Y]) / tileSize).intValue();
+		tile[SOUTH_WEST_X] = BigDecimal.valueOf((southwest.longitude - TILE_ORIGIN[ORIG_X]) / tileSize).intValue();
+		tile[SOUTH_WEST_Y] = - BigDecimal.valueOf((southwest.latitude - TILE_ORIGIN[ORIG_Y]) / tileSize).intValue();
+		return tile;
 	}
+
+	public static int[] getXY(LatLng coord, int zoom) {
+		double tileSize = MAP_SIZE / Math.pow(2, zoom);
+		int[] tile = new int[2];
+		tile[X] = BigDecimal.valueOf((coord.longitude - TILE_ORIGIN[ORIG_X]) / tileSize).intValue();
+		tile[Y] = - BigDecimal.valueOf((coord.latitude - TILE_ORIGIN[ORIG_Y]) / tileSize).intValue();
+		return tile;
+	}
+
+	public static double mercatorFromLatitude(double latitude) {
+	    double radians = Math.log(Math.tan(Math.toRadians(latitude+90.0)/2));
+	    double mercator = Math.toDegrees(radians);
+	    return mercator;
+	}
+	
+	public static int[] tileOfCoordinate(LatLng coord, int zoom) {
+	    int[] result = new int[2];
+		int noTiles = (1 << zoom);
+	    double longitudeSpan = 360.0 / noTiles;
+	    result[X] = BigDecimal.valueOf((coord.longitude +180.0)/longitudeSpan).intValue();
+	    result[Y] = -(BigDecimal.valueOf(((noTiles * (mercatorFromLatitude(coord.latitude) - 180.0)))/360.0).intValue());
+
+	    return result;
+	}
+	
+	public static double latitudeFromMercator(double mercator) {
+	    double radians = Math.atan(Math.exp(Math.toRadians(mercator)));
+	    double latitude = Math.toDegrees(2 * radians) - 90;
+	    return latitude;
+	}
+	
+	public static LatLngBounds boundsOfTile(int x, int y, int zoom) {
+	    int noTiles = (1 << zoom);
+	    double longitudeSpan = 360.0 / noTiles;
+	    double longitudeMin = -180.0 + x * longitudeSpan;
+
+	    double mercatorMax = 180 - (((double) y) / noTiles) * 360;
+	    double mercatorMin = 180 - (((double) y + 1) / noTiles) * 360;
+	    double latitudeMax = latitudeFromMercator(mercatorMax);
+	    double latitudeMin = latitudeFromMercator(mercatorMin);
+
+	    LatLngBounds bounds = new LatLngBounds(new LatLng(latitudeMin, longitudeMin), new LatLng(latitudeMax, longitudeMin + longitudeSpan));
+	    return bounds;
+	}
+	
+	public List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom){
+		List<Tile> tiles = new ArrayList<Tile>();
+		
+		int[] northeast = tileOfCoordinate(llb.northeast, startZoom);
+		int[] southwest = tileOfCoordinate(llb.southwest, startZoom);
+		
+		for(int zoom = startZoom ; zoom <= endZoom; zoom++){
+			
+			for(int x = southwest[X] ; x <= northeast[X] ; x++){
+				for(int y = northeast[Y] ; y <= southwest[Y] ; y++){
+					Tile tile = new Tile();
+					tile.setUrl(getUrl(getBoundingBox(x, y, zoom)));
+					tile.setFileName(OpenTenureApplication.getContext().getExternalFilesDir(null).getAbsolutePath() + "/tiles/" + zoom + "/" + x + "/" + y + ".png");
+					tiles.add(tile);
+				}
+			}
+
+			// At each subsequent level of zoom, tiles indexes double
+
+			northeast[X] *= 2;
+			northeast[Y] *= 2;
+			southwest[X] *= 2;
+			southwest[Y] *= 2;
+		}
+		
+		return tiles;
+	}
+
+}

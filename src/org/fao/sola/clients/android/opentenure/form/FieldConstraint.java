@@ -65,6 +65,7 @@ public class FieldConstraint {
 	protected String name;
 	protected String displayName;
 	protected String errorMsg;
+	@JsonIgnore
 	protected String displayErrorMsg;
 	protected String format;
 	protected BigDecimal minValue;

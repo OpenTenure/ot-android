@@ -73,7 +73,7 @@ public class DateTimeFormatConstraint extends FieldConstraint {
 				sdf.parse(payload);
 			}
 		} catch (ParseException e) {
-			displayErrorMsg = MessageFormat.format(errorMsg, fieldPayload.getStringPayload(), displayName, format);
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
 			return false;
 		}
 		return true;
