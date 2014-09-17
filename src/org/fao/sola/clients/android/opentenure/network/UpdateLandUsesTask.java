@@ -86,8 +86,7 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 								.isCheckedDocTypes()
 
 				)
-					System.out
-							.println("FINALMENTE E' INIZIALIZZATO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11");
+
 
 				OpenTenureApplication.getInstance().setInitialized(true);
 

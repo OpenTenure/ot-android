@@ -41,6 +41,7 @@ import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
@@ -183,7 +184,7 @@ public class LocalClaimsFragment extends ListFragment {
 
 				LogoutTask logoutTask = new LogoutTask();
 
-				logoutTask.execute(getActivity());
+				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getActivity());
 
 			} catch (Exception e) {
 				Log.d("Details", "An error ");

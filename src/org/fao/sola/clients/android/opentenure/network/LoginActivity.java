@@ -150,7 +150,7 @@ public class LoginActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			mAuthTask = new UserLoginTask();
-			mAuthTask.execute(mUsername, mPassword);
+			mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUsername, mPassword);
 		}
 	}
 
