@@ -137,7 +137,7 @@ public class TileDownloadTask extends AsyncTask<Void, Double, Double> {
 				tile.delete();
 
 			}
-			completion = new BigDecimal((downloadedTiles/originalTilesToDownload)*100.0);
+			completion = new BigDecimal(((double)downloadedTiles/(double)originalTilesToDownload)*100.0);
 			Task task = Task.getTask(TASK_ID);
 			task.updateCompletion(completion);
 			Log.d(this.getClass().getName(), String.format(Locale.US, "Download task completion: %.2f percent", completion.doubleValue()));
