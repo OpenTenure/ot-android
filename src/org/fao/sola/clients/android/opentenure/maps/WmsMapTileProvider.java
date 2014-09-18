@@ -35,8 +35,10 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.model.Tile;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -78,9 +80,15 @@ public class WmsMapTileProvider extends UrlTileProvider{
 
     final String URL_STRING;
     
-    public WmsMapTileProvider(int width, int height, String baseURL, String layer) {
+    public WmsMapTileProvider(int width, int height, SharedPreferences preferences) {
 	    super(width, height);
-	    URL_STRING = baseURL + 
+		String baseURL = preferences.getString(
+				OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
+				"http://demo.flossola.org/geoserver/sola");
+		String layer = preferences.getString(
+				OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
+				"sola:nz_orthophoto");
+		URL_STRING = baseURL + 
 	            "/wms?layers=" + layer + 
 	            "&version=" + version + 
 	            "&service=" + service + 

@@ -32,10 +32,10 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.Task;
 import org.fao.sola.clients.android.opentenure.model.Tile;
 import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
@@ -90,6 +90,8 @@ public class MainMapFragment extends SupportMapFragment implements
 	public static final String MAIN_MAP_LONGITUDE = "__MAIN_MAP_LONGITUDE__";
 	public static final String MAIN_MAP_TYPE = "__MAIN_MAP_PROVIDER__";
 	private static final int MAP_LABEL_FONT_SIZE = 16;
+	private static final int MAX_ZOOM_LEVELS_TO_DOWNLOAD = 4;
+	private static final int MAX_TILES_IN_DOWNLOAD_QUEUE = 2000;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 
@@ -152,6 +154,19 @@ public class MainMapFragment extends SupportMapFragment implements
 			itemIn.setVisible(true);
 			itemOut = menu.findItem(R.id.action_logout);
 			itemOut.setVisible(false);
+		}
+		if(map != null){
+			// Allow downloading tiles only at higher zoom levels
+			int currentZoomLevel = (int) map.getCameraPosition().zoom;
+			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
+			
+			if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+				MenuItem item = menu.findItem(R.id.action_download_tiles);
+				item.setVisible(true);
+			} else {
+				MenuItem item = menu.findItem(R.id.action_download_tiles);
+				item.setVisible(false);
+			}
 		}
 
 		super.onPrepareOptionsMenu(menu);
@@ -373,17 +388,11 @@ public class MainMapFragment extends SupportMapFragment implements
 			break;
 		case R.id.map_provider_geoserver:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			SharedPreferences OpenTenurePreferences = PreferenceManager
+			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
-			String geoServerUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-					"http://demo.flossola.org/geoserver/sola");
-			String geoServerLayer = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-					"sola:nz_orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
-							geoServerUrl, geoServerLayer)));
+							preferences)));
 			redrawVisibleProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
@@ -524,35 +533,42 @@ public class MainMapFragment extends SupportMapFragment implements
 			return true;
 		case R.id.action_download_tiles:
 
-			int zoom = (int) map.getCameraPosition().zoom;
-			if ( zoom >= 17) {
-				int tilesToDownload = Tile.getTilesToDownload(); 
-				if(tilesToDownload > 0){
-					Toast.makeText(getActivity().getBaseContext(),
-							String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_SHORT)
-							.show();
-				}
+			int currentZoomLevel = (int) map.getCameraPosition().zoom;
+			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
+			
+			if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+
+				int tilesToDownload = Tile.getTilesToDownload();
+			
 				SharedPreferences OpenTenurePreferences = PreferenceManager
 						.getDefaultSharedPreferences(mapView.getContext());
-				String geoServerUrl = OpenTenurePreferences.getString(
-						OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-						"http://demo.flossola.org/geoserver/sola");
-				String geoServerLayer = OpenTenurePreferences.getString(
-						OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-						"sola:nz_orthophoto");
 				WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,
-								geoServerUrl, geoServerLayer);
+						OpenTenurePreferences);
 				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, zoom,21);
-				Tile.createTiles(tiles);
-				Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
+				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
+
+				if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
 				
-				TileDownloadTask task = new TileDownloadTask();
-				task.setContext(getActivity().getBaseContext());
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					Tile.createTiles(tiles);
+					Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
+					tilesToDownload = Tile.getTilesToDownload(); 
+					Toast.makeText(getActivity().getBaseContext(),
+							String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
+							.show();
+				}else{
+					Toast.makeText(getActivity().getBaseContext(),
+							String.format(getActivity().getBaseContext().getResources().getString(R.string.too_many_tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
+							.show();
+				}
+
+				if(Task.getTask(TileDownloadTask.TASK_ID) == null){
+					TileDownloadTask task = new TileDownloadTask();
+					task.setContext(getActivity().getBaseContext());
+					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),
-						R.string.zoom_level_too_low, Toast.LENGTH_SHORT)
+						R.string.zoom_level_too_low, Toast.LENGTH_LONG)
 						.show();
 			}
 
@@ -667,10 +683,12 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
+
+		getActivity().invalidateOptionsMenu();
 		// Store camera position to allow drawing on the claim map where we
 		// left off the main map
 		storeCameraPosition(cameraPosition);
-		// Reload the set of visible properties
+
 		reloadVisibleProperties();
 
 	}

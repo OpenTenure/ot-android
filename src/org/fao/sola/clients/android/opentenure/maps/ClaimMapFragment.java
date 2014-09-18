@@ -34,7 +34,6 @@ import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.ClaimListener;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
-import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
@@ -522,17 +521,11 @@ public class ClaimMapFragment extends Fragment implements
 			break;
 		case R.id.map_provider_geoserver:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			SharedPreferences OpenTenurePreferences = PreferenceManager
+			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
-			String geoServerUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-					"http://demo.flossola.org/geoserver/sola");
-			String geoServerLayer = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-					"sola:nz_orthophoto");
 			tiles = map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
-							geoServerUrl, geoServerLayer)));
+							preferences)));
 			redrawProperties();
 			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
 					.getString(R.string.map_provider_geoserver));
@@ -613,8 +606,6 @@ public class ClaimMapFragment extends Fragment implements
 				
 				@Override
 				public void onCancel() {
-					// TODO Auto-generated method stub
-					
 				}
 			});
 			return true;

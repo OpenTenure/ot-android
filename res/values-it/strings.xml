@@ -202,9 +202,10 @@
     <string name="message_claim_modified">Claim modificato</string>
     
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
-	<string name="tiles_queued">%d immagini sono gia\' in attesa di download, la richiesta sara\' accodata</string>
-	<string name="all_tiles_downloaded">Tutte le immagini per quest\'area sono state scaricate</string>
-	<string name="not_all_tiles_downloaded">Il %.2f percento delle immagini per quest\'area e\' stato scaricato. Verificare che il risultato sia soddisfacente o ripetere l\'operazione</string>
+	<string name="tiles_queued">Ci sono %d immagini nella lista di download</string>
+	<string name="too_many_tiles_queued">Ci sono %d immagini nella lista di download. Attendi prima di aggiungerne altre</string>
+	<string name="all_tiles_downloaded">Tutte le immagini nella list di download sono state scaricate</string>
+	<string name="not_all_tiles_downloaded">%d immagini per quest\'area non sono state scaricate. Verificare che il risultato sia soddisfacente o ripeti l\'operazione</string>
 	<string name="zoom_level_too_low">L\'area è troppo estesa. Aumenta il livello di zoom prima di scaricare i dati locali per la mappa</string>
     <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>
