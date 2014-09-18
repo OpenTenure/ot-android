@@ -72,7 +72,7 @@ public class DownMarker extends TargetMoverMarker {
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.down))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_dark)).rotation(DOWN_INITIAL_ROTATION));
+				.fromResource(R.drawable.ic_menu_forward)).rotation(DOWN_INITIAL_ROTATION));
 		marker.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_DOWN_GROUP);
 	}
 

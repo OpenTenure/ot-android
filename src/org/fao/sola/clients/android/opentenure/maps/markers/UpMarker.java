@@ -72,7 +72,7 @@ public class UpMarker extends TargetMoverMarker {
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.up))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_dark)).rotation(UP_INITIAL_ROTATION));
+				.fromResource(R.drawable.ic_menu_forward)).rotation(UP_INITIAL_ROTATION));
 		marker.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_UP_GROUP);
 	}
 
