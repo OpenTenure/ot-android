@@ -98,7 +98,7 @@ public class SubmitClaimListener implements OnClickListener {
 				vh.getBar().setVisibility(View.VISIBLE);
 				vh.getBar().setProgress(progress);
 
-				String status = Claim.getClaim(claimId).getStatus();
+				String status = claim.getStatus();
 				if (status.equals(ClaimStatus._MODERATED)
 						|| status.equals(ClaimStatus._UPDATE_ERROR)
 						|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))

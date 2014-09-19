@@ -29,26 +29,11 @@ package org.fao.sola.clients.android.opentenure.form.field;
 
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.constraint.DateTimeFormatConstraint;
 
-public class DateTimeField extends FieldTemplate {
-
-	public DateTimeField(){
-		super();
-		type = FieldType.DATE;
-	}
+public class TextField extends FieldTemplate {
 	
-	public void setFormat(String format){
-		DateTimeFormatConstraint constraint = new DateTimeFormatConstraint();
-		constraint.setName("from_field_type");
-		constraint.setName("From field type");
-		constraint.setErrorMsg("Value {0} of field {1} does not match format {2}");
-
-		constraint.setFormat(format);
-		
-		try {
-			addConstraint(constraint);
-		} catch (Exception e) {
-		}
+	public TextField(){
+		super();
+		type = FieldType.TEXT;
 	}
 }

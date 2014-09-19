@@ -52,6 +52,7 @@ public class SectionElementActivity extends FragmentActivity {
 
 	public static final String SECTION_ELEMENT_POSITION_KEY = "sectionElementPosition";
 	public static final int SECTION_ELEMENT_POSITION_NEW = -1;
+	public static final int SECTION_ELEMENT_POSITION_DISCARD = -2;
 	public static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
 	public static final String SECTION_ELEMENT_PAYLOAD_KEY = "sectionElementPayload";
 	public static final String MODE_KEY = "mode";
@@ -164,6 +165,8 @@ public class SectionElementActivity extends FragmentActivity {
 	public void onBackPressed() {
 		if (originalElement.toJson().equalsIgnoreCase(editedElement.toJson())) {
 			Intent resultIntent = new Intent();
+			resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
+					SECTION_ELEMENT_POSITION_DISCARD);
 			resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 					elementFragment.getEditedElement().toJson());
 			setResult(SECTION_ELEMENT_ACTIVITY_RESULT,

@@ -107,7 +107,7 @@ public class SectionFragment extends ListFragment {
 				if(position == SectionElementActivity.SECTION_ELEMENT_POSITION_NEW){
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
 					editedSection.getElements().add(newSectionElement);
-				}else{
+				}else if(position != SectionElementActivity.SECTION_ELEMENT_POSITION_DISCARD){
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
 					editedSection.getElements().set(position, newSectionElement);
 				}

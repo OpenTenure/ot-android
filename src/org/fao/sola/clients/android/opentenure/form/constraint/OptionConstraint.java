@@ -46,7 +46,6 @@ public class OptionConstraint extends FieldConstraint {
 	public void addOption(FieldConstraintOption fieldConstraintOption) {
 		fieldConstraintOption.setFieldConstraint(this);
 		fieldConstraintOptions.add(fieldConstraintOption);
-		this.errorMsg = "Value {1} of {0} is not one of {2}";
 	}
 
 	public OptionConstraint() {
@@ -55,6 +54,7 @@ public class OptionConstraint extends FieldConstraint {
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.INTEGER);
 		addApplicableType(FieldType.DECIMAL);
+		this.errorMsg = "Value {1} of {0} is not one of {2}";
 	}
 
 	public OptionConstraint(OptionConstraint oc) {

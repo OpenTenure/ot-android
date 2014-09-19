@@ -29,11 +29,37 @@ package org.fao.sola.clients.android.opentenure.form.field;
 
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
+import org.fao.sola.clients.android.opentenure.form.constraint.DateTimeFormatConstraint;
 
-public class BigDecimalField extends FieldTemplate {
-	
-	public BigDecimalField(){
+public class DateField extends FieldTemplate {
+
+	public DateField(){
 		super();
-		type = FieldType.DECIMAL;
+		type = FieldType.DATE;
+		DateTimeFormatConstraint constraint = new DateTimeFormatConstraint();
+		constraint.setName("from_field_type");
+		constraint.setDisplayName("From field type");
+		constraint.setErrorMsg("Value {0} of field {1} does not match format {2}");
+
+		constraint.setFormat("yyyy-MM-dd");
+		
+		try {
+			addConstraint(constraint);
+		} catch (Exception e) {
+		}
+	}
+	
+	public void setFormat(String format){
+		DateTimeFormatConstraint constraint = new DateTimeFormatConstraint();
+		constraint.setName("from_field_type");
+		constraint.setDisplayName("From field type");
+		constraint.setErrorMsg("Value {0} of field {1} does not match format {2}");
+
+		constraint.setFormat(format);
+		
+		try {
+			addConstraint(constraint);
+		} catch (Exception e) {
+		}
 	}
 }

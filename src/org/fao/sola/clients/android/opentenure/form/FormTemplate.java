@@ -94,6 +94,15 @@ public class FormTemplate {
 		}
 	}
 	
+	public FormTemplate(FormPayload formPayload){
+		this.name = formPayload.getFormTemplateName();
+		this.displayName = formPayload.getFormTemplateName();
+		this.sectionTemplates = new ArrayList<SectionTemplate>();
+		for(SectionPayload sectionPayload:formPayload.getSections()){
+			this.sectionTemplates.add(new SectionTemplate(sectionPayload));
+		}
+	}
+	
 	public void addSection(SectionTemplate sectionTemplate){
 		sectionTemplates.add(sectionTemplate);
 	}

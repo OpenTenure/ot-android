@@ -30,10 +30,10 @@ package org.fao.sola.clients.android.opentenure.form.field;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-public class StringField extends FieldTemplate {
+public class DecimalField extends FieldTemplate {
 	
-	public StringField(){
+	public DecimalField(){
 		super();
-		type = FieldType.TEXT;
+		type = FieldType.DECIMAL;
 	}
 }
