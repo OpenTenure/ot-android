@@ -518,12 +518,15 @@ public class SurveyFormTemplate {
 
 	public static FormTemplate getFormTemplate(String surveyFormTemplateId){
 		SurveyFormTemplate sft = SurveyFormTemplate.getSurveyFormTemplate(surveyFormTemplateId);
-		return FormTemplate.fromJson(sft.getValue());
+		if(sft != null){
+			return FormTemplate.fromJson(sft.getValue());
+		}
+		return null;
 	}
 
 	public static FormTemplate getFormTemplateByName(String name){
 		SurveyFormTemplate sft = SurveyFormTemplate.getSurveyFormTemplateByName(name);
-		if(sft != null){
+		if(sft != null && sft.getValue() != null){
 			return FormTemplate.fromJson(sft.getValue());
 		}else{
 			return new FormTemplate();

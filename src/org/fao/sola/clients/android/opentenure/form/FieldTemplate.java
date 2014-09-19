@@ -173,6 +173,17 @@ public class FieldTemplate {
 		}
 	}
 	
+	public FieldTemplate(FieldPayload field){
+		this.id = UUID.randomUUID().toString();
+		if(field.getName() != null){
+			this.name = new String(field.getName());
+		}
+		if(field.getDisplayName() != null){
+			this.displayName = new String(field.getDisplayName());
+		}
+		this.type = field.getType();
+	}
+
 	public void addConstraint(FieldConstraint fieldConstraint) throws Exception {
 		if(fieldConstraint.appliesTo(this)){
 			constraints.add(fieldConstraint);

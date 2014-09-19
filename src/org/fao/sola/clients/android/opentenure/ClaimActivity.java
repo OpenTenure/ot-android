@@ -66,11 +66,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public static final String CLAIM_ID_KEY = "claimId";
 	public static final String MODE_KEY = "mode";
 	public static final String CREATE_CLAIM_ID = "create";
+	private static final int NUMBER_OF_STATIC_SECTIONS = 6;
 	private ModeDispatcher.Mode mode;
 	private String claimId = null;
-	FormPayload originalFormPayload;
-	FormPayload editedFormPayload;
-	FormTemplate formTemplate;
+	private FormPayload originalFormPayload;
+	private FormPayload editedFormPayload;
+	private FormTemplate formTemplate;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
@@ -160,26 +161,25 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		setContentView(R.layout.activity_claim);
 
 		String savedInstanceClaimId = null;
-
-		// Setup the form before creating the section adapter
-		
-		if (savedInstanceState != null) {
+		if(savedInstanceState != null){
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
+		String localClaimId = null;
 
-		String intentClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
-
-		if (savedInstanceClaimId != null) {
-			setClaimId(savedInstanceClaimId);
-		} else if (intentClaimId != null
-				&& !intentClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
-			setClaimId(intentClaimId);
-
+		if(savedInstanceClaimId == null){
+			localClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
+		}else{
+			localClaimId = savedInstanceClaimId;
 		}
 
-		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
-		originalFormPayload = new FormPayload(formTemplate,getClaimId());
-		editedFormPayload = new FormPayload(originalFormPayload);
+		if (localClaimId != null
+				&& !localClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
+			setClaimId(localClaimId);
+		}
+
+		// Setup the form before creating the section adapter
+
+		setupDynamicSections();
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mViewPager = (ViewPager) findViewById(R.id.claim_pager);
@@ -425,7 +425,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public Fragment getItem(int position) {
 
 			Fragment fragment;
-			int sectionPosition = position - 6;
+			int sectionPosition = position - NUMBER_OF_STATIC_SECTIONS;
 
 			switch (position) {
 			case 0:
@@ -466,7 +466,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
-				return 6 + getNumberOfSections();
+				return NUMBER_OF_STATIC_SECTIONS + getNumberOfSections();
 		}
 		
 		private int getNumberOfSections(){
@@ -493,7 +493,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public CharSequence getPageTitle(int position) {
 			Locale l = Locale.getDefault();
 
-			int sectionPosition = position - 6;
+			int sectionPosition = position - NUMBER_OF_STATIC_SECTIONS;
 
 			switch (position) {
 			case 0:
@@ -523,17 +523,39 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			Claim claim = Claim.getClaim(claimId);
 			setTitle(getResources().getString(R.string.app_name) + ": "
 					+ claim.getName());
-			if(claim.getSurveyForm()!=null){
-				originalFormPayload = claim.getSurveyForm();
-				if(originalFormPayload != null){
-					editedFormPayload = new FormPayload(originalFormPayload);
-				}else{
-					originalFormPayload = new FormPayload();
-					originalFormPayload.setTemplate(new FormTemplate());
-					editedFormPayload = new FormPayload();
-					editedFormPayload.setTemplate(new FormTemplate());
+		}
+	}
+
+	public void setupDynamicSections() {
+		if (claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
+			// setting up for an existing claim
+			Claim claim = Claim.getClaim(claimId);
+			originalFormPayload = claim.getSurveyForm();
+			if(originalFormPayload != null){
+				// There's a payload already attached to this claim
+				editedFormPayload = new FormPayload(originalFormPayload);
+				// Try to retrieve its template
+				formTemplate = SurveyFormTemplate.getFormTemplateByName(originalFormPayload.getFormTemplateName());
+				if(formTemplate == null){
+					// We don't have the original template for this payload
+					// let's try to rebuild it from the payload itself
+					formTemplate = new FormTemplate(originalFormPayload);
 				}
+				
+			}else{
+				// A payload has not been created for this claim
+				// so we refer to the default template for the dynamic part
+				formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
+				originalFormPayload = new FormPayload(formTemplate);
+				originalFormPayload.setClaimId(claimId);
+				editedFormPayload = new FormPayload(originalFormPayload);
 			}
+		}else{
+			// It's a newly created claim
+			// so we refer to the default template for the dynamic part
+			formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
+			originalFormPayload = new FormPayload(formTemplate);
+			editedFormPayload = new FormPayload(originalFormPayload);
 		}
 	}
 
@@ -551,6 +573,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onClaimSaved() {
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
+		if(editedFormPayload != null){
+			editedFormPayload.setClaimId(claimId);
+		}
+		if(originalFormPayload != null){
+			originalFormPayload.setClaimId(claimId);
+		}
 		if (claimMapFragment != null)
 			 claimMapFragment.onClaimSaved();
 	}

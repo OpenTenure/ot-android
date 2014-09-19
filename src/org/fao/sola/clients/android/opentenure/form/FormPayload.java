@@ -97,6 +97,15 @@ public class FormPayload {
 		}
 	}
 
+	public FormPayload(FormTemplate template){
+		this.formTemplateName = template.getName();
+		this.template = template;
+		this.sections = new ArrayList<SectionPayload>();
+		for(SectionTemplate sectionTemplate:template.getSections()){
+			this.sections.add(new SectionPayload(sectionTemplate));
+		}
+	}
+
 	public String getClaimId() {
 		return claimId;
 	}

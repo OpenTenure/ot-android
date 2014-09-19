@@ -191,7 +191,24 @@ public class SectionTemplate {
 		this.elementDisplayName = new String(sec.getElementDisplayName());
 		for(FieldTemplate fieldTemplate:sec.getFields()){
 			this.fields.add(new FieldTemplate(fieldTemplate));
-		}	}
+		}
+	}
+
+	public SectionTemplate(SectionPayload sp){
+		this.id = UUID.randomUUID().toString();
+		this.name = new String(sp.getName());
+		this.elementName = new String(sp.getElementName());
+		this.elementDisplayName = new String(sp.getElementDisplayName());
+		this.minOccurrences = sp.getMinOccurrences();
+		this.maxOccurrences = sp.getMaxOccurrences();
+		this.displayName = new String(sp.getDisplayName());
+		if(sp.getElements() != null && sp.getElements().size() > 0){
+			this.fields = new ArrayList<FieldTemplate>();
+			for(FieldPayload fieldPayload:sp.getElements().get(0).getFields()){
+				this.fields.add(new FieldTemplate(fieldPayload));
+			}
+		}
+	}
 
 	public FieldConstraint getFailedConstraint(SectionPayload payload) {
 		

@@ -108,7 +108,7 @@ public class InitializationActivity extends Activity {
 					.getDefaultSharedPreferences(this);
 			String formUrl = OpenTenurePreferences
 					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-							"http://192.168.1.101:8080/DynamicFormGeneration/templateServlet");
+							"http://192.168.1.102:8080/DynamicFormGeneration/templateServlet");
 			start.setFormUrl(formUrl);
 			start.execute();
 		}
