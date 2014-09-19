@@ -207,8 +207,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
-					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
-					mViewPager);
+					.getChildAt(5), mViewPager);
 		}
 
 	}
@@ -285,47 +284,32 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-		// case 5:
-		// sv.setShowcase(new ViewTarget(
-		// findViewById(R.id.action_new_attachment)), true);
-		// sv.setContentTitle("  ");
-		// sv.setContentText(getString(R.string.showcase_claim_documentAttach_message));
-		// break;
-		// case 6:
-		// sv.setShowcase(
-		// new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
-		// sv.setContentTitle(getString(R.string.title_claim_additional_info)
-		// .toUpperCase());
-		// sv.setContentText("ECCO TERZO TAB");
-		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
-		// mViewPager.setCurrentItem(3);
-		// break;
 		case 5:
 			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
+					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
 			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
 					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_adjacencies_message));
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
-			mViewPager.setCurrentItem(4);
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
+			mViewPager.setCurrentItem(3);
 			break;
 		case 6:
 			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
+					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
 			sv.setContentTitle(getString(R.string.title_claim_challenges)
 					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_challenges_message));
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
-			mViewPager.setCurrentItem(5);
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
+			mViewPager.setCurrentItem(4);
 			break;
 		case 7:
 			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(6)), true);
+					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
 			sv.setContentTitle(getString(R.string.title_claim_owners)
 					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_shares_message));
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(6));
-			mViewPager.setCurrentItem(6);
+			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
+			mViewPager.setCurrentItem(5);
 			break;
 		case 8:
 			sv.setShowcase(
@@ -336,7 +320,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
-					.getChildAt(5), tabs.getTabsContainer().getChildAt(6), tabs);
+					.getChildAt(5), tabs);
 			sv.setButtonText(getString(R.string.close));
 			mViewPager.setCurrentItem(0);
 			break;
@@ -390,8 +374,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(1), tabs.getTabsContainer()
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3), tabs
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
-					.getChildAt(5), tabs.getTabsContainer().getChildAt(6),
-					mViewPager);
+					.getChildAt(5), mViewPager);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
