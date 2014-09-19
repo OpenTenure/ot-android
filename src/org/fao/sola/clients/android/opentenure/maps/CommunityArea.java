@@ -42,7 +42,7 @@ public class CommunityArea {
 
 	String communityAreaClob = null;
 	GoogleMap map = null;
-	protected Polyline polyline = null;
+	protected static Polyline polyline = null;
 
 	public void drawInterestArea() {
 		
@@ -70,6 +70,7 @@ public class CommunityArea {
 		polylineOptions.color(OpenTenureApplication.getContext().getResources()
 				.getColor(R.color.community_area));
 		polyline = map.addPolyline(polylineOptions);
+		
 
 	}
 
@@ -80,5 +81,15 @@ public class CommunityArea {
 		this.map = map;
 
 	}
+
+	public static Polyline getPolyline() {
+		return polyline;
+	}
+
+	public static void setPolyline(Polyline polyline) {
+		CommunityArea.polyline = polyline;
+	}
+	
+	
 
 }

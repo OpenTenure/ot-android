@@ -161,6 +161,7 @@ public class MainMapFragment extends SupportMapFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		super.onCreateView(inflater, container, savedInstanceState);
 		mapView = inflater.inflate(R.layout.main_map, container, false);
 		setHasOptionsMenu(true);
@@ -209,6 +210,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		// If we previously used the map
 		if (zoom != null && latitude != null && longitude != null) {
 			try {
+
 				// Let's start from where we left it
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(
 						new LatLng(Double.parseDouble(latitude), Double
@@ -216,7 +218,34 @@ public class MainMapFragment extends SupportMapFragment implements
 								.parseFloat(zoom)));
 			} catch (Exception e) {
 			}
+		} else {
+
+			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+
+				LatLngBounds.Builder bounds;
+				// setup map
+
+				bounds = new LatLngBounds.Builder();
+				// get all cars from the datbase with getter method
+				List<LatLng> K = CommunityArea.getPolyline().getPoints();
+
+				// loop through cars in the database
+				for (LatLng cn : K) {
+					// use .include to put add each point to be included in the
+					// bounds
+					bounds.include(cn);
+
+				}
+				// set bounds with all the map points
+				map.moveCamera(CameraUpdateFactory.newLatLngBounds(
+						bounds.build(), 400, 400, 10));
+
+			}
+
 		}
+
+		OpenTenureApplication.setMapFragment(this);
 
 		redrawVisibleProperties();
 
@@ -224,6 +253,7 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	private void showVisibleProperties() {
+
 		if (visibleProperties != null) {
 			for (BasePropertyBoundary visibleProperty : visibleProperties) {
 				visibleProperty.showBoundary();
@@ -237,6 +267,7 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	private void hideVisibleProperties() {
+
 		if (visibleProperties != null) {
 			for (BasePropertyBoundary visibleProperty : visibleProperties) {
 				visibleProperty.hideBoundary();
@@ -246,6 +277,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onStart() {
+
 		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
 				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
 		ClusteringSettings settings = new ClusteringSettings();
@@ -259,6 +291,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onDestroyView() {
+
 		lh.stop();
 		Fragment map = getFragmentManager().findFragmentById(
 				R.id.main_map_fragment);
@@ -513,7 +546,8 @@ public class MainMapFragment extends SupportMapFragment implements
 
 				LogoutTask logoutTask = new LogoutTask();
 
-				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getActivity());
+				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						getActivity());
 
 			} catch (Exception e) {
 				Log.d("Details", "An error ");
@@ -525,11 +559,16 @@ public class MainMapFragment extends SupportMapFragment implements
 		case R.id.action_download_tiles:
 
 			int zoom = (int) map.getCameraPosition().zoom;
-			if ( zoom >= 17) {
-				int tilesToDownload = Tile.getTilesToDownload(); 
-				if(tilesToDownload > 0){
-					Toast.makeText(getActivity().getBaseContext(),
-							String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_SHORT)
+			if (zoom >= 17) {
+				int tilesToDownload = Tile.getTilesToDownload();
+				if (tilesToDownload > 0) {
+					Toast.makeText(
+							getActivity().getBaseContext(),
+							String.format(
+									getActivity().getBaseContext()
+											.getResources()
+											.getString(R.string.tiles_queued),
+									tilesToDownload), Toast.LENGTH_SHORT)
 							.show();
 				}
 				SharedPreferences OpenTenurePreferences = PreferenceManager
@@ -541,19 +580,20 @@ public class MainMapFragment extends SupportMapFragment implements
 						OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
 						"sola:nz_orthophoto");
 				WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,
-								geoServerUrl, geoServerLayer);
+						geoServerUrl, geoServerLayer);
 				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, zoom,21);
+				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, zoom,
+						21);
 				Tile.createTiles(tiles);
-				Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
-				
+				Log.d(this.getClass().getName(), "Created " + tiles.size()
+						+ " tiles to download");
+
 				TileDownloadTask task = new TileDownloadTask();
 				task.setContext(getActivity().getBaseContext());
 				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),
-						R.string.zoom_level_too_low, Toast.LENGTH_SHORT)
-						.show();
+						R.string.zoom_level_too_low, Toast.LENGTH_SHORT).show();
 			}
 
 			return true;
@@ -563,6 +603,7 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	private void storeCameraPosition(CameraPosition cameraPosition) {
+
 		Configuration zoom = Configuration
 				.getConfigurationByName(MAIN_MAP_ZOOM);
 
@@ -667,6 +708,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
+
 		// Store camera position to allow drawing on the claim map where we
 		// left off the main map
 		storeCameraPosition(cameraPosition);
@@ -696,6 +738,35 @@ public class MainMapFragment extends SupportMapFragment implements
 	private void drawAreaOfInterest() {
 		CommunityArea area = new CommunityArea(map);
 		area.drawInterestArea();
+
+	}
+
+	public void boundCameraToInterestArea() {
+
+		if (Boolean.parseBoolean(Configuration.getConfigurationByName(
+				"isInitialized").getValue())) {
+
+			drawAreaOfInterest();
+
+			LatLngBounds.Builder bounds;
+			// setup map
+
+			bounds = new LatLngBounds.Builder();
+			// get all cars from the datbase with getter method
+			List<LatLng> K = CommunityArea.getPolyline().getPoints();
+
+			// loop through cars in the database
+			for (LatLng cn : K) {
+				// use .include to put add each point to be included in the
+				// bounds
+				bounds.include(cn);
+
+			}
+			// set bounds with all the map points
+			map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),
+					400, 400, 10));
+
+		}
 
 	}
 

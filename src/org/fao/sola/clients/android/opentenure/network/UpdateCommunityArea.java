@@ -28,12 +28,15 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
 
 public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 
@@ -66,7 +69,10 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 					configuration.setValue(polygon);
 
 					configuration.create();
+
 				}
+
+				//OpenTenureApplication.getMapFragment().refreshMap();
 
 				OpenTenureApplication.getInstance().setCheckedCommunityArea(
 						true);
@@ -82,20 +88,32 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 							&& OpenTenureApplication.getInstance()
 									.isCheckedCommunityArea()
 
-					)
+					) {
 
 						OpenTenureApplication.getInstance()
 								.setInitialized(true);
 
-					Configuration conf = Configuration
-							.getConfigurationByName("isInitialized");
-					conf.setValue("true");
-					conf.update();
+						Configuration conf = Configuration
+								.getConfigurationByName("isInitialized");
+						conf.setValue("true");
+						conf.update();
 
-					FragmentActivity fa = (FragmentActivity) OpenTenureApplication
-							.getNewsFragment();
-					if (fa != null)
-						fa.invalidateOptionsMenu();
+						FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+								.getNewsFragment();
+						if (fa != null)
+							fa.invalidateOptionsMenu();
+
+						Configuration latitude = Configuration
+								.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
+						if (latitude != null)
+							latitude.delete();
+
+						MainMapFragment mapFrag = OpenTenureApplication
+								.getMapFragment();
+
+						mapFrag.boundCameraToInterestArea();
+
+					}
 				}
 
 			} catch (Exception e) {
