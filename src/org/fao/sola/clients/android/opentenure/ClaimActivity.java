@@ -154,7 +154,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		
+
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
@@ -162,7 +162,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		String savedInstanceClaimId = null;
 
 		// Setup the form before creating the section adapter
-		
+
 		if (savedInstanceState != null) {
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
@@ -178,7 +178,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		}
 
 		formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
-		originalFormPayload = new FormPayload(formTemplate,getClaimId());
+		originalFormPayload = new FormPayload(formTemplate, getClaimId());
 		editedFormPayload = new FormPayload(originalFormPayload);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -216,7 +216,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	private void setAlpha(float alpha, View... views) {
 		if (apiUtils.isCompatWithHoneycomb()) {
 			for (View view : views) {
-				view.setAlpha(alpha);
+				if (view != null)
+					view.setAlpha(alpha);
 			}
 		}
 	}
@@ -257,8 +258,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		case 1:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
-			sv.setContentTitle(getString(R.string.title_claim_map)
-					.toUpperCase(Locale.getDefault()));
+			sv.setContentTitle(getString(R.string.title_claim_map).toUpperCase(
+					Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
@@ -447,17 +448,27 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				SectionTemplate sectionTemplate = formTemplate.getSections().get(sectionPosition);
-				if(sectionTemplate == null){
+				SectionTemplate sectionTemplate = formTemplate.getSections()
+						.get(sectionPosition);
+				if (sectionTemplate == null) {
 					return null;
 				}
-				if(sectionTemplate.getMaxOccurrences() > 1){
-					fragment = new SectionFragment(editedFormPayload.getSections().get(sectionPosition), sectionTemplate, mode);
-				}else{
-					if(editedFormPayload.getSections().get(sectionPosition).getElements().size()==0){
-						editedFormPayload.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate));
+				if (sectionTemplate.getMaxOccurrences() > 1) {
+					fragment = new SectionFragment(editedFormPayload
+							.getSections().get(sectionPosition),
+							sectionTemplate, mode);
+				} else {
+					if (editedFormPayload.getSections().get(sectionPosition)
+							.getElements().size() == 0) {
+						editedFormPayload
+								.getSections()
+								.get(sectionPosition)
+								.getElements()
+								.add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedFormPayload.getSections().get(sectionPosition).getElements().get(0), sectionTemplate, mode);
+					fragment = new SectionElementFragment(editedFormPayload
+							.getSections().get(sectionPosition).getElements()
+							.get(0), sectionTemplate, mode);
 				}
 			}
 			fragmentReferences.put(position, fragment);
@@ -466,25 +477,27 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
-				return 6 + getNumberOfSections();
+			return 6 + getNumberOfSections();
 		}
-		
-		private int getNumberOfSections(){
-			if(editedFormPayload != null){
+
+		private int getNumberOfSections() {
+			if (editedFormPayload != null) {
 				return editedFormPayload.getSections().size();
-			}else if(formTemplate != null){
+			} else if (formTemplate != null) {
 				return formTemplate.getSections().size();
-			}else{
+			} else {
 				return 0;
 			}
 		}
 
-		private String getSectionTitle(int position){
-			if(editedFormPayload != null){
-				return editedFormPayload.getSections().get(position).getDisplayName().toUpperCase(Locale.US);
-			}else if(formTemplate != null){
-				return formTemplate.getSections().get(position).getDisplayName().toUpperCase(Locale.getDefault());
-			}else{
+		private String getSectionTitle(int position) {
+			if (editedFormPayload != null) {
+				return editedFormPayload.getSections().get(position)
+						.getDisplayName().toUpperCase(Locale.US);
+			} else if (formTemplate != null) {
+				return formTemplate.getSections().get(position)
+						.getDisplayName().toUpperCase(Locale.getDefault());
+			} else {
 				return "";
 			}
 		}
@@ -523,11 +536,11 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			Claim claim = Claim.getClaim(claimId);
 			setTitle(getResources().getString(R.string.app_name) + ": "
 					+ claim.getName());
-			if(claim.getSurveyForm()!=null){
+			if (claim.getSurveyForm() != null) {
 				originalFormPayload = claim.getSurveyForm();
-				if(originalFormPayload != null){
+				if (originalFormPayload != null) {
 					editedFormPayload = new FormPayload(originalFormPayload);
-				}else{
+				} else {
 					originalFormPayload = new FormPayload();
 					originalFormPayload.setTemplate(new FormTemplate());
 					editedFormPayload = new FormPayload();
@@ -552,7 +565,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
 		if (claimMapFragment != null)
-			 claimMapFragment.onClaimSaved();
+			claimMapFragment.onClaimSaved();
 	}
 
 	@Override

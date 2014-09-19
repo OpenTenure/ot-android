@@ -566,6 +566,16 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			return true;
 		case R.id.action_download_tiles:
+			
+			if(!OpenTenureApplication.getInstance().isOnline()){
+				Toast.makeText(
+						mapView.getContext(),
+						mapView.getContext().getResources().getString(
+										R.string.error_connection), Toast.LENGTH_LONG).show();
+				
+				return true;
+			}
+			
 
 			int currentZoomLevel = (int) map.getCameraPosition().zoom;
 			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();

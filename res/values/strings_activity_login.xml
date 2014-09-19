@@ -14,6 +14,7 @@
     <string name="error_incorrect_password">Username or Password is incorrect</string>
     <string name="error_generic_login">An error has occurred during login </string>
     <string name="error_generic_conection">An error has occurred during connection</string>
+    <string name="error_connection">The connection is not available</string>
     <string name="error_field_required">This field is required</string>
     <string name="message_login_before">Do login before</string>
     <string name="message_logout_ok">You have succefully Logout</string>

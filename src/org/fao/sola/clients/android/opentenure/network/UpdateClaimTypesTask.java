@@ -92,13 +92,9 @@ public class UpdateClaimTypesTask extends
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 
-				)
-				{
+				) {
 
-					
-					System.out.println("FINALMENTE !!!!!!!!!!!!!!!!!!!!!!!!!!");
-					OpenTenureApplication.getInstance()
-							.setInitialized(true);
+					OpenTenureApplication.getInstance().setInitialized(true);
 
 					Configuration conf = Configuration
 							.getConfigurationByName("isInitialized");
@@ -118,7 +114,6 @@ public class UpdateClaimTypesTask extends
 					MainMapFragment mapFrag = OpenTenureApplication
 							.getMapFragment();
 
-					
 					mapFrag.boundCameraToInterestArea();
 
 				}

@@ -22,19 +22,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.abblasio.login.LoginPlainGet;
+//import com.abblasio.login.LoginPlainGe
+
+
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
+	
 
 	/**
 	 * The default email to populate the email field with.
 	 */
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
-
+	public static final int _NO_CONNECTION = 460;
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
@@ -255,6 +258,13 @@ public class LoginActivity extends Activity {
 
 				break;
 
+			case _NO_CONNECTION:
+				mPasswordView
+						.setError(getString(R.string.error_connection));
+				mPasswordView.requestFocus();
+
+				break;	
+				
 			case 80:
 				mPasswordView
 						.setError(getString(R.string.error_generic_conection));
