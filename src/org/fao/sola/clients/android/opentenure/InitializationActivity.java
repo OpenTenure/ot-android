@@ -177,7 +177,7 @@ public class InitializationActivity extends Activity {
 				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
 				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-			}
+			} 
 
 			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
 				Log.d(this.getClass().getName(),

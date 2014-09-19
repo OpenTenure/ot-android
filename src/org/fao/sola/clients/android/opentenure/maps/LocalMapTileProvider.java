@@ -70,10 +70,10 @@ public class LocalMapTileProvider implements TileProvider {
 
             return buffer.toByteArray();
         } catch (IOException e) {
-            System.out.println(e.getMessage() + " while getting " + tileFileName);
+            
             return null;
         } catch (OutOfMemoryError e) {
-            System.out.println(e.getMessage() + " while getting " + tileFileName);
+            
             return null;
         } finally {
             if (in != null) try { in.close(); } catch (Exception ignored) {}
