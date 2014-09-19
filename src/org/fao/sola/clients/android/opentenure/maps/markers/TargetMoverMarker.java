@@ -35,10 +35,10 @@ import com.androidmapsextensions.Marker;
 public abstract class TargetMoverMarker extends RelativeClickableMarker implements Hideable {
 	
 	protected Marker target;
-	protected static final float UP_INITIAL_ROTATION = 180.0f;
-	protected static final float DOWN_INITIAL_ROTATION = 0.0f;
-	protected static final float LEFT_INITIAL_ROTATION = 90.0f;
-	protected static final float RIGHT_INITIAL_ROTATION = 270.0f;
+	protected static final float UP_INITIAL_ROTATION = 270.0f;
+	protected static final float RIGHT_INITIAL_ROTATION = 0.0f;
+	protected static final float DOWN_INITIAL_ROTATION = 90.0f;
+	protected static final float LEFT_INITIAL_ROTATION = 180.0f;
 	protected static final int PIXELS_PER_STEP = 5;
 
 	protected TargetMoverMarker(Marker selectedMarker, Marker target, GoogleMap  map) {

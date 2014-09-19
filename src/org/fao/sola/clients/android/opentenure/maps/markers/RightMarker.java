@@ -72,7 +72,7 @@ public class RightMarker extends TargetMoverMarker {
 		.anchor(0.5f, 0.5f)
 		.title(context.getString(R.string.right))
 		.icon(BitmapDescriptorFactory
-				.fromResource(R.drawable.ic_find_next_holo_light)).rotation(RIGHT_INITIAL_ROTATION));
+				.fromResource(R.drawable.ic_menu_forward)).rotation(RIGHT_INITIAL_ROTATION));
 		marker.setClusterGroup(Constants.MARKER_RELATIVE_EDIT_RIGHT_GROUP);
 	}
 

@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,38 +47,42 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-public class TileDownloadTask extends AsyncTask<Void, Double, Double> {
+public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
-	private static final int TILES_PER_BATCH = 10;
+	public static final String TASK_ID = "TileDownloadTask";
+	private static final int TILES_PER_BATCH = 50;
 	private static final long TILE_CACHE_TIME = 30 * 24 * 60 * 60 * 1000;
-	private static final String TASK_ID = "TileDownloadTask";
+	private static final long TIMEOUT = 4000;
 	private Context context;
 
 	public void setContext(Context context) {
 		this.context = context;
 	}
 
-
 	public TileDownloadTask() {
 	}
-	
 
 	protected void onPreExecute() {
-		Task.deleteTask(new Task(TASK_ID));
 		Task.createTask(new Task(TASK_ID));
 	}
 
-	protected Double doInBackground(Void... params) {
+	protected Integer doInBackground(Void... params) {
 
 		List<Tile> tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
 		int originalTilesToDownload = Tile.getTilesToDownload();
+		long startTime = System.currentTimeMillis();
+		int failures = 0;
 		int downloadedTiles = 0;
 		BigDecimal completion = BigDecimal.valueOf(0);
-
-		Log.d(this.getClass().getName(), "Starting to download " + originalTilesToDownload + " tiles");
+//		Log.d(this.getClass().getName(),
+//				"Nobody else is consuming tiles, let's go. Starting to download "
+//						+ originalTilesToDownload + " tiles");
 
 		while (tiles != null && tiles.size() >= 1) {
-			Log.d(this.getClass().getName(), "Downloading a batch of " + tiles.size() + " tiles, tiles to go: " + (originalTilesToDownload - downloadedTiles));
+//			Log.d(this.getClass().getName(),
+//					"Downloading a batch of " + tiles.size()
+//							+ " tiles, tiles to go: "
+//							+ (originalTilesToDownload - downloadedTiles));
 			for (Tile tile : tiles) {
 
 				File outputFile = new File(tile.getFileName());
@@ -86,33 +91,50 @@ public class TileDownloadTask extends AsyncTask<Void, Double, Double> {
 				InputStream is = null;
 				FileOutputStream fos = null;
 
-				if (!outputFile.exists()
-						|| (outputFile.lastModified() < (System
-								.currentTimeMillis() - TILE_CACHE_TIME))) {
-					try{
-					URL url = new URL(tile.getUrl());
-					HttpURLConnection c = (HttpURLConnection) url
-							.openConnection();
-					c.setRequestMethod("GET");
-					c.setDoOutput(true);
-					c.connect();
-					fos = new FileOutputStream(outputFile);
+				long lastModified = outputFile.lastModified();
+				boolean fileExists = outputFile.exists();
 
-					is = c.getInputStream();
+				if (!fileExists
+						|| (fileExists && (lastModified > (System
+								.currentTimeMillis() - TILE_CACHE_TIME)))) {
+					try {
+//						if (fileExists) {
+//							Log.d(this.getClass().getName(),
+//									outputFile.getPath()
+//											+ " exists and has been modified on "
+//											+ new Date(lastModified));
+//
+//						} else {
+//							Log.d(this.getClass().getName(),
+//									outputFile.getPath() + " does not exist");
+//						}
+						URL url = new URL(tile.getUrl());
+						HttpURLConnection c = (HttpURLConnection) url
+								.openConnection();
+						c.setRequestMethod("GET");
+						c.setDoOutput(true);
+						c.setConnectTimeout((int) TIMEOUT / 2);
+						c.setReadTimeout((int) TIMEOUT / 2);
+						c.connect();
+						fos = new FileOutputStream(outputFile);
 
-					byte[] buffer = new byte[1024];
-					int len1 = 0;
-					while ((len1 = is.read(buffer)) != -1) {
+						is = c.getInputStream();
 
-						fos.write(buffer, 0, len1);
-					}
-					fos.close();
-					is.close();
-					Log.d(this.getClass().getName(),
-							"cached/refreshed tile from url " + tile.getUrl()
-									+ " to file " + outputFile.getPath());
-					downloadedTiles++;
+						byte[] buffer = new byte[1024];
+						int len1 = 0;
+						while ((len1 = is.read(buffer)) != -1) {
+
+							fos.write(buffer, 0, len1);
+						}
+						fos.close();
+						is.close();
+//						Log.d(this.getClass().getName(),
+//								"cached/refreshed tile from url "
+//										+ tile.getUrl() + " to file "
+//										+ outputFile.getPath());
+						downloadedTiles++;
 					} catch (IOException e) {
+						failures++;
 						e.printStackTrace();
 					} finally {
 						if (is != null) {
@@ -129,31 +151,47 @@ public class TileDownloadTask extends AsyncTask<Void, Double, Double> {
 						}
 					}
 				} else {
-					Log.d(this.getClass().getName(),
-							"no need to refresh cached tile file "
-									+ outputFile.getPath());
+//					Log.d(this.getClass().getName(),
+//							"no need to refresh cached tile file "
+//									+ outputFile.getPath());
 					downloadedTiles++;
 				}
 				tile.delete();
 
 			}
-			completion = new BigDecimal(((double)downloadedTiles/(double)originalTilesToDownload)*100.0);
-			Task task = Task.getTask(TASK_ID);
-			task.updateCompletion(completion);
-			Log.d(this.getClass().getName(), String.format(Locale.US, "Download task completion: %.2f percent", completion.doubleValue()));
+			completion = new BigDecimal(
+					((double) downloadedTiles / (double) originalTilesToDownload) * 100.0);
+//			Log.d(this.getClass().getName(),
+//					String.format(Locale.US,
+//							"Download task completion: %.2f percent",
+//							completion.doubleValue())
+//							+ ", elapsed time: "
+//							+ ((System.currentTimeMillis() - startTime) / 60000)
+//							+ " min");
 			tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
 		}
-		Log.d(this.getClass().getName(), "Done downloading tiles");
-		return completion.doubleValue();
+//		Log.d(this.getClass().getName(), "Done downloading tiles");
+		return failures;
 
 	}
 
-	protected void onPostExecute(Double result) {
-		if(result < 99.99){
-			Toast.makeText(context, String.format(context.getResources().getString(R.string.not_all_tiles_downloaded), result), Toast.LENGTH_SHORT).show();
-		}else{
-			Toast.makeText(context, context.getResources().getString(R.string.all_tiles_downloaded), Toast.LENGTH_SHORT).show();
-		}
+	protected void onPostExecute(Integer failures) {
+
 		Task.deleteTask(new Task(TASK_ID));
+		// If many tasks like this were running only the one serving the last
+		if (failures > 0) {
+			Toast.makeText(
+					context,
+					String.format(
+							context.getResources().getString(
+									R.string.not_all_tiles_downloaded),
+							failures), Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(
+					context,
+					context.getResources().getString(
+							R.string.all_tiles_downloaded), Toast.LENGTH_LONG)
+					.show();
+		}
 	}
 }

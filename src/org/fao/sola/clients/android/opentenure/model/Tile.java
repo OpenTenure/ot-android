@@ -37,8 +37,6 @@ import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-import android.util.Log;
-
 public class Tile {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
