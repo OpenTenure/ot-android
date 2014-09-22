@@ -14,6 +14,7 @@
     <string name="error_incorrect_password">Username o  Password errata </string>
     <string name="error_generic_login">Un errore é avvenuto durante la procedura di Log in </string>
     <string name="error_generic_conection">Errore di connessione</string>
+    <string name="error_connection">La connessione non e\' disponibile</string>
     <string name="error_field_required">Questo campo é richiesto</string>
     <string name="message_login_before">Effettuare il login prima di procedere</string>
     <string name="message_timeout_exception">Timeout exception</string>

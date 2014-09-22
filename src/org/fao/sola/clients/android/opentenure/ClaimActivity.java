@@ -155,13 +155,19 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		
+
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
 
 		String savedInstanceClaimId = null;
-		if(savedInstanceState != null){
+
+
+		// Setup the form before creating the section adapter
+
+		if (savedInstanceState != null) {
+
+		
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
 		String localClaimId = null;
@@ -177,9 +183,11 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setClaimId(localClaimId);
 		}
 
+
 		// Setup the form before creating the section adapter
 
 		setupDynamicSections();
+
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mViewPager = (ViewPager) findViewById(R.id.claim_pager);
@@ -215,7 +223,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	private void setAlpha(float alpha, View... views) {
 		if (apiUtils.isCompatWithHoneycomb()) {
 			for (View view : views) {
-				view.setAlpha(alpha);
+				if (view != null)
+					view.setAlpha(alpha);
 			}
 		}
 	}
@@ -256,8 +265,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		case 1:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
-			sv.setContentTitle(getString(R.string.title_claim_map)
-					.toUpperCase(Locale.getDefault()));
+			sv.setContentTitle(getString(R.string.title_claim_map).toUpperCase(
+					Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
@@ -449,7 +458,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		@Override
 		public int getCount() {
+
 				return NUMBER_OF_STATIC_SECTIONS + getNumberOfSections();
+
 		}
 		
 		private int getNumberOfSections(){
@@ -523,6 +534,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					// We don't have the original template for this payload
 					// let's try to rebuild it from the payload itself
 					formTemplate = new FormTemplate(originalFormPayload);
+
 				}
 				
 			}else{
@@ -563,7 +575,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			originalFormPayload.setClaimId(claimId);
 		}
 		if (claimMapFragment != null)
-			 claimMapFragment.onClaimSaved();
+			claimMapFragment.onClaimSaved();
 	}
 
 	@Override

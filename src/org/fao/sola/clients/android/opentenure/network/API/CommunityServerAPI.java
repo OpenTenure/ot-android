@@ -50,6 +50,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
+import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimTypesResponse;
@@ -89,6 +90,9 @@ public class CommunityServerAPI {
 			/*
 			 * Creating the url to call
 			 */
+			
+			if(!OpenTenureApplication.getInstance().isOnline())
+				return LoginActivity._NO_CONNECTION ;
 
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(OpenTenureApplication
