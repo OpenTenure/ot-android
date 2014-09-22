@@ -35,9 +35,9 @@ public class NotNullConstraint extends FieldConstraint {
 	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		if(fieldPayload == null
-				|| (fieldPayload.getBooleanPayload()==null && fieldPayload.getValueType() == FieldValueType.BOOL)
-				|| (fieldPayload.getBigDecimalPayload()==null && fieldPayload.getValueType() == FieldValueType.NUMBER)
-				|| (fieldPayload.getStringPayload()==null && fieldPayload.getValueType() == FieldValueType.TEXT)){
+				|| (fieldPayload.getBooleanPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.BOOL)
+				|| (fieldPayload.getBigDecimalPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.NUMBER)
+				|| (fieldPayload.getStringPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.TEXT)){
 			displayErrorMsg = MessageFormat.format(errorMsg, displayName);
 			return false;
 		}

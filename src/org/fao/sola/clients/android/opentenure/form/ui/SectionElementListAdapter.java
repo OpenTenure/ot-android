@@ -130,7 +130,7 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 								public void onClick(DialogInterface dialog,
 										int which) {
 									sectionElements.remove(position);
-									sectionPayload.getElements().remove(position);
+									sectionPayload.getSectionElementPayloadList().remove(position);
 									Toast.makeText(context,
 											R.string.section_element_removed,
 											Toast.LENGTH_SHORT).show();

@@ -35,7 +35,7 @@ public class DateField extends FieldTemplate {
 
 	public DateField(){
 		super();
-		type = FieldType.DATE;
+		fieldType = FieldType.DATE;
 		DateTimeFormatConstraint constraint = new DateTimeFormatConstraint();
 		constraint.setName("from_field_type");
 		constraint.setDisplayName("From field type");

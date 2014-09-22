@@ -12,11 +12,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FieldValue {
 	
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
-	private FieldPayload field;
-	private FieldValueType type;
+	private FieldPayload fieldPayload;
+	private FieldValueType fieldValueType;
 	private String stringPayload;
 	private BigDecimal bigDecimalPayload;
 	private Boolean booleanPayload;
@@ -29,20 +28,20 @@ public class FieldValue {
 		this.id = id;
 	}
 
-	public FieldPayload getField() {
-		return field;
+	public FieldPayload getFieldPayload() {
+		return fieldPayload;
 	}
 
-	public void setField(FieldPayload field) {
-		this.id = field.getId();
-		this.field = field;
+	public void setFieldPayload(FieldPayload fieldPayload) {
+		this.id = fieldPayload.getId();
+		this.fieldPayload = fieldPayload;
 	}
 
-	public FieldValueType getType() {
-		return type;
+	public FieldValueType getFieldValueType() {
+		return fieldValueType;
 	}
-	public void setType(FieldValueType type) {
-		this.type = type;
+	public void setFieldValueType(FieldValueType fieldValueType) {
+		this.fieldValueType = fieldValueType;
 	}
 
 	public String getStringPayload() {
@@ -76,22 +75,22 @@ public class FieldValue {
 				+ ", stringPayload=" + stringPayload
 				+ ", bigDecimalPayload=" + bigDecimalPayload
 				+ ", booleanPayload=" + booleanPayload
-				+ ", type=" + type + "]";
+				+ ", fieldValueType=" + fieldValueType + "]";
 	}
 
 	public FieldValue(){
 		this.id = UUID.randomUUID().toString();
-		this.type = FieldValueType.TEXT;
+		this.fieldValueType = FieldValueType.TEXT;
 	}
 
 	public FieldValue(FieldValueType type){
 		this.id = UUID.randomUUID().toString();
-		this.type = type;
+		this.fieldValueType = type;
 	}
 
 	public FieldValue(FieldValue fieldValue){
 		this.id = UUID.randomUUID().toString();
-		this.type = fieldValue.getType();
+		this.fieldValueType = fieldValue.getFieldValueType();
 		if(fieldValue.getStringPayload() != null){
 			this.stringPayload = new String(fieldValue.getStringPayload());
 		}

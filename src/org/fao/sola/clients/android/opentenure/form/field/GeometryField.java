@@ -34,7 +34,7 @@ public class GeometryField extends FieldTemplate {
 	
 	public GeometryField(){
 		super();
-		type = FieldType.GEOMETRY;
+		fieldType = FieldType.GEOMETRY;
 	}
 
 }

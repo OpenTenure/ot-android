@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FieldConstraintOption {
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
 	private FieldConstraint fieldConstraint;

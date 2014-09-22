@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SectionPayload {
 	
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
 	private FormPayload form;
@@ -51,7 +50,7 @@ public class SectionPayload {
 	private String elementDisplayName;
 	private int minOccurrences;
 	private int maxOccurrences;
-	private List<SectionElementPayload> elements;
+	private List<SectionElementPayload> sectionElementPayloadList;
 	
 	public String getId() {
 		return id;
@@ -117,12 +116,12 @@ public class SectionPayload {
 		this.maxOccurrences = maxOccurrences;
 	}
 
-	public List<SectionElementPayload> getElements() {
-		return elements;
+	public List<SectionElementPayload> getSectionElementPayloadList() {
+		return sectionElementPayloadList;
 	}
 
-	public void setElements(List<SectionElementPayload> elements) {
-		this.elements = elements;
+	public void setSectionElementPayloadList(List<SectionElementPayload> sectionElementPayloadList) {
+		this.sectionElementPayloadList = sectionElementPayloadList;
 	}
 	
 	@Override
@@ -135,7 +134,7 @@ public class SectionPayload {
 				+ ", elementDisplayName=" + elementDisplayName
 				+ ", minOccurrences=" + minOccurrences
 				+ ", maxOccurrences=" + maxOccurrences
-				+ ", elements=" + Arrays.toString(elements.toArray())
+				+ ", sectionElementPayloadList=" + Arrays.toString(sectionElementPayloadList.toArray())
 				+ "]";
 	}
 
@@ -143,12 +142,12 @@ public class SectionPayload {
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.displayName = displayName;
-		this.elements = new ArrayList<SectionElementPayload>();
+		this.sectionElementPayloadList = new ArrayList<SectionElementPayload>();
 	}
 
 	public SectionPayload(){
 		this.id = UUID.randomUUID().toString();
-		this.elements = new ArrayList<SectionElementPayload>();
+		this.sectionElementPayloadList = new ArrayList<SectionElementPayload>();
 	}
 
 	public SectionPayload(SectionPayload sp){
@@ -159,9 +158,9 @@ public class SectionPayload {
 		this.elementDisplayName = new String(sp.getElementDisplayName());
 		this.minOccurrences = sp.getMinOccurrences();
 		this.maxOccurrences = sp.getMaxOccurrences();
-		this.elements = new ArrayList<SectionElementPayload>();
-		for(SectionElementPayload sep:sp.getElements()){
-			this.elements.add(new SectionElementPayload(sep));
+		this.sectionElementPayloadList = new ArrayList<SectionElementPayload>();
+		for(SectionElementPayload sep:sp.getSectionElementPayloadList()){
+			this.sectionElementPayloadList.add(new SectionElementPayload(sep));
 		}
 	}
 
@@ -173,11 +172,11 @@ public class SectionPayload {
 		this.minOccurrences = st.getMinOccurrences();
 		this.maxOccurrences = st.getMaxOccurrences();
 		this.displayName = new String(st.getDisplayName());
-		this.elements = new ArrayList<SectionElementPayload>();
+		this.sectionElementPayloadList = new ArrayList<SectionElementPayload>();
 	}
 
 	public void addElement(SectionElementPayload element) {
-		elements.add(element);
+		sectionElementPayloadList.add(element);
 	}
 
 	public void addElement(SectionTemplate sectionTemplate) {

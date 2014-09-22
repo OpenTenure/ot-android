@@ -46,7 +46,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SectionTemplate {
 	
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
 	private FormTemplate form;
@@ -57,7 +56,7 @@ public class SectionTemplate {
 	private int maxOccurrences;
 	private String elementName;
 	private String elementDisplayName;
-	private List<FieldTemplate> fields;
+	private List<FieldTemplate> fieldTemplateList;
 	
 	public String getId() {
 		return id;
@@ -131,12 +130,12 @@ public class SectionTemplate {
 		this.errorMsg = errorMsg;
 	}
 
-	public List<FieldTemplate> getFields() {
-		return fields;
+	public List<FieldTemplate> getFieldTemplateList() {
+		return fieldTemplateList;
 	}
 
-	public void setFields(List<FieldTemplate> fields) {
-		this.fields = fields;
+	public void setFieldTemplateList(List<FieldTemplate> fieldTemplateList) {
+		this.fieldTemplateList = fieldTemplateList;
 	}
 
 	@Override
@@ -150,7 +149,7 @@ public class SectionTemplate {
 				+ ", maxOccurrences=" + maxOccurrences
 				+ ", elementName=" + elementName
 				+ ", elementDisplayName=" + elementDisplayName
-				+ ", fields=" + Arrays.toString(fields.toArray())
+				+ ", fieldTemplateList=" + Arrays.toString(fieldTemplateList.toArray())
 				+ "]";
 	}
 
@@ -162,7 +161,7 @@ public class SectionTemplate {
 		this.elementDisplayName = elementDisplayName;
 		this.minOccurrences = minOccurrences;
 		this.maxOccurrences = maxOccurrences;
-		this.fields = new ArrayList<FieldTemplate>();
+		this.fieldTemplateList = new ArrayList<FieldTemplate>();
 	}
 
 	public SectionTemplate(String name, String displayName){
@@ -171,14 +170,14 @@ public class SectionTemplate {
 		this.displayName = displayName;
 		this.elementName = name;
 		this.elementDisplayName = displayName;
-		this.fields = new ArrayList<FieldTemplate>();
+		this.fieldTemplateList = new ArrayList<FieldTemplate>();
 		this.minOccurrences = 1;
 		this.maxOccurrences = 1;
 	}
 
 	public SectionTemplate(){
 		this.id = UUID.randomUUID().toString();
-		this.fields = new ArrayList<FieldTemplate>();
+		this.fieldTemplateList = new ArrayList<FieldTemplate>();
 	}
 
 	public SectionTemplate(SectionTemplate sec){
@@ -189,8 +188,8 @@ public class SectionTemplate {
 		this.displayName = new String(sec.getDisplayName());
 		this.elementName = new String(sec.getElementName());
 		this.elementDisplayName = new String(sec.getElementDisplayName());
-		for(FieldTemplate fieldTemplate:sec.getFields()){
-			this.fields.add(new FieldTemplate(fieldTemplate));
+		for(FieldTemplate fieldTemplate:sec.getFieldTemplateList()){
+			this.fieldTemplateList.add(new FieldTemplate(fieldTemplate));
 		}
 	}
 
@@ -202,17 +201,17 @@ public class SectionTemplate {
 		this.minOccurrences = sp.getMinOccurrences();
 		this.maxOccurrences = sp.getMaxOccurrences();
 		this.displayName = new String(sp.getDisplayName());
-		if(sp.getElements() != null && sp.getElements().size() > 0){
-			this.fields = new ArrayList<FieldTemplate>();
-			for(FieldPayload fieldPayload:sp.getElements().get(0).getFields()){
-				this.fields.add(new FieldTemplate(fieldPayload));
+		if(sp.getSectionElementPayloadList() != null && sp.getSectionElementPayloadList().size() > 0){
+			this.fieldTemplateList = new ArrayList<FieldTemplate>();
+			for(FieldPayload fieldPayload:sp.getSectionElementPayloadList().get(0).getFieldPayloadList()){
+				this.fieldTemplateList.add(new FieldTemplate(fieldPayload));
 			}
 		}
 	}
 
 	public FieldConstraint getFailedConstraint(SectionPayload payload) {
 		
-		List<SectionElementPayload> elements = payload.getElements();
+		List<SectionElementPayload> elements = payload.getSectionElementPayloadList();
 
 		if ((elements.size() < minOccurrences) || (elements.size() > maxOccurrences)) {
 			IntegerRangeConstraint constraint = new IntegerRangeConstraint();
@@ -225,7 +224,7 @@ public class SectionTemplate {
 			FieldPayload fieldValue = new FieldPayload();
 			fieldValue.setName(name);
 			fieldValue.setDisplayName(displayName);
-			fieldValue.setValueType(FieldValueType.NUMBER);
+			fieldValue.setFieldValueType(FieldValueType.NUMBER);
 			fieldValue.setBigDecimalPayload(new BigDecimal(elements.size()));
 			fieldTemplate.setName(name);
 			fieldTemplate.setDisplayName(displayName);
@@ -245,14 +244,14 @@ public class SectionTemplate {
 		return null;
 	}
 	public void addField(FieldTemplate fieldTemplate) {
-		fields.add(fieldTemplate);
+		fieldTemplateList.add(fieldTemplate);
 	}
 
 	public FieldConstraint getFailedConstraint(SectionElementPayload payload) {
 
-		Iterator<FieldPayload> payloadIterator = payload.getFields().iterator();
+		Iterator<FieldPayload> payloadIterator = payload.getFieldPayloadList().iterator();
 
-		for(FieldTemplate fieldTemplate : fields){
+		for(FieldTemplate fieldTemplate : fieldTemplateList){
 			FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(payloadIterator.next());
 			if(fieldConstraint != null){
 				return fieldConstraint;

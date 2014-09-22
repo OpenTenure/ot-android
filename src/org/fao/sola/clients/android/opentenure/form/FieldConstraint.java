@@ -58,7 +58,6 @@ property="classType")
 })
 
 public class FieldConstraint {
-	@JsonIgnore
 	protected String id;
 	@JsonIgnore
 	protected FieldTemplate fieldTemplate;
@@ -73,7 +72,7 @@ public class FieldConstraint {
 	protected FieldConstraintType type;
 	@JsonIgnore
 	protected List<FieldType> applicableTypes;
-	protected List<FieldConstraintOption> fieldConstraintOptions;
+	protected List<FieldConstraintOption> fieldConstraintOptionList;
 	protected boolean check(FieldPayload fieldPayload){
 		displayErrorMsg = "You can't check a generic constraint";
 		return false;
@@ -89,12 +88,12 @@ public class FieldConstraint {
 		this.fieldTemplate = fieldTemplate;
 	}
 
-	public List<FieldConstraintOption> getOptions() {
-		return fieldConstraintOptions;
+	public List<FieldConstraintOption> getFieldConstraintOptionList() {
+		return fieldConstraintOptionList;
 	}
 
-	public void setOptions(List<FieldConstraintOption> fieldConstraintOptions) {
-		this.fieldConstraintOptions = fieldConstraintOptions;
+	public void setFieldConstraintOptionList(List<FieldConstraintOption> fieldConstraintOptionList) {
+		this.fieldConstraintOptionList = fieldConstraintOptionList;
 	}
 
 	public String getFormat() {
@@ -190,7 +189,7 @@ public class FieldConstraint {
 				+ ", format=" + format
 				+ ", minValue=" + minValue
 				+ ", maxValue=" + maxValue
-				+ ", options=" + Arrays.toString(fieldConstraintOptions.toArray())
+				+ ", fieldConstraintOptionList=" + Arrays.toString(fieldConstraintOptionList.toArray())
 				+ ", type=" + type + "]";
 	}
 
@@ -201,7 +200,7 @@ public class FieldConstraint {
 	public FieldConstraint() {
 		this.id = UUID.randomUUID().toString();
 		applicableTypes = new ArrayList<FieldType>();
-		fieldConstraintOptions = new ArrayList<FieldConstraintOption>();
+		fieldConstraintOptionList = new ArrayList<FieldConstraintOption>();
 	}
 	
 	public FieldConstraint(FieldConstraint fieldConstraint) {
@@ -222,10 +221,10 @@ public class FieldConstraint {
 				applicableTypes.add(type);
 			}
 		}
-		fieldConstraintOptions = new ArrayList<FieldConstraintOption>();
-		if(fieldConstraint.getOptions() != null){
-			for(FieldConstraintOption option:fieldConstraint.getOptions()){
-				fieldConstraintOptions.add(option);
+		fieldConstraintOptionList = new ArrayList<FieldConstraintOption>();
+		if(fieldConstraint.getFieldConstraintOptionList() != null){
+			for(FieldConstraintOption option:fieldConstraint.getFieldConstraintOptionList()){
+				fieldConstraintOptionList.add(option);
 			}
 		}
 	}
@@ -236,7 +235,7 @@ public class FieldConstraint {
 
 	public boolean appliesTo(FieldTemplate fieldTemplate){
 		for(FieldType type:applicableTypes){
-			if(fieldTemplate.getType() == type){
+			if(fieldTemplate.getFieldType() == type){
 				return true;
 			}
 		}

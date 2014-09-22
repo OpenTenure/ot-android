@@ -35,7 +35,7 @@ public class TimeField extends FieldTemplate {
 
 	public TimeField(){
 		super();
-		type = FieldType.TIME;
+		fieldType = FieldType.TIME;
 		DateTimeFormatConstraint constraint = new DateTimeFormatConstraint();
 		constraint.setName("from_field_type");
 		constraint.setDisplayName("From field type");

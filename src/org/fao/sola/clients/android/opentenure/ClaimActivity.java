@@ -439,27 +439,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				SectionTemplate sectionTemplate = formTemplate.getSections()
-						.get(sectionPosition);
-				if (sectionTemplate == null) {
+				SectionTemplate sectionTemplate = formTemplate.getSectionTemplateList().get(sectionPosition);
+				if(sectionTemplate == null){
 					return null;
 				}
-				if (sectionTemplate.getMaxOccurrences() > 1) {
-					fragment = new SectionFragment(editedFormPayload
-							.getSections().get(sectionPosition),
-							sectionTemplate, mode);
-				} else {
-					if (editedFormPayload.getSections().get(sectionPosition)
-							.getElements().size() == 0) {
-						editedFormPayload
-								.getSections()
-								.get(sectionPosition)
-								.getElements()
-								.add(new SectionElementPayload(sectionTemplate));
+				if(sectionTemplate.getMaxOccurrences() > 1){
+					fragment = new SectionFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition), sectionTemplate, mode);
+				}else{
+					if(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().size()==0){
+						editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedFormPayload
-							.getSections().get(sectionPosition).getElements()
-							.get(0), sectionTemplate, mode);
+					fragment = new SectionElementFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().get(0), sectionTemplate, mode);
 				}
 			}
 			fragmentReferences.put(position, fragment);
@@ -472,25 +462,23 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				return NUMBER_OF_STATIC_SECTIONS + getNumberOfSections();
 
 		}
-
-		private int getNumberOfSections() {
-			if (editedFormPayload != null) {
-				return editedFormPayload.getSections().size();
-			} else if (formTemplate != null) {
-				return formTemplate.getSections().size();
-			} else {
+		
+		private int getNumberOfSections(){
+			if(editedFormPayload != null){
+				return editedFormPayload.getSectionPayloadList().size();
+			}else if(formTemplate != null){
+				return formTemplate.getSectionTemplateList().size();
+			}else{
 				return 0;
 			}
 		}
 
-		private String getSectionTitle(int position) {
-			if (editedFormPayload != null) {
-				return editedFormPayload.getSections().get(position)
-						.getDisplayName().toUpperCase(Locale.US);
-			} else if (formTemplate != null) {
-				return formTemplate.getSections().get(position)
-						.getDisplayName().toUpperCase(Locale.getDefault());
-			} else {
+		private String getSectionTitle(int position){
+			if(editedFormPayload != null){
+				return editedFormPayload.getSectionPayloadList().get(position).getDisplayName().toUpperCase(Locale.US);
+			}else if(formTemplate != null){
+				return formTemplate.getSectionTemplateList().get(position).getDisplayName().toUpperCase(Locale.getDefault());
+			}else{
 				return "";
 			}
 		}

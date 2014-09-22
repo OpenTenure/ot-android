@@ -45,7 +45,7 @@ public class OptionConstraint extends FieldConstraint {
 
 	public void addOption(FieldConstraintOption fieldConstraintOption) {
 		fieldConstraintOption.setFieldConstraint(this);
-		fieldConstraintOptions.add(fieldConstraintOption);
+		fieldConstraintOptionList.add(fieldConstraintOption);
 	}
 
 	public OptionConstraint() {
@@ -67,19 +67,19 @@ public class OptionConstraint extends FieldConstraint {
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.INTEGER);
 		addApplicableType(FieldType.DECIMAL);
-		setOptions(fieldConstraintOptions);
+		setFieldConstraintOptionList(fieldConstraintOptions);
 	}
 
 	@Override
 	public boolean check(FieldPayload fieldPayload) {
 		displayErrorMsg = null;
-		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptions){
+		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptionList){
 			if(fieldConstraintOption.getName().equalsIgnoreCase(fieldPayload.getStringPayload())){
 				return true;
 			}
 		}
 		List<String> optionValues = new ArrayList<String>();
-		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptions){
+		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptionList){
 			optionValues.add(fieldConstraintOption.getName());
 		}
 		displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), Arrays.toString(optionValues.toArray()));

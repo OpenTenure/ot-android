@@ -43,19 +43,18 @@ public class FormPayload {
 	@Override
 	public String toString() {
 		return "FormPayload ["
-				+ "sections=" + Arrays.toString(sections.toArray())
+				+ "sectionPayloadList=" + Arrays.toString(sectionPayloadList.toArray())
 				+ ", claimId=" + claimId
 				+ ", id=" + id
 				+ "]";
 	}
 
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
 	private FormTemplate template;
 	private String claimId;
 	private String formTemplateName;
-	private List<SectionPayload> sections;
+	private List<SectionPayload> sectionPayloadList;
 	
 	public String getId() {
 		return id;
@@ -84,25 +83,25 @@ public class FormPayload {
 
 	public FormPayload(String claimId){
 		this.claimId = claimId;
-		this.sections = new ArrayList<SectionPayload>();
+		this.sectionPayloadList = new ArrayList<SectionPayload>();
 	}
 
 	public FormPayload(FormTemplate template, String claimId){
 		this.claimId = claimId;
 		this.formTemplateName = template.getName();
 		this.template = template;
-		this.sections = new ArrayList<SectionPayload>();
-		for(SectionTemplate sectionTemplate:template.getSections()){
-			this.sections.add(new SectionPayload(sectionTemplate));
+		this.sectionPayloadList = new ArrayList<SectionPayload>();
+		for(SectionTemplate sectionTemplate:template.getSectionTemplateList()){
+			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
 		}
 	}
 
 	public FormPayload(FormTemplate template){
 		this.formTemplateName = template.getName();
 		this.template = template;
-		this.sections = new ArrayList<SectionPayload>();
-		for(SectionTemplate sectionTemplate:template.getSections()){
-			this.sections.add(new SectionPayload(sectionTemplate));
+		this.sectionPayloadList = new ArrayList<SectionPayload>();
+		for(SectionTemplate sectionTemplate:template.getSectionTemplateList()){
+			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
 		}
 	}
 
@@ -114,18 +113,18 @@ public class FormPayload {
 		this.claimId = claimId;
 	}
 
-	public List<SectionPayload> getSections() {
-		return sections;
+	public List<SectionPayload> getSectionPayloadList() {
+		return sectionPayloadList;
 	}
 
-	public void setSections(List<SectionPayload> pages) {
-		this.sections = pages;
+	public void setSectionPayloadList(List<SectionPayload> sectionPayloadList) {
+		this.sectionPayloadList = sectionPayloadList;
 	}
 
 	public FormPayload(){
 		this.id = UUID.randomUUID().toString();
 		this.template = new FormTemplate();
-		this.sections = new ArrayList<SectionPayload>();
+		this.sectionPayloadList = new ArrayList<SectionPayload>();
 	}
 	
 	public FormPayload(FormPayload form){
@@ -133,14 +132,14 @@ public class FormPayload {
 		this.claimId = form.getClaimId();
 		this.template = form.getTemplate();
 		this.template = new FormTemplate();
-		this.sections = new ArrayList<SectionPayload>();
-		for(SectionPayload sectionTemplate:form.getSections()){
-			this.sections.add(new SectionPayload(sectionTemplate));
+		this.sectionPayloadList = new ArrayList<SectionPayload>();
+		for(SectionPayload sectionTemplate:form.getSectionPayloadList()){
+			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
 		}
 	}
 	
 	public void addSection(SectionPayload sectionPayload){
-		sections.add(sectionPayload);
+		sectionPayloadList.add(sectionPayload);
 	}
 	
 	public String toJson() {

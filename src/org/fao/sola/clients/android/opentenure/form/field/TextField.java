@@ -34,6 +34,6 @@ public class TextField extends FieldTemplate {
 	
 	public TextField(){
 		super();
-		type = FieldType.TEXT;
+		fieldType = FieldType.TEXT;
 	}
 }

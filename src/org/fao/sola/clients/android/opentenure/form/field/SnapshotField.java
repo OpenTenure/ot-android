@@ -34,7 +34,7 @@ public class SnapshotField extends FieldTemplate {
 	
 	public SnapshotField(){
 		super();
-		type = FieldType.SNAPSHOT;
+		fieldType = FieldType.SNAPSHOT;
 	}
 
 }
