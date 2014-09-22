@@ -27,7 +27,9 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
 import java.util.List;
+
 
 
 
@@ -88,6 +90,8 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 			vh.id = (TextView) convertView.findViewById(R.id.person_id);
 			vh.removeIcon = (ImageView) convertView
 					.findViewById(R.id.remove_person);
+			vh.picture = (ImageView) convertView
+					.findViewById(R.id.person_picture);
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
@@ -107,6 +111,11 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 				
 				
 			}});
+		
+		
+		
+		File file = Person.getPersonPictureFile(person.getPersonId());
+		vh.picture.setImageBitmap(Person.getPersonPicture(context,file , 128));
 		
 		if (!claim.getStatus().equals(ClaimStatus._CREATED)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)

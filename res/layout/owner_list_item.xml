@@ -17,18 +17,20 @@
         <TextView
             android:id="@+id/person_id"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+	        android:layout_weight="1"
+            android:background="@drawable/item_color"
             android:gravity="left|center"
-            android:text="@string/title_item"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:text="@string/title_item" />
 
         <TextView
             android:id="@+id/person_slogan"
             android:layout_width="match_parent"
             android:layout_height="0dp"
 	        android:layout_weight="3"
+            android:background="@drawable/item_color"
             android:gravity="left|center"
-            android:textColor="@android:color/black"
             android:text="@string/title_item" />
     </LinearLayout>
 
@@ -36,7 +38,7 @@
         android:id="@+id/person_picture"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1"        
         android:contentDescription="@string/person_picture"
         android:src="@drawable/ic_contact_picture" />
     
@@ -44,7 +46,8 @@
             android:id="@+id/remove_person"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1"       
+            android:layout_gravity="center_vertical"     
             android:contentDescription="@string/action_remove_additional_info"
             android:src="@android:drawable/ic_delete" />
 

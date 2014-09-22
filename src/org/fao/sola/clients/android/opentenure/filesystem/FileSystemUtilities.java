@@ -314,6 +314,38 @@ public class FileSystemUtilities {
 
 		return dest;
 	}
+	
+	public static File copyFileInClaimantFolder(String personId, File source) {
+
+		File dest = null;
+
+		try {
+			dest = new File(getClaimantFolder(personId), personId+".jpg");
+			dest.createNewFile();
+
+			Log.d("FileSystemUtilities", dest.getAbsolutePath());
+			byte[] buffer = new byte[1024];
+
+			FileInputStream reader = new FileInputStream(source);
+			FileOutputStream writer = new FileOutputStream(dest);
+
+			BufferedInputStream br = new BufferedInputStream(reader);
+
+			while ((br.read(buffer)) != -1) {
+				writer.write(buffer);
+			}
+
+			reader.close();
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return dest;
+	}
 
 	public static String getJsonClaim(String claimId) {
 		try {

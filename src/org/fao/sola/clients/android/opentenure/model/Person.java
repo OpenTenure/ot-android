@@ -277,9 +277,9 @@ public class Person {
 					.prepareStatement("INSERT INTO PERSON(PERSON_ID, FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, person.getPersonId());
 			statement.setString(2, person.getFirstName());
-			if(person.getLastName() != null)
+			if (person.getLastName() != null)
 				statement.setString(3, person.getLastName());
-			else 
+			else
 				statement.setString(3, "");
 			statement.setDate(4, person.getDateOfBirth());
 			statement.setString(5, person.getPlaceOfBirth());
@@ -730,25 +730,24 @@ public class Person {
 	public void setPersonType(String personType) {
 		this.personType = personType;
 	}
-	
-	public Person copy(){
-		
-	Person copy = new Person();
-	
-	copy.setContactPhoneNumber(this.contactPhoneNumber);
-	copy.setDateOfBirth(this.dateOfBirth);
-	copy.setEmailAddress(this.emailAddress);
-	copy.setGender(this.gender);
-	copy.setIdNumber(this.idNumber);
-	copy.setIdType(this.idType);
-	copy.setLastName(this.lastName);
-	copy.setMobilePhoneNumber(this.mobilePhoneNumber);
-	copy.setPersonType(this.personType);
-	copy.setPlaceOfBirth(this.placeOfBirth);
-	copy.setPostalAddress(this.postalAddress);
-	copy.setFirstName(this.firstName);
-		
-		
+
+	public Person copy() {
+
+		Person copy = new Person();
+
+		copy.setContactPhoneNumber(this.contactPhoneNumber);
+		copy.setDateOfBirth(this.dateOfBirth);
+		copy.setEmailAddress(this.emailAddress);
+		copy.setGender(this.gender);
+		copy.setIdNumber(this.idNumber);
+		copy.setIdType(this.idType);
+		copy.setLastName(this.lastName);
+		copy.setMobilePhoneNumber(this.mobilePhoneNumber);
+		copy.setPersonType(this.personType);
+		copy.setPlaceOfBirth(this.placeOfBirth);
+		copy.setPostalAddress(this.postalAddress);
+		copy.setFirstName(this.firstName);
+
 		return copy;
 	}
 
