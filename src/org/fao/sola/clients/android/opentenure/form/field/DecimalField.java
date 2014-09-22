@@ -34,6 +34,6 @@ public class DecimalField extends FieldTemplate {
 	
 	public DecimalField(){
 		super();
-		type = FieldType.DECIMAL;
+		fieldType = FieldType.DECIMAL;
 	}
 }

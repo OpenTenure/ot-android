@@ -36,7 +36,7 @@ public class IntegerField extends FieldTemplate {
 	
 	public IntegerField(){
 		super();
-		type = FieldType.INTEGER;
+		fieldType = FieldType.INTEGER;
 		FieldConstraint fieldConstraint = new IntegerConstraint();
 		fieldConstraint.setName("from_field_type");
 		fieldConstraint.setDisplayName("From field type");

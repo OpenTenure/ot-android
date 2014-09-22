@@ -34,6 +34,6 @@ public class BoolField extends FieldTemplate {
 	
 	public BoolField(){
 		super();
-		type = FieldType.BOOL;
+		fieldType = FieldType.BOOL;
 	}
 }

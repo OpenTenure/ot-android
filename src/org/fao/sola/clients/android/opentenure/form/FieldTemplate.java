@@ -51,15 +51,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FieldTemplate {
 	
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
 	private SectionTemplate section;
 	protected String name;
 	protected String displayName;
 	protected String hint;
-	protected FieldType type;
-	protected List<FieldConstraint> constraints;
+	protected FieldType fieldType;
+	protected List<FieldConstraint> fieldConstraintList;
 	
 	public String getId() {
 		return id;
@@ -101,20 +100,20 @@ public class FieldTemplate {
 		this.hint = hint;
 	}
 
-	public FieldType getType() {
-		return type;
+	public FieldType getFieldType() {
+		return fieldType;
 	}
 
-	public void setType(FieldType type) {
-		this.type = type;
+	public void setFieldType(FieldType fieldType) {
+		this.fieldType = fieldType;
 	}
 
-	public List<FieldConstraint> getConstraints() {
-		return constraints;
+	public List<FieldConstraint> getFieldConstraintList() {
+		return fieldConstraintList;
 	}
 	
-	public void setConstraints(List<FieldConstraint> fieldConconstraintsstraints) {
-		this.constraints = fieldConconstraintsstraints;
+	public void setFieldConstraintList(List<FieldConstraint> fieldConstraintList) {
+		this.fieldConstraintList = fieldConstraintList;
 	}
 
 	@Override
@@ -122,15 +121,15 @@ public class FieldTemplate {
 		return "FieldTemplate ["
 				+ "id=" + id
 				+ ", name=" + name
-				+ ", type=" + type
+				+ ", fieldType=" + fieldType
 				+ ", hint=" + hint
 				+ ", displayName=" + displayName
-				+ ", constraints=" + Arrays.toString(constraints.toArray()) + "]";
+				+ ", fieldConstraintList=" + Arrays.toString(fieldConstraintList.toArray()) + "]";
 	}
 	
 	public FieldTemplate(){
 		this.id = UUID.randomUUID().toString();
-		this.constraints = new ArrayList<FieldConstraint>();
+		this.fieldConstraintList = new ArrayList<FieldConstraint>();
 	}
 
 	public FieldTemplate(FieldTemplate fieldTemplate){
@@ -145,29 +144,29 @@ public class FieldTemplate {
 		if(fieldTemplate.getHint() != null){
 			this.hint = new String(fieldTemplate.getHint());
 		}
-		this.type = fieldTemplate.getType();
-		this.constraints = new ArrayList<FieldConstraint>();
-		if(fieldTemplate.getConstraints() != null){
-			for(FieldConstraint con:fieldTemplate.getConstraints()){
+		this.fieldType = fieldTemplate.getFieldType();
+		this.fieldConstraintList = new ArrayList<FieldConstraint>();
+		if(fieldTemplate.getFieldConstraintList() != null){
+			for(FieldConstraint con:fieldTemplate.getFieldConstraintList()){
 				// Can't copy a constraint since it is an abstract class
 				if(con instanceof DateTimeFormatConstraint){
-					this.constraints.add(new DateTimeFormatConstraint((DateTimeFormatConstraint)con));
+					this.fieldConstraintList.add(new DateTimeFormatConstraint((DateTimeFormatConstraint)con));
 				}else if(con instanceof IntegerConstraint){
-					this.constraints.add(new IntegerConstraint((IntegerConstraint)con));
+					this.fieldConstraintList.add(new IntegerConstraint((IntegerConstraint)con));
 				}else if(con instanceof LengthConstraint){
-					this.constraints.add(new LengthConstraint((LengthConstraint)con));
+					this.fieldConstraintList.add(new LengthConstraint((LengthConstraint)con));
 				}else if(con instanceof NotNullConstraint){
-					this.constraints.add(new NotNullConstraint((NotNullConstraint)con));
+					this.fieldConstraintList.add(new NotNullConstraint((NotNullConstraint)con));
 				}else if(con instanceof OptionConstraint){
-					this.constraints.add(new OptionConstraint((OptionConstraint)con));
+					this.fieldConstraintList.add(new OptionConstraint((OptionConstraint)con));
 				}else if(con instanceof IntegerRangeConstraint){
-					this.constraints.add(new IntegerRangeConstraint((IntegerRangeConstraint)con));
+					this.fieldConstraintList.add(new IntegerRangeConstraint((IntegerRangeConstraint)con));
 				}else if(con instanceof DoubleRangeConstraint){
-					this.constraints.add(new DoubleRangeConstraint((DoubleRangeConstraint)con));
+					this.fieldConstraintList.add(new DoubleRangeConstraint((DoubleRangeConstraint)con));
 				}else if(con instanceof RegexpFormatConstraint){
-					this.constraints.add(new RegexpFormatConstraint((RegexpFormatConstraint)con));
+					this.fieldConstraintList.add(new RegexpFormatConstraint((RegexpFormatConstraint)con));
 				}else{
-					this.constraints.add(con);
+					this.fieldConstraintList.add(con);
 				}
 		}
 		}
@@ -181,19 +180,19 @@ public class FieldTemplate {
 		if(field.getDisplayName() != null){
 			this.displayName = new String(field.getDisplayName());
 		}
-		this.type = field.getType();
+		this.fieldType = field.getFieldType();
 	}
 
 	public void addConstraint(FieldConstraint fieldConstraint) throws Exception {
 		if(fieldConstraint.appliesTo(this)){
-			constraints.add(fieldConstraint);
+			fieldConstraintList.add(fieldConstraint);
 		}else{
 			throw new FormException("Constraint " + fieldConstraint.toString() + " does not apply to field " + this.toString());
 		}
 	}
 
 	public FieldConstraint getFailedConstraint(FieldPayload payload) {
-		for(FieldConstraint fieldConstraint : constraints){
+		for(FieldConstraint fieldConstraint : fieldConstraintList){
 			if(!fieldConstraint.check(payload)){
 				return fieldConstraint;
 			}

@@ -86,7 +86,7 @@ public class SectionElementFragment extends Fragment {
 		
 		LinearLayout ll = (LinearLayout) rootView;
 		int i = 0;
-		for(final FieldTemplate field:elementTemplate.getFields()){
+		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
 			// Add label
 			TextView label = new TextView(getActivity());
 			label.setLayoutParams(new LayoutParams(
@@ -95,30 +95,30 @@ public class SectionElementFragment extends Fragment {
 			label.setText(Html.fromHtml(field.getDisplayName()));
 			ll.addView(label);
 			// Add input field
-			switch(field.getType()){
+			switch(field.getFieldType()){
 			case DATE:
 				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), field, elementPayload.
-						getFields().get(i), mode));
+						getFieldPayloadList().get(i), mode));
 				break;
 			case TIME:
 				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), field, elementPayload.
-						getFields().get(i), mode));
+						getFieldPayloadList().get(i), mode));
 				break;
 			case SNAPSHOT:
 			case DOCUMENT:
 			case GEOMETRY:
 			case TEXT:
 				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), field, elementPayload.
-						getFields().get(i), mode));
+						getFieldPayloadList().get(i), mode));
 				break;
 			case DECIMAL:
 			case INTEGER:
 				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, elementPayload.
-						getFields().get(i), mode));
+						getFieldPayloadList().get(i), mode));
 				break;
 			case BOOL:
 				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, elementPayload.
-						getFields().get(i), mode));
+						getFieldPayloadList().get(i), mode));
 				break;
 			default:
 				break;

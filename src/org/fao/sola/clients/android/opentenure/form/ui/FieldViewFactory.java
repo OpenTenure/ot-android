@@ -125,10 +125,10 @@ public class FieldViewFactory {
 
 	public static View getViewForTextField(final Activity activity,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
-		for (FieldConstraint constraint : field.getConstraints()) {
+		for (FieldConstraint constraint : field.getFieldConstraintList()) {
 			if (constraint instanceof OptionConstraint) {
 				return getSpinner(activity,
-						((OptionConstraint) constraint).getOptions(), field,
+						((OptionConstraint) constraint).getFieldConstraintOptionList(), field,
 						payload, mode);
 			}
 		}
@@ -276,7 +276,7 @@ public class FieldViewFactory {
 	public static View getViewForDateField(final Activity activity,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
-		for (FieldConstraint constraint : field.getConstraints()) {
+		for (FieldConstraint constraint : field.getFieldConstraintList()) {
 			if (constraint instanceof DateTimeFormatConstraint
 					&& constraint.getFormat() != null) {
 				tmpFormat = constraint.getFormat();
@@ -369,7 +369,7 @@ public class FieldViewFactory {
 	public static View getViewForTimeField(final Activity activity,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
-		for (FieldConstraint constraint : field.getConstraints()) {
+		for (FieldConstraint constraint : field.getFieldConstraintList()) {
 			if (constraint instanceof DateTimeFormatConstraint
 					&& constraint.getFormat() != null) {
 				tmpFormat = constraint.getFormat();

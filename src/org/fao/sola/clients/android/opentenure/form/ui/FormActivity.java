@@ -193,17 +193,17 @@ public class FormActivity extends FragmentActivity {
 			
 			
 			
-			SectionTemplate sectionTemplate = formTemplate.getSections().get(position);
+			SectionTemplate sectionTemplate = formTemplate.getSectionTemplateList().get(position);
 			if(sectionTemplate == null){
 				return null;
 			}
 			if(sectionTemplate.getMaxOccurrences() > 1){
-				fragment = new SectionFragment(editedForm.getSections().get(position), sectionTemplate, mode);
+				fragment = new SectionFragment(editedForm.getSectionPayloadList().get(position), sectionTemplate, mode);
 			}else{
-				if(editedForm.getSections().get(position).getElements().size()==0){
-					editedForm.getSections().get(position).getElements().add(new SectionElementPayload(sectionTemplate));
+				if(editedForm.getSectionPayloadList().get(position).getSectionElementPayloadList().size()==0){
+					editedForm.getSectionPayloadList().get(position).getSectionElementPayloadList().add(new SectionElementPayload(sectionTemplate));
 				}
-				fragment = new SectionElementFragment(editedForm.getSections().get(position).getElements().get(0), sectionTemplate, mode);
+				fragment = new SectionElementFragment(editedForm.getSectionPayloadList().get(position).getSectionElementPayloadList().get(0), sectionTemplate, mode);
 			}
 			fragmentReferences.put(position, fragment);
 			return fragment;
@@ -212,7 +212,7 @@ public class FormActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			titles = new ArrayList<String>();
-			for(SectionTemplate section : formTemplate.getSections()){
+			for(SectionTemplate section : formTemplate.getSectionTemplateList()){
 				titles.add(section.getDisplayName());
 			}
 			return titles.size();

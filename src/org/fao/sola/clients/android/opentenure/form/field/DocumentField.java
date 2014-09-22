@@ -34,7 +34,7 @@ public class DocumentField extends FieldTemplate {
 	
 	public DocumentField(){
 		super();
-		type = FieldType.DOCUMENT;
+		fieldType = FieldType.DOCUMENT;
 	}
 
 }

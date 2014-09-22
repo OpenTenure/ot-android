@@ -42,7 +42,7 @@ public class FormTemplate {
 	@Override
 	public String toString() {
 		return "Form ["
-				+ "sections=" + Arrays.toString(sectionTemplates.toArray())
+				+ "sectionTemplateList=" + Arrays.toString(sectionTemplateList.toArray())
 				+ ", name=" + name
 				+ ", displayName=" + displayName
 				+ "]";
@@ -50,11 +50,11 @@ public class FormTemplate {
 
 	private String name;
 	private String displayName;
-	private List<SectionTemplate> sectionTemplates;
+	private List<SectionTemplate> sectionTemplateList;
 	
 	public FormTemplate(String name){
 		this.name = name;
-		this.sectionTemplates = new ArrayList<SectionTemplate>();
+		this.sectionTemplateList = new ArrayList<SectionTemplate>();
 	}
 
 	public String getName() {
@@ -73,43 +73,43 @@ public class FormTemplate {
 		this.displayName = displayName;
 	}
 
-	public List<SectionTemplate> getSections() {
-		return sectionTemplates;
+	public List<SectionTemplate> getSectionTemplateList() {
+		return sectionTemplateList;
 	}
 
-	public void setSections(List<SectionTemplate> pages) {
-		this.sectionTemplates = pages;
+	public void setSectionTemplateList(List<SectionTemplate> pages) {
+		this.sectionTemplateList = pages;
 	}
 
 	public FormTemplate(){
-		this.sectionTemplates = new ArrayList<SectionTemplate>();
+		this.sectionTemplateList = new ArrayList<SectionTemplate>();
 	}
 	
 	public FormTemplate(FormTemplate formTemplate){
 		this.name = formTemplate.getName();
 		this.displayName = formTemplate.getDisplayName();
-		this.sectionTemplates = new ArrayList<SectionTemplate>();
-		for(SectionTemplate sectionTemplate:formTemplate.getSections()){
-			this.sectionTemplates.add(new SectionTemplate(sectionTemplate));
+		this.sectionTemplateList = new ArrayList<SectionTemplate>();
+		for(SectionTemplate sectionTemplate:formTemplate.getSectionTemplateList()){
+			this.sectionTemplateList.add(new SectionTemplate(sectionTemplate));
 		}
 	}
 	
 	public FormTemplate(FormPayload formPayload){
 		this.name = formPayload.getFormTemplateName();
 		this.displayName = formPayload.getFormTemplateName();
-		this.sectionTemplates = new ArrayList<SectionTemplate>();
-		for(SectionPayload sectionPayload:formPayload.getSections()){
-			this.sectionTemplates.add(new SectionTemplate(sectionPayload));
+		this.sectionTemplateList = new ArrayList<SectionTemplate>();
+		for(SectionPayload sectionPayload:formPayload.getSectionPayloadList()){
+			this.sectionTemplateList.add(new SectionTemplate(sectionPayload));
 		}
 	}
 	
 	public void addSection(SectionTemplate sectionTemplate){
-		sectionTemplates.add(sectionTemplate);
+		sectionTemplateList.add(sectionTemplate);
 	}
 	
 	public FieldConstraint getFailedConstraint(FormPayload payload) {
-		Iterator<SectionPayload> iter = payload.getSections().iterator();
-		for(SectionTemplate pageTemplate:sectionTemplates){
+		Iterator<SectionPayload> iter = payload.getSectionPayloadList().iterator();
+		for(SectionTemplate pageTemplate:sectionTemplateList){
 			SectionPayload pagePayload = iter.next();
 			if(pageTemplate.getFailedConstraint(pagePayload) != null){
 				return pageTemplate.getFailedConstraint(pagePayload);

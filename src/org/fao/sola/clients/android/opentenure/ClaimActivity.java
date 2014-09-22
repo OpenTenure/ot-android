@@ -430,17 +430,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				SectionTemplate sectionTemplate = formTemplate.getSections().get(sectionPosition);
+				SectionTemplate sectionTemplate = formTemplate.getSectionTemplateList().get(sectionPosition);
 				if(sectionTemplate == null){
 					return null;
 				}
 				if(sectionTemplate.getMaxOccurrences() > 1){
-					fragment = new SectionFragment(editedFormPayload.getSections().get(sectionPosition), sectionTemplate, mode);
+					fragment = new SectionFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition), sectionTemplate, mode);
 				}else{
-					if(editedFormPayload.getSections().get(sectionPosition).getElements().size()==0){
-						editedFormPayload.getSections().get(sectionPosition).getElements().add(new SectionElementPayload(sectionTemplate));
+					if(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().size()==0){
+						editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedFormPayload.getSections().get(sectionPosition).getElements().get(0), sectionTemplate, mode);
+					fragment = new SectionElementFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().get(0), sectionTemplate, mode);
 				}
 			}
 			fragmentReferences.put(position, fragment);
@@ -454,9 +454,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		
 		private int getNumberOfSections(){
 			if(editedFormPayload != null){
-				return editedFormPayload.getSections().size();
+				return editedFormPayload.getSectionPayloadList().size();
 			}else if(formTemplate != null){
-				return formTemplate.getSections().size();
+				return formTemplate.getSectionTemplateList().size();
 			}else{
 				return 0;
 			}
@@ -464,9 +464,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		private String getSectionTitle(int position){
 			if(editedFormPayload != null){
-				return editedFormPayload.getSections().get(position).getDisplayName().toUpperCase(Locale.US);
+				return editedFormPayload.getSectionPayloadList().get(position).getDisplayName().toUpperCase(Locale.US);
 			}else if(formTemplate != null){
-				return formTemplate.getSections().get(position).getDisplayName().toUpperCase(Locale.getDefault());
+				return formTemplate.getSectionTemplateList().get(position).getDisplayName().toUpperCase(Locale.getDefault());
 			}else{
 				return "";
 			}

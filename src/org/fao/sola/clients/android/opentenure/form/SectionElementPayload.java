@@ -16,9 +16,8 @@ public class SectionElementPayload {
 	
 	@JsonIgnore
 	private SectionPayload section;
-	@JsonIgnore
 	private String id;
-	private List<FieldPayload> fields;
+	private List<FieldPayload> fieldPayloadList;
 
 	public String getId() {
 		return id;
@@ -30,22 +29,22 @@ public class SectionElementPayload {
 
 	public SectionElementPayload(){
 		this.id = UUID.randomUUID().toString();
-		this.fields = new ArrayList<FieldPayload>();
+		this.fieldPayloadList = new ArrayList<FieldPayload>();
 	}
 
 	public SectionElementPayload(SectionElementPayload se){
 		this.id = UUID.randomUUID().toString();
-		this.fields = new ArrayList<FieldPayload>();
-		for(FieldPayload fieldPayload:se.getFields()){
-			this.fields.add(new FieldPayload(fieldPayload));
+		this.fieldPayloadList = new ArrayList<FieldPayload>();
+		for(FieldPayload fieldPayload:se.getFieldPayloadList()){
+			this.fieldPayloadList.add(new FieldPayload(fieldPayload));
 		}
 	}
 
 	public SectionElementPayload(SectionTemplate st) {
 		this.id = UUID.randomUUID().toString();
-		this.fields = new ArrayList<FieldPayload>();
-		for(FieldTemplate ft:st.getFields()){
-			this.fields.add(new FieldPayload(ft));
+		this.fieldPayloadList = new ArrayList<FieldPayload>();
+		for(FieldTemplate ft:st.getFieldTemplateList()){
+			this.fieldPayloadList.add(new FieldPayload(ft));
 		}
 	}
 
@@ -53,20 +52,20 @@ public class SectionElementPayload {
 	public String toString() {
 		return "SectionElementPayload ["
 				+ "id=" + id
-				+ ", fields=" + Arrays.toString(fields.toArray())
+				+ ", fieldPayloadList=" + Arrays.toString(fieldPayloadList.toArray())
 				+ "]";
 	}
 
-	public List<FieldPayload> getFields() {
-		return fields;
+	public List<FieldPayload> getFieldPayloadList() {
+		return fieldPayloadList;
 	}
 
-	public void setFields(List<FieldPayload> fields) {
-		this.fields = fields;
+	public void setFieldPayloadList(List<FieldPayload> fieldPayloadList) {
+		this.fieldPayloadList = fieldPayloadList;
 	}
 
 	public void addField(FieldPayload field) {
-		fields.add(field);
+		fieldPayloadList.add(field);
 	}
 
 	public SectionPayload getSection() {

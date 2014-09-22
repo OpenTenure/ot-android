@@ -39,14 +39,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FieldPayload {
 	
-	@JsonIgnore
 	private String id;
 	@JsonIgnore
-	private SectionElementPayload sectionElement;
+	private SectionElementPayload sectionElementPayload;
 	protected String name;
 	protected String displayName;
-	protected FieldType type;
-	private FieldValueType valueType;
+	protected FieldType fieldType;
+	private FieldValueType fieldValueType;
 	private String stringPayload;
 	private BigDecimal bigDecimalPayload;
 	private Boolean booleanPayload;
@@ -59,12 +58,12 @@ public class FieldPayload {
 		this.id = id;
 	}
 
-	public SectionElementPayload getSectionElement() {
-		return sectionElement;
+	public SectionElementPayload getSectionElementPayload() {
+		return sectionElementPayload;
 	}
 
-	public void setSectionElement(SectionElementPayload sectionElement) {
-		this.sectionElement = sectionElement;
+	public void setSectionElementPayload(SectionElementPayload sectionElementPayload) {
+		this.sectionElementPayload = sectionElementPayload;
 	}
 
 	public String getName() {
@@ -83,19 +82,19 @@ public class FieldPayload {
 		this.displayName = displayName;
 	}
 	
-	public FieldType getType() {
-		return type;
+	public FieldType getFieldType() {
+		return fieldType;
 	}
 
-	public void setType(FieldType type) {
-		this.type = type;
+	public void setFieldType(FieldType type) {
+		this.fieldType = type;
 	}
 
-	public FieldValueType getValueType() {
-		return valueType;
+	public FieldValueType getFieldValueType() {
+		return fieldValueType;
 	}
-	public void setValueType(FieldValueType type) {
-		this.valueType = type;
+	public void setFieldValueType(FieldValueType fieldValueType) {
+		this.fieldValueType = fieldValueType;
 	}
 
 	public String getStringPayload() {
@@ -129,11 +128,11 @@ public class FieldPayload {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
-				+ ", type=" + type
+				+ ", fieldType=" + fieldType
 				+ ", stringPayload=" + stringPayload
 				+ ", bigDecimalPayload=" + bigDecimalPayload
 				+ ", booleanPayload=" + booleanPayload
-				+ ", valueType=" + valueType
+				+ ", fieldValueType=" + fieldValueType
 				+ "]";
 	}
 	
@@ -151,7 +150,7 @@ public class FieldPayload {
 			this.displayName = new String(field.getDisplayName());
 		}
 		
-		this.type = field.getType();
+		this.fieldType = field.getFieldType();
 		if(field.getStringPayload() != null){
 			this.stringPayload = new String(field.getStringPayload());
 		}
@@ -162,7 +161,7 @@ public class FieldPayload {
 			this.booleanPayload = Boolean.valueOf(field.getBooleanPayload());
 		}
 
-		this.valueType = field.getValueType();
+		this.fieldValueType = field.getFieldValueType();
 	}
 
 	public FieldPayload(FieldTemplate field){
@@ -173,36 +172,36 @@ public class FieldPayload {
 		if(field.getDisplayName() != null){
 			this.displayName = new String(field.getDisplayName());
 		}
-		switch(field.getType()){
+		switch(field.getFieldType()){
 		case BOOL:
-			this.valueType = FieldValueType.BOOL;
+			this.fieldValueType = FieldValueType.BOOL;
 			break;
 		case DATE:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		case TIME:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		case DECIMAL:
-			this.valueType = FieldValueType.NUMBER;
+			this.fieldValueType = FieldValueType.NUMBER;
 			break;
 		case DOCUMENT:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		case GEOMETRY:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		case INTEGER:
-			this.valueType = FieldValueType.NUMBER;
+			this.fieldValueType = FieldValueType.NUMBER;
 			break;
 		case SNAPSHOT:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		case TEXT:
-			this.valueType = FieldValueType.TEXT;
+			this.fieldValueType = FieldValueType.TEXT;
 			break;
 		}
-		this.type = field.getType();
+		this.fieldType = field.getFieldType();
 	}
 
 	public String toJson() {

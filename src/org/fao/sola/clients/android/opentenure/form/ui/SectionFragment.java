@@ -106,10 +106,10 @@ public class SectionFragment extends ListFragment {
 
 				if(position == SectionElementActivity.SECTION_ELEMENT_POSITION_NEW){
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
-					editedSection.getElements().add(newSectionElement);
+					editedSection.getSectionElementPayloadList().add(newSectionElement);
 				}else if(position != SectionElementActivity.SECTION_ELEMENT_POSITION_DISCARD){
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
-					editedSection.getElements().set(position, newSectionElement);
+					editedSection.getSectionElementPayloadList().set(position, newSectionElement);
 				}
 				update();
 				break;
@@ -133,12 +133,12 @@ public class SectionFragment extends ListFragment {
 
 			List<SectionElementListTO> ownersListTOs = new ArrayList<SectionElementListTO>();
 
-			for(SectionElementPayload sectionElement : editedSection.getElements()){
+			for(SectionElementPayload sectionElement : editedSection.getSectionElementPayloadList()){
 				
 				SectionElementListTO fglto = new SectionElementListTO();
 				fglto.setName(ownersListTOs.size() + "");
 				StringBuffer sb = new StringBuffer();
-				for(FieldPayload field:sectionElement.getFields()){
+				for(FieldPayload field:sectionElement.getFieldPayloadList()){
 					if(sb.length() != 0){
 						sb.append(",");
 					}
