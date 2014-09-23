@@ -1074,6 +1074,13 @@ public class ClaimDetailsFragment extends Fragment {
 
 				Person claimantCopy = claimant.copy();
 				claimantCopy.create();
+				
+			File personImg = new File(FileSystemUtilities.getClaimantFolder(claimant.getPersonId())
+							+ File.separator + claimant.getPersonId() + ".jpg");
+			
+			if(personImg != null)
+				FileSystemUtilities.copyFileInClaimantFolder(claimantCopy.getPersonId(),personImg )	;
+				
 
 				Owner owner = new Owner();
 				owner.setPersonId(claimantCopy.getPersonId());

@@ -132,6 +132,13 @@ public class ShareDetailsActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.share_details, menu);
+		
+		Claim claim = Claim.getClaim(claimId);
+		if (claim != null && !claim.isModifiable()) {
+			menu.removeItem(R.id.action_new);
+			menu.removeItem(R.id.action_save);
+		}
+		
 		return true;
 	}
 
