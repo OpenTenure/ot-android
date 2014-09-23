@@ -35,14 +35,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("DoubleRangeConstraint")
 public class DoubleRangeConstraint extends FieldConstraint {
 
 	public DoubleRangeConstraint() {
 		super();
-		type = FieldConstraintType.DOUBLE_RANGE;
+		fieldConstraintType = FieldConstraintType.DOUBLE_RANGE;
 		addApplicableType(FieldType.DECIMAL);
 		this.errorMsg = "Value {1} of {0} is not between {2} and {3}";
 	}
@@ -55,7 +52,7 @@ public class DoubleRangeConstraint extends FieldConstraint {
 
 	public DoubleRangeConstraint(BigDecimal minValue, BigDecimal maxValue) {
 		super();
-		type = FieldConstraintType.DOUBLE_RANGE;
+		fieldConstraintType = FieldConstraintType.DOUBLE_RANGE;
 		addApplicableType(FieldType.DECIMAL);
 		setMinValue(minValue);
 		setMaxValue(maxValue);
@@ -80,13 +77,17 @@ public class DoubleRangeConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		if ((minValue != null && fieldPayload != null
 				&& fieldPayload.getBigDecimalPayload() != null && fieldPayload.getBigDecimalPayload().compareTo(minValue) < 0)
 				|| (maxValue != null && fieldPayload != null
 						&& fieldPayload.getBigDecimalPayload() != null && fieldPayload.getBigDecimalPayload().compareTo(maxValue) > 0)) {
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getBigDecimalPayload(), minValue, maxValue);
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getBigDecimalPayload(), minValue, maxValue);
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getBigDecimalPayload(), minValue, maxValue);
+			}
 			return false;
 		}
 		return true;

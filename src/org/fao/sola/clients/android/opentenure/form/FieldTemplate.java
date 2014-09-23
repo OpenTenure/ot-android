@@ -44,16 +44,35 @@ import org.fao.sola.clients.android.opentenure.form.constraint.RegexpFormatConst
 import org.fao.sola.clients.android.opentenure.form.exception.FormException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME,
+include=JsonTypeInfo.As.PROPERTY,
+property="fieldType")
+
+@JsonSubTypes({
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.BoolField.class, name="BOOL"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DateField.class, name="DATE"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DecimalField.class, name="DECIMAL"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DocumentField.class, name="DOCUMENT"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.GeometryField.class, name="GEOMETRY"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.IntegerField.class, name="INTEGER"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.SnapshotField.class, name="SNAPSHOT"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.TextField.class, name="TEXT"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.TimeField.class, name="TIME")
+})
+
 public class FieldTemplate {
 	
 	private String id;
 	@JsonIgnore
-	private SectionTemplate section;
+	private SectionTemplate sectionTemplate;
+	private String sectionTemplateId;
 	protected String name;
 	protected String displayName;
 	protected String hint;
@@ -68,12 +87,20 @@ public class FieldTemplate {
 		this.id = id;
 	}
 
-	public SectionTemplate getSection() {
-		return section;
+	public String getSectionTemplateId() {
+		return sectionTemplateId;
 	}
 
-	public void setSection(SectionTemplate schema) {
-		this.section = schema;
+	public void setSectionTemplateId(String sectionTemplateId) {
+		this.sectionTemplateId = sectionTemplateId;
+	}
+
+	public SectionTemplate getSectionTemplate() {
+		return sectionTemplate;
+	}
+
+	public void setSectionTemplate(SectionTemplate sectionTemplate) {
+		this.sectionTemplate = sectionTemplate;
 	}
 
 	public String getName() {
@@ -191,9 +218,15 @@ public class FieldTemplate {
 		}
 	}
 
-	public FieldConstraint getFailedConstraint(FieldPayload payload) {
+	public FieldConstraint getFailedConstraint(String externalDisplayName, FieldPayload payload) {
 		for(FieldConstraint fieldConstraint : fieldConstraintList){
-			if(!fieldConstraint.check(payload)){
+			boolean check;
+			if(externalDisplayName != null){
+				check = fieldConstraint.check(externalDisplayName + "/" + displayName , payload);
+			}else{
+				check = fieldConstraint.check(externalDisplayName, payload);
+			}
+			if(!check){
 				return fieldConstraint;
 			}
 		}

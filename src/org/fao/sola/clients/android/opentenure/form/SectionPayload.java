@@ -43,7 +43,8 @@ public class SectionPayload {
 	
 	private String id;
 	@JsonIgnore
-	private FormPayload form;
+	private FormPayload formPayload;
+	private String formPayloadId;
 	private String name;
 	private String displayName;
 	private String elementName;
@@ -60,12 +61,20 @@ public class SectionPayload {
 		this.id = id;
 	}
 
-	public FormPayload getForm() {
-		return form;
+	public FormPayload getFormPayload() {
+		return formPayload;
 	}
 
-	public void setForm(FormPayload form) {
-		this.form = form;
+	public void setFormPayload(FormPayload formPayload) {
+		this.formPayload = formPayload;
+	}
+
+	public String getFormPayloadId() {
+		return formPayloadId;
+	}
+
+	public void setFormPayloadId(String formPayloadId) {
+		this.formPayloadId = formPayloadId;
 	}
 
 	public String getName() {

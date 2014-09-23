@@ -42,6 +42,7 @@ public class FieldPayload {
 	private String id;
 	@JsonIgnore
 	private SectionElementPayload sectionElementPayload;
+	private String sectionElementPayloadId;
 	protected String name;
 	protected String displayName;
 	protected FieldType fieldType;
@@ -64,6 +65,14 @@ public class FieldPayload {
 
 	public void setSectionElementPayload(SectionElementPayload sectionElementPayload) {
 		this.sectionElementPayload = sectionElementPayload;
+	}
+
+	public String getSectionElementPayloadId() {
+		return sectionElementPayloadId;
+	}
+
+	public void setSectionElementPayloadId(String sectionElementPayloadId) {
+		this.sectionElementPayloadId = sectionElementPayloadId;
 	}
 
 	public String getName() {

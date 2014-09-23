@@ -38,9 +38,6 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("OptionConstraint")
 public class OptionConstraint extends FieldConstraint {
 
 	public void addOption(FieldConstraintOption fieldConstraintOption) {
@@ -50,7 +47,7 @@ public class OptionConstraint extends FieldConstraint {
 
 	public OptionConstraint() {
 		super();
-		type = FieldConstraintType.OPTION;
+		fieldConstraintType = FieldConstraintType.OPTION;
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.INTEGER);
 		addApplicableType(FieldType.DECIMAL);
@@ -63,7 +60,7 @@ public class OptionConstraint extends FieldConstraint {
 
 	public OptionConstraint(List<FieldConstraintOption> fieldConstraintOptions) {
 		super();
-		type = FieldConstraintType.OPTION;
+		fieldConstraintType = FieldConstraintType.OPTION;
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.INTEGER);
 		addApplicableType(FieldType.DECIMAL);
@@ -71,7 +68,7 @@ public class OptionConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptionList){
 			if(fieldConstraintOption.getName().equalsIgnoreCase(fieldPayload.getStringPayload())){
@@ -82,7 +79,11 @@ public class OptionConstraint extends FieldConstraint {
 		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptionList){
 			optionValues.add(fieldConstraintOption.getName());
 		}
-		displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), Arrays.toString(optionValues.toArray()));
+		if(externalDisplayName != null){
+			displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getStringPayload(), Arrays.toString(optionValues.toArray()));
+		}else{
+			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), Arrays.toString(optionValues.toArray()));
+		}
 		return false;
 	}
 }

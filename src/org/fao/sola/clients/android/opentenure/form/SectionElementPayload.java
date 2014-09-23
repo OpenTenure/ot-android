@@ -15,7 +15,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SectionElementPayload {
 	
 	@JsonIgnore
-	private SectionPayload section;
+	private SectionPayload sectionPayload;
+	private String sectionPayloadId;
 	private String id;
 	private List<FieldPayload> fieldPayloadList;
 
@@ -25,6 +26,14 @@ public class SectionElementPayload {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getSectionPayloadId() {
+		return sectionPayloadId;
+	}
+
+	public void setSectionPayloadId(String sectionPayloadId) {
+		this.sectionPayloadId = sectionPayloadId;
 	}
 
 	public SectionElementPayload(){
@@ -68,12 +77,12 @@ public class SectionElementPayload {
 		fieldPayloadList.add(field);
 	}
 
-	public SectionPayload getSection() {
-		return section;
+	public SectionPayload getSectionPayload() {
+		return sectionPayload;
 	}
 
-	public void setSection(SectionPayload sectionPayload) {
-		this.section = sectionPayload;
+	public void setSectionPayload(SectionPayload sectionPayload) {
+		this.sectionPayload = sectionPayload;
 	}
 	
 	public String toJson() {
