@@ -13,6 +13,7 @@ public class FieldConstraintOption {
 	private String id;
 	@JsonIgnore
 	private FieldConstraint fieldConstraint;
+	private String fieldConstraintId;
 	protected String name;
 	protected String displayName;
 
@@ -31,6 +32,15 @@ public class FieldConstraintOption {
 	public void setFieldConstraint(FieldConstraint fieldConstraint) {
 		this.fieldConstraint = fieldConstraint;
 	}
+
+	public String getFieldConstraintId() {
+		return fieldConstraintId;
+	}
+
+	public void setFieldConstraintId(String fieldConstraintId) {
+		this.fieldConstraintId = fieldConstraintId;
+	}
+
 	public String getName() {
 		return name;
 	}

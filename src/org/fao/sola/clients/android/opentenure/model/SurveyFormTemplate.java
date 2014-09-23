@@ -42,7 +42,7 @@ import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 
 public class SurveyFormTemplate {
 	
-	private static final String default_template = "template";
+	private static final String default_template_key = "dynamic_survey_form_template";
 
 	public String getSurveyFormTemplateId() {
 		return surveyFormTemplateId;
@@ -78,7 +78,7 @@ public class SurveyFormTemplate {
 		this.surveyFormTemplateId = UUID.randomUUID().toString();
 	}
 
-	public static int createSurveyFormTemplate(SurveyFormTemplate cfg) {
+	private static int createSurveyFormTemplate(SurveyFormTemplate sft) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -89,9 +89,9 @@ public class SurveyFormTemplate {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO SURVEY_FORM_TEMPLATE(SURVEY_FORM_TEMPLATE_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, cfg.getSurveyFormTemplateId());
-			statement.setString(2, cfg.getName());
-			statement.setCharacterStream(3, new StringReader(cfg.getValue()));
+			statement.setString(1, sft.getSurveyFormTemplateId());
+			statement.setString(2, sft.getName());
+			statement.setCharacterStream(3, new StringReader(sft.getValue()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public int create() {
+	private int create() {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -150,7 +150,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public static int deleteSurveyFormTemplate(SurveyFormTemplate cfg) {
+	private static int deleteSurveyFormTemplate(SurveyFormTemplate sft) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -161,7 +161,7 @@ public class SurveyFormTemplate {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE SURVEY_FORM_TEMPLATE WHERE SURVEY_FORM_TEMPLATE_ID=?");
-			statement.setString(1, cfg.getSurveyFormTemplateId());
+			statement.setString(1, sft.getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -185,7 +185,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public int delete() {
+	private int delete() {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -218,7 +218,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public static int updateSurveyFormTemplate(SurveyFormTemplate cfg) {
+	private static int updateSurveyFormTemplate(SurveyFormTemplate sft) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -229,9 +229,9 @@ public class SurveyFormTemplate {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE SURVEY_FORM_TEMPLATE SET NAME=?, VALUE=? WHERE SURVEY_FORM_TEMPLATE_ID=?");
-			statement.setString(1, cfg.getName());
-			statement.setCharacterStream(2, new StringReader(cfg.getValue()));
-			statement.setString(3, cfg.getSurveyFormTemplateId());
+			statement.setString(1, sft.getName());
+			statement.setCharacterStream(2, new StringReader(sft.getValue()));
+			statement.setString(3, sft.getSurveyFormTemplateId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -254,7 +254,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public int update() {
+	private int update() {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -289,7 +289,7 @@ public class SurveyFormTemplate {
 		return result;
 	}
 
-	public static String getSurveyFormTemplateValue(String name) {
+	private static String getSurveyFormTemplateValue(String name) {
 		String val = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -337,16 +337,24 @@ public class SurveyFormTemplate {
 	}
 	
 	public static FormTemplate getDefaultSurveyFormTemplate() {
-		SurveyFormTemplate surveyFormTemplate = getSurveyFormTemplateByName(default_template);
-		if(surveyFormTemplate != null){
-			return surveyFormTemplate.getFormTemplate();
+
+		Configuration cfg = Configuration.getConfigurationByName(default_template_key);
+
+		if(cfg != null){
+			String templateName = cfg.getValue();
+			SurveyFormTemplate surveyFormTemplate = getSurveyFormTemplateByName(templateName);
+			if(surveyFormTemplate != null){
+				return surveyFormTemplate.getFormTemplate();
+			}else{
+				return new FormTemplate();
+			}
 		}else{
 			return new FormTemplate();
 		}
 	}
 
 
-	public static SurveyFormTemplate getSurveyFormTemplateByName(String name) {
+	private static SurveyFormTemplate getSurveyFormTemplateByName(String name) {
 		SurveyFormTemplate cfg = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -396,7 +404,7 @@ public class SurveyFormTemplate {
 		return cfg;
 	}
 
-	public static Map<String, String> getSurveyFormTemplateValues() {
+	private static Map<String, String> getSurveyFormTemplateValues() {
 		Map<String, String> cfg = new HashMap<String, String>();
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -443,7 +451,7 @@ public class SurveyFormTemplate {
 		return cfg;
 	}
 
-	public static SurveyFormTemplate getSurveyFormTemplate(String surveyFormTemplateId) {
+	private static SurveyFormTemplate getSurveyFormTemplate(String surveyFormTemplateId) {
 		SurveyFormTemplate cfg = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -493,11 +501,11 @@ public class SurveyFormTemplate {
 		return cfg;
 	}
 	
-	public FormTemplate getFormTemplate(){
+	private FormTemplate getFormTemplate(){
 		return FormTemplate.fromJson(value);
 	}
 
-	public static int saveFormTemplate(FormTemplate surveyFormTemplate){
+	private static int saveFormTemplate(FormTemplate surveyFormTemplate){
 		String name = null;
 		SurveyFormTemplate sft =  null;
 		if(surveyFormTemplate != null){
@@ -514,6 +522,24 @@ public class SurveyFormTemplate {
 			}
 		}
 		return 0;
+	}
+
+	public static int saveDefaultFormTemplate(FormTemplate surveyFormTemplate){
+
+		int result = saveFormTemplate(surveyFormTemplate); 
+		if(result != 0){
+			Configuration cfg = Configuration.getConfigurationByName(default_template_key);
+			if(cfg != null){
+				cfg.setValue(surveyFormTemplate.getName());
+				return cfg.update();
+			}else{
+				cfg = new Configuration();
+				cfg.setName(default_template_key);
+				cfg.setValue(surveyFormTemplate.getName());
+				return cfg.create();
+			}
+		}
+		return result;
 	}
 
 	public static FormTemplate getFormTemplate(String surveyFormTemplateId){

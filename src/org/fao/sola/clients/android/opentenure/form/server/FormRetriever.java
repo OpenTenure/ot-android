@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public class FormRetriever extends AsyncTask<Void, Void, Void> {
 
@@ -57,6 +58,8 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 		InputStream is = null;
 
 		try {
+			Log.d(this.getClass().getName()
+					, "Getting dynamic survey form from: " + formUrl);
 
 			URL url = new URL(formUrl);
 			HttpURLConnection c = (HttpURLConnection) url
@@ -64,8 +67,10 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 			c.connect();
 			is = c.getInputStream();
 			String body = getBody(is);
+			Log.d(this.getClass().getName()
+					, "Got dynamic survey form: " + body);
 			FormTemplate ft = FormTemplate.fromJson(body);
-			SurveyFormTemplate.saveFormTemplate(ft);
+			SurveyFormTemplate.saveDefaultFormTemplate(ft);
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();

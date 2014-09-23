@@ -34,14 +34,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("IntegerConstraint")
 public class IntegerConstraint extends FieldConstraint {
 	
 	public IntegerConstraint(){
 		super();
-		type=FieldConstraintType.INTEGER;
+		fieldConstraintType=FieldConstraintType.INTEGER;
 		addApplicableType(FieldType.INTEGER);
 		this.errorMsg = "Value {1} of {0} is not integer";
 	}
@@ -51,7 +48,7 @@ public class IntegerConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		try{
 			if(fieldPayload.getBigDecimalPayload()!=null){
@@ -59,7 +56,11 @@ public class IntegerConstraint extends FieldConstraint {
 				return true;
 			}
 		}catch(ArithmeticException ae){
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getBigDecimalPayload());
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getBigDecimalPayload());
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getBigDecimalPayload());
+			}
 			return false;
 		}
 		return true;

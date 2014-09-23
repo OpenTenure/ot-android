@@ -44,23 +44,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME,
 include=JsonTypeInfo.As.PROPERTY,
-property="classType")
+property="fieldConstraintType")
 
 @JsonSubTypes({
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.DateTimeFormatConstraint.class, name="DateTimeFormatConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.DoubleRangeConstraint.class, name="DoubleRangeConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.IntegerRangeConstraint.class, name="IntegerRangeConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.IntegerConstraint.class, name="IntegerConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.LengthConstraint.class, name="LengthConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.NotNullConstraint.class, name="NotNullConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint.class, name="OptionConstraint"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.RegexpFormatConstraint.class, name="RegexpFormatConstraint")
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.DateTimeFormatConstraint.class, name="DATETIME"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.DoubleRangeConstraint.class, name="DOUBLE_RANGE"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.IntegerRangeConstraint.class, name="INTEGER_RANGE"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.IntegerConstraint.class, name="INTEGER"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.LengthConstraint.class, name="LENGTH"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.NotNullConstraint.class, name="NOT_NULL"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint.class, name="OPTION"),
+    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.constraint.RegexpFormatConstraint.class, name="REGEXP")
 })
 
 public class FieldConstraint {
 	protected String id;
 	@JsonIgnore
 	protected FieldTemplate fieldTemplate;
+	protected String fieldTemplateId;
 	protected String name;
 	protected String displayName;
 	protected String errorMsg;
@@ -69,11 +70,12 @@ public class FieldConstraint {
 	protected String format;
 	protected BigDecimal minValue;
 	protected BigDecimal maxValue;
-	protected FieldConstraintType type;
+	protected FieldConstraintType fieldConstraintType;
 	@JsonIgnore
 	protected List<FieldType> applicableTypes;
 	protected List<FieldConstraintOption> fieldConstraintOptionList;
-	protected boolean check(FieldPayload fieldPayload){
+
+	protected boolean check(String externalDisplayName, FieldPayload fieldPayload){
 		displayErrorMsg = "You can't check a generic constraint";
 		return false;
 	}
@@ -86,6 +88,15 @@ public class FieldConstraint {
 
 	public void setFieldTemplate(FieldTemplate fieldTemplate) {
 		this.fieldTemplate = fieldTemplate;
+	}
+
+	public String getFieldTemplateId() {
+		return fieldTemplateId;
+	}
+
+
+	public void setFieldTemplateId(String fieldTemplateId) {
+		this.fieldTemplateId = fieldTemplateId;
 	}
 
 	public List<FieldConstraintOption> getFieldConstraintOptionList() {
@@ -153,12 +164,12 @@ public class FieldConstraint {
 		this.displayName = displayName;
 	}
 
-	public FieldConstraintType getType() {
-		return type;
+	public FieldConstraintType getFieldConstraintType() {
+		return fieldConstraintType;
 	}
 
-	public void setType(FieldConstraintType type) {
-		this.type = type;
+	public void setFieldConstraintType(FieldConstraintType fieldConstraintType) {
+		this.fieldConstraintType = fieldConstraintType;
 	}
 
 	public void setErrorMsg(String errorMsg) {
@@ -190,7 +201,7 @@ public class FieldConstraint {
 				+ ", minValue=" + minValue
 				+ ", maxValue=" + maxValue
 				+ ", fieldConstraintOptionList=" + Arrays.toString(fieldConstraintOptionList.toArray())
-				+ ", type=" + type + "]";
+				+ ", type=" + fieldConstraintType + "]";
 	}
 
 	public String displayErrorMsg() {
@@ -214,7 +225,7 @@ public class FieldConstraint {
 		if(fieldConstraint.getErrorMsg() != null){
 			this.errorMsg = new String(fieldConstraint.getErrorMsg());
 		}
-		this.type = fieldConstraint.getType();
+		this.fieldConstraintType = fieldConstraint.getFieldConstraintType();
 		applicableTypes = new ArrayList<FieldType>();
 		if(fieldConstraint.getApplicableTypes() != null){
 			for(FieldType type:fieldConstraint.getApplicableTypes()){

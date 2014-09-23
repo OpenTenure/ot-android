@@ -111,8 +111,9 @@ public class FormTemplate {
 		Iterator<SectionPayload> iter = payload.getSectionPayloadList().iterator();
 		for(SectionTemplate pageTemplate:sectionTemplateList){
 			SectionPayload pagePayload = iter.next();
-			if(pageTemplate.getFailedConstraint(pagePayload) != null){
-				return pageTemplate.getFailedConstraint(pagePayload);
+			FieldConstraint failedConstraint = pageTemplate.getFailedConstraint(pagePayload);
+			if(failedConstraint != null){
+				return failedConstraint;
 			}
 		}
 		return null;

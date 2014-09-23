@@ -101,7 +101,7 @@ public class FieldViewFactory {
 					int arg2, long arg3) {
 				payload.setStringPayload(names.get(arg2));
 				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(payload)) != null) {
+				if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
 					((TextView) arg0.getChildAt(0)).setTextColor(Color.RED);
 					Toast.makeText(activity.getBaseContext(),
 							constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
@@ -158,7 +158,7 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(payload)) != null) {
+					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
 						text.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -216,7 +216,7 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(payload)) != null) {
+					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
 						number.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -337,7 +337,7 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(payload)) != null) {
+					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 						Toast.makeText(activity.getBaseContext(),
@@ -428,7 +428,7 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(payload)) != null) {
+					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 						Toast.makeText(activity.getBaseContext(),

@@ -106,9 +106,14 @@ public class InitializationActivity extends Activity {
 			StartOpenTenure start = new StartOpenTenure();
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
+			String defaultFormUrl = OpenTenurePreferences
+					.getString(OpenTenurePreferencesActivity.CS_URL_PREF,"");
+			if(!defaultFormUrl.equalsIgnoreCase("")){
+				defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+			}
 			String formUrl = OpenTenurePreferences
 					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-							"http://192.168.1.102:8080/DynamicFormGeneration/templateServlet");
+							defaultFormUrl);
 			start.setFormUrl(formUrl);
 			start.execute();
 		}

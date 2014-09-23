@@ -8,14 +8,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 import org.fao.sola.clients.android.opentenure.form.FieldValueType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("NotNullConstraint")
 public class NotNullConstraint extends FieldConstraint {
 
 	public NotNullConstraint(){
 		super();
-		type=FieldConstraintType.NOT_NULL;
+		fieldConstraintType=FieldConstraintType.NOT_NULL;
 		addApplicableType(FieldType.DATE);
 		addApplicableType(FieldType.DECIMAL);
 		addApplicableType(FieldType.DOCUMENT);
@@ -32,13 +29,17 @@ public class NotNullConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		if(fieldPayload == null
 				|| (fieldPayload.getBooleanPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.BOOL)
 				|| (fieldPayload.getBigDecimalPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.NUMBER)
 				|| (fieldPayload.getStringPayload()==null && fieldPayload.getFieldValueType() == FieldValueType.TEXT)){
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName);
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName);
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName);
+			}
 			return false;
 		}
 		return true;

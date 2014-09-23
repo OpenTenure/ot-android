@@ -35,14 +35,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("RegexpFormatConstraint")
 public class RegexpFormatConstraint extends FieldConstraint {
 
 	public RegexpFormatConstraint() {
 		super();
-		type = FieldConstraintType.REGEXP;
+		fieldConstraintType = FieldConstraintType.REGEXP;
 		addApplicableType(FieldType.TEXT);
 		this.errorMsg = "Value {1} of {0} is not in {2} format";
 	}
@@ -54,19 +51,23 @@ public class RegexpFormatConstraint extends FieldConstraint {
 
 	public RegexpFormatConstraint(String format) {
 		super();
-		type = FieldConstraintType.REGEXP;
+		fieldConstraintType = FieldConstraintType.REGEXP;
 		addApplicableType(FieldType.TEXT);
 		setFormat(format);
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		Pattern pattern = Pattern.compile(format);
 		if(pattern.matcher(fieldPayload.getStringPayload()).matches()){
 			return true;
 		}else{
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getStringPayload(), format);
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
+			}
 			return false;
 		}
 	}

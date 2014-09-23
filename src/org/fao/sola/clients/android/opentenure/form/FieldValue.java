@@ -15,6 +15,7 @@ public class FieldValue {
 	private String id;
 	@JsonIgnore
 	private FieldPayload fieldPayload;
+	private String fieldPayloadId;
 	private FieldValueType fieldValueType;
 	private String stringPayload;
 	private BigDecimal bigDecimalPayload;
@@ -35,6 +36,14 @@ public class FieldValue {
 	public void setFieldPayload(FieldPayload fieldPayload) {
 		this.id = fieldPayload.getId();
 		this.fieldPayload = fieldPayload;
+	}
+
+	public String getFieldPayloadId() {
+		return fieldPayloadId;
+	}
+
+	public void setFieldPayloadId(String fieldPayloadId) {
+		this.fieldPayloadId = fieldPayloadId;
 	}
 
 	public FieldValueType getFieldValueType() {

@@ -48,7 +48,8 @@ public class SectionTemplate {
 	
 	private String id;
 	@JsonIgnore
-	private FormTemplate form;
+	private FormTemplate formTemplate;
+	private String formTemplateName;
 	private String name;
 	private String displayName;
 	private String errorMsg = "{0} must contain between {2} and {3} elements";
@@ -66,12 +67,20 @@ public class SectionTemplate {
 		this.id = id;
 	}
 
-	public FormTemplate getForm() {
-		return form;
+	public FormTemplate getFormTemplate() {
+		return formTemplate;
 	}
 
-	public void setForm(FormTemplate formTemplate) {
-		this.form = formTemplate;
+	public void setFormTemplate(FormTemplate formTemplate) {
+		this.formTemplate = formTemplate;
+	}
+
+	public String getFormTemplateName() {
+		return formTemplateName;
+	}
+
+	public void setFormTemplateName(String formTemplateName) {
+		this.formTemplateName = formTemplateName;
 	}
 
 	public String getName() {
@@ -233,13 +242,16 @@ public class SectionTemplate {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			constraint.check(fieldValue);
+			constraint.check(displayName, fieldValue);
 			return constraint;
 		}
+		int sectionElementIndex = 0;
 		for(SectionElementPayload element:elements){
-			if(getFailedConstraint(element) != null){
-				return getFailedConstraint(element);
+			FieldConstraint failedConstraint = getFailedConstraint(displayName + "/" + sectionElementIndex, element);
+			if(failedConstraint != null){
+				return failedConstraint;
 			}
+			sectionElementIndex++;
 		}
 		return null;
 	}
@@ -247,12 +259,12 @@ public class SectionTemplate {
 		fieldTemplateList.add(fieldTemplate);
 	}
 
-	public FieldConstraint getFailedConstraint(SectionElementPayload payload) {
+	public FieldConstraint getFailedConstraint(String externalDisplayName, SectionElementPayload payload) {
 
 		Iterator<FieldPayload> payloadIterator = payload.getFieldPayloadList().iterator();
 
 		for(FieldTemplate fieldTemplate : fieldTemplateList){
-			FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(payloadIterator.next());
+			FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(externalDisplayName, payloadIterator.next());
 			if(fieldConstraint != null){
 				return fieldConstraint;
 			}

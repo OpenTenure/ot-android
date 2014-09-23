@@ -37,14 +37,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("DateTimeFormatConstraint")
 public class DateTimeFormatConstraint extends FieldConstraint {
 	
 	public DateTimeFormatConstraint(){
 		super();
-		type=FieldConstraintType.DATETIME;
+		fieldConstraintType=FieldConstraintType.DATETIME;
 		addApplicableType(FieldType.DATE);
 		addApplicableType(FieldType.TIME);
 		this.errorMsg = "Value {1} of {0} is not in {2} format";
@@ -57,14 +54,14 @@ public class DateTimeFormatConstraint extends FieldConstraint {
 
 	public DateTimeFormatConstraint(String format){
 		super();
-		type=FieldConstraintType.DATETIME;
+		fieldConstraintType=FieldConstraintType.DATETIME;
 		addApplicableType(FieldType.DATE);
 		addApplicableType(FieldType.TIME);
 		setFormat(format);
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
@@ -73,7 +70,11 @@ public class DateTimeFormatConstraint extends FieldConstraint {
 				sdf.parse(payload);
 			}
 		} catch (ParseException e) {
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getStringPayload(), format);
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload(), format);
+			}
 			return false;
 		}
 		return true;

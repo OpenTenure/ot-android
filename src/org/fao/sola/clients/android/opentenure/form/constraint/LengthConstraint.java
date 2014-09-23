@@ -35,14 +35,11 @@ import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-@JsonTypeName("LengthConstraint")
 public class LengthConstraint extends FieldConstraint {
 
 	public LengthConstraint() {
 		super();
-		type = FieldConstraintType.LENGTH;
+		fieldConstraintType = FieldConstraintType.LENGTH;
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.DOCUMENT);
 		this.errorMsg = "Length {1} of value {2} in {0} is not between {3} and {4}";
@@ -56,7 +53,7 @@ public class LengthConstraint extends FieldConstraint {
 
 	public LengthConstraint(BigDecimal minValue, BigDecimal maxValue) {
 		super();
-		type = FieldConstraintType.LENGTH;
+		fieldConstraintType = FieldConstraintType.LENGTH;
 		addApplicableType(FieldType.TEXT);
 		addApplicableType(FieldType.DOCUMENT);
 		setMinValue(minValue);
@@ -82,13 +79,17 @@ public class LengthConstraint extends FieldConstraint {
 	}
 
 	@Override
-	public boolean check(FieldPayload fieldPayload) {
+	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		if ((minValue != null && fieldPayload != null
 				&& fieldPayload.getStringPayload() != null && minValue.compareTo(new BigDecimal(fieldPayload.getStringPayload().length())) > 0)
 				|| (maxValue != null && fieldPayload != null
 						&& fieldPayload.getStringPayload() != null && maxValue.compareTo(new BigDecimal(fieldPayload.getStringPayload().length())) < 0)) {
-			displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload().length(), fieldPayload.getStringPayload(), minValue, maxValue);
+			if(externalDisplayName != null){
+				displayErrorMsg = MessageFormat.format(errorMsg, externalDisplayName, fieldPayload.getStringPayload().length(), fieldPayload.getStringPayload(), minValue, maxValue);
+			}else{
+				displayErrorMsg = MessageFormat.format(errorMsg, displayName, fieldPayload.getStringPayload().length(), fieldPayload.getStringPayload(), minValue, maxValue);
+			}
 			return false;
 		}
 		return true;
