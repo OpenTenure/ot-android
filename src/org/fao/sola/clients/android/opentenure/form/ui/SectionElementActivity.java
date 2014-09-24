@@ -208,6 +208,8 @@ public class SectionElementActivity extends FragmentActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent resultIntent = new Intent();
+							resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
+									SECTION_ELEMENT_POSITION_DISCARD);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									originalElement.toJson());
 							setResult(SECTION_ELEMENT_ACTIVITY_RESULT,
