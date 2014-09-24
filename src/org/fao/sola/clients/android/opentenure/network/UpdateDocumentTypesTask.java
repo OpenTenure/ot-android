@@ -86,6 +86,8 @@ public class UpdateDocumentTypesTask extends
 								.isCheckedIdTypes()
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedForm()
 
 				)
 

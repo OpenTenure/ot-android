@@ -42,8 +42,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
+import java.lang.reflect.Modifier;
 
 import android.util.Log;
 
@@ -87,7 +89,7 @@ public class JsonUtilities {
 
 				TimeZone tz = TimeZone.getTimeZone("UTC");
 				SimpleDateFormat sdf = new SimpleDateFormat(
-						"yyyy-MM-dd'T'HH:mm:ss'Z'");
+						"yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 				sdf.setTimeZone(tz);
 
 				Calendar c = Calendar.getInstance();
@@ -147,7 +149,6 @@ public class JsonUtilities {
 				person.setId(claim.getPerson().getPersonId());
 				person.setLastName(claim.getPerson().getLastName());
 				person.setMobilePhone(claim.getPerson().getMobilePhoneNumber());
-				// person.setPlaceOfBirth(claim.getPerson().getPlaceOfBirth());
 				person.setAddress(claim.getPerson().getPostalAddress());
 				person.setGenderCode(claim.getPerson().getGender());
 				person.setIdTypeCode(claim.getPerson().getIdType());
@@ -161,10 +162,11 @@ public class JsonUtilities {
 					person.setPhysicalPerson(false);
 
 				tempClaim.setClaimant(person);
+				tempClaim.setSurveyForm(claim.getSurveyForm());
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
-				for (Iterator iterator = claim.getAttachments().iterator(); iterator
+				for (Iterator<Attachment> iterator = claim.getAttachments().iterator(); iterator
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
@@ -192,7 +194,7 @@ public class JsonUtilities {
 
 				List<Location> locations = new ArrayList<Location>();
 
-				for (Iterator iterator = claim.getPropertyLocations()
+				for (Iterator<PropertyLocation> iterator = claim.getPropertyLocations()
 						.iterator(); iterator.hasNext();) {
 
 					PropertyLocation propertyLocation = (PropertyLocation) iterator
@@ -215,7 +217,7 @@ public class JsonUtilities {
 
 				List<ShareProperty> sharesDB = ShareProperty.getShares(claimId);
 
-				for (Iterator iterator = sharesDB.iterator(); iterator
+				for (Iterator<ShareProperty> iterator = sharesDB.iterator(); iterator
 						.hasNext();) {
 					ShareProperty shareDB = (ShareProperty) iterator.next();
 
@@ -225,7 +227,7 @@ public class JsonUtilities {
 
 					List<Person> ownersJson = new ArrayList<Person>();
 
-					for (Iterator iterator2 = owners.iterator(); iterator2
+					for (Iterator<Owner> iterator2 = owners.iterator(); iterator2
 							.hasNext();) {
 
 						Person personJson = new Person();
@@ -326,8 +328,9 @@ public class JsonUtilities {
 					Gson gson = new GsonBuilder()
 							.setPrettyPrinting()
 							.serializeNulls()
-							.setFieldNamingPolicy(
-									FieldNamingPolicy.UPPER_CAMEL_CASE)
+//							.setFieldNamingPolicy(
+//									FieldNamingPolicy.UPPER_CAMEL_CASE)
+									.excludeFieldsWithModifiers(Modifier.TRANSIENT)
 							.create();
 
 					String g = gson.toJson(tempClaim);
@@ -349,8 +352,6 @@ public class JsonUtilities {
 				return null;
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-
 			Log.d("CreateClaimJson", "Error : " + e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -403,7 +404,7 @@ public class JsonUtilities {
 	/** Transform Calendar to ISO 8601 string. */
 	public static String fromCalendar(final Calendar calendar) {
 		Date date = calendar.getTime();
-		String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+		String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US)
 				.format(date);
 		return formatted.substring(0, 22) + ":" + formatted.substring(22);
 	}
@@ -423,7 +424,7 @@ public class JsonUtilities {
 		} catch (IndexOutOfBoundsException e) {
 			throw new ParseException("Invalid length", 0);
 		}
-		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(s);
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(s);
 		calendar.setTime(date);
 		return calendar;
 	}

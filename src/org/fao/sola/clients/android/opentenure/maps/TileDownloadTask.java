@@ -92,11 +92,13 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 				FileOutputStream fos = null;
 
 				long lastModified = outputFile.lastModified();
+				long length = outputFile.length();
 				boolean fileExists = outputFile.exists();
 
 				if (!fileExists
 						|| (fileExists && (lastModified > (System
-								.currentTimeMillis() - TILE_CACHE_TIME)))) {
+								.currentTimeMillis() - TILE_CACHE_TIME)))
+								|| (fileExists && length < 1024)) {
 					try {
 //						if (fileExists) {
 //							Log.d(this.getClass().getName(),

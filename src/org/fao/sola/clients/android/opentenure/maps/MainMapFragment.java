@@ -479,7 +479,7 @@ public class MainMapFragment extends SupportMapFragment implements
 				myLocation = null;
 				lh.setCustomListener(null);
 			} else {
-				LatLng currentLocation = lh.getCurrentLocation();
+				LatLng currentLocation = lh.getLastKnownLocation();
 
 				if (currentLocation != null && currentLocation.latitude != 0.0
 						&& currentLocation.longitude != 0.0) {

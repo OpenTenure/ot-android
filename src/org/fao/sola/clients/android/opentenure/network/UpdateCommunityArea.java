@@ -87,6 +87,8 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 									.isCheckedIdTypes()
 							&& OpenTenureApplication.getInstance()
 									.isCheckedCommunityArea()
+							&& OpenTenureApplication.getInstance()
+									.isCheckedForm()
 
 					) {
 

@@ -43,7 +43,7 @@ public class SectionPayload {
 	
 	private String id;
 	@JsonIgnore
-	private FormPayload formPayload;
+	private transient FormPayload formPayload;
 	private String formPayloadId;
 	private String name;
 	private String displayName;

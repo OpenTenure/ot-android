@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SectionElementPayload {
 	
 	@JsonIgnore
-	private SectionPayload sectionPayload;
+	private transient SectionPayload sectionPayload;
 	private String sectionPayloadId;
 	private String id;
 	private List<FieldPayload> fieldPayloadList;
