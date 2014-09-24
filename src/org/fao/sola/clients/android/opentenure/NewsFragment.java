@@ -170,7 +170,7 @@ public class NewsFragment extends ListFragment {
 				SharedPreferences OpenTenurePreferences = PreferenceManager
 						.getDefaultSharedPreferences(getActivity());
 				String defaultFormUrl = OpenTenurePreferences
-						.getString(OpenTenurePreferencesActivity.CS_URL_PREF,"");
+						.getString(OpenTenurePreferencesActivity.CS_URL_PREF,OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 				if(!defaultFormUrl.equalsIgnoreCase("")){
 					defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
 				}

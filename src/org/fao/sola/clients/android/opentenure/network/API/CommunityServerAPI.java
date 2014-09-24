@@ -100,7 +100,7 @@ public class CommunityServerAPI {
 							.getContext());
 
 			String csUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.CS_URL_PREF, "");
+					OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 			String url = String.format(CommunityServerAPIUtilities.HTTPS_LOGIN,
 					csUrl, OpenTenureApplication.getLocalization(), username,
@@ -188,7 +188,7 @@ public class CommunityServerAPI {
 							.getContext());
 
 			String csUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.CS_URL_PREF, "");
+					OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 			String url = String.format(
 					CommunityServerAPIUtilities.HTTPS_LOGOUT, csUrl,
@@ -257,7 +257,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETALLCLAIMS, csUrl,
@@ -316,7 +316,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETALLCLAIMSBYBOX, csUrl,
@@ -374,7 +374,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_WITHDRAWCLAIM, csUrl,
@@ -447,7 +447,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_GETCLAIM,
 				csUrl, OpenTenureApplication.getLocalization(), claimId);
@@ -514,7 +514,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETATTACHMENT, csUrl,
@@ -631,7 +631,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETLANDUSE, csUrl,
@@ -692,7 +692,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETIDTYPES, csUrl,
@@ -753,7 +753,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETCOMMUNITYAREA, csUrl,
@@ -812,7 +812,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETCLAIMTYPES, csUrl,
@@ -872,7 +872,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl,
@@ -933,7 +933,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_SAVECLAIM,
 				csUrl, OpenTenureApplication.getLocalization());
@@ -1030,7 +1030,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_SAVEATTACHMENT, csUrl,
@@ -1112,7 +1112,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_UPLOADCHUNK, csUrl,
@@ -1181,7 +1181,7 @@ public class CommunityServerAPI {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
 		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, "");
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_ADDCLAIMATTACHMENT, csUrl,
