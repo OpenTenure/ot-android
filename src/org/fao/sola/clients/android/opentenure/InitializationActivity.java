@@ -106,9 +106,9 @@ public class InitializationActivity extends Activity {
 			StartOpenTenure start = new StartOpenTenure();
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(this);
-			String defaultFormUrl = OpenTenurePreferences
-					.getString(OpenTenurePreferencesActivity.CS_URL_PREF,"");
-			if(!defaultFormUrl.equalsIgnoreCase("")){
+			String defaultFormUrl = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+			if (!defaultFormUrl.equalsIgnoreCase("")) {
 				defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
 			}
 			String formUrl = OpenTenurePreferences
@@ -174,53 +174,60 @@ public class InitializationActivity extends Activity {
 				conf.create();
 
 			}
+			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
 
-			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for claim type download");
+				if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for claim type download");
 
-				UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
+					updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-			} 
+				}
 
-			if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for document type download");
+				if (!OpenTenureApplication.getInstance().isCheckedDocTypes()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for document type download");
 
-				UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
-				updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					UpdateDocumentTypesTask updateCT = new UpdateDocumentTypesTask();
+					updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-			}
+				}
 
-			if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for ID type download");
+				if (!OpenTenureApplication.getInstance().isCheckedIdTypes()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for ID type download");
 
-				UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-				updateIdType.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-			if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for land use type download");
+					UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
+					updateIdType
+							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for land use type download");
 
-				UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-				updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-			if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for community area download");
+					UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
+					updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				if (!OpenTenureApplication.getInstance()
+						.isCheckedCommunityArea()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for community area download");
 
-				UpdateCommunityArea updateArea = new UpdateCommunityArea();
-				updateArea.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			}
-			if (!OpenTenureApplication.getInstance().isCheckedForm()) {
-				Log.d(this.getClass().getName(),
-						"starting tasks for form retrieval");
+					UpdateCommunityArea updateArea = new UpdateCommunityArea();
+					updateArea
+							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				if (!OpenTenureApplication.getInstance().isCheckedForm()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for form retrieval");
 
-				 FormRetriever formRetriever = new FormRetriever();
-				 formRetriever.setFormUrl(formUrl);
-				 formRetriever.execute();
+					FormRetriever formRetriever = new FormRetriever();
+					formRetriever.setFormUrl(formUrl);
+					formRetriever
+							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
 			}
 
 			Intent i = new Intent(InitializationActivity.this, OpenTenure.class);

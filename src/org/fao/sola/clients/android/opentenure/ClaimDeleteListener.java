@@ -241,7 +241,7 @@ public class ClaimDeleteListener implements OnClickListener {
 											.getResources()
 											.getString(
 													R.string.message_deleted_claim),
-									Toast.LENGTH_LONG);
+									Toast.LENGTH_SHORT);
 							toast.show();
 							
 							
@@ -254,7 +254,7 @@ public class ClaimDeleteListener implements OnClickListener {
 											.getResources()
 											.getString(
 													R.string.message_error_deleting_claim),
-									Toast.LENGTH_LONG);
+									Toast.LENGTH_SHORT);
 							toast.show();
 
 						}
@@ -407,7 +407,7 @@ public class ClaimDeleteListener implements OnClickListener {
 												.getResources()
 												.getString(
 														R.string.message_deleted_claim),
-										Toast.LENGTH_LONG);
+										Toast.LENGTH_SHORT);
 								toast.show();
 
 							} else {
@@ -419,7 +419,7 @@ public class ClaimDeleteListener implements OnClickListener {
 												.getResources()
 												.getString(
 														R.string.message_error_deleting_claim),
-										Toast.LENGTH_LONG);
+										Toast.LENGTH_SHORT);
 								toast.show();
 
 							}

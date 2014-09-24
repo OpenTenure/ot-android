@@ -90,6 +90,7 @@ public class SectionElementActivity extends FragmentActivity {
 		outState.putInt(SECTION_ELEMENT_POSITION_KEY, sectionElementPosition);
 		outState.putString(SECTION_ELEMENT_PAYLOAD_KEY, editedElement.toJson());
 		outState.putString(SECTION_TEMPLATE_KEY, elementTemplate.toJson());
+		outState.putString(MODE_KEY, mode.toString());
 		super.onSaveInstanceState(outState);
 
 	}
@@ -101,6 +102,7 @@ public class SectionElementActivity extends FragmentActivity {
 		int savedPosition = SECTION_ELEMENT_POSITION_NEW;
 		String savedElement = null;
 		String savedElementTemplate = null;
+		String savedMode = null;
 
 		if (savedInstanceState != null) {
 			savedPosition = savedInstanceState
@@ -109,6 +111,8 @@ public class SectionElementActivity extends FragmentActivity {
 					.getString(SECTION_ELEMENT_PAYLOAD_KEY);
 			savedElementTemplate = savedInstanceState
 					.getString(SECTION_TEMPLATE_KEY);
+			savedMode = savedInstanceState
+					.getString(MODE_KEY);
 		}
 
 		int intentPosition = getIntent().getExtras().getInt(
@@ -142,6 +146,13 @@ public class SectionElementActivity extends FragmentActivity {
 					.fromJson(intentTemplate);
 		}
 
+		if(savedMode != null){
+			mode = ModeDispatcher.Mode
+					.valueOf(savedMode);
+		}else{
+			mode = ModeDispatcher.Mode
+					.valueOf(getIntent().getStringExtra(MODE_KEY));
+		}
 		elementFragment = new SectionElementFragment(editedElement,
 				elementTemplate, mode);
 		
@@ -151,8 +162,6 @@ public class SectionElementActivity extends FragmentActivity {
 		mViewPager = (ViewPager) findViewById(R.id.field_group_pager);
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
-		mode = ModeDispatcher.Mode
-				.valueOf(getIntent().getStringExtra(MODE_KEY));
 
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		tabs.setIndicatorColor(getResources().getColor(
@@ -163,7 +172,7 @@ public class SectionElementActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (originalElement.toJson().equalsIgnoreCase(editedElement.toJson())) {
+		if (mode == ModeDispatcher.Mode.MODE_RO || originalElement.toJson().equalsIgnoreCase(editedElement.toJson())) {
 			Intent resultIntent = new Intent();
 			resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
 					SECTION_ELEMENT_POSITION_DISCARD);
@@ -199,6 +208,8 @@ public class SectionElementActivity extends FragmentActivity {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							Intent resultIntent = new Intent();
+							resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
+									SECTION_ELEMENT_POSITION_DISCARD);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									originalElement.toJson());
 							setResult(SECTION_ELEMENT_ACTIVITY_RESULT,

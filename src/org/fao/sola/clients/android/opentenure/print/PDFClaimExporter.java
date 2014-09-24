@@ -105,7 +105,8 @@ public class PDFClaimExporter {
 						R.string.app_name)
 						+ " "
 						+ context.getResources().getString(R.string.claim)
-						+ ": " + claim.getName() + " (id: " + claimId + ")");
+						+ ": " + claim.getName() + " (" + context.getResources().getString(
+								R.string.claimant) + ": " + claim.getPerson().getFirstName() + " " + claim.getPerson().getLastName() + ")");
 			}
 			newLine();
 			drawBitmap(bitmapFromResource(context, R.drawable.sola_logo, 128,

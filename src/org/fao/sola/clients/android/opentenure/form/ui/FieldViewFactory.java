@@ -89,6 +89,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			spinner.setEnabled(false);   
 			spinner.setClickable(false); 
+			spinner.setLongClickable(false);
 		}
 
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
@@ -144,6 +145,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			text.setEnabled(false);   
 			text.setClickable(false); 
+			text.setLongClickable(false);
 		}else{
 			text.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -197,11 +199,70 @@ public class FieldViewFactory {
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		number.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
-			number.setText(payload.getStringPayload());
+			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
 		if(mode == Mode.MODE_RO){
 			number.setEnabled(false);   
 			number.setClickable(false); 
+			number.setLongClickable(false);
+		}else{
+			number.addTextChangedListener(new TextWatcher() {
+				long lastTime = System.currentTimeMillis();
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					if ("".toString().equalsIgnoreCase(s.toString())) {
+						payload.setBigDecimalPayload(null);
+					} else {
+						payload.setBigDecimalPayload(
+								new BigDecimal(Double.parseDouble(s.toString())));
+					}
+
+					FieldConstraint constraint;
+					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+						number.setTextColor(Color.RED);
+						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
+							Toast.makeText(activity.getBaseContext(),
+									constraint.displayErrorMsg(),
+									Toast.LENGTH_SHORT).show();
+							lastTime = System.currentTimeMillis();
+						}
+					} else {
+						number.setTextColor(Color.BLACK);
+					}
+
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count,
+						int after) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before,
+						int count) {
+
+				}
+			});
+		}
+		return number;
+	}
+
+	public static View getViewForDecimalField(final Activity activity,
+			final FieldTemplate field, final FieldPayload payload, Mode mode) {
+		final EditText number;
+		number = new EditText(activity);
+		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+				LayoutParams.WRAP_CONTENT));
+		number.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		number.setHint(field.getHint());
+		if(payload.getStringPayload()!=null){
+			number.setText(payload.getBigDecimalPayload().toPlainString());
+		}
+		if(mode == Mode.MODE_RO){
+			number.setEnabled(false);   
+			number.setClickable(false); 
+			number.setLongClickable(false);
 		}else{
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -253,11 +314,12 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		bool.setHint(field.getHint());
 		if(payload.getBooleanPayload()!=null){
-			bool.setSelected(payload.getBooleanPayload().booleanValue());
+			bool.setChecked(payload.getBooleanPayload().booleanValue());
 		}
 		if(mode == Mode.MODE_RO){
 			bool.setEnabled(false);   
-			bool.setClickable(false); 
+			bool.setClickable(false);
+			bool.setLongClickable(false);
 		}else{
 			bool.setOnClickListener(new OnClickListener() {
 
@@ -296,6 +358,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			datetime.setEnabled(false);   
 			datetime.setClickable(false); 
+			datetime.setLongClickable(false);
 		}else{
 			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -389,6 +452,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			datetime.setEnabled(false);   
 			datetime.setClickable(false); 
+			datetime.setLongClickable(false);
 		}else{
 			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 

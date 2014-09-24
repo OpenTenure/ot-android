@@ -34,13 +34,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
+import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-public class FormRetriever extends AsyncTask<Void, Void, Void> {
+public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 
 	private String formUrl;
 	public void setFormUrl(String formUrl) {
@@ -53,9 +57,10 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 	protected void onPreExecute() {
 	}
 
-	protected Void doInBackground(Void... params) {
+	protected Integer doInBackground(Void... params) {
 
 		InputStream is = null;
+		int result = 0;
 
 		try {
 			Log.d(this.getClass().getName()
@@ -70,7 +75,7 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 			Log.d(this.getClass().getName()
 					, "Got dynamic survey form: " + body);
 			FormTemplate ft = FormTemplate.fromJson(body);
-			SurveyFormTemplate.saveDefaultFormTemplate(ft);
+			result = SurveyFormTemplate.saveDefaultFormTemplate(ft);
 			is.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -82,7 +87,7 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 				}
 			}
 		}
-		return null;
+		return result;
 
 	}
 
@@ -120,6 +125,50 @@ public class FormRetriever extends AsyncTask<Void, Void, Void> {
 		return body;
 	}
 
-	protected void onPostExecute(String result) {
+	protected void onPostExecute(Integer result) {
+
+		if(result > 0){
+			OpenTenureApplication.getInstance().setCheckedForm(true);
+
+			synchronized (OpenTenureApplication.getLocale()) {
+
+				if (OpenTenureApplication.getInstance()
+						.isCheckedCommunityArea()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedDocTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedIdTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedLandUses()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedTypes()
+
+				) {
+
+					OpenTenureApplication.getInstance().setInitialized(true);
+
+					Configuration conf = Configuration
+							.getConfigurationByName("isInitialized");
+					conf.setValue("true");
+					conf.update();
+
+					FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+							.getNewsFragment();
+					if (fa != null)
+						fa.invalidateOptionsMenu();
+
+					Configuration latitude = Configuration
+							.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
+					if (latitude != null)
+						latitude.delete();
+
+					MainMapFragment mapFrag = OpenTenureApplication
+							.getMapFragment();
+
+					mapFrag.boundCameraToInterestArea();
+
+				}
+			}
+		}
 	}
 }

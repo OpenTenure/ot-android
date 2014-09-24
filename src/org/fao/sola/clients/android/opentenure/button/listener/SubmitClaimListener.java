@@ -34,7 +34,6 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-import org.fao.sola.clients.android.opentenure.form.server.FormSender;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -120,12 +119,6 @@ public class SubmitClaimListener implements OnClickListener {
 
 				SaveClaimTask saveClaimtask = new SaveClaimTask();
 				saveClaimtask.execute(claimId, vh);
-
-				// TODO Remove this once the form payload is made part of the claim
-				FormSender fs = new FormSender();
-				fs.setId(claimId);
-				fs.execute();
-
 			} else {
 				Toast toast = Toast.makeText(v.getContext(),
 						R.string.message_save_claim_before_submit,

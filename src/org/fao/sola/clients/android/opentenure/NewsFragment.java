@@ -30,29 +30,25 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.button.listener.InitializationAlertListener;
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.network.AlertInitializationTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
-import org.fao.sola.clients.android.opentenure.network.AlertInitializationTask;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.text.InputType;
 import android.util.Log;
@@ -171,9 +167,19 @@ public class NewsFragment extends ListFragment {
 				Log.d(this.getClass().getName(),
 						"starting tasks for form retrieval");
 
-				// FormRetriever formRetriever = new FormRetriever();
-				// formRetriever.setFormUrl(formUrl);
-				// formRetriever.execute();
+				SharedPreferences OpenTenurePreferences = PreferenceManager
+						.getDefaultSharedPreferences(getActivity());
+				String defaultFormUrl = OpenTenurePreferences
+						.getString(OpenTenurePreferencesActivity.CS_URL_PREF,OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+				if(!defaultFormUrl.equalsIgnoreCase("")){
+					defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+				}
+				String formUrl = OpenTenurePreferences
+						.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
+								defaultFormUrl);
+				 FormRetriever formRetriever = new FormRetriever();
+				 formRetriever.setFormUrl(formUrl);
+				 formRetriever.execute();
 			}
 
 			GetClaimsInput input = new GetClaimsInput();

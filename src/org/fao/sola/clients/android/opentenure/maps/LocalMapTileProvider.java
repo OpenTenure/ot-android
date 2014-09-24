@@ -28,11 +28,14 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+
+import android.graphics.BitmapFactory;
 
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
@@ -57,6 +60,11 @@ public class LocalMapTileProvider implements TileProvider {
 		String tileFileName = OpenTenureApplication.getContext()
 				.getExternalFilesDir(null).getAbsolutePath()
 				+ "/tiles/" + zoom + "/" + x + "/" + y + ".png";
+
+		if (BitmapFactory.decodeFile(tileFileName) == null) {
+			File checkFile = new File(tileFileName);
+			checkFile.delete();
+		}
 
 		try {
 			in = new FileInputStream(tileFileName);

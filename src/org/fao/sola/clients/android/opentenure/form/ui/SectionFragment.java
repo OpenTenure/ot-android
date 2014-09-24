@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -47,6 +48,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 
 public class SectionFragment extends ListFragment {
@@ -68,6 +70,10 @@ public class SectionFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.multiple_field_group, menu);
+		if(mode == Mode.MODE_RO){
+			MenuItem item = menu.findItem(R.id.action_new);
+			item.setVisible(false);
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -126,6 +132,9 @@ public class SectionFragment extends ListFragment {
 				false);
 		setHasOptionsMenu(true);
 		update();
+		InputMethodManager imm = (InputMethodManager) rootView.getContext()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInputFromWindow(rootView.getWindowToken(), 0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		return rootView;
 	}
 	

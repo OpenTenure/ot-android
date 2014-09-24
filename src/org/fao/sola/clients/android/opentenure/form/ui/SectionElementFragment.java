@@ -82,7 +82,7 @@ public class SectionElementFragment extends Fragment {
 		setHasOptionsMenu(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+		imm.toggleSoftInputFromWindow(rootView.getWindowToken(), 0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		
 		LinearLayout ll = (LinearLayout) rootView;
 		int i = 0;
@@ -112,6 +112,9 @@ public class SectionElementFragment extends Fragment {
 						getFieldPayloadList().get(i), mode));
 				break;
 			case DECIMAL:
+				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), field, elementPayload.
+						getFieldPayloadList().get(i), mode));
+				break;
 			case INTEGER:
 				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, elementPayload.
 						getFieldPayloadList().get(i), mode));
@@ -125,7 +128,6 @@ public class SectionElementFragment extends Fragment {
 			}
 			i++;
 		}
-		
 		return rootView;
 	}
 }

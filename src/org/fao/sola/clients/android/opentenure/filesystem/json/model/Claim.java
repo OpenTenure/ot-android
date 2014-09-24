@@ -27,8 +27,9 @@
  */
 package org.fao.sola.clients.android.opentenure.filesystem.json.model;
 
-import java.util.Date;
 import java.util.List;
+
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -76,7 +77,8 @@ public class Claim {
 	@SerializedName("version")
 	String version;
 
-	// @SerializedName("additionaInfo") List<AdditionalInfo> additionaInfo;
+	@SerializedName("dynamicForm")
+	FormPayload surveyForm;
 
 	@SerializedName("claimant")
 	Claimant claimant;
@@ -194,6 +196,14 @@ public class Claim {
 
 	public void setChallengedClaimId(String challengedClaimId) {
 		this.challengedClaimId = challengedClaimId;
+	}
+
+	public FormPayload getSurveyForm() {
+		return surveyForm;
+	}
+
+	public void setSurveyForm(FormPayload surveyForm) {
+		this.surveyForm = surveyForm;
 	}
 
 	public Claimant getClaimant() {

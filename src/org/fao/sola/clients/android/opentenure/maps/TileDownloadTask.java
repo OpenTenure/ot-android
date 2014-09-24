@@ -31,18 +31,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Task;
 import org.fao.sola.clients.android.opentenure.model.Tile;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -52,7 +50,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 	public static final String TASK_ID = "TileDownloadTask";
 	private static final int TILES_PER_BATCH = 50;
 	private static final long TILE_CACHE_TIME = 30 * 24 * 60 * 60 * 1000;
-	private static final long TIMEOUT = 4000;
+	private static final long TIMEOUT = 8000;
 	private Context context;
 
 	public void setContext(Context context) {
@@ -67,47 +65,28 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 	}
 
 	protected Integer doInBackground(Void... params) {
-
 		List<Tile> tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
-		int originalTilesToDownload = Tile.getTilesToDownload();
-		long startTime = System.currentTimeMillis();
+		int tilesToDownload = Tile.getTilesToDownload();
 		int failures = 0;
-		int downloadedTiles = 0;
-		BigDecimal completion = BigDecimal.valueOf(0);
-//		Log.d(this.getClass().getName(),
-//				"Nobody else is consuming tiles, let's go. Starting to download "
-//						+ originalTilesToDownload + " tiles");
+		Log.d(this.getClass().getName(), "loaded a batch of " + tiles.size()
+				+ " tiles out of " + tilesToDownload);
 
 		while (tiles != null && tiles.size() >= 1) {
-//			Log.d(this.getClass().getName(),
-//					"Downloading a batch of " + tiles.size()
-//							+ " tiles, tiles to go: "
-//							+ (originalTilesToDownload - downloadedTiles));
-			for (Tile tile : tiles) {
 
+			for (Tile tile : tiles) {
 				File outputFile = new File(tile.getFileName());
 				File dir = new File(outputFile.getParent());
 				dir.mkdirs();
 				InputStream is = null;
 				FileOutputStream fos = null;
-
 				long lastModified = outputFile.lastModified();
+				long length = outputFile.length();
 				boolean fileExists = outputFile.exists();
-
 				if (!fileExists
 						|| (fileExists && (lastModified > (System
 								.currentTimeMillis() - TILE_CACHE_TIME)))) {
 					try {
-//						if (fileExists) {
-//							Log.d(this.getClass().getName(),
-//									outputFile.getPath()
-//											+ " exists and has been modified on "
-//											+ new Date(lastModified));
-//
-//						} else {
-//							Log.d(this.getClass().getName(),
-//									outputFile.getPath() + " does not exist");
-//						}
+
 						URL url = new URL(tile.getUrl());
 						HttpURLConnection c = (HttpURLConnection) url
 								.openConnection();
@@ -117,22 +96,21 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 						c.setReadTimeout((int) TIMEOUT / 2);
 						c.connect();
 						fos = new FileOutputStream(outputFile);
-
 						is = c.getInputStream();
-
 						byte[] buffer = new byte[1024];
 						int len1 = 0;
 						while ((len1 = is.read(buffer)) != -1) {
-
 							fos.write(buffer, 0, len1);
 						}
 						fos.close();
 						is.close();
-//						Log.d(this.getClass().getName(),
-//								"cached/refreshed tile from url "
-//										+ tile.getUrl() + " to file "
-//										+ outputFile.getPath());
-						downloadedTiles++;
+
+						if (BitmapFactory.decodeFile(tile.getFileName()) == null) {
+							outputFile = new File(tile.getFileName());
+							outputFile.delete();
+							failures++;
+						}
+
 					} catch (IOException e) {
 						failures++;
 						e.printStackTrace();
@@ -150,29 +128,18 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 							}
 						}
 					}
-				} else {
-//					Log.d(this.getClass().getName(),
-//							"no need to refresh cached tile file "
-//									+ outputFile.getPath());
-					downloadedTiles++;
 				}
 				tile.delete();
-
 			}
-			completion = new BigDecimal(
-					((double) downloadedTiles / (double) originalTilesToDownload) * 100.0);
-//			Log.d(this.getClass().getName(),
-//					String.format(Locale.US,
-//							"Download task completion: %.2f percent",
-//							completion.doubleValue())
-//							+ ", elapsed time: "
-//							+ ((System.currentTimeMillis() - startTime) / 60000)
-//							+ " min");
-			tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
-		}
-//		Log.d(this.getClass().getName(), "Done downloading tiles");
-		return failures;
 
+			tilesToDownload = Tile.getTilesToDownload();
+			tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
+			Log.d(this.getClass().getName(),
+					"loaded a batch of " + tiles.size() + " tiles out of "
+							+ tilesToDownload);
+		}
+
+		return failures;
 	}
 
 	protected void onPostExecute(Integer failures) {

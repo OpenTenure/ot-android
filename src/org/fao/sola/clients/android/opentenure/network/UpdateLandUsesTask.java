@@ -87,6 +87,8 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 								.isCheckedIdTypes()
 						&& OpenTenureApplication.getInstance()
 								.isCheckedDocTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedForm()
 
 				)
 

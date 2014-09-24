@@ -65,7 +65,6 @@ public class GetClaimsTask extends
 
 	@Override
 	protected GetClaimsInput doInBackground(GetClaimsInput... params) {
-		int i = 0;
 		boolean success = true;
 
 		GetClaimsInput input = params[0];
@@ -74,7 +73,7 @@ public class GetClaimsTask extends
 		input.setResult(true);
 		input.setDownloaded(0);
 
-		for (Iterator iterator = claims.iterator(); iterator.hasNext();) {
+		for (Iterator<Claim> iterator = claims.iterator(); iterator.hasNext();) {
 			Claim claimToDownload = (Claim) iterator.next();
 
 			/* For each claim downloadable check the status and the version */
@@ -94,11 +93,11 @@ public class GetClaimsTask extends
 				List<ShareProperty> list = ShareProperty.getShares(claim
 						.getClaimId());
 
-				for (Iterator iterator2 = list.iterator(); iterator2.hasNext();) {
+				for (Iterator<ShareProperty> iterator2 = list.iterator(); iterator2.hasNext();) {
 					ShareProperty share = (ShareProperty) iterator2.next();
 					share.deleteShare();
 					List<Owner> OwnersTBD = Owner.getOwners(share.getId());
-					for (Iterator iteratorT = OwnersTBD.iterator(); iteratorT
+					for (Iterator<Owner> iteratorT = OwnersTBD.iterator(); iteratorT
 							.hasNext();) {
 						Owner owner = (Owner) iteratorT.next();
 						Person personTBD = Person
@@ -110,7 +109,7 @@ public class GetClaimsTask extends
 				}
 
 				List<Vertex> vertexList = claim.getVertices();
-				for (Iterator iterator2 = vertexList.iterator(); iterator2
+				for (Iterator<Vertex> iterator2 = vertexList.iterator(); iterator2
 						.hasNext();) {
 					Vertex vertex = (Vertex) iterator2.next();
 					vertex.delete();
@@ -118,7 +117,7 @@ public class GetClaimsTask extends
 
 				List<Attachment> attachments = claim.getAttachments();
 
-				for (Iterator iterator2 = attachments.iterator(); iterator2
+				for (Iterator<Attachment> iterator2 = attachments.iterator(); iterator2
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator2.next();
 
@@ -127,7 +126,7 @@ public class GetClaimsTask extends
 				}
 
 				List<PropertyLocation> locations = claim.getPropertyLocations();
-				for (Iterator iterator2 = locations.iterator(); iterator2
+				for (Iterator<PropertyLocation> iterator2 = locations.iterator(); iterator2
 						.hasNext();) {
 					PropertyLocation location = (PropertyLocation) iterator2
 							.next();
@@ -136,7 +135,7 @@ public class GetClaimsTask extends
 
 				List<Adjacency> adjacencies = Adjacency.getAdjacencies(claim
 						.getClaimId());
-				for (Iterator iterator2 = adjacencies.iterator(); iterator2
+				for (Iterator<Adjacency> iterator2 = adjacencies.iterator(); iterator2
 						.hasNext();) {
 					Adjacency adjacency = (Adjacency) iterator2.next();
 
@@ -154,7 +153,6 @@ public class GetClaimsTask extends
 					FileSystemUtilities.deleteClaim(claim.getClaimId());
 				}
 
-				i++;
 				input.setDownloaded(input.getDownloaded() + 1);
 				publishProgress(input);
 
@@ -174,7 +172,6 @@ public class GetClaimsTask extends
 				 * stage the client does not have to retrieve it
 				 */
 
-				i++;
 				input.setDownloaded(input.getDownloaded() + 1);
 				publishProgress(input);
 
@@ -198,11 +195,9 @@ public class GetClaimsTask extends
 				if (success == false) {
 
 					input.setResult(success);
-					i++;
 
 				} else {
 
-					i++;
 					input.setDownloaded(input.getDownloaded() + 1);
 					publishProgress(input);
 
@@ -214,7 +209,6 @@ public class GetClaimsTask extends
 				Log.d(this.getClass().getName(), "The claim  "
 						+ claimToDownload.getId() + " shall not be downloaded");
 
-				i++;
 				input.setDownloaded(input.getDownloaded() + 1);
 				publishProgress(input);
 			}
