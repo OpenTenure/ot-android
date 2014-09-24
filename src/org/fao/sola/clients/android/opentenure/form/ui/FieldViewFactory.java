@@ -89,6 +89,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			spinner.setEnabled(false);   
 			spinner.setClickable(false); 
+			spinner.setLongClickable(false);
 		}
 
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
@@ -144,6 +145,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			text.setEnabled(false);   
 			text.setClickable(false); 
+			text.setLongClickable(false);
 		}else{
 			text.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -197,11 +199,12 @@ public class FieldViewFactory {
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		number.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
-			number.setText(payload.getStringPayload());
+			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
 		if(mode == Mode.MODE_RO){
 			number.setEnabled(false);   
 			number.setClickable(false); 
+			number.setLongClickable(false);
 		}else{
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -253,11 +256,12 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		bool.setHint(field.getHint());
 		if(payload.getBooleanPayload()!=null){
-			bool.setSelected(payload.getBooleanPayload().booleanValue());
+			bool.setChecked(payload.getBooleanPayload().booleanValue());
 		}
 		if(mode == Mode.MODE_RO){
 			bool.setEnabled(false);   
-			bool.setClickable(false); 
+			bool.setClickable(false);
+			bool.setLongClickable(false);
 		}else{
 			bool.setOnClickListener(new OnClickListener() {
 
@@ -296,6 +300,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			datetime.setEnabled(false);   
 			datetime.setClickable(false); 
+			datetime.setLongClickable(false);
 		}else{
 			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -389,6 +394,7 @@ public class FieldViewFactory {
 		if(mode == Mode.MODE_RO){
 			datetime.setEnabled(false);   
 			datetime.setClickable(false); 
+			datetime.setLongClickable(false);
 		}else{
 			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 

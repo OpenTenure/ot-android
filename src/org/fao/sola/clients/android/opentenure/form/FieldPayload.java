@@ -41,7 +41,7 @@ public class FieldPayload {
 	
 	private String id;
 	@JsonIgnore
-	private SectionElementPayload sectionElementPayload;
+	private transient SectionElementPayload sectionElementPayload;
 	private String sectionElementPayloadId;
 	protected String name;
 	protected String displayName;

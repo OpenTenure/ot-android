@@ -1010,6 +1010,15 @@ public class CommunityServerAPI {
 			saveResponse.setMessage("IOException Exception : Network failure");
 
 			return saveResponse;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			SaveClaimResponse saveResponse = new SaveClaimResponse();
+			saveResponse.setHttpStatusCode(400);
+			saveResponse.setMessage("Exception : " + e.getMessage());
+
+			return saveResponse;
 		}
 
 	}

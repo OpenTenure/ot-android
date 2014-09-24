@@ -220,7 +220,7 @@ public class InitializationActivity extends Activity {
 
 				 FormRetriever formRetriever = new FormRetriever();
 				 formRetriever.setFormUrl(formUrl);
-				 formRetriever.execute();
+				 formRetriever.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 
 			Intent i = new Intent(InitializationActivity.this, OpenTenure.class);

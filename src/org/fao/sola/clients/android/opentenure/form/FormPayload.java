@@ -51,7 +51,7 @@ public class FormPayload {
 
 	private String id;
 	@JsonIgnore
-	private FormTemplate formTemplate;
+	private transient FormTemplate formTemplate;
 	private String claimId;
 	private String formTemplateName;
 	private List<SectionPayload> sectionPayloadList;
@@ -131,7 +131,7 @@ public class FormPayload {
 		this.id = UUID.randomUUID().toString();
 		this.claimId = form.getClaimId();
 		this.formTemplate = form.getFormTemplate();
-		this.formTemplate = new FormTemplate();
+		this.formTemplateName = form.getFormTemplateName();
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
 		for(SectionPayload sectionTemplate:form.getSectionPayloadList()){
 			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));

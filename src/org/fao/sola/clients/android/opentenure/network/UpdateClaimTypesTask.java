@@ -91,6 +91,8 @@ public class UpdateClaimTypesTask extends
 								.isCheckedIdTypes()
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedForm()
 
 				) {
 

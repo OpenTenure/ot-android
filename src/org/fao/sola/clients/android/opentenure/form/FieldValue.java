@@ -14,7 +14,7 @@ public class FieldValue {
 	
 	private String id;
 	@JsonIgnore
-	private FieldPayload fieldPayload;
+	private transient FieldPayload fieldPayload;
 	private String fieldPayloadId;
 	private FieldValueType fieldValueType;
 	private String stringPayload;

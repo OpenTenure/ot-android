@@ -628,7 +628,7 @@ public class ClaimMapFragment extends Fragment implements
 				myLocation = null;
 				lh.setCustomListener(null);
 			}else{
-				LatLng currentLocation = lh.getCurrentLocation();
+				LatLng currentLocation = lh.getLastKnownLocation();
 
 				if (currentLocation != null && currentLocation.latitude != 0.0
 						&& currentLocation.longitude != 0.0) {
@@ -652,7 +652,7 @@ public class ClaimMapFragment extends Fragment implements
 			}
 			return true;
 		case R.id.action_new:
-			LatLng newLocation = lh.getCurrentLocation();
+			LatLng newLocation = lh.getLastKnownLocation();
 
 			if (newLocation != null && newLocation.latitude != 0.0
 					&& newLocation.longitude != 0.0) {
@@ -670,7 +670,7 @@ public class ClaimMapFragment extends Fragment implements
 			return true;
 		case R.id.action_rotate:
 
-			if(!isRotating && lh.getLatestLocation() != null) {
+			if(!isRotating && lh.getCurrentLocation() != null) {
 				menu.findItem(R.id.action_rotate).setVisible(false);
 				menu.findItem(R.id.action_stop_rotating).setVisible(true);
 		        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR),
@@ -686,6 +686,7 @@ public class ClaimMapFragment extends Fragment implements
 			menu.findItem(R.id.action_rotate).setVisible(true);
 			menu.findItem(R.id.action_stop_rotating).setVisible(false);
 			mSensorManager.unregisterListener(this);
+			map.stopAnimation();
 			isRotating = false;
 			return true;
 		default:
@@ -715,30 +716,24 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		
-		Location latestLocation = lh.getLatestLocation();
+
+		Location latestLocation = lh.getCurrentLocation();
 
 		if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR && latestLocation != null) {
-		    GeomagneticField field = new GeomagneticField(
-		            (float)latestLocation.getLatitude(),
-		            (float)latestLocation.getLongitude(),
-		            (float)latestLocation.getAltitude(),
-		            System.currentTimeMillis()
-		        );
 
 		    // getDeclination returns degrees
-		    float mDeclination = field.getDeclination();
+		    float mDeclination = lh.getMagField().getDeclination();
 			float[] mRotationMatrix = new float[16];
 	        SensorManager.getRotationMatrixFromVector(
 	        		mRotationMatrix , event.values);
 	        float[] orientation = new float[3];
 	        SensorManager.getOrientation(mRotationMatrix, orientation);
 	        float bearing = (float) (Math.toDegrees(orientation[0]) + mDeclination);
-	        CameraPosition currentPosition = map.getCameraPosition();
+            CameraPosition currentPosition = map.getCameraPosition();
 
 	        CameraPosition newPosition = new CameraPosition.Builder(currentPosition).bearing(bearing).build();
 	         
-	        map.moveCamera(CameraUpdateFactory.newCameraPosition(newPosition));
+	        map.animateCamera(CameraUpdateFactory.newCameraPosition(newPosition));
 	    }
 		
 	}
