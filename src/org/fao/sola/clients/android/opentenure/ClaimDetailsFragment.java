@@ -151,6 +151,12 @@ public class ClaimDetailsFragment extends Fragment {
 		inflater.inflate(R.menu.claim_details, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
+		
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		if (claim != null && !claim.isModifiable()) {
+			menu.removeItem(R.id.action_save);
+		}
+		
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 	}
@@ -518,6 +524,9 @@ public class ClaimDetailsFragment extends Fragment {
 				((EditText) rootView
 						.findViewById(R.id.date_of_start_input_field))
 						.setFocusable(false);
+				((EditText) rootView
+						.findViewById(R.id.date_of_start_input_field))
+						.setLongClickable(false);
 
 				((EditText) rootView.findViewById(R.id.claim_notes_input_field))
 						.setFocusable(false);

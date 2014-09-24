@@ -105,6 +105,13 @@ public class AdjacentClaimsFragment extends ListFragment {
 		inflater.inflate(R.menu.adjacencies, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
+		
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		
+		if (claim != null && !claim.isModifiable()) {
+			menu.removeItem(R.id.action_save);
+		}
+		
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 	}
@@ -305,6 +312,28 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 			((EditText) rootView.findViewById(R.id.west_adjacency))
 					.setText(adNotes.getWestAdjacency());
+
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
+				((EditText) rootView.findViewById(R.id.north_adjacency))
+						.setFocusable(false);
+				((EditText) rootView.findViewById(R.id.north_adjacency))
+				.setLongClickable(false);
+
+				((EditText) rootView.findViewById(R.id.south_adjacency))
+						.setFocusable(false);
+				((EditText) rootView.findViewById(R.id.south_adjacency))
+				.setLongClickable(false);
+
+				((EditText) rootView.findViewById(R.id.east_adjacency))
+						.setFocusable(false);
+				((EditText) rootView.findViewById(R.id.east_adjacency))
+				.setLongClickable(false);
+
+				((EditText) rootView.findViewById(R.id.west_adjacency))
+						.setFocusable(false);
+				((EditText) rootView.findViewById(R.id.west_adjacency))
+				.setLongClickable(false);
+			}
 
 		}
 	}

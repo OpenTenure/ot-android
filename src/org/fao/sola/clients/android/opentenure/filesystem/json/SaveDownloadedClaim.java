@@ -264,7 +264,8 @@ public class SaveDownloadedClaim {
 			else
 				AdjacenciesNotes.updateAdjacenciesNotes(adjacenciesNotes);
 
-			if (downloadedClaim.getGpsGeometry().startsWith("POINT"))
+			if (downloadedClaim.getGpsGeometry() == null
+					|| downloadedClaim.getGpsGeometry().startsWith("POINT"))
 				Vertex.storeWKT(claimDB.getClaimId(),
 						downloadedClaim.getMappedGeometry(),
 						downloadedClaim.getMappedGeometry());
