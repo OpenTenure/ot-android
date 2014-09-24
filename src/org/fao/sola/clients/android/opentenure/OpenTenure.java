@@ -192,10 +192,15 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					tabs, mViewPager);
 			counter = 0;
 		}
+		
+		Configuration conf = Configuration
+				.getConfigurationByName("isInitialized");
+		numberOfClaims = Claim.getNumberOfClaims();
+	
 		switch (counter) {
 		case 0:
 			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+			new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
 			sv.setContentTitle(getString(R.string.title_news).toUpperCase());
 			sv.setContentText(getString(R.string.showcase_news_message));
 			mViewPager.setCurrentItem(0);
@@ -244,9 +249,8 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			mViewPager.setCurrentItem(3);
 			break;
 		case 7:
-			numberOfClaims = Claim.getNumberOfClaims();
-
 			if (numberOfClaims>0) {
+				
 				sv.setShowcase(
 						new ViewTarget(mViewPager), true);
 				sv.setContentTitle("  ");
@@ -256,27 +260,86 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_new)), true);
 				sv.setContentTitle("  ");
 				sv.setContentText(getString(R.string.showcase_actionClaims_message));
-				sv.setButtonText(getString(R.string.close));
+				
 			}
-//			setAlpha(0.2f, mViewPager);
 			break;
 		
 		case 8:
 			if (numberOfClaims>0) {
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_new)), true);
 				sv.setContentText(getString(R.string.showcase_actionClaims_message));
-				sv.setButtonText(getString(R.string.close));
 			}	
 			
 			else {
-				sv.hide();
-			mViewPager.setCurrentItem(0);
-			setAlpha(1.0f, tabs, mViewPager);
-			counter = 0;
+			mViewPager.setCurrentItem(0);				
+					
+			 if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
+				 System.out.println("VALUE DI CONF  prima di currentItem  "+ conf.getValue());
+					
+				mViewPager.setCurrentItem(0);				
+				System.out.println("VALUE DI CONF  dopo di currentItem  "+ conf.getValue());
+				
+				sv.setShowcase(
+						new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+				sv.setContentText(getString(R.string.showcase_actionAlert1_message));
+			    setAlpha(1.0f, tabs);
+			 }
+			 else {
+					sv.hide();
+					mViewPager.setCurrentItem(0);
+					setAlpha(1.0f, tabs, mViewPager);
+					counter = 0;
+			 }
+			} 	
+			break;
+		case 9:
+			
+			if (numberOfClaims>0) {
+				if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
+					sv.setShowcase(
+							new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
+					sv.setContentText(getString(R.string.showcase_actionAlert1_message));
+				    setAlpha(1.0f, tabs);
+			 }
+				 else {
+						sv.hide();
+						mViewPager.setCurrentItem(0);
+						setAlpha(1.0f, tabs, mViewPager);
+						counter = 0;
+				 } 
+			}	
+			
+			else {
+			System.out.println("NUMBNER OF CLAIMS 9 = 0   "+numberOfClaims);
+			if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
+				sv.setShowcase(new ViewTarget(findViewById(R.id.action_alert)), true);
+			    sv.setContentText(getString(R.string.showcase_actionAlert_message));
+			    sv.setButtonText(getString(R.string.close));
+			    setAlpha(1.0f, tabs);
+			}
+			 else {
+					sv.hide();
+					mViewPager.setCurrentItem(0);
+					setAlpha(1.0f, tabs, mViewPager);
+					counter = 0;
+			 }
 			}
 			break;
-
-		case 9:
+		case 10:
+			if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
+				sv.setShowcase(new ViewTarget(findViewById(R.id.action_alert)), true);
+			    sv.setContentText(getString(R.string.showcase_actionAlert_message));
+			    sv.setButtonText(getString(R.string.close));
+			    setAlpha(1.0f, tabs);
+			}
+			 else {
+					sv.hide();
+					mViewPager.setCurrentItem(0);
+					setAlpha(1.0f, tabs, mViewPager);
+					counter = 0;
+			 }
+			break;
+		case 11:
 			sv.hide();
 			mViewPager.setCurrentItem(0);
 			setAlpha(1.0f, tabs, mViewPager);
