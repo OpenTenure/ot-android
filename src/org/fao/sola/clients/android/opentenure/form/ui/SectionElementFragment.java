@@ -112,6 +112,9 @@ public class SectionElementFragment extends Fragment {
 						getFieldPayloadList().get(i), mode));
 				break;
 			case DECIMAL:
+				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), field, elementPayload.
+						getFieldPayloadList().get(i), mode));
+				break;
 			case INTEGER:
 				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, elementPayload.
 						getFieldPayloadList().get(i), mode));
