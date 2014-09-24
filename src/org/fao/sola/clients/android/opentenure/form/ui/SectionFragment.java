@@ -70,6 +70,10 @@ public class SectionFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.multiple_field_group, menu);
+		if(mode == Mode.MODE_RO){
+			MenuItem item = menu.findItem(R.id.action_new);
+			item.setVisible(false);
+		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
