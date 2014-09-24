@@ -126,7 +126,7 @@ public class CommunityServerAPIUtilities {
 			byteBuffer.write(buffer, 0, len);
 		}
 		// and then we can return your byte array.
-		System.out.println("SIZE BYTE BUFFER : " + byteBuffer.size());
+		
 		return byteBuffer.toByteArray();
 	}
 

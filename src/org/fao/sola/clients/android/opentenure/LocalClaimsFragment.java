@@ -176,7 +176,7 @@ public class LocalClaimsFragment extends ListFragment {
 
 			OpenTenureApplication.setActivity(getActivity());
 
-			return false;
+			return true;
 
 		case R.id.action_logout:
 

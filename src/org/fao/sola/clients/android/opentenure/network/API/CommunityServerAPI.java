@@ -90,9 +90,10 @@ public class CommunityServerAPI {
 			/*
 			 * Creating the url to call
 			 */
-			
-			if(!OpenTenureApplication.getInstance().isOnline())
-				return LoginActivity._NO_CONNECTION ;
+
+
+			if (!OpenTenureApplication.getInstance().isOnline())
+				return LoginActivity._NO_CONNECTION;
 
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(OpenTenureApplication
@@ -112,7 +113,9 @@ public class CommunityServerAPI {
 			HttpContext context = new BasicHttpContext();
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
 
+			
 			AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+			
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
@@ -135,14 +138,17 @@ public class CommunityServerAPI {
 			case 200:
 				OpenTenureApplication.setCoockieStore(CS);
 				Log.d("CommunityServerAPI", "Login status : 200");
+				OpenTenureApplication.closeHttpClient();
 				return 200;
 
 			case 401:
 				Log.d("CommunityServerAPI", "Login status : 401");
+				OpenTenureApplication.closeHttpClient();
 				return 401;
 
 			default:
 				Log.d("CommunityServerAPI", "Login status : default");
+				OpenTenureApplication.closeHttpClient();
 				return 0;
 			}
 
@@ -417,6 +423,17 @@ public class CommunityServerAPI {
 			apiResponse.setClaimId(claimId);
 
 			return apiResponse;
+		} catch (IllegalStateException ise) {
+
+			// TODO Auto-generated catch block
+			ise.printStackTrace();
+
+			ApiResponse apiResponse = new ApiResponse();
+
+			apiResponse.setHttpStatusCode(100);
+			apiResponse.setMessage(ise.getMessage());
+			apiResponse.setClaimId(claimId);
+			return apiResponse;
 		}
 
 	}
@@ -475,6 +492,11 @@ public class CommunityServerAPI {
 			e.printStackTrace();
 
 			return null;
+		} catch (IllegalStateException ise) {
+
+			ise.printStackTrace();
+			return null;
+
 		}
 
 	}
@@ -584,6 +606,15 @@ public class CommunityServerAPI {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+
+			methodResponse.setArray(null);
+			methodResponse.setHttpStatusCode(400);
+			methodResponse.setMessage("Error retrieving attachment");
+
+			return methodResponse;
+		} catch (IllegalStateException ise) {
+			// TODO Auto-generated catch block
+			ise.printStackTrace();
 
 			methodResponse.setArray(null);
 			methodResponse.setHttpStatusCode(400);
