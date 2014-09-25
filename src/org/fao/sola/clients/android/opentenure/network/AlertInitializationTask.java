@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
@@ -40,8 +41,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -56,7 +59,7 @@ public class AlertInitializationTask extends
 		this.dialog = new ProgressDialog(activity);
 
 	}
-	
+
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
@@ -116,10 +119,23 @@ public class AlertInitializationTask extends
 					.getString(R.string.message_app_not_initialized_network));
 		} else {
 			alertDialog.setTitle(R.string.message_title_app_initialized);
-			alertDialog
-					.setMessage(OpenTenureApplication.getContext()
-							.getResources()
-							.getString(R.string.message_app_initialized));
+
+			SharedPreferences OpenTenurePreferences = PreferenceManager
+					.getDefaultSharedPreferences(OpenTenureApplication
+							.getContext());
+
+			if (!OpenTenurePreferences
+					.getString(OpenTenurePreferencesActivity.CS_URL_PREF,
+							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER)
+					.trim()
+					.equals(OpenTenureApplication._DEFAULT_COMMUNITY_SERVER))
+				alertDialog.setMessage(OpenTenureApplication.getContext()
+						.getResources()
+						.getString(R.string.message_app_initialized));
+			else
+				alertDialog.setMessage(OpenTenureApplication.getContext()
+						.getResources()
+						.getString(R.string.message_app_initialized_default));
 		}
 
 		alertDialog.setPositiveButton(R.string.confirm, new OnClickListener() {

@@ -77,6 +77,7 @@ public class OpenTenureApplication extends Application {
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
 	private static FragmentActivity newsFragmentActivity;
+	public static String _DEFAULT_COMMUNITY_SERVER = "https://ot.flossola.org";
 
 	public static OpenTenureApplication getInstance() {
 		return sInstance;

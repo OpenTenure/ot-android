@@ -57,9 +57,15 @@
         										  Lista dei documenti allegati alla richiesta
          										   \n \n 
          										  un documento puó essere selezionato dalla lista per vederne/modificarne i dettagli
-         										   \n \n ...oppure... 
+         										   
         										 
         	                                        
+    </string>
+    
+    <string name="showcase_claim_documentAttach_message">\n \n \n 
+        										  Selezionare icona con clip per allegare un file esistente
+        										   \n \n
+        										  Selezionare macchinetta fotografica per fare una foto da allegare alla richiesta
     </string>
     
     <string name="showcase_claim_adjacencies_message">\n \n \n 
@@ -115,6 +121,18 @@
     <string name="showcase_actionClaimMap_message"> \n \n  Selezionare icona di rotazione per ruotare la mappa utilizzando la funzione compasso dellapparecchio mobile
         										    \n \n  Selezionare licona "Centra" per centrare la mappa sulla vostra posizione
         										    \n \n  Selezionare icona snapshot per allegare una foto della mappa della richiesta 
+    </string>
+	
+	<string name="showcase_actionAlert1_message"> \n \n  Ora bisogna inizializzare l\'applicazione.
+                                                   \n \n  ma come???   
+    </string>
+    <string name="showcase_actionAlert_message"> \n \n  Questa icona serve ad inizializzare l\'applicazione.
+                                                  \n \n Al momento, la configurazione permette di unirsi alla comunita\' dimostrativa di Open tenure .
+                                                  \n \n Se ci si vuole unire ad un\' altra comunita\' configurare propriamente l\'URL del community server nelle impostazioni di Open Tenure
+                                                  \n \n Ogni volta che si intende cambiare comunita\': 
+                                                  \n \n 1) cancellare i dati di Open Tenure nelle impostazion app di android
+                                                  \n \n 2) configurare propriamente l\'URL del community server nelle impostazioni di Open Tenure
+                                                  \n \n 3) inizializzare l\'applicazione   
     </string>
     
     <string name="showcase_end_message">\n \n 

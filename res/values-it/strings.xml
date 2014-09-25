@@ -191,6 +191,7 @@
     <string name="message_app_not_initialized">Controlla i parametri del tuo Open Tenure Community Server in \'Impostazioni\' e ripeti il processo di inizializazione</string>
     <string name="message_title_app_initialized">L\'applicazione e\' inizializzata</string>
     <string name="message_app_initialized">L\'applicazione è pronta per lavorare e comunicare con l\'Open Tenure Community Server </string>
+    <string name="message_app_initialized_default">L\'applicazione è pronta per lavorare e comunicare con il Default Open Tenure Community Server </string>
     <string name="message_title_app_initializing">Sto inizializzando OpenTenure</string>
     <string name="message_app_initializing">Attendere&#8230;</string>
     <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>

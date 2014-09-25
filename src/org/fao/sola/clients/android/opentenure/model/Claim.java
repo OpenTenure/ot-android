@@ -691,7 +691,7 @@ public class Claim {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT COUNT 'x' FROM CLAIM");
+					.prepareStatement("SELECT COUNT (*) FROM CLAIM");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				result = rs.getInt(1);

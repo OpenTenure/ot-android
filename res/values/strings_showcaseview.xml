@@ -57,8 +57,16 @@
         										  List of Documents attached to the claim
          										   \n \n 
          										  A document can be selected from the list to edit/see its details
-         										   \n \n ...or... 
+         										    
         										 
+        	                                        
+    </string>
+    <string name="showcase_claim_documentAttach_message">\n \n \n 
+        										  Click the attach icon to attach an existing file
+        										   \n \n
+        										  Click the camera icon to take a photo to be attached to the claim
+        										    
+         										  
         	                                        
     </string>
     
@@ -115,6 +123,18 @@
     <string name="showcase_actionClaimMap_message"> \n \n  Click on Rotate Icon to rotate the map using the device compass
         										    \n \n  Click on Center Icon to center the map to your position
         										    \n \n  Click on Attach Snapshot Icon to attach a snapshot of the claim map 
+    </string>
+    
+    <string name="showcase_actionAlert1_message"> \n \n  You must now initialize the application.
+                                                   \n \n  How to???   
+    </string>
+    <string name="showcase_actionAlert_message"> \n \n  This icon allows initializing the application.
+                                                  \n \n At the moment, the configuration is ready to join the Open Tenure demo community.
+                                                  \n \n If you want to join another community, properly set your community server URL in the setting menu before initializing.
+                                                  \n \n Every time you need to change community: 
+                                                  \n \n 1) clear data for Open Tenure in the android apps settings
+                                                  \n \n 2) set the community server URL in the Open Tenure settings
+                                                  \n \n 3) initialize the application   
     </string>
     
     <string name="showcase_end_message">\n \n 
