@@ -41,8 +41,11 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.maps.Constants;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.io.ParseException;
@@ -480,13 +483,28 @@ public class PropertyLocation {
 		Point gpsPoint = null;
 
 		try {
-			mapPoint = (Point) reader.read(mapWKT);
+			
+			Geometry generic = reader.read(mapWKT);
+			
+			mapPoint = (Point) generic;
 			mapPoint.setSRID(Constants.SRID);
 			if (gpsWKT != null) {
 				gpsPoint = (Point) reader.read(gpsWKT);
 				gpsPoint.setSRID(Constants.SRID);
 			}
-		} catch (ParseException e) {
+		}catch(ClassCastException cce){
+			
+			try {
+				Log.d("OpenTEnureApplication", "ClassCastException - is not a POINT : " + (reader.read(mapWKT)).getClass().getName());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				
+			}
+			return null;
+		}
+		
+		catch (ParseException e) {
 			return null;
 		}
 
