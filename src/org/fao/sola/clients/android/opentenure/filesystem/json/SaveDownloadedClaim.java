@@ -321,17 +321,20 @@ public class SaveDownloadedClaim {
 					.hasNext();) {
 
 				Location location = (Location) iterator.next();
-				org.fao.sola.clients.android.opentenure.model.PropertyLocation propertyLocation = PropertyLocation
+
+				org.fao.sola.clients.android.opentenure.model.PropertyLocation propertyLocation;
+				propertyLocation = PropertyLocation
 						.propertyLocationFromWKT(location.getMappedLocation(),
 								location.getGpsLocation());
 
-				propertyLocation.setClaimId(location.getClaimId());
-				propertyLocation.setDescription(location.getDescription());
-				propertyLocation.setPropertyLocationId(location.getId());
+				if (propertyLocation != null) {
+					propertyLocation.setClaimId(location.getClaimId());
+					propertyLocation.setDescription(location.getDescription());
+					propertyLocation.setPropertyLocationId(location.getId());
 
-				int i = PropertyLocation
-						.createPropertyLocation(propertyLocation);
-
+					int i = PropertyLocation
+							.createPropertyLocation(propertyLocation);
+				}
 			}
 
 			List<Share> shares = downloadedClaim.getShares();

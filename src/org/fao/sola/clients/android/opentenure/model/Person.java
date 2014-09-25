@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +44,8 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 
 public class Person {
 
@@ -693,6 +696,20 @@ public class Person {
 
 	public static Bitmap getPersonPicture(Context context,
 			File personPictureFile, int size) {
+
+		ExifInterface oldExif;
+		String exifOrientation = null;
+		Bitmap transformedBitmap = null;
+		try {
+			oldExif = new ExifInterface(personPictureFile.getAbsolutePath());
+			exifOrientation = oldExif
+					.getAttribute(ExifInterface.TAG_ORIENTATION);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
@@ -703,24 +720,56 @@ public class Person {
 					R.drawable.ic_contact_picture);
 		}
 
-		int height = bitmap.getHeight();
-		int width = bitmap.getWidth();
-		int startOffset = 0;
+		try {
+			final Matrix bitmapMatrix = new Matrix();
+			switch (Integer.parseInt(exifOrientation)) {
+			case 1:
+				break; // top left
+			case 2:
+				bitmapMatrix.postScale(-1, 1);
+				break; // top right
+			case 3:
+				bitmapMatrix.postRotate(180);
+				break; // bottom right
+			case 4:
+				bitmapMatrix.postRotate(180);
+				bitmapMatrix.postScale(-1, 1);
+				break; // bottom left
+			case 5:
+				bitmapMatrix.postRotate(90);
+				bitmapMatrix.postScale(1, -1);
+				break; // left top
+			case 6:
+				bitmapMatrix.postRotate(90);
+				break; // right top
+			case 7:
+				bitmapMatrix.postRotate(270);
+				bitmapMatrix.postScale(1, -1);
+				break; // right bottom
+			case 8:
+				bitmapMatrix.postRotate(270);
+				break; // left bottom
+			default:
+				break; // Unknown
+			}
 
-		Bitmap croppedBitmap = null;
-
-		if (height > width) {
-			// Portrait
-			startOffset = (height - width) / 2;
-			croppedBitmap = Bitmap.createBitmap(bitmap, 0, startOffset, width,
-					width);
-		} else {
-			// Landscape
-			startOffset = (width - height) / 2;
-			croppedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
-					height);
+			int height = bitmap.getHeight();
+			int width = bitmap.getWidth();
+			int startOffset = 0;
+			// Create new bitmap.
+			if (height >= width){
+				startOffset = (height - width) / 2;
+				transformedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, width,
+						width, bitmapMatrix, false);}
+			if (width > height){
+				startOffset = (width - height) / 2;
+				transformedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
+						height, bitmapMatrix, false);}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		return Bitmap.createScaledBitmap(croppedBitmap, size, size, true);
+
+		return Bitmap.createScaledBitmap(transformedBitmap, size, size, true);
 	}
 
 	public String getPersonType() {
