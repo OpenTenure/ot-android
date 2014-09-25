@@ -56,7 +56,7 @@ public class SectionElementActivity extends FragmentActivity {
 	public static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
 	public static final String SECTION_ELEMENT_PAYLOAD_KEY = "sectionElementPayload";
 	public static final String MODE_KEY = "mode";
-	public static final int SECTION_ELEMENT_ACTIVITY_RESULT = 4321;
+	public static final int SECTION_ELEMENT_ACTIVITY_REQUEST_CODE = 4321;
 	private int sectionElementPosition;
 	private ModeDispatcher.Mode mode;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -118,7 +118,7 @@ public class SectionElementActivity extends FragmentActivity {
 		int intentPosition = getIntent().getExtras().getInt(
 				SECTION_ELEMENT_POSITION_KEY, SECTION_ELEMENT_POSITION_NEW);
 
-		if (savedPosition != -1) {
+		if (savedPosition != SECTION_ELEMENT_POSITION_NEW) {
 			sectionElementPosition = savedPosition;
 		} else {
 			sectionElementPosition = intentPosition;
@@ -178,7 +178,7 @@ public class SectionElementActivity extends FragmentActivity {
 					SECTION_ELEMENT_POSITION_DISCARD);
 			resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 					elementFragment.getEditedElement().toJson());
-			setResult(SECTION_ELEMENT_ACTIVITY_RESULT,
+			setResult(RESULT_CANCELED,
 					resultIntent);
 			finish();
 		} else {
@@ -196,8 +196,8 @@ public class SectionElementActivity extends FragmentActivity {
 							resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
 									sectionElementPosition);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
-									elementFragment.getEditedElement().toJson());
-							setResult(SECTION_ELEMENT_ACTIVITY_RESULT,
+									editedElement.toJson());
+							setResult(RESULT_OK,
 									resultIntent);
 							finish();
 						}
@@ -212,7 +212,7 @@ public class SectionElementActivity extends FragmentActivity {
 									SECTION_ELEMENT_POSITION_DISCARD);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									originalElement.toJson());
-							setResult(SECTION_ELEMENT_ACTIVITY_RESULT,
+							setResult(RESULT_CANCELED,
 									resultIntent);
 							finish();
 						}

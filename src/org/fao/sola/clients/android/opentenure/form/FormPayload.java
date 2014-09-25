@@ -42,11 +42,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FormPayload {
 	@Override
 	public String toString() {
-		return "FormPayload ["
-				+ "sectionPayloadList=" + Arrays.toString(sectionPayloadList.toArray())
-				+ ", claimId=" + claimId
-				+ ", id=" + id
-				+ "]";
+		return "FormPayload [" + "sectionPayloadList="
+				+ Arrays.toString(sectionPayloadList.toArray()) + ", claimId="
+				+ claimId + ", id=" + id + "]";
 	}
 
 	private String id;
@@ -55,7 +53,7 @@ public class FormPayload {
 	private String claimId;
 	private String formTemplateName;
 	private List<SectionPayload> sectionPayloadList;
-	
+
 	public String getId() {
 		return id;
 	}
@@ -81,27 +79,35 @@ public class FormPayload {
 		this.formTemplateName = template.getName();
 	}
 
-	public FormPayload(String claimId){
+	public FormPayload(String claimId) {
 		this.claimId = claimId;
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
 	}
 
-	public FormPayload(FormTemplate template, String claimId){
+	public FormPayload(FormTemplate template, String claimId) {
+		this.id = UUID.randomUUID().toString();
 		this.claimId = claimId;
 		this.formTemplateName = template.getName();
 		this.formTemplate = template;
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
-		for(SectionTemplate sectionTemplate:template.getSectionTemplateList()){
-			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
+		for (SectionTemplate sectionTemplate : template
+				.getSectionTemplateList()) {
+			SectionPayload newSection = new SectionPayload(sectionTemplate);
+			newSection.setFormPayloadId(id);
+			this.sectionPayloadList.add(newSection);
 		}
 	}
 
-	public FormPayload(FormTemplate template){
+	public FormPayload(FormTemplate template) {
+		this.id = UUID.randomUUID().toString();
 		this.formTemplateName = template.getName();
 		this.formTemplate = template;
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
-		for(SectionTemplate sectionTemplate:template.getSectionTemplateList()){
-			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
+		for (SectionTemplate sectionTemplate : template
+				.getSectionTemplateList()) {
+			SectionPayload newSection = new SectionPayload(sectionTemplate);
+			newSection.setFormPayloadId(id);
+			this.sectionPayloadList.add(newSection);
 		}
 	}
 
@@ -118,40 +124,46 @@ public class FormPayload {
 	}
 
 	public void setSectionPayloadList(List<SectionPayload> sectionPayloadList) {
+		if (sectionPayloadList != null) {
+			for (SectionPayload sectionPayload : sectionPayloadList) {
+				sectionPayload.setFormPayload(this);
+				sectionPayload.setFormPayloadId(id);
+			}
+		}
 		this.sectionPayloadList = sectionPayloadList;
 	}
 
-	public FormPayload(){
+	public FormPayload() {
 		this.id = UUID.randomUUID().toString();
 		this.formTemplate = new FormTemplate();
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
 	}
-	
-	public FormPayload(FormPayload form){
-		this.id = UUID.randomUUID().toString();
+
+	public FormPayload(FormPayload form) {
+		this.id = form.getId();
 		this.claimId = form.getClaimId();
 		this.formTemplate = form.getFormTemplate();
 		this.formTemplateName = form.getFormTemplateName();
 		this.sectionPayloadList = new ArrayList<SectionPayload>();
-		for(SectionPayload sectionTemplate:form.getSectionPayloadList()){
+		for (SectionPayload sectionTemplate : form.getSectionPayloadList()) {
 			this.sectionPayloadList.add(new SectionPayload(sectionTemplate));
 		}
 	}
-	
-	public void addSection(SectionPayload sectionPayload){
+
+	public void addSection(SectionPayload sectionPayload) {
 		sectionPayloadList.add(sectionPayload);
 	}
-	
+
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
-		  try {
+		try {
 			return mapper.writeValueAsString(this);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		  return null;
+		return null;
 	}
-	
+
 	public static FormPayload fromJson(String json) {
 		ObjectMapper mapper = new ObjectMapper();
 		FormPayload form;

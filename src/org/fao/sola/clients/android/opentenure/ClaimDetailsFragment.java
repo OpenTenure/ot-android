@@ -607,8 +607,8 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
-		if(!isFormValid())
-			return 6;
+		// Still allow saving the claim if the dynamic part contains errors
+		isFormValid();
 		claim.setSurveyForm(formDispatcher.getEditedFormPayload());
 		claim.setVersion("0");
 
@@ -683,8 +683,8 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 		}
-		if(!isFormValid())
-				return 3;
+		// Still allow saving the claim if the dynamic part contains errors
+		isFormValid();
 
 		if (createPersonAsOwner(person) == 0)
 			return 0;
@@ -747,7 +747,6 @@ public class ClaimDetailsFragment extends Fragment {
 							R.string.message_error_startdate,
 							Toast.LENGTH_SHORT);
 					toast.show();
-				} else if (updated == 3) {
 				} else {
 					toast = Toast
 							.makeText(rootView.getContext(),

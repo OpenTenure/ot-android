@@ -34,6 +34,9 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
@@ -91,6 +94,26 @@ public class SubmitClaimListener implements OnClickListener {
 						"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
 				
 				Claim claim = Claim.getClaim(claimId);
+				
+				FormPayload payload = claim.getSurveyForm();
+
+				if (payload != null) {
+					
+					FormTemplate template = payload.getFormTemplate();
+
+					if(template != null){
+						
+						FieldConstraint failedConstraint = template.getFailedConstraint(payload);
+						
+						if(failedConstraint != null){
+							Toast toast = Toast.makeText(v.getContext(),
+									failedConstraint.getErrorMsg(),
+									Toast.LENGTH_LONG);
+							toast.show();
+							return;
+						}
+					}
+				}
 
 				int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus(), claim.getAttachments());
 

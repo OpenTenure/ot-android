@@ -150,18 +150,19 @@ public class FieldPayload {
 	}
 
 	public FieldPayload(FieldPayload field){
-		this.id = UUID.randomUUID().toString();
+		this.id = field.getId();
+		this.sectionElementPayloadId = field.getSectionElementPayloadId();
 		if(field.getName() != null){
-			this.name = new String(field.getName());
+			this.name = field.getName();
 		}
 
 		if(field.getDisplayName() != null){
-			this.displayName = new String(field.getDisplayName());
+			this.displayName = field.getDisplayName();
 		}
 		
 		this.fieldType = field.getFieldType();
 		if(field.getStringPayload() != null){
-			this.stringPayload = new String(field.getStringPayload());
+			this.stringPayload = field.getStringPayload();
 		}
 		if(field.getBigDecimalPayload() != null){
 			this.bigDecimalPayload = new BigDecimal(field.getBigDecimalPayload().toString());
