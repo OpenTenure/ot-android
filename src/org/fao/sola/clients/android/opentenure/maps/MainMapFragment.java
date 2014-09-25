@@ -156,11 +156,53 @@ public class MainMapFragment extends SupportMapFragment implements
 			itemOut.setVisible(false);
 		}
 		if(map != null){
-			// Allow downloading tiles only at higher zoom levels
+			boolean isInCommunityArea = false;
+
+			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				GeometryFactory gf = new GeometryFactory();
+
+				// Get a geometry for the community area
+				List<LatLng> caPoints = CommunityArea.getPolyline().getPoints();
+
+				Coordinate[] caCoords = new Coordinate[(caPoints.size()) > 4 ? (caPoints.size()) : 4];
+
+				int i = 0;
+
+				for (LatLng caPoint : caPoints) {
+					caCoords[i++] = new Coordinate(caPoint.longitude, caPoint.latitude);
+				}
+
+				if(caPoints.size() == 2){
+					// the source is a line segment so we replicate the second vertex to create a three vertices polygon
+					caCoords[i++] = new Coordinate(caPoints.get(1).longitude, caPoints.get(1).latitude);
+				}
+
+				Polygon communityArea = gf.createPolygon(caCoords);
+				communityArea.setSRID(Constants.SRID);
+
+				LatLngBounds visibleBounds = map.getProjection().getVisibleRegion().latLngBounds;
+
+				Coordinate[] vbCoords = new Coordinate[5];
+				
+				vbCoords[0] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.northeast.latitude);
+				vbCoords[1] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.southwest.latitude);
+				vbCoords[2] = new Coordinate(visibleBounds.southwest.longitude, visibleBounds.southwest.latitude);
+				vbCoords[3] = new Coordinate(visibleBounds.southwest.longitude, visibleBounds.northeast.latitude);
+				vbCoords[4] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.northeast.latitude);
+
+				Polygon visibleBoundsPolygon = gf.createPolygon(vbCoords);
+				visibleBoundsPolygon.setSRID(Constants.SRID);
+				if(communityArea.getEnvelope().contains(visibleBoundsPolygon.getEnvelope())
+						|| communityArea.getEnvelope().overlaps(visibleBoundsPolygon.getEnvelope())){
+					isInCommunityArea = true;
+				}
+			}
+
 			int currentZoomLevel = (int) map.getCameraPosition().zoom;
 			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
 			
-			if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+			if ( isInCommunityArea && currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
 				MenuItem item = menu.findItem(R.id.action_download_tiles);
 				item.setVisible(true);
 			} else {
@@ -242,13 +284,11 @@ public class MainMapFragment extends SupportMapFragment implements
 				// setup map
 
 				bounds = new LatLngBounds.Builder();
-				// get all cars from the datbase with getter method
+				// Get vertices of the community area
 				List<LatLng> K = CommunityArea.getPolyline().getPoints();
 
-				// loop through cars in the database
 				for (LatLng cn : K) {
-					// use .include to put add each point to be included in the
-					// bounds
+					// Make sure that the vertices are in the displayed area
 					bounds.include(cn);
 
 				}
