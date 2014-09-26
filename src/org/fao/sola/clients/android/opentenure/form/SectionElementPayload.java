@@ -75,7 +75,6 @@ public class SectionElementPayload {
 	public void setFieldPayloadList(List<FieldPayload> fieldPayloadList) {
 		if(fieldPayloadList != null){
 			for(FieldPayload fieldPayload:fieldPayloadList){
-				fieldPayload.setSectionElementPayload(this);
 				fieldPayload.setSectionElementPayloadId(id);
 			}
 		}

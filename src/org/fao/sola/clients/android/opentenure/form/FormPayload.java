@@ -126,7 +126,6 @@ public class FormPayload {
 	public void setSectionPayloadList(List<SectionPayload> sectionPayloadList) {
 		if (sectionPayloadList != null) {
 			for (SectionPayload sectionPayload : sectionPayloadList) {
-				sectionPayload.setFormPayload(this);
 				sectionPayload.setFormPayloadId(id);
 			}
 		}
