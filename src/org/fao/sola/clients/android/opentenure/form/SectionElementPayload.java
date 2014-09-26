@@ -42,7 +42,8 @@ public class SectionElementPayload {
 	}
 
 	public SectionElementPayload(SectionElementPayload se){
-		this.id = UUID.randomUUID().toString();
+		this.id = se.getId();
+		this.sectionPayloadId = se.getSectionPayloadId();
 		this.fieldPayloadList = new ArrayList<FieldPayload>();
 		for(FieldPayload fieldPayload:se.getFieldPayloadList()){
 			this.fieldPayloadList.add(new FieldPayload(fieldPayload));
@@ -53,7 +54,9 @@ public class SectionElementPayload {
 		this.id = UUID.randomUUID().toString();
 		this.fieldPayloadList = new ArrayList<FieldPayload>();
 		for(FieldTemplate ft:st.getFieldTemplateList()){
-			this.fieldPayloadList.add(new FieldPayload(ft));
+			FieldPayload newField = new FieldPayload(ft);
+			newField.setSectionElementPayloadId(id);
+			this.fieldPayloadList.add(newField);
 		}
 	}
 
@@ -70,10 +73,17 @@ public class SectionElementPayload {
 	}
 
 	public void setFieldPayloadList(List<FieldPayload> fieldPayloadList) {
+		if(fieldPayloadList != null){
+			for(FieldPayload fieldPayload:fieldPayloadList){
+				fieldPayload.setSectionElementPayload(this);
+				fieldPayload.setSectionElementPayloadId(id);
+			}
+		}
 		this.fieldPayloadList = fieldPayloadList;
 	}
 
 	public void addField(FieldPayload field) {
+		field.setSectionElementPayloadId(id);
 		fieldPayloadList.add(field);
 	}
 

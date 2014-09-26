@@ -29,7 +29,7 @@ package org.fao.sola.clients.android.opentenure.form.ui;
 
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.ModeDispatcher;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
@@ -49,22 +49,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO> {
+	private final SectionFragment fragment;
 	private final Context context;
 	private List<SectionElementListTO> sectionElements;
-	private SectionTemplate elementTemplate;
+	private SectionTemplate sectionTemplate;
 	private SectionPayload sectionPayload;
 	private LayoutInflater inflater;
-	private boolean readOnly;
+	private Mode mode;
 
-	public SectionElementListAdapter(Context context, List<SectionElementListTO> sectionElements, SectionPayload sectionPayload, SectionTemplate sectionTemplate, boolean readOnly) {
+	public SectionElementListAdapter(SectionFragment fragment, Context context, List<SectionElementListTO> sectionElements, SectionPayload sectionPayload, SectionTemplate sectionTemplate, Mode mode) {
 		super(context, R.layout.multiple_field_group_list_item, sectionElements);
+		this.fragment = fragment;
 		this.context = context;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.sectionElements = sectionElements;
-		this.elementTemplate = sectionTemplate;
+		this.sectionTemplate = sectionTemplate;
 		this.sectionPayload = sectionPayload;
-		this.readOnly = readOnly;
+		this.mode = mode;
 	}
 	
 	static class ViewHolder {
@@ -101,14 +103,14 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 						SectionElementActivity.class);
 				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, position);
 				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, sectionElements.get(position).getJson());
-				intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, elementTemplate.toJson());
-				intent.putExtra(SectionElementActivity.MODE_KEY, ModeDispatcher.Mode.MODE_RO.toString());
-				context.startActivity(intent);
+				intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+				intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
+				fragment.startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			}
 			
 		});
 
-		if(!readOnly){
+		if(mode == Mode.MODE_RW){
 			vh.removeIcon.setOnClickListener(new OnClickListener() {
 
 				@Override

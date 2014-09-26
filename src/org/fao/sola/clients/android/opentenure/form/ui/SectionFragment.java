@@ -28,16 +28,21 @@
 package org.fao.sola.clients.android.opentenure.form.ui;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
+import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
+import org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -83,15 +88,11 @@ public class SectionFragment extends ListFragment {
 		case R.id.action_new:
 			Intent intent = new Intent(rootView.getContext(),
 					SectionElementActivity.class);
-			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY,
-					SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
-			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY,
-					new SectionElementPayload(sectionTemplate).toJson());
-			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY,
-					sectionTemplate.toJson());
-			intent.putExtra(SectionElementActivity.MODE_KEY, mode
-					.toString());
-			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_RESULT);
+			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
+			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, new SectionElementPayload(sectionTemplate).toJson());
+			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+			intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
+			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -103,22 +104,25 @@ public class SectionFragment extends ListFragment {
 
 		if (data != null) { // No selection has been done
 
-			switch (requestCode) {
-			case SectionElementActivity.SECTION_ELEMENT_ACTIVITY_RESULT:
+			if(resultCode == Activity.RESULT_OK
+					&& requestCode == SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE){
+				
 				String fieldGroup = data
 				.getStringExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY);
 				int position = data
 				.getIntExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
 
 				if(position == SectionElementActivity.SECTION_ELEMENT_POSITION_NEW){
+					// A new element was created and confirmed
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
+					newSectionElement.setSectionPayloadId(editedSection.getId());
 					editedSection.getSectionElementPayloadList().add(newSectionElement);
-				}else if(position != SectionElementActivity.SECTION_ELEMENT_POSITION_DISCARD){
+				}else{
+					// Changes to an existing element have been made and confirmed
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
 					editedSection.getSectionElementPayloadList().set(position, newSectionElement);
 				}
 				update();
-				break;
 			}
 		}
 
@@ -147,16 +151,37 @@ public class SectionFragment extends ListFragment {
 				SectionElementListTO fglto = new SectionElementListTO();
 				fglto.setName(ownersListTOs.size() + "");
 				StringBuffer sb = new StringBuffer();
+				Iterator<FieldTemplate> iterator = sectionTemplate.getFieldTemplateList().iterator();
 				for(FieldPayload field:sectionElement.getFieldPayloadList()){
+					FieldTemplate template = iterator.next();
 					if(sb.length() != 0){
 						sb.append(",");
 					}
+					List<FieldConstraintOption> options = null;
+					for(FieldConstraint constraint:template.getFieldConstraintList()){
+						if(constraint instanceof OptionConstraint){
+							options = ((OptionConstraint)constraint).getFieldConstraintOptionList(); 
+						}
+					}
+					
+					String fieldPayload = null;
+
 					if(field.getStringPayload() != null)
-						sb.append(field.getStringPayload());
+						fieldPayload = field.getStringPayload();
 					if(field.getBigDecimalPayload() != null)
-						sb.append(field.getBigDecimalPayload());
+						fieldPayload = field.getBigDecimalPayload().toString();
 					if(field.getBooleanPayload() != null)
-						sb.append(field.getBooleanPayload());
+						fieldPayload = field.getBooleanPayload().toString();
+					
+					if(options != null){
+						for(FieldConstraintOption option:options){
+							if(fieldPayload.equalsIgnoreCase(option.getName())){
+								fieldPayload = option.getDisplayName();
+							}
+						}
+					}
+
+					sb.append(fieldPayload);
 				}
 				fglto.setSlogan(sb.toString());
 				fglto.setJson(sectionElement.toJson());
@@ -165,11 +190,7 @@ public class SectionFragment extends ListFragment {
 
 			ArrayAdapter<SectionElementListTO> adapter = null;
 
-			if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
-				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, true);
-			}else{
-				adapter = new SectionElementListAdapter(rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, false);
-			}
+			adapter = new SectionElementListAdapter(this, rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, mode);
 
 			setListAdapter(adapter);
 			adapter.notifyDataSetChanged();

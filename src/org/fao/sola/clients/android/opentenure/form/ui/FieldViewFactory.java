@@ -137,7 +137,7 @@ public class FieldViewFactory {
 		text = new EditText(activity);
 		text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		text.setInputType(InputType.TYPE_CLASS_TEXT);
+		text.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 		text.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
 			text.setText(payload.getStringPayload());
@@ -315,6 +315,9 @@ public class FieldViewFactory {
 		bool.setHint(field.getHint());
 		if(payload.getBooleanPayload()!=null){
 			bool.setChecked(payload.getBooleanPayload().booleanValue());
+		}else{
+			payload.setBooleanPayload(Boolean.valueOf(false));
+			bool.setChecked(false);
 		}
 		if(mode == Mode.MODE_RO){
 			bool.setEnabled(false);   
@@ -327,6 +330,8 @@ public class FieldViewFactory {
 				public void onClick(View v) {
 					if (((CheckBox) v).isChecked()) {
 						payload.setBooleanPayload(Boolean.valueOf(true));
+					}else{
+						payload.setBooleanPayload(Boolean.valueOf(false));
 					}
 				}
 
@@ -344,6 +349,11 @@ public class FieldViewFactory {
 				tmpFormat = constraint.getFormat();
 			}
 		}
+		
+		if(tmpFormat == null){
+			tmpFormat = "yyyy-MM-dd";
+		}
+
 		final String format = tmpFormat;
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
@@ -438,6 +448,11 @@ public class FieldViewFactory {
 				tmpFormat = constraint.getFormat();
 			}
 		}
+
+		if(tmpFormat == null){
+			tmpFormat = "HH:mm";
+		}
+
 		final String format = tmpFormat;
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
