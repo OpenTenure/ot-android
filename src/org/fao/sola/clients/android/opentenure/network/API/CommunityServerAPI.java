@@ -138,17 +138,17 @@ public class CommunityServerAPI {
 			case 200:
 				OpenTenureApplication.setCoockieStore(CS);
 				Log.d("CommunityServerAPI", "Login status : 200");
-				OpenTenureApplication.closeHttpClient();
+				//OpenTenureApplication.closeHttpClient();
 				return 200;
 
 			case 401:
 				Log.d("CommunityServerAPI", "Login status : 401");
-				OpenTenureApplication.closeHttpClient();
+				//OpenTenureApplication.closeHttpClient();
 				return 401;
 
 			default:
 				Log.d("CommunityServerAPI", "Login status : default");
-				OpenTenureApplication.closeHttpClient();
+				//OpenTenureApplication.closeHttpClient();
 				return 0;
 			}
 
