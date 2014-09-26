@@ -33,6 +33,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -720,9 +721,21 @@ public class Person {
 					R.drawable.ic_contact_picture);
 		}
 
+		int orientation = 0;
 		try {
+			try {
+				orientation = Integer.parseInt(exifOrientation);
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out
+						.println("Exception parsing position. orientation is "
+								+ exifOrientation);
+				orientation = 0;
+			}
+
 			final Matrix bitmapMatrix = new Matrix();
-			switch (Integer.parseInt(exifOrientation)) {
+			switch (orientation) {
 			case 1:
 				break; // top left
 			case 2:
@@ -755,16 +768,32 @@ public class Person {
 
 			int height = bitmap.getHeight();
 			int width = bitmap.getWidth();
+
 			int startOffset = 0;
 			// Create new bitmap.
-			if (height >= width){
+			if (height >= width) {
 				startOffset = (height - width) / 2;
-				transformedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, width,
-						width, bitmapMatrix, false);}
-			if (width > height){
+				if (orientation != 0 && orientation != 1)
+					transformedBitmap = Bitmap.createBitmap(bitmap, 0,
+							startOffset, width, width, bitmapMatrix, false);
+				else {
+					transformedBitmap = Bitmap.createBitmap(bitmap, 0,
+							startOffset, width, width);
+
+				}
+			}
+			if (width > height) {
+
 				startOffset = (width - height) / 2;
-				transformedBitmap = Bitmap.createBitmap(bitmap, startOffset, 0, height,
-						height, bitmapMatrix, false);}
+				if (orientation != 0 && orientation != 1)
+					transformedBitmap = Bitmap
+							.createBitmap(bitmap, startOffset, 0, height,
+									height, bitmapMatrix, false);
+				else {
+					transformedBitmap = Bitmap.createBitmap(bitmap,
+							startOffset, 0, height, height);
+				}
+			}
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
