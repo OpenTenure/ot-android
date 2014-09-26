@@ -132,7 +132,6 @@ public class SectionPayload {
 	public void setSectionElementPayloadList(List<SectionElementPayload> sectionElementPayloadList) {
 		if(sectionElementPayloadList != null){
 			for(SectionElementPayload sectionElementPayload:sectionElementPayloadList){
-				sectionElementPayload.setSectionPayload(this);
 				sectionElementPayload.setSectionPayloadId(id);
 			}
 		}
