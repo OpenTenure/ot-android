@@ -112,18 +112,6 @@ public class NewsFragment extends ListFragment {
 			ProgressBar bar = (ProgressBar) rootView
 					.findViewById(R.id.progress_bar);
 
-			Configuration conf = Configuration
-					.getConfigurationByName("isInitialized");
-
-			if (conf == null) {
-
-				conf = new Configuration();
-				conf.setName("isInitialized");
-				conf.setValue("false");
-				conf.create();
-
-			}
-
 			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
 				Log.d(this.getClass().getName(),
 						"starting tasks for claim type download");

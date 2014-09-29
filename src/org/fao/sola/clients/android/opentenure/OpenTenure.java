@@ -27,7 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
@@ -87,7 +86,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	
 	@Override
 	public void onDestroy() {
-		OpenTenureApplication.getInstance().getDatabase().close();
+		cleanup();
 		super.onDestroy();
 	};
 
@@ -97,12 +96,11 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		exitDialog.setTitle(R.string.title_exit_dialog);
 		exitDialog.setMessage(getResources().getString(
 				R.string.message_exit_dialog));
-
 		exitDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				OpenTenureApplication.getInstance().getDatabase().close();
+				cleanup();
 				OpenTenure.super.onBackPressed();
 			}
 		});
@@ -113,6 +111,17 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			}
 		});
 		exitDialog.show();
+	}
+	
+	private void cleanup(){
+		OpenTenureApplication.getInstance().getDatabase().close();
+		OpenTenureApplication.getInstance().setCheckedCommunityArea(false);
+		OpenTenureApplication.getInstance().setCheckedDocTypes(false);
+		OpenTenureApplication.getInstance().setCheckedForm(false);
+		OpenTenureApplication.getInstance().setCheckedIdTypes(false);
+		OpenTenureApplication.getInstance().setCheckedLandUses(false);
+		OpenTenureApplication.getInstance().setCheckedTypes(false);
+		OpenTenureApplication.getInstance().setInitialized(false);
 	}
 
 	private String getFirstRun() {
@@ -131,10 +140,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			firstRun.create();
 			result = "True";
 		}
-// 		TODO THIS ROW MUST BE DELETED BEFORE PUSHING - IT IS USED FOR TESTING
-//			result = "True";
-//			System.out.println("QUI RESULT::  " + result);
-//			System.out.println("QUI firstRun.getValue()::  " + firstRun.getValue());
 		return result;
 	}
 
@@ -201,7 +206,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		case 0:
 			sv.setShowcase(
 			new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
-			sv.setContentTitle(getString(R.string.title_news).toUpperCase());
+			sv.setContentTitle(getString(R.string.title_news).toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_news_message));
 			mViewPager.setCurrentItem(0);
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
@@ -216,7 +221,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		case 2:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
-			sv.setContentTitle(getString(R.string.title_map).toUpperCase());
+			sv.setContentTitle(getString(R.string.title_map).toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
@@ -230,7 +235,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		case 4:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
-			sv.setContentTitle(getString(R.string.title_persons).toUpperCase());
+			sv.setContentTitle(getString(R.string.title_persons).toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_persons_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
@@ -243,7 +248,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		case 6:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
-			sv.setContentTitle(getString(R.string.title_claims).toUpperCase());
+			sv.setContentTitle(getString(R.string.title_claims).toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claims_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
 			mViewPager.setCurrentItem(3);
@@ -456,6 +461,10 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			}
 			return null;
 		}
+	}
+	
+	public void doOnBackPressed(){
+		super.onBackPressed();
 	}
 
 	@Override

@@ -80,8 +80,11 @@ public class InitializationActivity extends Activity {
 							db.setPassword(dbPasswordInput.getText().toString());
 							db.open();
 							if (db.isOpen()) {
+								createInitializationConfig();
 								Log.d(this.getClass().getName(), "db opened");
-								new StartOpenTenure().execute();
+								StartOpenTenure start = new StartOpenTenure();
+								start.setFormUrl(getFormUrl());
+								start.execute();
 							} else {
 								Log.d(this.getClass().getName(),
 										"db is still close");
@@ -103,21 +106,40 @@ public class InitializationActivity extends Activity {
 		} else {
 			Log.d(this.getClass().getName(), "db not encrypted");
 			checkPerformDbUpgrades();
+			createInitializationConfig();
 			StartOpenTenure start = new StartOpenTenure();
-			SharedPreferences OpenTenurePreferences = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			String defaultFormUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-			if (!defaultFormUrl.equalsIgnoreCase("")) {
-				defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
-			}
-			String formUrl = OpenTenurePreferences
-					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-							defaultFormUrl);
-			start.setFormUrl(formUrl);
+			start.setFormUrl(getFormUrl());
 			start.execute();
 		}
 
+	}
+	
+	private String getFormUrl(){
+		// Unless someone has explicitly configured a form URL for testing purposes
+		// attach the default path to the configured community server
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		String defaultFormUrl = OpenTenurePreferences.getString(
+				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+		if (!defaultFormUrl.equalsIgnoreCase("")) {
+			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+		}
+		String formUrl = OpenTenurePreferences
+				.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
+						defaultFormUrl);
+		return formUrl;
+	}
+	
+	private void createInitializationConfig(){
+		Configuration conf = Configuration
+				.getConfigurationByName("isInitialized");
+		if (conf == null) {
+
+			conf = new Configuration();
+			conf.setName("isInitialized");
+			conf.setValue("false");
+			conf.create();
+		}
 	}
 
 	private void checkPerformDbUpgrades() {
@@ -162,20 +184,13 @@ public class InitializationActivity extends Activity {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			Log.d(this.getClass().getName(),
-					"starting tasks for static data download");
+					"check to see if the application is initialized");
 
-			Configuration conf = Configuration
-					.getConfigurationByName("isInitialized");
-			if (conf == null) {
-
-				conf = new Configuration();
-				conf.setName("isInitialized");
-				conf.setValue("false");
-				conf.create();
-
-			}
 			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
 					"isInitialized").getValue())) {
+
+				Log.d(this.getClass().getName(),
+						"starting tasks for static data download");
 
 				if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
 					Log.d(this.getClass().getName(),
