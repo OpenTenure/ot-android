@@ -462,6 +462,45 @@ public class Attachment {
 		return attachments;
 	}
 
+	public static List<Attachment> getAttachments(String claimId, Connection externalConnection) {
+
+		List<Attachment> attachments = new ArrayList<Attachment>();
+		PreparedStatement statement = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT ATTACHMENT_ID, STATUS, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE FROM ATTACHMENT ATT WHERE ATT.CLAIM_ID=?");
+			statement.setString(1, claimId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				Attachment attachment = new Attachment();
+				attachment.setAttachmentId(rs.getString(1));
+				attachment.setStatus(rs.getString(2));
+				attachment.setClaimId(claimId);
+				attachment.setDescription(rs.getString(3));
+				attachment.setFileName(rs.getString(4));
+				attachment.setFileType(rs.getString(5));
+				attachment.setMimeType(rs.getString(6));
+				attachment.setMD5Sum(rs.getString(7));
+				attachment.setPath(rs.getString(8));
+				attachment.setSize(rs.getLong(9));
+				attachments.add(attachment);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return attachments;
+	}
+
 	public String getFileType() {
 		return fileType;
 	}

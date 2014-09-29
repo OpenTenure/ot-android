@@ -629,6 +629,42 @@ public class Vertex {
 		return vertices;
 	}
 
+	public static List<Vertex> getVertices(String claimId, Connection externalConnection) {
+		List<Vertex> vertices = new ArrayList<Vertex>();
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT VERTEX_ID, SEQUENCE_NUMBER, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM VERTEX VERT WHERE VERT.CLAIM_ID=? ORDER BY SEQUENCE_NUMBER");
+			statement.setString(1, claimId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				Vertex vertex = new Vertex();
+				vertex.setVertexId(rs.getString(1));
+				vertex.setClaimId(claimId);
+				vertex.setSequenceNumber(rs.getInt(2));
+				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(3)
+						.doubleValue(), rs.getBigDecimal(4).doubleValue()));
+				vertex.setMapPosition(new LatLng(rs.getBigDecimal(5)
+						.doubleValue(), rs.getBigDecimal(6).doubleValue()));
+				vertices.add(vertex);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return vertices;
+	}
+
 	public String getVertexId() {
 		return vertexId;
 	}

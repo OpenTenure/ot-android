@@ -573,6 +573,42 @@ public class PropertyLocation {
 		return propertyLocations;
 	}
 
+	public static List<PropertyLocation> getPropertyLocations(String claimId, Connection externalConnection) {
+		List<PropertyLocation> propertyLocations = new ArrayList<PropertyLocation>();
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT PROPERTY_LOCATION_ID, DESCRIPTION, GPS_LAT, GPS_LON, MAP_LAT, MAP_LON FROM PROPERTY_LOCATION VERT WHERE VERT.CLAIM_ID=?");
+			statement.setString(1, claimId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				PropertyLocation propertyLocation = new PropertyLocation();
+				propertyLocation.setPropertyLocationId(rs.getString(1));
+				propertyLocation.setClaimId(claimId);
+				propertyLocation.setDescription(rs.getString(2));
+				propertyLocation.setGPSPosition(new LatLng(rs.getBigDecimal(3)
+						.doubleValue(), rs.getBigDecimal(4).doubleValue()));
+				propertyLocation.setMapPosition(new LatLng(rs.getBigDecimal(5)
+						.doubleValue(), rs.getBigDecimal(6).doubleValue()));
+				propertyLocations.add(propertyLocation);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return propertyLocations;
+	}
+
 	public String getPropertyLocationId() {
 		return propertyLocationId;
 	}

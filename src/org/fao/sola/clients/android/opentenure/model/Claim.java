@@ -559,6 +559,116 @@ public class Claim {
 		return claim;
 	}
 
+	public static Claim getClaim(String claimId, Connection externalConnection) {
+		Claim claim = null;
+		PreparedStatement statement = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
+			statement.setString(1, claimId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				claim = new Claim();
+				claim.setClaimId(claimId);
+				claim.setStatus(rs.getString(1));
+				claim.setClaimNumber(rs.getString(2));
+				claim.setName(rs.getString(3));
+				claim.setPerson(Person.getPerson(rs.getString(4)));
+				claim.setType((rs.getString(5)));
+				claim.setChallengedClaim(Claim.getClaim(rs.getString(6)));
+				// claim.setChallengingClaims(getChallengingClaims(claimId));
+				claim.setChallengeExpiryDate(rs.getDate(7));
+				claim.setDateOfStart(rs.getDate(8));
+				claim.setLandUse(rs.getString(9));
+				claim.setNotes(rs.getString(10));
+				claim.setRecorderName(rs.getString(11));
+				claim.setVersion(rs.getString(12));
+				Clob clob = rs.getClob(13);
+				if(clob != null){
+					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+				}else{
+					claim.setSurveyForm(new FormPayload());
+				}
+				claim.setVertices(Vertex.getVertices(claimId));
+				claim.setPropertyLocations(PropertyLocation
+						.getPropertyLocations(claimId));
+				claim.setAttachments(Attachment.getAttachments(claimId));
+				claim.setShares(ShareProperty.getShares(claimId));
+				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return claim;
+	}
+
+	public static List<Claim> getAllClaims(Connection externalConnection) {
+		List<Claim> allClaims = new ArrayList<Claim>();
+		PreparedStatement statement = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM");
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				Claim claim = new Claim();
+				claim.setClaimId(claimId);
+				claim.setStatus(rs.getString(2));
+				claim.setClaimNumber(rs.getString(3));
+				claim.setName(rs.getString(4));
+				claim.setPerson(Person.getPerson(rs.getString(5)));
+				claim.setType((rs.getString(6)));
+				claim.setChallengedClaim(Claim.getClaim(rs.getString(7)));
+				claim.setChallengeExpiryDate(rs.getDate(8));
+				claim.setDateOfStart(rs.getDate(9));
+				claim.setLandUse(rs.getString(10));
+				claim.setNotes(rs.getString(11));
+				claim.setRecorderName(rs.getString(12));
+				claim.setVersion(rs.getString(13));
+				Clob clob = rs.getClob(14);
+				if(clob != null){
+					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+				}else{
+					claim.setSurveyForm(new FormPayload());
+				}
+				claim.setVertices(Vertex.getVertices(claimId, externalConnection));
+				claim.setPropertyLocations(PropertyLocation
+						.getPropertyLocations(claimId, externalConnection));
+				claim.setAttachments(Attachment.getAttachments(claimId, externalConnection));
+				claim.setShares(ShareProperty.getShares(claimId, externalConnection));
+				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
+				allClaims.add(claim);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
 	public static List<Claim> getChallengingClaims(String claimId) {
 		List<Claim> challengingClaims = new ArrayList<Claim>();
 		Connection localConnection = null;
@@ -637,39 +747,16 @@ public class Claim {
 	}
 
 	public static List<Claim> getAllClaims() {
-		List<Claim> claims = new ArrayList<Claim>();
 		Connection localConnection = null;
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-
+		List<Claim> allClaims = null;
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			statement = localConnection
-					.prepareStatement("SELECT CLAIM_ID FROM CLAIM");
-			rs = statement.executeQuery();
-			while (rs.next()) {
-				Claim claim = Claim.getClaim(rs.getString(1));
-				claims.add(claim);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			allClaims = getAllClaims(localConnection);
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
 			if (localConnection != null) {
 				try {
 					localConnection.close();
@@ -677,7 +764,7 @@ public class Claim {
 				}
 			}
 		}
-		return claims;
+		return allClaims;
 	}
 
 	public static int getNumberOfClaims() {

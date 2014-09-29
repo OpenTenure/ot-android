@@ -349,6 +349,38 @@ public class ShareProperty {
 		return shareList;
 	}
 
+	public static List<ShareProperty> getShares(String claimId, Connection externalConnection) {
+		List<ShareProperty> shareList = new ArrayList<ShareProperty>();
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT SHARE.ID, SHARE.CLAIM_ID, SHARE.SHARES FROM SHARE WHERE SHARE.CLAIM_ID=? ORDER BY SHARE.ID");
+			statement.setString(1, claimId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				ShareProperty share = new ShareProperty();
+				share.setId(rs.getString(1));
+				share.setClaimId(claimId);
+				share.setShares(rs.getBigDecimal(3).intValue());
+				shareList.add(share);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return shareList;
+	}
+
 	public static ShareProperty getShare(String id) {
 
 		Connection localConnection = null;
