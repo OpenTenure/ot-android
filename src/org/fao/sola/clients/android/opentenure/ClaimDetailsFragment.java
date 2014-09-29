@@ -407,10 +407,10 @@ public class ClaimDetailsFragment extends Fragment {
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
 
-			File challengedPersonPictureFile = Person
-					.getPersonPictureFile(challengedPerson.getPersonId());
+//			File challengedPersonPictureFile = Person
+//					.getPersonPictureFile(challengedPerson.getPersonId());
 			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
-					rootView.getContext(), challengedPersonPictureFile, 128));
+					rootView.getContext(), challengedPerson.getPersonId(), 128));
 
 			ImageView challengedClaimantRemoveButton = (ImageView) rootView
 					.findViewById(R.id.action_remove_challenge);
@@ -469,10 +469,10 @@ public class ClaimDetailsFragment extends Fragment {
 							+ claimant.getLastName());
 			ImageView claimantImageView = (ImageView) rootView
 					.findViewById(R.id.claimant_picture);
-			File personPictureFile = Person.getPersonPictureFile(claimant
-					.getPersonId());
+//			File personPictureFile = Person.getPersonPictureFile(claimant
+//					.getPersonId());
 			claimantImageView.setImageBitmap(Person.getPersonPicture(
-					rootView.getContext(), personPictureFile, 128));
+					rootView.getContext(), claimant.getPersonId(), 128));
 
 			ImageView claimantRemove = (ImageView) rootView
 					.findViewById(R.id.action_remove_person);

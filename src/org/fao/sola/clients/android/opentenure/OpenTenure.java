@@ -279,10 +279,8 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			mViewPager.setCurrentItem(0);				
 					
 			 if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
-				 System.out.println("VALUE DI CONF  prima di currentItem  "+ conf.getValue());
 					
-				mViewPager.setCurrentItem(0);				
-				System.out.println("VALUE DI CONF  dopo di currentItem  "+ conf.getValue());
+				mViewPager.setCurrentItem(0);
 				
 				sv.setShowcase(
 						new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
@@ -315,7 +313,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			}	
 			
 			else {
-			System.out.println("NUMBNER OF CLAIMS 9 = 0   "+numberOfClaims);
 			if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_alert)), true);
 			    sv.setContentText(getString(R.string.showcase_actionAlert_message));

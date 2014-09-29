@@ -393,7 +393,37 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			break;
 		}
-		case 400:
+		case 400: {
+
+			Log.d("CommunityServerAPI",
+					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
+
+			if (claim.getStatus().equals(ClaimStatus._CREATED)
+					|| claim.getStatus().equals(ClaimStatus._UPLOADING)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
+				claim.update();
+			} else {
+				claim.setStatus(ClaimStatus._UPDATE_ERROR);
+				claim.update();
+			}
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_submission_error)
+							+ " ," + res.getMessage(), Toast.LENGTH_LONG);
+			toast.show();
+
+			ViewHolder vh = vhr.getVh();
+
+			vh.getStatus().setText(claim.getStatus());
+			vh.getStatus().setVisibility(View.VISIBLE);
+			vh.getBar().setVisibility(View.GONE);
+		}
+			break;
+			
+		case 500:
 
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
@@ -421,7 +451,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
 
-			break;
 
 		default:
 			break;

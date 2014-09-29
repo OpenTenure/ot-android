@@ -374,7 +374,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.position = position;
 
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
-				Person.getPersonPictureFile(claims.get(position).getPersonId()),
+				claims.get(position).getPersonId(),
 				96));
 
 		return convertView;

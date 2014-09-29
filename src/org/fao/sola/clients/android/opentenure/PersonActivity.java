@@ -78,20 +78,16 @@ public class PersonActivity extends FragmentActivity implements
 				if (fragment.checkChanges(this)) {
 					return true;
 				} else {
-					
+
 					return super.onKeyDown(keyCode, event);
 				}
-			} else{
+			} else {
 				return super.onKeyDown(keyCode, event);
-				}
+			}
 		} else
 			return super.onKeyDown(keyCode, event);
 	}
 
-	
-
-	
-	
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -190,9 +186,6 @@ public class PersonActivity extends FragmentActivity implements
 			case 0:
 
 				String personId = getPersonId();
-
-				System.out.println("Entity Type : " + getEntityType());
-				System.out.println("personId " + personId);
 
 				if (getEntityType() != null) {
 
