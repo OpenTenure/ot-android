@@ -177,12 +177,12 @@ public class OpenTenureApplication extends Application {
 	 */
 	public static synchronized AndroidHttpClient getHttpClient() {
 
-		if (mHttpClient != null )
+		if (mHttpClient != null)
 			return mHttpClient;
 		else
 			return prepareClient();
 	}
-	
+
 	/*
 	 * Return the single instance of the inizialized HttpClient that handle
 	 * connection and session to the server
@@ -339,7 +339,7 @@ public class OpenTenureApplication extends Application {
 			mHttpClient = AndroidHttpClient.newInstance("Android", context);
 			http_context = new BasicHttpContext();
 
-			cookieStore = new BasicCookieStore();
+			cookieStore = getCoockieStore();
 			http_context.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
 
 			Log.d("OpenTEnureApplication", "Initialized HTTP Client");
