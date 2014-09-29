@@ -969,7 +969,7 @@ public class ClaimDetailsFragment extends Fragment {
 										.findViewById(R.id.claim_notes_input_field))
 										.getText().toString();
 
-								if (!claim.getNotes().equals(notes))
+								if (claim.getNotes() != null && !claim.getNotes().equals(notes))
 									changed = true;
 								else {
 									String startDate = ((EditText) rootView
