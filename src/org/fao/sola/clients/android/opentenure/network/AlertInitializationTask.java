@@ -78,11 +78,10 @@ public class AlertInitializationTask extends
 		GetClaimsInput input = (GetClaimsInput) params[0];
 
 		int i = 0;
-		while (i <= 100) {
-			i = i + Claim.getAllClaims().size() - Claim.getAllClaims().size();
+		while (i <= 80) {
 
 			try {
-				Thread.sleep(80);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
