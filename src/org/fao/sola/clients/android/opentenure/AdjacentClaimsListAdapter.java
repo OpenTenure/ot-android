@@ -40,19 +40,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class AdjacentClaimsListAdapter extends ArrayAdapter<AdjacentClaimListTO> {
+public class AdjacentClaimsListAdapter extends
+		ArrayAdapter<AdjacentClaimListTO> {
 	private final Context context;
 	private List<AdjacentClaimListTO> claims;
 	LayoutInflater inflater;
 
-	public AdjacentClaimsListAdapter(Context context, List<AdjacentClaimListTO> claims) {
+	public AdjacentClaimsListAdapter(Context context,
+			List<AdjacentClaimListTO> claims) {
 		super(context, R.layout.adjacent_claims_list_item, claims);
 		this.context = context;
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.claims = claims;
 	}
-
 
 	static class ViewHolder {
 		TextView id;
@@ -73,7 +74,8 @@ public class AdjacentClaimsListAdapter extends ArrayAdapter<AdjacentClaimListTO>
 			vh.slogan = (TextView) convertView.findViewById(R.id.claim_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.claim_id);
 			vh.status = (TextView) convertView.findViewById(R.id.claim_status);
-			vh.cardinalDirection = (TextView) convertView.findViewById(R.id.cardinal_direction);
+			vh.cardinalDirection = (TextView) convertView
+					.findViewById(R.id.cardinal_direction);
 			vh.picture = (ImageView) convertView
 					.findViewById(R.id.claimant_picture);
 			convertView.setTag(vh);
@@ -84,12 +86,11 @@ public class AdjacentClaimsListAdapter extends ArrayAdapter<AdjacentClaimListTO>
 		vh.status.setText(claims.get(position).getStatus());
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
-		vh.cardinalDirection.setText(claims.get(position).getCardinalDirection());
-		vh.picture.setImageBitmap(Person.getPersonPicture(
-				context,
-				Person.getPersonPictureFile(Claim
-						.getClaim(claims.get(position).getId()).getPerson()
-						.getPersonId()), 96));
+		vh.cardinalDirection.setText(claims.get(position)
+				.getCardinalDirection());
+		vh.picture.setImageBitmap(Person.getPersonPicture(context, Claim
+				.getClaim(claims.get(position).getId()).getPerson()
+				.getPersonId(), 96));
 
 		return convertView;
 	}

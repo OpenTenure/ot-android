@@ -153,8 +153,7 @@ public class PersonsListAdapter extends ArrayAdapter<PersonListTO> implements
 		vh.id.setTextSize(8);
 		vh.id.setText(persons.get(position).getId());
 		vh.picture
-				.setImageBitmap(Person.getPersonPicture(context, Person
-						.getPersonPictureFile(persons.get(position).getId()),
+				.setImageBitmap(Person.getPersonPicture(context, persons.get(position).getId(),
 						96));
 
 		return convertView;

@@ -259,6 +259,9 @@ public class PersonFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					if (personPictureFile != null) {
+						
+						Person.deleteAllBmp(personActivity.getPersonId());
+						
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,
@@ -373,7 +376,7 @@ public class PersonFragment extends Fragment {
 
 		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
 		claimantImageView.setImageBitmap(Person.getPersonPicture(
-				rootView.getContext(), personPictureFile, 128));
+				rootView.getContext(), person.getPersonId(), 128));
 	}
 
 	private void loadGroup(String personId) {
@@ -443,7 +446,7 @@ public class PersonFragment extends Fragment {
 			if (resultCode == Activity.RESULT_OK) {
 				try {
 					claimantImageView.setImageBitmap(Person.getPersonPicture(
-							rootView.getContext(), personPictureFile, 128));
+							rootView.getContext(), personActivity.getPersonId(), 128));
 				} catch (Exception e) {
 					claimantImageView.setImageDrawable(getResources()
 							.getDrawable(R.drawable.ic_contact_picture));
@@ -856,9 +859,6 @@ public class PersonFragment extends Fragment {
 	}
 
 	public boolean checkChanges(PersonActivity personActivity) {
-
-		System.out.println("PersonActivity is " + personActivity);
-		System.out.println("PersonActivity is " + personActivity.getPersonId());
 
 		Person person = Person.getPerson(personActivity.getPersonId());
 		if (person != null) {

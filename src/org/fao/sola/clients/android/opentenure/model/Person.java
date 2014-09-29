@@ -28,6 +28,9 @@
 package org.fao.sola.clients.android.opentenure.model;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,6 +40,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import javax.imageio.plugins.bmp.BMPImageWriteParam;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
@@ -690,14 +697,30 @@ public class Person {
 				+ File.separator + personId + ".jpg");
 	}
 
+	public static File getPersonPictureBmp(String personId, int size) {
+		return new File(FileSystemUtilities.getClaimantFolder(personId)
+				+ File.separator + personId + "_" + size + ".png");
+	}
+
 	public static Bitmap getPersonPicture(Context context, String personId,
 			int size) {
-		return getPersonPicture(context, getPersonPictureFile(personId), size);
+		File file = getPersonPictureBmp(personId, size);
+		if (file != null && file.exists()) {
+
+			return BitmapFactory.decodeFile(file.getAbsolutePath());
+
+		} else {
+
+			return getPersonPicture(context, getPersonPictureFile(personId),
+					size);
+
+		}
 	}
 
 	public static Bitmap getPersonPicture(Context context,
 			File personPictureFile, int size) {
 
+		boolean save = false;
 		ExifInterface oldExif;
 		String exifOrientation = null;
 		Bitmap transformedBitmap = null;
@@ -719,6 +742,8 @@ public class Person {
 		if (bitmap == null) {
 			bitmap = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.ic_contact_picture);
+		} else {
+			save = true;
 		}
 
 		int orientation = 0;
@@ -798,7 +823,28 @@ public class Person {
 			// TODO: handle exception
 		}
 
-		return Bitmap.createScaledBitmap(transformedBitmap, size, size, true);
+		Bitmap icon = Bitmap.createScaledBitmap(transformedBitmap, size, size,
+				true);
+
+		if (save) {
+
+			try {
+				FileOutputStream fos = new FileOutputStream(personPictureFile
+						.getParentFile().getAbsolutePath()
+						+ File.separator
+						+ personPictureFile.getName().substring(0,
+								personPictureFile.getName().length() - 4)
+						+ "_"
+						+ size + ".png");
+
+				icon.compress(Bitmap.CompressFormat.PNG, 100, fos);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return icon;
 	}
 
 	public String getPersonType() {
@@ -807,6 +853,23 @@ public class Person {
 
 	public void setPersonType(String personType) {
 		this.personType = personType;
+	}
+
+	public static void deleteAllBmp(String personId) {
+
+		File folder = FileSystemUtilities.getClaimantFolder(personId);
+
+		File[] list = folder.listFiles();
+
+		for (int i = 0; i < list.length; i++) {
+			File fileTD = list[i];
+
+			if (fileTD.exists())
+				if (fileTD.getName().endsWith("png"))
+					fileTD.delete();
+
+		}
+
 	}
 
 	public Person copy() {

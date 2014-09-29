@@ -118,15 +118,15 @@ public class ClaimDocumentsFragment extends ListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
-		
+
 		inflater.inflate(R.menu.claim_documents, menu);
-		
+
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		if (claim != null && !claim.isModifiable()) {
 			menu.removeItem(R.id.action_new_picture);
 			menu.removeItem(R.id.action_new_attachment);
 		}
-		
+
 		super.onCreateOptionsMenu(menu, inflater);
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
@@ -186,11 +186,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 				DocumentType dt = new DocumentType();
 
 				List<String> list = dt.getDocumentTypesDispalyValues();
-				
+
 				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 					String string = (String) iterator.next();
-					
-					System.out.println("Document Type : "+ string );
 				}
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
@@ -454,7 +452,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 						OpenTenureApplication.getContext(),
 						OpenTenureApplication.getContext().getResources()
 								.getString(R.string.message_no_application)
-								+" "+ att.getFileName(), Toast.LENGTH_LONG).show();
+								+ " " + att.getFileName(), Toast.LENGTH_LONG)
+						.show();
 
 				e.getMessage();
 			}

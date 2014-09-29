@@ -114,8 +114,8 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 		
 		
 		
-		File file = Person.getPersonPictureFile(person.getPersonId());
-		vh.picture.setImageBitmap(Person.getPersonPicture(context,file , 128));
+		//File file = Person.getPersonPictureFile(person.getPersonId());
+		vh.picture.setImageBitmap(Person.getPersonPicture(context,person.getPersonId() , 128));
 		
 		if (!claim.getStatus().equals(ClaimStatus._CREATED)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
