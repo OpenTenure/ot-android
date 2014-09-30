@@ -721,18 +721,7 @@ public class Person {
 			File personPictureFile, int size) {
 
 		boolean save = false;
-		ExifInterface oldExif;
-		String exifOrientation = null;
-		Bitmap transformedBitmap = null;
-		try {
-			oldExif = new ExifInterface(personPictureFile.getAbsolutePath());
-			exifOrientation = oldExif
-					.getAttribute(ExifInterface.TAG_ORIENTATION);
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Bitmap squareBitmap = null;
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -740,90 +729,101 @@ public class Person {
 		Bitmap bitmap = BitmapFactory.decodeFile(personPictureFile.getPath(),
 				options);
 		if (bitmap == null) {
-			bitmap = BitmapFactory.decodeResource(context.getResources(),
+			squareBitmap = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.ic_contact_picture);
 		} else {
-			save = true;
-		}
-
-		int orientation = 0;
-		try {
+			ExifInterface oldExif;
+			String exifOrientation = null;
 			try {
-				orientation = Integer.parseInt(exifOrientation);
+				oldExif = new ExifInterface(personPictureFile.getAbsolutePath());
+				exifOrientation = oldExif
+						.getAttribute(ExifInterface.TAG_ORIENTATION);
 
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			save = true;
+			int orientation = 0;
+			try {
+				try {
+					orientation = Integer.parseInt(exifOrientation);
+
+				} catch (Exception e) {
+					// TODO: handle exception
+					System.out
+							.println("Exception parsing position. orientation is "
+									+ exifOrientation);
+					orientation = 0;
+				}
+
+				final Matrix bitmapMatrix = new Matrix();
+				switch (orientation) {
+				case 1:
+					break; // top left
+				case 2:
+					bitmapMatrix.postScale(-1, 1);
+					break; // top right
+				case 3:
+					bitmapMatrix.postRotate(180);
+					break; // bottom right
+				case 4:
+					bitmapMatrix.postRotate(180);
+					bitmapMatrix.postScale(-1, 1);
+					break; // bottom left
+				case 5:
+					bitmapMatrix.postRotate(90);
+					bitmapMatrix.postScale(1, -1);
+					break; // left top
+				case 6:
+					bitmapMatrix.postRotate(90);
+					break; // right top
+				case 7:
+					bitmapMatrix.postRotate(270);
+					bitmapMatrix.postScale(1, -1);
+					break; // right bottom
+				case 8:
+					bitmapMatrix.postRotate(270);
+					break; // left bottom
+				default:
+					break; // Unknown
+				}
+
+				int height = bitmap.getHeight();
+				int width = bitmap.getWidth();
+
+				int startOffset = 0;
+				// Create new bitmap.
+				if (height >= width) {
+					startOffset = (height - width) / 2;
+					if (orientation != 0 && orientation != 1)
+						squareBitmap = Bitmap.createBitmap(bitmap, 0,
+								startOffset, width, width, bitmapMatrix, false);
+					else {
+						squareBitmap = Bitmap.createBitmap(bitmap, 0,
+								startOffset, width, width);
+
+					}
+				}
+				if (width > height) {
+
+					startOffset = (width - height) / 2;
+					if (orientation != 0 && orientation != 1)
+						squareBitmap = Bitmap
+								.createBitmap(bitmap, startOffset, 0, height,
+										height, bitmapMatrix, false);
+					else {
+						squareBitmap = Bitmap.createBitmap(bitmap,
+								startOffset, 0, height, height);
+					}
+				}
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out
-						.println("Exception parsing position. orientation is "
-								+ exifOrientation);
-				orientation = 0;
 			}
-
-			final Matrix bitmapMatrix = new Matrix();
-			switch (orientation) {
-			case 1:
-				break; // top left
-			case 2:
-				bitmapMatrix.postScale(-1, 1);
-				break; // top right
-			case 3:
-				bitmapMatrix.postRotate(180);
-				break; // bottom right
-			case 4:
-				bitmapMatrix.postRotate(180);
-				bitmapMatrix.postScale(-1, 1);
-				break; // bottom left
-			case 5:
-				bitmapMatrix.postRotate(90);
-				bitmapMatrix.postScale(1, -1);
-				break; // left top
-			case 6:
-				bitmapMatrix.postRotate(90);
-				break; // right top
-			case 7:
-				bitmapMatrix.postRotate(270);
-				bitmapMatrix.postScale(1, -1);
-				break; // right bottom
-			case 8:
-				bitmapMatrix.postRotate(270);
-				break; // left bottom
-			default:
-				break; // Unknown
-			}
-
-			int height = bitmap.getHeight();
-			int width = bitmap.getWidth();
-
-			int startOffset = 0;
-			// Create new bitmap.
-			if (height >= width) {
-				startOffset = (height - width) / 2;
-				if (orientation != 0 && orientation != 1)
-					transformedBitmap = Bitmap.createBitmap(bitmap, 0,
-							startOffset, width, width, bitmapMatrix, false);
-				else {
-					transformedBitmap = Bitmap.createBitmap(bitmap, 0,
-							startOffset, width, width);
-
-				}
-			}
-			if (width > height) {
-
-				startOffset = (width - height) / 2;
-				if (orientation != 0 && orientation != 1)
-					transformedBitmap = Bitmap
-							.createBitmap(bitmap, startOffset, 0, height,
-									height, bitmapMatrix, false);
-				else {
-					transformedBitmap = Bitmap.createBitmap(bitmap,
-							startOffset, 0, height, height);
-				}
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
 		}
 
-		Bitmap icon = Bitmap.createScaledBitmap(transformedBitmap, size, size,
+
+		Bitmap icon = Bitmap.createScaledBitmap(squareBitmap, size, size,
 				true);
 
 		if (save) {
