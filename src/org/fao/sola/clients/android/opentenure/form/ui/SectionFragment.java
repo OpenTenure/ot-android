@@ -58,14 +58,16 @@ import android.widget.ArrayAdapter;
 
 public class SectionFragment extends ListFragment {
 
+	private static final String SECTION_PAYLOAD_KEY = "sectionPayload";
+	private static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
 	private View rootView;
-	private SectionPayload editedSection;
+	private SectionPayload sectionPayload;
 	private SectionTemplate sectionTemplate;
 	private Mode mode;
 
 	public SectionFragment(SectionPayload section, SectionTemplate sectionTemplate, Mode mode){
 		this.sectionTemplate = sectionTemplate;
-		this.editedSection = section;
+		this.sectionPayload = section;
 		this.mode = mode;
 	}
 
@@ -115,12 +117,12 @@ public class SectionFragment extends ListFragment {
 				if(position == SectionElementActivity.SECTION_ELEMENT_POSITION_NEW){
 					// A new element was created and confirmed
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
-					newSectionElement.setSectionPayloadId(editedSection.getId());
-					editedSection.getSectionElementPayloadList().add(newSectionElement);
+					newSectionElement.setSectionPayloadId(sectionPayload.getId());
+					sectionPayload.getSectionElementPayloadList().add(newSectionElement);
 				}else{
 					// Changes to an existing element have been made and confirmed
 					SectionElementPayload newSectionElement = SectionElementPayload.fromJson(fieldGroup);
-					editedSection.getSectionElementPayloadList().set(position, newSectionElement);
+					sectionPayload.getSectionElementPayloadList().set(position, newSectionElement);
 				}
 				update();
 			}
@@ -135,6 +137,13 @@ public class SectionFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.multiple_field_group_list, container,
 				false);
 		setHasOptionsMenu(true);
+
+		if(savedInstanceState != null && savedInstanceState.getString(SECTION_PAYLOAD_KEY) != null){
+			sectionPayload = SectionPayload.fromJson(savedInstanceState.getString(SECTION_PAYLOAD_KEY));
+		}
+		if(savedInstanceState != null && savedInstanceState.getString(SECTION_TEMPLATE_KEY) != null){
+			sectionTemplate = SectionTemplate.fromJson(savedInstanceState.getString(SECTION_TEMPLATE_KEY));
+		}
 		update();
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -142,11 +151,11 @@ public class SectionFragment extends ListFragment {
 		return rootView;
 	}
 	
-	protected void update() {
+	private void update() {
 
 			List<SectionElementListTO> ownersListTOs = new ArrayList<SectionElementListTO>();
 
-			for(SectionElementPayload sectionElement : editedSection.getSectionElementPayloadList()){
+			for(SectionElementPayload sectionElement : sectionPayload.getSectionElementPayloadList()){
 				
 				SectionElementListTO fglto = new SectionElementListTO();
 				fglto.setName(ownersListTOs.size() + "");
@@ -190,10 +199,17 @@ public class SectionFragment extends ListFragment {
 
 			ArrayAdapter<SectionElementListTO> adapter = null;
 
-			adapter = new SectionElementListAdapter(this, rootView.getContext(), ownersListTOs, editedSection, sectionTemplate, mode);
+			adapter = new SectionElementListAdapter(this, rootView.getContext(), ownersListTOs, sectionPayload, sectionTemplate, mode);
 
 			setListAdapter(adapter);
 			adapter.notifyDataSetChanged();
 
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(SECTION_PAYLOAD_KEY, sectionPayload.toJson());
+		outState.putString(SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+		super.onSaveInstanceState(outState);
 	}
 }

@@ -49,6 +49,8 @@ import android.widget.TextView;
 
 public class SectionElementFragment extends Fragment {
 
+	private static final String ELEMENT_PAYLOAD_KEY = "elementPayload";
+	private static final String ELEMENT_TEMPLATE_KEY = "elementTemplate";
 	private View rootView;
 	private SectionElementPayload elementPayload;
 	private SectionTemplate elementTemplate;
@@ -84,6 +86,17 @@ public class SectionElementFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInputFromWindow(rootView.getWindowToken(), 0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		
+		if(savedInstanceState != null && savedInstanceState.getString(ELEMENT_PAYLOAD_KEY) != null){
+			elementPayload = SectionElementPayload.fromJson(savedInstanceState.getString(ELEMENT_PAYLOAD_KEY));
+		}
+		if(savedInstanceState != null && savedInstanceState.getString(ELEMENT_TEMPLATE_KEY) != null){
+			elementTemplate = SectionTemplate.fromJson(savedInstanceState.getString(ELEMENT_TEMPLATE_KEY));
+		}
+		update();
+		return rootView;
+	}
+	
+	private void update(){
 		LinearLayout ll = (LinearLayout) rootView;
 		int i = 0;
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
@@ -128,6 +141,12 @@ public class SectionElementFragment extends Fragment {
 			}
 			i++;
 		}
-		return rootView;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(ELEMENT_PAYLOAD_KEY, elementPayload.toJson());
+		outState.putString(ELEMENT_TEMPLATE_KEY, elementTemplate.toJson());
+		super.onSaveInstanceState(outState);
 	}
 }
