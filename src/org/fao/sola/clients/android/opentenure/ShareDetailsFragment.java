@@ -100,12 +100,12 @@ public class ShareDetailsFragment extends Fragment {
 		super.onStart();
 
 		claimId = getArguments().getString("claimId");
-	
+
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		
+
 		menu.clear();
 
 		inflater.inflate(R.menu.share_details, menu);
@@ -132,7 +132,6 @@ public class ShareDetailsFragment extends Fragment {
 		case R.id.action_new:
 			Claim claim = Claim.getClaim(claimId);
 
-			
 			if (claim.getAvailableShares() > 0) {
 
 				Intent intent = new Intent(OpenTenureApplication.getContext(),
@@ -140,7 +139,8 @@ public class ShareDetailsFragment extends Fragment {
 
 				// SOLA DB cannot store the same person twice
 
-				ArrayList<String> idsWithSaresOrClaims = Person.getIdsWithSharesOrClaims();
+				ArrayList<String> idsWithSaresOrClaims = Person
+						.getIdsWithSharesOrClaims();
 				intent.putStringArrayListExtra(
 						SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
 						idsWithSaresOrClaims);
@@ -208,14 +208,14 @@ public class ShareDetailsFragment extends Fragment {
 
 			int i = 0;
 
-
 			ArrayAdapter<String> adapter = null;
 
 			adapter = new OwnersListAdapter(OpenTenureApplication.getContext(),
-					this.ownerList, claimId);
+					this.ownerList, claimId, getActivity());
 
 			// adapter = new OwnersListAdapter(context, owners);
-			ListView ownerList = (ListView) rootView.findViewById(R.id.owner_list);
+			ListView ownerList = (ListView) rootView
+					.findViewById(R.id.owner_list);
 			ownerList.setAdapter(adapter);
 			adapter.notifyDataSetChanged();
 

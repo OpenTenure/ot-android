@@ -94,6 +94,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private FormDispatcher formDispatcher;
 	private ClaimListener claimListener;
 	private final Calendar localCalendar = Calendar.getInstance();
+	private static final int PERSON_RESULT = 100;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -151,12 +152,12 @@ public class ClaimDetailsFragment extends Fragment {
 		inflater.inflate(R.menu.claim_details, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
-		
+
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		if (claim != null && !claim.isModifiable()) {
 			menu.removeItem(R.id.action_save);
 		}
-		
+
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 	}
@@ -167,10 +168,10 @@ public class ClaimDetailsFragment extends Fragment {
 		if (data != null) { // No selection has been done
 
 			switch (requestCode) {
-			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
+			case PERSON_RESULT:
 				String personId = data
 						.getStringExtra(PersonActivity.PERSON_ID_KEY);
-				
+
 				Person claimant = Person.getPerson(personId);
 				loadClaimant(claimant);
 				break;
@@ -221,7 +222,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
-				int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(),claim.getAttachments());
+				int progress = FileSystemUtilities.getUploadProgress(
+						claim.getClaimId(), claim.getStatus(),
+						claim.getAttachments());
 
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
@@ -238,22 +241,105 @@ public class ClaimDetailsFragment extends Fragment {
 
 						@Override
 						public void onClick(View v) {
+							// ////////
 
-							Intent intent = new Intent(rootView.getContext(),
-									SelectPersonActivity.class);
+							// Intent intent = new Intent(rootView.getContext(),
+							// SelectPersonActivity.class);
+							//
+							// // SOLA DB cannot store the same person twice
+							//
+							// ArrayList<String> idsWithSharesOrClaims = Person
+							// .getIdsWithSharesOrClaims();
+							//
+							// intent.putStringArrayListExtra(
+							// SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+							// idsWithSharesOrClaims);
+							//
+							// startActivityForResult(
+							// intent,
+							// SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
 
-							// SOLA DB cannot store the same person twice
+							String claimantId = ((TextView) rootView
+									.findViewById(R.id.claimant_id)).getText()
+									.toString();
 
-							ArrayList<String> idsWithSharesOrClaims = Person
-									.getIdsWithSharesOrClaims();
+							if (claimantId != null
+									&& !claimantId.trim().equals("")) {
 
-							intent.putStringArrayListExtra(
-									SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-									idsWithSharesOrClaims);
+								Intent intent = new Intent(rootView
+										.getContext(), PersonActivity.class);
+								intent.putExtra(
+										PersonActivity.PERSON_ID_KEY,
+										((TextView) rootView
+												.findViewById(R.id.claimant_id))
+												.getText());
+								intent.putExtra(PersonActivity.MODE_KEY,
+										modeActivity.getMode().toString());
+								startActivityForResult(intent, PERSON_RESULT);
 
-							startActivityForResult(
-									intent,
-									SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
+							} else {
+
+								AlertDialog.Builder dialog = new AlertDialog.Builder(
+										rootView.getContext());
+
+								dialog.setTitle(R.string.new_entity);
+								dialog.setMessage(R.string.message_entity_type);
+
+								dialog.setPositiveButton(R.string.person,
+										new DialogInterface.OnClickListener() {
+
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(
+														rootView.getContext(),
+														PersonActivity.class);
+												intent.putExtra(
+														PersonActivity.PERSON_ID_KEY,
+														PersonActivity.CREATE_PERSON_ID);
+												intent.putExtra(
+														PersonActivity.ENTIY_TYPE,
+														PersonActivity.TYPE_PERSON);
+												intent.putExtra(
+														PersonActivity.MODE_KEY,
+														modeActivity.getMode()
+																.toString());
+												startActivityForResult(intent,
+														PERSON_RESULT);
+											}
+										});
+
+								dialog.setNegativeButton(R.string.group,
+										new DialogInterface.OnClickListener() {
+
+											@Override
+											public void onClick(
+													DialogInterface dialog,
+													int which) {
+												Intent intent = new Intent(
+														rootView.getContext(),
+														PersonActivity.class);
+												intent.putExtra(
+														PersonActivity.PERSON_ID_KEY,
+														PersonActivity.CREATE_PERSON_ID);
+												intent.putExtra(
+														PersonActivity.ENTIY_TYPE,
+														PersonActivity.TYPE_GROUP);
+												intent.putExtra(
+														PersonActivity.MODE_KEY,
+														modeActivity.getMode()
+																.toString());
+												startActivityForResult(intent,
+														PERSON_RESULT);
+
+											}
+										});
+
+								dialog.show();
+
+							}
+
 						}
 					});
 
@@ -407,10 +493,12 @@ public class ClaimDetailsFragment extends Fragment {
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
 
-//			File challengedPersonPictureFile = Person
-//					.getPersonPictureFile(challengedPerson.getPersonId());
-			challengedClaimantImageView.setImageBitmap(Person.getPersonPicture(
-					rootView.getContext(), challengedPerson.getPersonId(), 128));
+			// File challengedPersonPictureFile = Person
+			// .getPersonPictureFile(challengedPerson.getPersonId());
+			challengedClaimantImageView
+					.setImageBitmap(Person.getPersonPicture(
+							rootView.getContext(),
+							challengedPerson.getPersonId(), 128));
 
 			ImageView challengedClaimantRemoveButton = (ImageView) rootView
 					.findViewById(R.id.action_remove_challenge);
@@ -457,7 +545,6 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadClaimant(Person claimant) {
 		if (claimant != null) {
 
-
 			((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 			((TextView) rootView.findViewById(R.id.claimant_id))
 					.setText(claimant.getPersonId());
@@ -469,8 +556,8 @@ public class ClaimDetailsFragment extends Fragment {
 							+ claimant.getLastName());
 			ImageView claimantImageView = (ImageView) rootView
 					.findViewById(R.id.claimant_picture);
-//			File personPictureFile = Person.getPersonPictureFile(claimant
-//					.getPersonId());
+			// File personPictureFile = Person.getPersonPictureFile(claimant
+			// .getPersonId());
 			claimantImageView.setImageBitmap(Person.getPersonPicture(
 					rootView.getContext(), claimant.getPersonId(), 128));
 
@@ -535,7 +622,6 @@ public class ClaimDetailsFragment extends Fragment {
 			Person claimant = null;
 			String claimantId = ((TextView) rootView
 					.findViewById(R.id.claimant_id)).getText().toString();
-
 
 			if (claimantId == null || claimantId.trim().equals(""))
 				claimant = claim.getPerson();
@@ -696,7 +782,7 @@ public class ClaimDetailsFragment extends Fragment {
 		return claim.update();
 
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
@@ -969,7 +1055,8 @@ public class ClaimDetailsFragment extends Fragment {
 										.findViewById(R.id.claim_notes_input_field))
 										.getText().toString();
 
-								if (claim.getNotes() != null && !claim.getNotes().equals(notes))
+								if (claim.getNotes() != null
+										&& !claim.getNotes().equals(notes))
 									changed = true;
 								else {
 									String startDate = ((EditText) rootView
@@ -1007,7 +1094,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 											}
 
-										}else{
+										} else {
 											changed = isFormChanged();
 										}
 
@@ -1064,13 +1151,13 @@ public class ClaimDetailsFragment extends Fragment {
 
 			int value = 0;
 
-			for (Iterator<ShareProperty> iterator = shares.iterator(); iterator.hasNext();) {
+			for (Iterator<ShareProperty> iterator = shares.iterator(); iterator
+					.hasNext();) {
 				ShareProperty shareProperty = (ShareProperty) iterator.next();
 				value = value + shareProperty.getShares();
 			}
 
 			int shareValue = 100 - value;
-		
 
 			if (shareValue > 0) {
 				ShareProperty share = new ShareProperty();
@@ -1082,13 +1169,16 @@ public class ClaimDetailsFragment extends Fragment {
 
 				Person claimantCopy = claimant.copy();
 				claimantCopy.create();
-				
-			File personImg = new File(FileSystemUtilities.getClaimantFolder(claimant.getPersonId())
-							+ File.separator + claimant.getPersonId() + ".jpg");
-			
-			if(personImg != null)
-				FileSystemUtilities.copyFileInClaimantFolder(claimantCopy.getPersonId(),personImg )	;
-				
+
+				File personImg = new File(
+						FileSystemUtilities.getClaimantFolder(claimant
+								.getPersonId())
+								+ File.separator
+								+ claimant.getPersonId() + ".jpg");
+
+				if (personImg != null)
+					FileSystemUtilities.copyFileInClaimantFolder(
+							claimantCopy.getPersonId(), personImg);
 
 				Owner owner = new Owner();
 				owner.setPersonId(claimantCopy.getPersonId());
@@ -1108,28 +1198,30 @@ public class ClaimDetailsFragment extends Fragment {
 
 	}
 
-	private boolean isFormValid(){
+	private boolean isFormValid() {
 		FormPayload formPayload = formDispatcher.getEditedFormPayload();
 		FormTemplate formTemplate = formDispatcher.getFormTemplate();
 		FieldConstraint constraint = null;
-		if((constraint = formTemplate.getFailedConstraint(formPayload)) != null){
-			Toast.makeText(rootView.getContext(),
-					constraint.displayErrorMsg(), Toast.LENGTH_SHORT).show();
+		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
+			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
+					Toast.LENGTH_SHORT).show();
 			return false;
-		}else{
+		} else {
 			return true;
 		}
 	}
 
-	private boolean isFormChanged(){
+	private boolean isFormChanged() {
 		FormPayload editedFormPayload = formDispatcher.getEditedFormPayload();
-		FormPayload originalFormPayload = formDispatcher.getOriginalFormPayload();
+		FormPayload originalFormPayload = formDispatcher
+				.getOriginalFormPayload();
 
-		if(((editedFormPayload != null) && (originalFormPayload == null))
-			|| ((editedFormPayload == null) && (originalFormPayload != null))
-			|| !editedFormPayload.toJson().equalsIgnoreCase(originalFormPayload.toJson())){
+		if (((editedFormPayload != null) && (originalFormPayload == null))
+				|| ((editedFormPayload == null) && (originalFormPayload != null))
+				|| !editedFormPayload.toJson().equalsIgnoreCase(
+						originalFormPayload.toJson())) {
 			return true;
-		}else{
+		} else {
 			return false;
 		}
 	}

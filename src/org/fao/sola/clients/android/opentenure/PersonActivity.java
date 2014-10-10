@@ -104,6 +104,12 @@ public class PersonActivity extends FragmentActivity implements
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(PERSON_ID_KEY, personId);
 
+		Intent resultIntent = new Intent();
+
+		resultIntent.putExtra(PersonActivity.PERSON_ID_KEY, personId);
+		// Set The Result in Intent
+		setResult(2, resultIntent);
+
 	}
 
 	@Override
@@ -114,7 +120,11 @@ public class PersonActivity extends FragmentActivity implements
 
 		setEntityType(intent.getStringExtra(ENTIY_TYPE));
 
-		mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));
+		String aMode = intent.getStringExtra(MODE_KEY);
+		if (aMode != null)
+			mode = ModeDispatcher.Mode.valueOf(aMode);
+		else
+			mode = ModeDispatcher.Mode.MODE_RW;
 		setContentView(R.layout.activity_person);
 
 		if ((getEntityType() != null && getEntityType().equalsIgnoreCase(

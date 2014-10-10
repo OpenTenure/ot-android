@@ -232,20 +232,20 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					findViewById(R.id.action_download_claims)), true);
 			sv.setContentText(getString(R.string.showcase_actionMap_message));
 			break;
+//		case 4:
+//			sv.setShowcase(
+//					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
+//			sv.setContentTitle(getString(R.string.title_persons).toUpperCase(Locale.getDefault()));
+//			sv.setContentText(getString(R.string.showcase_persons_message));
+//			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
+//			mViewPager.setCurrentItem(2);
+//			break;
 		case 4:
-			sv.setShowcase(
-					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
-			sv.setContentTitle(getString(R.string.title_persons).toUpperCase(Locale.getDefault()));
-			sv.setContentText(getString(R.string.showcase_persons_message));
-			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
-			mViewPager.setCurrentItem(2);
-			break;
-		case 5:
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_new)), true);
 			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_actionPersons_message));
 			break;
-		case 6:
+		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
 			sv.setContentTitle(getString(R.string.title_claims).toUpperCase(Locale.getDefault()));
@@ -253,7 +253,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
 			mViewPager.setCurrentItem(3);
 			break;
-		case 7:
+		case 6:
 			if (numberOfClaims>0) {
 				
 				sv.setShowcase(
@@ -269,7 +269,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			}
 			break;
 		
-		case 8:
+		case 7:
 			if (numberOfClaims>0) {
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_new)), true);
 				sv.setContentText(getString(R.string.showcase_actionClaims_message));
@@ -295,7 +295,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			 }
 			} 	
 			break;
-		case 9:
+		case 8:
 			
 			if (numberOfClaims>0) {
 				if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
@@ -327,7 +327,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			 }
 			}
 			break;
-		case 10:
+		case 9:
 			if ((conf == null)||((conf != null)&&(conf.getValue().equalsIgnoreCase("false")))) {
 				sv.setShowcase(new ViewTarget(findViewById(R.id.action_alert)), true);
 			    sv.setContentText(getString(R.string.showcase_actionAlert_message));
@@ -341,7 +341,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					counter = 0;
 			 }
 			break;
-		case 11:
+		case 10:
 			sv.hide();
 			mViewPager.setCurrentItem(0);
 			setAlpha(1.0f, tabs, mViewPager);
@@ -429,9 +429,9 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 				return new NewsFragment();
 			case 1:
 				return new MainMapFragment();
+			//case 2:
+			//	return new PersonsFragment();
 			case 2:
-				return new PersonsFragment();
-			case 3:
 				return new LocalClaimsFragment();
 			}
 			return null;
@@ -440,7 +440,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		@Override
 		public int getCount() {
 
-			return 4;
+			return 3;
 		}
 
 		@Override
@@ -451,9 +451,10 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 				return getString(R.string.title_news).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_map).toUpperCase(l);
+			//case 2:
+			//	System.out.println("Case 2 !!!!!!");
+			//	return getString(R.string.title_persons).toUpperCase(l);
 			case 2:
-				return getString(R.string.title_persons).toUpperCase(l);
-			case 3:
 				return getString(R.string.title_claims).toUpperCase(l);
 			}
 			return null;

@@ -118,6 +118,15 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 				Intent intent = new Intent(context, ShareDetailsActivity.class);
 				intent.putExtra(ShareDetailsActivity.SHARE_ID,
 						shares.get(position).getId());
+
+				ShareProperty share = ShareProperty.getShare(shares.get(
+						position).getId());
+				if (Claim.getClaim(share.getClaimId()).isModifiable())
+					intent.putExtra(PersonActivity.MODE_KEY,
+							ModeDispatcher.Mode.MODE_RW.toString());
+				else
+					intent.putExtra(PersonActivity.MODE_KEY,
+							ModeDispatcher.Mode.MODE_RO.toString());
 				context.startActivity(intent);
 			}
 

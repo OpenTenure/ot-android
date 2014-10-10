@@ -35,12 +35,19 @@ import java.util.List;
 
 
 
+
+
+
+
+
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +63,11 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 	private List<String> owners;
 	private LayoutInflater inflater;
 	private Claim claim;
-
-	public OwnersListAdapter(Context context, List<String> owners, String claimId) {
+	private static final int PERSON_RESULT = 100;
+	private static Activity activity;
+	private ModeDispatcher mainActivity;
+	
+	public OwnersListAdapter(Context context, List<String> owners, String claimId, Activity shareDetailsActivity) {
 		super(context, resource, owners);
 		// TODO Auto-generated constructor stub
 		this.context = context;
@@ -65,6 +75,14 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.claim = Claim.getClaim(claimId);
+		this.activity =  shareDetailsActivity;
+		
+		try {
+			mainActivity = (ModeDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ModeDispatcher");
+		}
 	}
 	
 	
@@ -97,6 +115,7 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 			vh = (ViewHolder) convertView.getTag();
 		}
 		
+		
 		Person person = Person.getPerson(owners.get(position));
 		vh.slogan.setText(person.getFirstName() + " "+ person.getLastName() );
 		vh.id.setText(owners.get(position));
@@ -107,10 +126,24 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 			public void onClick(View v) {
 				
 				owners.remove(position);
-				notifyDataSetChanged();
-				
-				
+				notifyDataSetChanged();			
 			}});
+		
+		
+		convertView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, PersonActivity.class);
+				intent.putExtra(PersonActivity.PERSON_ID_KEY,
+						(((TextView) v.findViewById(R.id.person_id)).getText()));
+				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.putExtra(PersonActivity.MODE_KEY, mainActivity.getMode()
+						.toString());
+				context.startActivity(intent);
+			}
+
+		});
 		
 		
 		

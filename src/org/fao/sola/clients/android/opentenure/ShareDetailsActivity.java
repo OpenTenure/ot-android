@@ -37,24 +37,27 @@ import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class ShareDetailsActivity extends FragmentActivity {
+public class ShareDetailsActivity extends FragmentActivity implements
+		ModeDispatcher {
 
 	public static final String SHARE_ID = "shareId";
+	public static final String MODE_KEY = "mode";
+	private static final int PERSON_RESULT = 100;
+	private ModeDispatcher.Mode mode;
 
 	private String claimId;
 	private String shareId;
@@ -86,6 +89,11 @@ public class ShareDetailsActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
 
+		if (intent.getStringExtra(MODE_KEY) != null)
+			mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));
+		else
+			mode = ModeDispatcher.Mode.MODE_RW;
+
 		claimId = intent.getStringExtra("claimId");
 
 		if (intent.getStringExtra(SHARE_ID) != null) {
@@ -109,12 +117,13 @@ public class ShareDetailsActivity extends FragmentActivity {
 
 			if (!claim.getStatus().equals(ClaimStatus._CREATED)
 					&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
-					&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
-				
+					&& !claim.getStatus()
+							.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+
 				spinner.setFocusable(false);
 				spinner.setEnabled(false);
-			} 
-			
+			}
+
 			update();
 
 		} else {
@@ -132,13 +141,13 @@ public class ShareDetailsActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.share_details, menu);
-		
+
 		Claim claim = Claim.getClaim(claimId);
 		if (claim != null && !claim.isModifiable()) {
 			menu.removeItem(R.id.action_new);
 			menu.removeItem(R.id.action_save);
 		}
-		
+
 		return true;
 	}
 
@@ -149,19 +158,69 @@ public class ShareDetailsActivity extends FragmentActivity {
 			Claim claim = Claim.getClaim(claimId);
 			if (claim.getAvailableShares() >= 0) {
 
-				Intent intent = new Intent(OpenTenureApplication.getContext(),
-						SelectPersonActivity.class);
+				AlertDialog.Builder dialog = new AlertDialog.Builder(
+						((ViewGroup) getWindow().getDecorView()).getContext());
 
-				// SOLA DB cannot store the same person twice
+				dialog.setTitle(R.string.new_entity);
+				dialog.setMessage(R.string.message_entity_type);
 
-				ArrayList<String> idsWithSharesOrClaims = Person.getIdsWithSharesOrClaims();
+				dialog.setPositiveButton(R.string.person,
+						new DialogInterface.OnClickListener() {
 
-				intent.putStringArrayListExtra(
-						SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-						idsWithSharesOrClaims);
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(
+										((ViewGroup) getWindow().getDecorView())
+												.getContext(),
+										PersonActivity.class);
+								intent.putExtra(PersonActivity.PERSON_ID_KEY,
+										PersonActivity.CREATE_PERSON_ID);
+								intent.putExtra(PersonActivity.ENTIY_TYPE,
+										PersonActivity.TYPE_PERSON);
+								intent.putExtra(PersonActivity.MODE_KEY, mode);
+								startActivityForResult(intent, PERSON_RESULT);
+							}
+						});
 
-				startActivityForResult(intent,
-						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
+				dialog.setNegativeButton(R.string.group,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								Intent intent = new Intent(
+										((ViewGroup) getWindow().getDecorView())
+												.getContext(),
+										PersonActivity.class);
+								intent.putExtra(PersonActivity.PERSON_ID_KEY,
+										PersonActivity.CREATE_PERSON_ID);
+								intent.putExtra(PersonActivity.ENTIY_TYPE,
+										PersonActivity.TYPE_GROUP);
+								intent.putExtra(PersonActivity.MODE_KEY, mode);
+								startActivityForResult(intent, PERSON_RESULT);
+
+							}
+						});
+
+				dialog.show();
+
+				//
+				// Intent intent = new
+				// Intent(OpenTenureApplication.getContext(),
+				// SelectPersonActivity.class);
+				//
+				// // SOLA DB cannot store the same person twice
+				//
+				// ArrayList<String> idsWithSharesOrClaims =
+				// Person.getIdsWithSharesOrClaims();
+				//
+				// intent.putStringArrayListExtra(
+				// SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+				// idsWithSharesOrClaims);
+				//
+				// startActivityForResult(intent,
+				// SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
 			} else {
 				Toast toast = Toast.makeText(
 						OpenTenureApplication.getContext(),
@@ -228,7 +287,7 @@ public class ShareDetailsActivity extends FragmentActivity {
 			ArrayAdapter<String> adapter = null;
 
 			adapter = new OwnersListAdapter(OpenTenureApplication.getContext(),
-					this.ownerList, claimId);
+					this.ownerList, claimId, this);
 
 			// adapter = new OwnersListAdapter(context, owners);
 			ListView ownerList = (ListView) findViewById(R.id.owner_list);
@@ -259,6 +318,7 @@ public class ShareDetailsActivity extends FragmentActivity {
 			}
 
 			share.setShares(value);
+			List<String> ownersId = new ArrayList<String>();
 
 			if (shareId == null) {
 				share.create();
@@ -268,19 +328,31 @@ public class ShareDetailsActivity extends FragmentActivity {
 				List<Owner> owners = Owner.getOwners(shareId);
 				for (Iterator iterator = owners.iterator(); iterator.hasNext();) {
 					Owner owner = (Owner) iterator.next();
+					ownersId.add(owner.getPersonId());
 					owner.delete();
 				}
 
 			}
 
 			ListView ownerList = ((ListView) findViewById(R.id.owner_list));
-
+			List<String> idsCreated = new ArrayList<String>();
 			for (int i = 0; i <= ownerList.getLastVisiblePosition(); i++) {
 
 				Owner owner = new Owner();
 				owner.setPersonId(ownerList.getItemAtPosition(i).toString());
 				owner.setShareId(share.getId());
 				owner.create();
+				idsCreated.add(owner.getPersonId());
+
+			}
+
+			// Here delete the no visible and no used Persons
+			List<Owner> owners = Owner.getOwners(shareId);
+			for (Iterator iterator = ownersId.iterator(); iterator.hasNext();) {
+				String id = (String) iterator.next();
+
+				if (!idsCreated.contains(id))
+					Person.getPerson(id).delete();
 
 			}
 
@@ -295,6 +367,12 @@ public class ShareDetailsActivity extends FragmentActivity {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public Mode getMode() {
+		// TODO Auto-generated method stub
+		return mode;
 	}
 
 }

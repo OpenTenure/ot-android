@@ -183,6 +183,9 @@ public class PersonFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					if (personPictureFile != null) {
+						
+						Person.deleteAllBmp(personActivity.getPersonId());
+						
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,
@@ -259,9 +262,9 @@ public class PersonFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					if (personPictureFile != null) {
-						
+
 						Person.deleteAllBmp(personActivity.getPersonId());
-						
+
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,
@@ -375,6 +378,7 @@ public class PersonFragment extends Fragment {
 		}
 
 		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
+
 		claimantImageView.setImageBitmap(Person.getPersonPicture(
 				rootView.getContext(), person.getPersonId(), 128));
 	}
@@ -384,11 +388,11 @@ public class PersonFragment extends Fragment {
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
 				.setText(person.getFirstName());
 
-		if(person.getDateOfBirth() != null)
-		((EditText) rootView
-				.findViewById(R.id.date_of_establishment_input_field))
-				.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-						.format(person.getDateOfBirth()));
+		if (person.getDateOfBirth() != null)
+			((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.setText(new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+							.format(person.getDateOfBirth()));
 
 		((EditText) rootView.findViewById(R.id.id_number)).setText(person
 				.getIdNumber());
@@ -437,6 +441,12 @@ public class PersonFragment extends Fragment {
 
 		}
 
+		personPictureFile = Person.getPersonPictureFile(person.getPersonId());
+
+		claimantImageView.setImageBitmap(Person.getPersonPicture(
+				rootView.getContext(), person.getPersonId(), 128));
+		
+
 	}
 
 	@Override
@@ -446,7 +456,8 @@ public class PersonFragment extends Fragment {
 			if (resultCode == Activity.RESULT_OK) {
 				try {
 					claimantImageView.setImageBitmap(Person.getPersonPicture(
-							rootView.getContext(), personActivity.getPersonId(), 128));
+							rootView.getContext(),
+							personActivity.getPersonId(), 128));
 				} catch (Exception e) {
 					claimantImageView.setImageDrawable(getResources()
 							.getDrawable(R.drawable.ic_contact_picture));
@@ -621,18 +632,20 @@ public class PersonFragment extends Fragment {
 				.toString());
 		person.setLastName("");
 
-		java.util.Date doe;
+		java.util.Date doe = null;
 		try {
-			doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
-					.parse(((EditText) rootView
-							.findViewById(R.id.date_of_establishment_input_field))
-							.getText().toString());
+
+			String date = ((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.getText().toString();
+			if (date != null && !date.trim().equals(""))
+				doe = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(date);
 		} catch (ParseException e) {
 			e.printStackTrace();
 			return 4;
 		}
-
-		person.setDateOfBirth(new Date(doe.getTime()));
+		if (doe != null)
+			person.setDateOfBirth(new Date(doe.getTime()));
 
 		person.setPostalAddress(((EditText) rootView
 				.findViewById(R.id.postal_address_input_field)).getText()
@@ -754,6 +767,14 @@ public class PersonFragment extends Fragment {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
+
+					Intent resultIntent = new Intent();
+
+					resultIntent.putExtra(PersonActivity.PERSON_ID_KEY,
+							personActivity.getPersonId());
+					// Set The Result in Intent
+					((PersonActivity) getActivity()).setResult(2, resultIntent);
+
 				} else if (saved == 2) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_error_mandatory_field_first_name,
@@ -790,6 +811,14 @@ public class PersonFragment extends Fragment {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
+
+					Intent resultIntent = new Intent();
+
+					resultIntent.putExtra(PersonActivity.PERSON_ID_KEY,
+							personActivity.getPersonId());
+					// Set The Result in Intent
+					((PersonActivity) getActivity()).setResult(2, resultIntent);
+
 				} else {
 					toast = Toast
 							.makeText(rootView.getContext(),
@@ -807,6 +836,14 @@ public class PersonFragment extends Fragment {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
+
+					Intent resultIntent = new Intent();
+
+					resultIntent.putExtra(PersonActivity.PERSON_ID_KEY,
+							personActivity.getPersonId());
+					// Set The Result in Intent
+					((PersonActivity) getActivity()).setResult(2, resultIntent);
+
 				} else {
 					toast = Toast
 							.makeText(rootView.getContext(),
@@ -823,6 +860,14 @@ public class PersonFragment extends Fragment {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_saved, Toast.LENGTH_SHORT);
 					toast.show();
+
+					Intent resultIntent = new Intent();
+
+					resultIntent.putExtra(PersonActivity.PERSON_ID_KEY,
+							personActivity.getPersonId());
+					// Set The Result in Intent
+					((PersonActivity) getActivity()).setResult(2, resultIntent);
+
 				} else if (updated == 2) {
 					toast = Toast.makeText(rootView.getContext(),
 							R.string.message_error_mandatory_field_first_name,
