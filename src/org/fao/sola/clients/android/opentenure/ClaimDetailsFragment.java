@@ -235,7 +235,7 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 		}
 
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+		
 			((View) rootView.findViewById(R.id.claimant))
 					.setOnClickListener(new OnClickListener() {
 
@@ -343,6 +343,7 @@ public class ClaimDetailsFragment extends Fragment {
 						}
 					});
 
+			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			((View) rootView.findViewById(R.id.challenge_to))
 					.setOnClickListener(new OnClickListener() {
 
