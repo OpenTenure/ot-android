@@ -83,7 +83,7 @@ public class DeletePersonListener implements OnClickListener {
 							Toast.LENGTH_LONG);
 					toast.show();
 
-					OpenTenureApplication.getPersonsFragment().refresh();
+//					OpenTenureApplication.getPersonsFragment().refresh();
 
 				}
 

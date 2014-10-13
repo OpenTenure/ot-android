@@ -73,7 +73,7 @@ public class OpenTenureApplication extends Application {
 	private static CookieStore cookieStore;
 	private static HttpContext http_context;
 	private static MainMapFragment mapFragment;
-	private static PersonsFragment personsFragment;
+
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
 	private static FragmentActivity newsFragmentActivity;
@@ -256,14 +256,6 @@ public class OpenTenureApplication extends Application {
 
 	public static void setClaimTypes(List<ClaimType> claimTypes) {
 		OpenTenureApplication.claimTypes = claimTypes;
-	}
-
-	public static PersonsFragment getPersonsFragment() {
-		return personsFragment;
-	}
-
-	public static void setPersonsFragment(PersonsFragment personsFragment) {
-		OpenTenureApplication.personsFragment = personsFragment;
 	}
 
 	public boolean isCheckedCommunityArea() {

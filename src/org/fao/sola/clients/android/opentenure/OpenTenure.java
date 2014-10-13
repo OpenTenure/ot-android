@@ -182,6 +182,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	private void setAlpha(float alpha, View... views) {
 		if (apiUtils.isCompatWithHoneycomb()) {
 			for (View view : views) {
+				if(view != null)
 				view.setAlpha(alpha);
 			}
 		}

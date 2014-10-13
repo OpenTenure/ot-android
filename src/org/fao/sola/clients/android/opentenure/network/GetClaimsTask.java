@@ -250,7 +250,7 @@ public class GetClaimsTask extends
 		if (input.isResult()) {
 
 			OpenTenureApplication.getMapFragment().refreshMap();
-			OpenTenureApplication.getPersonsFragment().refresh();
+			OpenTenureApplication.getLocalClaimsFragment().refresh();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
@@ -284,7 +284,7 @@ public class GetClaimsTask extends
 					input.getDownloaded());
 
 			OpenTenureApplication.getMapFragment().refreshMap();
-			OpenTenureApplication.getPersonsFragment().refresh();
+			OpenTenureApplication.getLocalClaimsFragment().refresh();
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);

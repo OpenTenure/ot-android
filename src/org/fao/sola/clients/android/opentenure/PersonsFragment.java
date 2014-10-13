@@ -213,7 +213,7 @@ public class PersonsFragment extends ListFragment {
 		}
 		
 		// Set this reference at Application level to refresh 
-		OpenTenureApplication.setPersonsFragment(this);
+		
 
 		return rootView;
 	}

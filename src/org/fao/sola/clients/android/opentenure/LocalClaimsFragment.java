@@ -184,7 +184,8 @@ public class LocalClaimsFragment extends ListFragment {
 
 				LogoutTask logoutTask = new LogoutTask();
 
-				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,getActivity());
+				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						getActivity());
 
 			} catch (Exception e) {
 				Log.d("Details", "An error ");
