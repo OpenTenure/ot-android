@@ -20,4 +20,9 @@
         android:title="@string/form_template_url_pref_title"
         android:summary="@string/form_template_url_pref_summary"
         android:dialogTitle="@string/form_template_url_pref_dialog_title" />
+    <EditTextPreference
+        android:key="software_version_pref"
+        android:title="@string/software_version_title"
+        android:summary="@string/software_version"
+        android:dialogTitle="@string/software_version_title" />
 </PreferenceScreen>

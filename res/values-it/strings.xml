@@ -227,6 +227,7 @@
     <string name="new_snapshot">Nuova immagine</string>
     <string name="new_additional_info">Nuova informazione</string>
     <string name="new_file">Nuovo file</string>
+    <string name="new_multipage">Nuovo File Multipage</string>
     <string name="withdraw_claim">Ritiro Claim</string>
     <string name="add_description">Descrizione?</string>
     <string name="add_key">Nome?</string>
