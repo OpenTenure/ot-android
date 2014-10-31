@@ -27,20 +27,11 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.AdditionalInfo;
-
-
-
-
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -58,9 +49,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
-
-
-public class ClaimAdditionalInfoFragments extends ListFragment{
+public class ClaimAdditionalInfoFragments extends ListFragment {
 
 	private View rootView;
 	private ClaimDispatcher claimActivity;
@@ -92,17 +81,15 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
-		
+		setRetainInstance(true);
 		inflater.inflate(R.menu.claim_metadata, menu);
 
-		if(modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0){
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new_metadata);
 		}
 
 		super.onCreateOptionsMenu(menu, inflater);
 	}
-
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,13 +103,11 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 		return rootView;
 	}
 
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
 
 		switch (item.getItemId()) {
-
 
 		case R.id.action_new_metadata:
 			if (claimActivity.getClaimId() == null) {
@@ -136,42 +121,48 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 
 			final View mView;
 
-			AlertDialog.Builder metadataDialog = new AlertDialog.Builder(rootView.getContext());
+			AlertDialog.Builder metadataDialog = new AlertDialog.Builder(
+					rootView.getContext());
 			metadataDialog.setTitle(R.string.new_additional_info);
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 
 			// Inflate and set the layout for the dialog
-			// Pass null as the parent view because its going in the dialog layout
+			// Pass null as the parent view because its going in the dialog
+			// layout
 
 			mView = inflater.inflate(R.layout.metadata_dialog, null);
 			metadataDialog.setView(mView);
 
+			metadataDialog.setPositiveButton(R.string.confirm,
+					new OnClickListener() {
 
-			metadataDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
 
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
+							EditText key = (EditText) mView
+									.findViewById(R.id.metadataKey);
+							EditText value = (EditText) mView
+									.findViewById(R.id.metadataValue);
 
-					EditText key = (EditText)mView.findViewById(R.id.metadataKey);
-					EditText value = (EditText)mView.findViewById(R.id.metadataValue);
+							AdditionalInfo additionalInfo = new AdditionalInfo();
 
-					AdditionalInfo additionalInfo = new AdditionalInfo();
+							additionalInfo.setClaimId(claimActivity
+									.getClaimId());
+							additionalInfo.setName(key.getText().toString());
+							additionalInfo.setValue(value.getText().toString());
 
-					additionalInfo.setClaimId(claimActivity.getClaimId());
-					additionalInfo.setName(key.getText().toString());
-					additionalInfo.setValue(value.getText().toString());
+							additionalInfo.create();
+							update();
 
-					additionalInfo.create();					
-					update();
+						}
+					});
+			metadataDialog.setNegativeButton(R.string.cancel,
+					new OnClickListener() {
 
-				}
-			});
-			metadataDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
-
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-				}
-			});
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
 
 			metadataDialog.show();
 
@@ -180,7 +171,6 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 
 	protected void update() {
 		String claimId = claimActivity.getClaimId();
@@ -192,7 +182,7 @@ public class ClaimAdditionalInfoFragments extends ListFragment{
 			Claim claim = Claim.getClaim(claimId);
 			additionalInfo = claim.getAdditionalInfo();
 			for (AdditionalInfo meta : additionalInfo) {
-				String slogan = meta.getName() +" = "+ meta.getValue()  ;
+				String slogan = meta.getName() + " = " + meta.getValue();
 				slogans.add(slogan);
 				ids.add(meta.getAdditionalInfoId());
 			}

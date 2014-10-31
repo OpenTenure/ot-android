@@ -95,6 +95,7 @@ public class LoginActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.clear();
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.login_activity, menu);
 		return true;

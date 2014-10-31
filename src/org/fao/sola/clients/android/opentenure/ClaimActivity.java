@@ -153,20 +153,18 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 
 		super.onCreate(savedInstanceState);
-
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
 		setContentView(R.layout.activity_claim);
 
 		String savedInstanceClaimId = null;
 
-
 		// Setup the form before creating the section adapter
 
 		if (savedInstanceState != null) {
-
 		
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 		}
@@ -394,7 +392,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
+		menu.clear();
 		getMenuInflater().inflate(R.menu.claim, menu);
 		return true;
 	}
@@ -418,7 +416,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 			Fragment fragment;
 			int sectionPosition = position - NUMBER_OF_STATIC_SECTIONS;
-
 			switch (position) {
 			case 0:
 				fragment = new ClaimDetailsFragment();

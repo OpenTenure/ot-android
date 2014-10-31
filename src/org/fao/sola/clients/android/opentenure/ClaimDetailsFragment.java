@@ -62,9 +62,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -154,13 +156,15 @@ public class ClaimDetailsFragment extends Fragment {
 		super.onCreateOptionsMenu(menu, inflater);
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		if (claim != null && !claim.isModifiable()) {
+		if (claim != null && !claim.isModifiable() ) {
 			menu.removeItem(R.id.action_save);
 		}
 
 		setHasOptionsMenu(true);
-		setRetainInstance(true);
+		//setRetainInstance(true);
 	}
+	
+	
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -190,10 +194,15 @@ public class ClaimDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
+		
+		 
 		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
 				false);
 		setHasOptionsMenu(true);
+		
+		
+		
+		//setRetainInstance(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
@@ -378,9 +387,10 @@ public class ClaimDetailsFragment extends Fragment {
 						}
 					});
 		}
-
+			
 		return rootView;
 	}
+
 
 	private void preload() {
 
@@ -1137,7 +1147,6 @@ public class ClaimDetailsFragment extends Fragment {
 
 	@Override
 	public void onResume() {
-
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		load(claim);
 
@@ -1235,6 +1244,11 @@ public class ClaimDetailsFragment extends Fragment {
 		SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
 	}
 
 }

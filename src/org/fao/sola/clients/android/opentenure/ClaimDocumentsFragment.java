@@ -35,10 +35,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.AddMultipageAttachmentListener;
+import org.fao.sola.clients.android.opentenure.button.listener.CreateMultipageFileListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
+import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.MD5;
 
 import android.app.Activity;
@@ -75,6 +78,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 	public static final String URI_KEY = "__URI__";
 	public static final String FILE_TYPE_KEY = "__FILE_TYPE__";
 	public static final String MIME_TYPE_KEY = "__MIME_TYPE__";
+	private static final int CAPTURE_MULTI_IMAGE_ACTIVITY_REQUEST_CODE = 10;
 	private Uri uri;
 	private String fileType;
 	private String mimeType;
@@ -122,7 +126,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 		inflater.inflate(R.menu.claim_documents, menu);
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		if (claim != null && !claim.isModifiable()) {
+		if (claim != null && !claim.isUploadable()) {
 			menu.removeItem(R.id.action_new_picture);
 			menu.removeItem(R.id.action_new_attachment);
 		}
@@ -132,7 +136,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 		setRetainInstance(true);
 	}
 
-	private File getOutputMediaFile(int type) {
+	public File getOutputMediaFile(int type) {
 		// To check that the sdcard is mounted use
 		// Environment.getExternalStorageState()
 		String fileName;
@@ -186,10 +190,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 				DocumentType dt = new DocumentType();
 
 				List<String> list = dt.getDocumentTypesDispalyValues();
-
-				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-					String string = (String) iterator.next();
-				}
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -342,6 +342,113 @@ public class ClaimDocumentsFragment extends ListFragment {
 				dialog.show();
 			}
 			break;
+
+//		case CAPTURE_MULTI_IMAGE_ACTIVITY_REQUEST_CODE:
+//			if (resultCode == Activity.RESULT_OK) {
+//				Log.d(this.getClass().getName(),
+//						"Captured image: "
+//								+ FileUtils.getPath(rootView.getContext(), uri));
+//			}
+//
+//			FileSystemUtilities.updateMultipageTmp(claimActivity.getClaimId(),
+//					uri);
+//
+//			List<String> listOfFiles = FileSystemUtilities
+//					.getListForMultipage(claimActivity.getClaimId());
+//
+//			// custom dialog
+//			final Dialog dialog = new Dialog(rootView.getContext());
+//			dialog.setContentView(R.layout.custom_add_multipage);
+//			dialog.setTitle(R.string.new_multipage);
+//
+//			// Attachment Description
+//			final EditText fileDescription = (EditText) dialog
+//					.findViewById(R.id.multipageFileName);
+//
+//			String descriptionFromFile = listOfFiles.get(0).toString();
+//			if (descriptionFromFile == null
+//					|| descriptionFromFile.trim().equals(""))
+//				fileDescription.setHint(R.string.add_description);
+//			else
+//				fileDescription.setText(descriptionFromFile);
+//
+//			// Code Types Spinner
+//			final Spinner spinner = (Spinner) dialog
+//					.findViewById(R.id.documentTypesSpinner);
+//
+//			DocumentType dt = new DocumentType();
+//
+//			List<String> list = dt.getDocumentTypesDispalyValues();
+//
+//			//
+//			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+//					OpenTenureApplication.getContext(),
+//					android.R.layout.simple_spinner_item, list) {
+//			};
+//			dataAdapter.setDropDownViewResource(R.layout.document_spinner);
+//
+//			spinner.setAdapter(dataAdapter);
+//			if (listOfFiles != null) {
+//				System.out.println("Ora setto la position = "
+//						+ new DocumentType().getIndexByCodeType(listOfFiles
+//								.get(1).toString()));
+//				System.out.println("Il tipo era : "
+//						+ listOfFiles.get(1).toString());
+//
+//				spinner.setSelection(new DocumentType()
+//						.getIndexByCodeType(listOfFiles.get(1).toString()));
+//			}
+//
+//			// List of files
+//			final ListView listofFileView = (ListView) dialog
+//					.findViewById(R.id.multipageList);
+//
+//			listOfFiles.remove(0);
+//			listOfFiles.remove(0);
+//			MultipageFilesAdapter adapter = new MultipageFilesAdapter(
+//					rootView.getContext(), listOfFiles);
+//			listofFileView.setAdapter(adapter);
+//
+//			// Confirm Button
+//
+//			final Button confirmButton = (Button) dialog
+//					.findViewById(R.id.fileDocumentConfirm);
+//			confirmButton.setText(R.string.confirm);
+//
+//			confirmButton.setOnClickListener(new CreateMultipageFileListener(
+//					claimActivity.getClaimId(),rootView.getContext(), this,
+//					dialog));
+//
+//			// Cancel Button
+//
+//			final Button cancelButton = (Button) dialog
+//					.findViewById(R.id.fileDocumentConfirmCancel);
+//			cancelButton.setText(R.string.cancel);
+//
+//			cancelButton.setOnClickListener(new View.OnClickListener() {
+//
+//				@Override
+//				public void onClick(View v) {
+//
+//					FileSystemUtilities.deleteMultiPageFiles(claimActivity
+//							.getClaimId());
+//
+//					dialog.dismiss();
+//				}
+//			});
+//
+//			// Add File
+//
+//			final Button addButton = (Button) dialog
+//					.findViewById(R.id.fileMultipageAdd);
+//			addButton.setText(R.string.add_file);
+//
+//			addButton.setOnClickListener(new AddMultipageAttachmentListener(
+//					this.claimActivity.getClaimId(), this, dialog));
+//
+//			dialog.show();
+//
+//			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -391,8 +498,131 @@ public class ClaimDocumentsFragment extends ListFragment {
 								+ e.getMessage());
 			}
 			return true;
+
+//		case R.id.action_new_multipage:
+//			if (claimActivity.getClaimId() == null) {
+//				toast = Toast
+//						.makeText(rootView.getContext(),
+//								R.string.message_create_before_edit,
+//								Toast.LENGTH_SHORT);
+//				toast.show();
+//				return true;
+//			}
+//
+//			if (!FileSystemUtilities.createMutipageFolder(claimActivity
+//					.getClaimId())) {
+//				toast = Toast
+//						.makeText(rootView.getContext(),
+//								R.string.message_create_before_edit,
+//								Toast.LENGTH_SHORT);
+//				toast.show();
+//				return true;
+//			}
+//
+//			List<String> listOfFiles = FileSystemUtilities
+//					.getListForMultipage(claimActivity.getClaimId());
+//
+//			// custom dialog
+//			final Dialog dialog = new Dialog(rootView.getContext());
+//			dialog.setContentView(R.layout.custom_add_multipage);
+//			dialog.setTitle(R.string.new_multipage);
+//
+//			((TextView) dialog.findViewById(android.R.id.title))
+//					.setTextSize(18);
+//
+//			// Attachment Description
+//			final EditText fileDescription = (EditText) dialog
+//					.findViewById(R.id.multipageFileName);
+//			if (listOfFiles != null && !listOfFiles.get(0).trim().equals(""))
+//				fileDescription.setText(listOfFiles.get(0));
+//			else
+//				fileDescription.setHint(R.string.add_description);
+//
+//			// Attachment type
+//
+//			final Spinner spinner = (Spinner) dialog
+//					.findViewById(R.id.documentTypesSpinner);
+//
+//			DocumentType dt = new DocumentType();
+//
+//			List<String> list = dt.getDocumentTypesDispalyValues();
+//
+//			//
+//			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+//					OpenTenureApplication.getContext(),
+//					android.R.layout.simple_spinner_item, list) {
+//			};
+//			dataAdapter.setDropDownViewResource(R.layout.document_spinner);
+//
+//			spinner.setAdapter(dataAdapter);
+//			if (listOfFiles != null) {
+//				System.out.println("Ora setto la position = "
+//						+ new DocumentType().getIndexByCodeType(listOfFiles
+//								.get(1).toString()));
+//				System.out.println("Il tipo era : "
+//						+ listOfFiles.get(1).toString());
+//
+//				spinner.setSelection(new DocumentType()
+//						.getIndexByCodeType(listOfFiles.get(1).toString()));
+//			}
+//			if (listOfFiles != null) {
+//				// List of files
+//				final ListView listofFileView = (ListView) dialog
+//						.findViewById(R.id.multipageList);
+//
+//				// remove info from list of files
+//				listOfFiles.remove(0);
+//				listOfFiles.remove(0);
+//
+//				MultipageFilesAdapter adapter = new MultipageFilesAdapter(
+//						rootView.getContext(), listOfFiles);
+//				listofFileView.setAdapter(adapter);
+//				adapter.notifyDataSetChanged();
+//			}
+//
+//			// Confirm Button
+//
+//			final Button confirmButton = (Button) dialog
+//					.findViewById(R.id.fileDocumentConfirm);
+//			confirmButton.setText(R.string.confirm);
+//
+//			confirmButton.setOnClickListener(new CreateMultipageFileListener(
+//					claimActivity.getClaimId(),rootView.getContext(), this,
+//					dialog));
+//
+//
+//			// Cancel Button
+//
+//			final Button cancelButton = (Button) dialog
+//					.findViewById(R.id.fileDocumentConfirmCancel);
+//			cancelButton.setText(R.string.cancel);
+//
+//			cancelButton.setOnClickListener(new View.OnClickListener() {
+//
+//				@Override
+//				public void onClick(View v) {
+//
+//					FileSystemUtilities.deleteMultiPageFiles(claimActivity
+//							.getClaimId());
+//
+//					dialog.dismiss();
+//				}
+//			});
+//
+//			// Cancel Add File
+//
+//			final Button addButton = (Button) dialog
+//					.findViewById(R.id.fileMultipageAdd);
+//			addButton.setText(R.string.add_file);
+//
+//			addButton.setOnClickListener(new AddMultipageAttachmentListener(
+//					this.claimActivity.getClaimId(), this, dialog));
+//
+//			dialog.show();
+
 		default:
 			return super.onOptionsItemSelected(item);
+
 		}
 
 	}
@@ -402,6 +632,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
+		setRetainInstance(true);
 		setHasOptionsMenu(true);
 		if (savedInstanceState != null) {
 			String savedUri = savedInstanceState.getString(URI_KEY);
@@ -474,7 +705,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 	}
 
-	protected void update() {
+	public void update() {
 		String claimId = claimActivity.getClaimId();
 		List<Attachment> attachments;
 		List<String> ids = new ArrayList<String>();
@@ -506,5 +737,13 @@ public class ClaimDocumentsFragment extends ListFragment {
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 
+	}
+
+	public Uri getUri() {
+		return uri;
+	}
+
+	public void setUri(Uri uri) {
+		this.uri = uri;
 	}
 }

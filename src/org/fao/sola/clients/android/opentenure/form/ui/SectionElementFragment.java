@@ -71,7 +71,7 @@ public class SectionElementFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
+		menu.clear();
 		inflater.inflate(R.menu.field_group, menu);
 		
 		super.onCreateOptionsMenu(menu, inflater);

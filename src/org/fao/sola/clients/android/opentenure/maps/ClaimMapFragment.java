@@ -285,6 +285,7 @@ public class ClaimMapFragment extends Fragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		setRetainInstance(true);
 		super.onCreateView(inflater, container, savedInstanceState);
 		mapView = inflater.inflate(R.layout.fragment_claim_map, container,
 				false);

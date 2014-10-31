@@ -4,7 +4,9 @@
         android:key="cs_url_pref"
         android:title="@string/cs_url_pref_title"
         android:summary="@string/cs_url_pref_summary"
-        android:dialogTitle="@string/cs_url_pref_dialog_title" />
+        android:dialogTitle="@string/cs_url_pref_dialog_title"
+        android:defaultValue="http://ot.flossola.org" 
+        />
     <EditTextPreference
         android:key="geoserver_url_pref"
         android:title="@string/geoserver_url_pref_title"
@@ -20,7 +22,7 @@
         android:title="@string/form_template_url_pref_title"
         android:summary="@string/form_template_url_pref_summary"
         android:dialogTitle="@string/form_template_url_pref_dialog_title" />
-    <EditTextPreference
+    <Preference
         android:key="software_version_pref"
         android:title="@string/software_version_title"
         android:summary="@string/software_version"
