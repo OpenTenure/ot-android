@@ -76,6 +76,7 @@ public class SectionFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 		inflater.inflate(R.menu.multiple_field_group, menu);
 		if(mode == Mode.MODE_RO){
 			MenuItem item = menu.findItem(R.id.action_new);
@@ -93,6 +94,7 @@ public class SectionFragment extends ListFragment {
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, new SectionElementPayload(sectionTemplate).toJson());
 			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+			System.out.println("Mode : " + mode);
 			intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
 			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			return true;
@@ -137,6 +139,7 @@ public class SectionFragment extends ListFragment {
 		rootView = inflater.inflate(R.layout.multiple_field_group_list, container,
 				false);
 		setHasOptionsMenu(true);
+		
 
 		if(savedInstanceState != null && savedInstanceState.getString(SECTION_PAYLOAD_KEY) != null){
 			sectionPayload = SectionPayload.fromJson(savedInstanceState.getString(SECTION_PAYLOAD_KEY));
@@ -144,6 +147,10 @@ public class SectionFragment extends ListFragment {
 		if(savedInstanceState != null && savedInstanceState.getString(SECTION_TEMPLATE_KEY) != null){
 			sectionTemplate = SectionTemplate.fromJson(savedInstanceState.getString(SECTION_TEMPLATE_KEY));
 		}
+		if(savedInstanceState != null && savedInstanceState.getString(SectionElementActivity.MODE_KEY) != null){
+			mode = Mode.valueOf(savedInstanceState.getString(SectionElementActivity.MODE_KEY));
+		}
+		
 		update();
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -210,6 +217,8 @@ public class SectionFragment extends ListFragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(SECTION_PAYLOAD_KEY, sectionPayload.toJson());
 		outState.putString(SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+		outState.putString(SectionElementActivity.MODE_KEY, mode.toString());
+		
 		super.onSaveInstanceState(outState);
 	}
 }

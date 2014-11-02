@@ -28,11 +28,18 @@
 package org.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,6 +50,7 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -58,6 +66,8 @@ public class FileSystemUtilities {
 	private static String _CLAIMANT_PREFIX = "claimant_";
 	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
+	private static String _MULTIPAGE = "multipage";
+	private static String _MULTIPAGE_TMP = "multipageTmp.txt";
 
 	/**
 	 * 
@@ -187,7 +197,7 @@ public class FileSystemUtilities {
 				.exists();
 	}
 
-	public static void delete(File file) throws IOException {
+	public static void deleteFolder(File file) throws IOException {
 
 		if (file.isDirectory()) {
 
@@ -208,7 +218,7 @@ public class FileSystemUtilities {
 					File fileDelete = new File(file, temp);
 
 					// recursive delete
-					delete(fileDelete);
+					deleteFolder(fileDelete);
 				}
 
 				// check the directory again, if empty then delete it
@@ -235,13 +245,14 @@ public class FileSystemUtilities {
 				+ "Claim_"
 				+ claimID
 				+ ".zip");
-		delete(oldZip);
+		deleteFolder(oldZip);
 	}
 
 	public static boolean removeClaimantFolder(String personId) {
 
 		try {
-			delete(new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId));
+			deleteFolder(new File(getClaimantsFolder(), _CLAIMANT_PREFIX
+					+ personId));
 		} catch (Exception e) {
 			return false;
 		}
@@ -274,6 +285,223 @@ public class FileSystemUtilities {
 
 	public static File getAttachmentFolder(String claimID) {
 		return new File(getClaimFolder(claimID), _ATTACHMENT_FOLDER);
+	}
+
+	public static boolean createMutipageFolder(String claimID) {
+
+		System.out.println("Ora creiamo una bella cartella");
+		File multiFolder = null;
+		try {
+			new File(getAttachmentFolder(claimID), _MULTIPAGE).mkdir();
+			multiFolder = new File(getAttachmentFolder(claimID)
+					+ File.separator + _MULTIPAGE);
+
+			System.out.println("Creata qui " + multiFolder.getAbsolutePath());
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("Cor cazzo ! " + e.getMessage());
+		}
+
+		if (multiFolder.exists() && multiFolder.isDirectory()) {
+			return true;
+		} else {
+			System.out.println("PAre non esista mannaggia peppa pig");
+			return false;
+
+		}
+	}
+
+	public static File getMultipageFolder(String claimID) {
+
+		return new File(getAttachmentFolder(claimID), _MULTIPAGE);
+
+	}
+
+	public static List<String> getListForMultipage(String claimId) {
+		String metaString;
+		File metaFile = getMultipageTmpfile(claimId);
+		if (metaFile == null)
+			return null;
+		else {
+			try {
+				BufferedReader bfr = new BufferedReader(new InputStreamReader(
+						new FileInputStream(metaFile)));
+
+				metaString = bfr.readLine();
+				bfr.close();
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return null;
+
+			}
+			if (metaString != null && !metaString.trim().equals(""))
+				return new ArrayList<String>(Arrays.asList(metaString
+						.split(";")));
+			else
+				return null;
+
+		}
+
+	}
+
+	public static String[] updateMultipageTmp(String claimID, Uri uri) {
+
+		File metaFile = getMultipageTmpfile(claimID);
+		File tempFile = new File(getMultipageFolder(claimID), "myTempFile.txt");
+
+		int i = 0;
+		String imgName = null;
+
+		if (uri != null) {
+			imgName = uri.getLastPathSegment();
+			Log.d("FileSystemUtilities", "The file name to add to multipage : "
+					+ imgName);
+		}
+
+		BufferedReader bfr;
+		String line;
+		String[] metaInfo;
+
+		try {
+
+			// tempFile.createNewFile();
+
+			bfr = new BufferedReader(new InputStreamReader(new FileInputStream(
+					metaFile)));
+
+			String metaString = bfr.readLine();
+			bfr.close();
+
+			if (metaString != null) {
+
+				metaString = metaString + imgName + ";";
+				metaInfo = metaString.split(";");
+				
+
+			} else {
+				metaInfo = new String[2];
+				metaInfo[0] = "tmp";
+				metaInfo[1] = "will";
+				metaInfo[2] = imgName;
+
+			}
+
+			String toWrite = "";
+			for (int j = 0; j < metaInfo.length; j++) {
+				if (metaInfo[j] != null)
+					toWrite = toWrite + metaInfo[j] + ";";
+
+			}
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+			writer.write(toWrite);
+			writer.flush();
+			writer.close();
+
+			tempFile.renameTo(metaFile);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+	
+	
+	
+	
+	public static String[] updateMultipageDescription(String claimID,String description, String type) {
+
+		File metaFile = getMultipageTmpfile(claimID);
+		File tempFile = new File(getMultipageFolder(claimID), "myTempFile.txt");
+
+		int i = 0;
+		
+		BufferedReader bfr;
+		String line;
+		String[] metaInfo;
+
+		try {
+
+			// tempFile.createNewFile();
+
+			bfr = new BufferedReader(new InputStreamReader(new FileInputStream(
+					metaFile)));
+
+			String metaString = bfr.readLine();
+			bfr.close();
+
+			if (metaString != null) {
+				metaInfo = metaString.split(";");
+				metaInfo[0] = description;
+				metaInfo[1] = type;
+
+			} else {
+				metaInfo = new String[2];
+				metaInfo[0] = description;
+				metaInfo[1] = type;
+
+			}
+
+			String toWrite = "";
+			for (int j = 0; j < metaInfo.length; j++) {
+				if (metaInfo[j] != null)
+					toWrite = toWrite + metaInfo[j] + ";";
+
+			}
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+			writer.write(toWrite);
+			writer.flush();
+			writer.close();
+
+			tempFile.renameTo(metaFile);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public static File getMultipageTmpfile(String claimID) {
+
+		File file = new File(getMultipageFolder(claimID), _MULTIPAGE_TMP);
+
+		if (file.exists())
+			return file;
+		else {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+			return file;
+
+		}
+
+	}
+
+	public static boolean deleteMultiPageFiles(String claimId) {
+
+		File folder = getMultipageFolder(claimId);
+
+		try {
+			deleteFolder(folder);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+
 	}
 
 	public static File getOpentenureFolder() {
@@ -314,13 +542,13 @@ public class FileSystemUtilities {
 
 		return dest;
 	}
-	
+
 	public static File copyFileInClaimantFolder(String personId, File source) {
 
 		File dest = null;
 
 		try {
-			dest = new File(getClaimantFolder(personId), personId+".jpg");
+			dest = new File(getClaimantFolder(personId), personId + ".jpg");
 			dest.createNewFile();
 
 			Log.d("FileSystemUtilities", dest.getAbsolutePath());
@@ -478,7 +706,8 @@ public class FileSystemUtilities {
 		return true;
 	}
 
-	public static int getUploadProgress(String claimId, String status, List<Attachment> attachments) {
+	public static int getUploadProgress(String claimId, String status,
+			List<Attachment> attachments) {
 
 		int progress = 0;
 
@@ -498,7 +727,8 @@ public class FileSystemUtilities {
 					|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
 				uploadedSize = uploadedSize + json.length();
 
-			for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
+			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
+					.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 

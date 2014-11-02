@@ -164,7 +164,7 @@ public class FormActivity extends FragmentActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
+		menu.clear(); 
 		getMenuInflater().inflate(R.menu.form, menu);
 		return true;
 	}

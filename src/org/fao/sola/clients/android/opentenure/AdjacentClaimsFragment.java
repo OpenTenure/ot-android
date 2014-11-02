@@ -33,6 +33,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.h2.constant.SysProperties;
@@ -108,7 +109,7 @@ public class AdjacentClaimsFragment extends ListFragment {
 		
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
 		
-		if (claim != null && !claim.isModifiable()) {
+		if (claim != null && !claim.isModifiable() ) {
 			menu.removeItem(R.id.action_save);
 		}
 		

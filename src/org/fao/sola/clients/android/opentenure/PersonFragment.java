@@ -109,7 +109,7 @@ public class PersonFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
+		menu.clear();
 		inflater.inflate(R.menu.person, menu);
 
 		if (!allowSave) {

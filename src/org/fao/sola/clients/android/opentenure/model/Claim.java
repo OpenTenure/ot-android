@@ -852,17 +852,23 @@ public class Claim {
 		return claimName + ", " + context.getString(R.string.by) + ": "
 				+ getPerson().getFirstName() + " " + getPerson().getLastName();
 	}
-
-	public boolean isModifiable() {
+	
+	public boolean isUploadable() {
 		
 		if(getChallengeExpiryDate() == null)
 			return true;
 
-		if ((getStatus().equals(ClaimStatus._MODERATED) || getStatus().equals(
-				ClaimStatus._WITHDRAWN))
-				|| (JsonUtilities.remainingDays(getChallengeExpiryDate()) < 1))
-			return false;
-		else return true;
+		if (!(getStatus().equals(ClaimStatus._WITHDRAWN))
+				&& (JsonUtilities.remainingDays(getChallengeExpiryDate()) >= 1))
+			return true;
+		else return false;
+	}
+
+	public boolean isModifiable() {
+		
+		if(getChallengeExpiryDate() == null )
+			return true;
+		else return false;
 	}
 
 	private String claimId;

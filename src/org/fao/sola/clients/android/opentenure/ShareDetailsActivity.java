@@ -139,6 +139,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.clear();
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.share_details, menu);
 
@@ -292,6 +293,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			// adapter = new OwnersListAdapter(context, owners);
 			ListView ownerList = (ListView) findViewById(R.id.owner_list);
 			ownerList.setAdapter(adapter);
+			
 			adapter.notifyDataSetChanged();
 
 		}

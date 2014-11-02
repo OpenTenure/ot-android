@@ -171,7 +171,7 @@ public class DocumentType {
 				documentType.setCode(result.getString(1));
 				documentType.setDescription(result.getString(2));
 				documentType.setDisplayValue(result.getString(3));
-				
+
 				return documentType;
 			}
 		} catch (SQLException e) {
@@ -307,13 +307,11 @@ public class DocumentType {
 		int i = 0;
 
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			org.fao.sola.clients.android.opentenure.model.DocumentType claimType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
+			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
-			if (claimType.getCode().equals(code)) {
-
+			if (docType.getCode().equals(code)) {
 				return i;
-
 			}
 
 			i++;

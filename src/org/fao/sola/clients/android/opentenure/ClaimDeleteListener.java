@@ -101,7 +101,7 @@ public class ClaimDeleteListener implements OnClickListener {
 				// Confirm Dialog
 				TextView message = (TextView) dialog
 						.findViewById(R.id.remove_quest);
-				message.setTextSize(30);
+				message.setTextSize(20);
 
 				// Confirm Button
 

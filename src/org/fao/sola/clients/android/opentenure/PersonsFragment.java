@@ -87,6 +87,7 @@ public class PersonsFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 		inflater.inflate(R.menu.persons, menu);
 
 //		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {

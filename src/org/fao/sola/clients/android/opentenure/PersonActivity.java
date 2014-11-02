@@ -109,6 +109,7 @@ public class PersonActivity extends FragmentActivity implements
 		resultIntent.putExtra(PersonActivity.PERSON_ID_KEY, personId);
 		// Set The Result in Intent
 		setResult(2, resultIntent);
+		super.onSaveInstanceState(outState);
 
 	}
 

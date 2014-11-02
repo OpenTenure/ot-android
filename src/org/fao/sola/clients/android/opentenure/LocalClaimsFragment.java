@@ -126,8 +126,9 @@ public class LocalClaimsFragment extends ListFragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.local_claims, menu);
 
+		inflater.inflate(R.menu.local_claims, menu);
+		setRetainInstance(true);
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
 			menu.removeItem(R.id.action_new);
 			menu.removeItem(R.id.action_login);
@@ -345,7 +346,7 @@ public class LocalClaimsFragment extends ListFragment {
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());
 
-				if (claim.isModifiable())
+				if (claim.isUploadable())
 					cto.setRemaingDays(getResources().getString(
 							R.string.message_remaining_days)
 							+ days);

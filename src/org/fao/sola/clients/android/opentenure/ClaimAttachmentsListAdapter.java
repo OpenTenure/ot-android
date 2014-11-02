@@ -211,7 +211,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				&& !claim.getStatus().equals(ClaimStatus._UPLOADING)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE) && !claim
 				.getStatus().equals(ClaimStatus._UPLOAD_ERROR))
-				&& claim.isModifiable()) {
+				&& claim.isUploadable()) {
 
 			if (att.getStatus().equals(AttachmentStatus._CREATED)
 					|| att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)

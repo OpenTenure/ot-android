@@ -391,6 +391,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 		inflater.inflate(R.menu.map, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
