@@ -50,13 +50,13 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.androidmapsextensions.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
 import com.androidmapsextensions.Polyline;
 import com.androidmapsextensions.PolylineOptions;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -88,6 +88,7 @@ public class BasePropertyBoundary {
 	protected Polygon polygon = null;
 	protected GoogleMap map;
 	protected LatLng center = null;
+	protected double area = 0.0;
 	protected Marker propertyMarker = null;
 	protected LatLngBounds bounds = null;
 	protected int color = Color.BLUE;
@@ -256,7 +257,9 @@ public class BasePropertyBoundary {
 
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
+		area = polygon.getArea();
 		Geometry envelope = polygon.getEnvelope();
+		
 		
 		switch(envelope.getCoordinates().length){
 		case 1:
@@ -354,7 +357,7 @@ public class BasePropertyBoundary {
 		ClaimType ct = new ClaimType();
 		propertyMarker = createPropertyMarker(center,
 				claimSlogan + ", " + context.getString(R.string.type) + ": "
-						+ ct.getDisplayValueByType(claimType));
+						+ ct.getDisplayValueByType(claimType) + String.format(", Area: %.8f", area));
 	}
 
 	public void showPropertyLocations() {
