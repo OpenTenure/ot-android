@@ -55,12 +55,12 @@ public class Claim {
 
 	public static final int MAX_SHARES_PER_CLAIM = 100;
 
-	public FormPayload getSurveyForm() {
-		return surveyForm;
+	public FormPayload getDynamicForm() {
+		return dynamicForm;
 	}
 
-	public void setSurveyForm(FormPayload surveyForm) {
-		this.surveyForm = surveyForm;
+	public void setDynamicForm(FormPayload dynamicForm) {
+		this.dynamicForm = dynamicForm;
 	}
 
 	public String getName() {
@@ -291,8 +291,8 @@ public class Claim {
 			statement.setString(11, claim.getNotes());
 			statement.setString(12, claim.getRecorderName());
 			statement.setString(13, claim.getVersion());
-			if (claim.getSurveyForm() != null) {
-				statement.setCharacterStream(14, new StringReader(claim.getSurveyForm().toJson()));
+			if (claim.getDynamicForm() != null) {
+				statement.setCharacterStream(14, new StringReader(claim.getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(14, null);
@@ -347,8 +347,8 @@ public class Claim {
 			statement.setString(11, getNotes());
 			statement.setString(12, getRecorderName());
 			statement.setString(13, getVersion());
-			if (getSurveyForm() != null) {
-				statement.setCharacterStream(14, new StringReader(getSurveyForm().toJson()));
+			if (getDynamicForm() != null) {
+				statement.setCharacterStream(14, new StringReader(getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(14, null);
@@ -402,8 +402,8 @@ public class Claim {
 			statement.setString(10, claim.getNotes());
 			statement.setString(11, claim.getRecorderName());
 			statement.setString(12, claim.getVersion());
-			if (claim.getSurveyForm() != null) {
-				statement.setCharacterStream(13, new StringReader(claim.getSurveyForm().toJson()));
+			if (claim.getDynamicForm() != null) {
+				statement.setCharacterStream(13, new StringReader(claim.getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(13, null);
@@ -458,8 +458,8 @@ public class Claim {
 			statement.setString(10, getNotes());
 			statement.setString(11, getRecorderName());
 			statement.setString(12, getVersion());
-			if (getSurveyForm() != null) {
-				statement.setCharacterStream(13, new StringReader(getSurveyForm().toJson()));
+			if (getDynamicForm() != null) {
+				statement.setCharacterStream(13, new StringReader(getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(13, null);
@@ -519,9 +519,9 @@ public class Claim {
 				claim.setVersion(rs.getString(12));
 				Clob clob = rs.getClob(13);
 				if(clob != null){
-					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
-					claim.setSurveyForm(new FormPayload());
+					claim.setDynamicForm(new FormPayload());
 				}
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setPropertyLocations(PropertyLocation
@@ -586,9 +586,9 @@ public class Claim {
 				claim.setVersion(rs.getString(12));
 				Clob clob = rs.getClob(13);
 				if(clob != null){
-					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
-					claim.setSurveyForm(new FormPayload());
+					claim.setDynamicForm(new FormPayload());
 				}
 				claim.setVertices(Vertex.getVertices(claimId));
 				claim.setPropertyLocations(PropertyLocation
@@ -640,9 +640,9 @@ public class Claim {
 				claim.setVersion(rs.getString(13));
 				Clob clob = rs.getClob(14);
 				if(clob != null){
-					claim.setSurveyForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
+					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
-					claim.setSurveyForm(new FormPayload());
+					claim.setDynamicForm(new FormPayload());
 				}
 				claim.setVertices(Vertex.getVertices(claimId, externalConnection));
 				claim.setPropertyLocations(PropertyLocation
@@ -892,6 +892,6 @@ public class Claim {
 	private String claimNumber;
 	private String recorderName;
 	private String version;
-	private FormPayload surveyForm;
+	private FormPayload dynamicForm;
 
 }

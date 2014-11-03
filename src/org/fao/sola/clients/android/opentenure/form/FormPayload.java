@@ -76,7 +76,6 @@ public class FormPayload {
 
 	public void setFormTemplate(FormTemplate template) {
 		this.formTemplate = template;
-		this.formTemplateName = template.getName();
 	}
 
 	public FormPayload(String claimId) {

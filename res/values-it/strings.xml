@@ -118,6 +118,8 @@
     <string name="owner_removed">Quota rimossa</string>
     <string name="section_element_removed">Elemento rimosso</string>
     <string name="additional_info_removed">Informazione rimossa</string>
+    <string name="message_password_too_short">La password deve essere lunga almeno %d caratteri</string>
+    <string name="message_password_character_is_wrong">La password deve contenere solo lettere e cifre</string>
     <string name="message_saved">Salvato</string>
     <string name="message_service_not_available">Servizio non disponibile</string>
     <string name="message_connection_error">Connessione non disponibile</string>
@@ -154,9 +156,9 @@
     <string name="message_db_locked">Dati protetti da password</string>
     <string name="message_db_password">Password per accedere ai dati?</string>
     <string name="message_cant_open_db">Impossibile accedere ai dati</string>
-    <string name="message_check_upgrade_db">Verifica aggiornamento dati</string>
+    <string name="message_check_upgrade_db">Aggiornamento dei dati locali</string>
     <string name="message_old_db_password">Password attuale?</string>
-    <string name="message_new_db_password">Nuova password?</string>
+    <string name="message_new_db_password">Nuova password (lasciare vuoto per non cifrare i dati)?</string>
     <string name="message_confirm_new_db_password">Conferma la nuova password</string>
     <string name="message_enter_description">Immetti una descrizione</string>
     <string name="message_password_dont_match">Nuova password non confermata. Riprovare</string>
@@ -165,7 +167,7 @@
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
-    <string name="message_remove_section_element">Rimuovere l\'elemento5?</string>
+    <string name="message_remove_section_element">Rimuovere l\'elemento?</string>
     <string name="message_added_attachment">L\' attachment e\' stato aggiunto al claim</string>
     <string name="message_adding_attachment_not_ok">Errore durante l\'aggiunta dell\' attachment al claim</string>
     <string name="message_remove_additional_info">Rimuovere l\'informazione?</string>

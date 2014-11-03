@@ -95,7 +95,7 @@ public class SubmitClaimListener implements OnClickListener {
 				
 				Claim claim = Claim.getClaim(claimId);
 				
-				FormPayload payload = claim.getSurveyForm();
+				FormPayload payload = claim.getDynamicForm();
 
 				if (payload != null) {
 					

@@ -55,6 +55,7 @@ import android.widget.EditText;
 public class Database {
 
 	boolean open = false;
+	boolean isEncrypted = false;
 	private Connection connection;
 	private Context context;
 
@@ -66,6 +67,10 @@ public class Database {
 
 	private String password;
 
+	public boolean isEncrypted() {
+		return isEncrypted;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -74,7 +79,7 @@ public class Database {
 
 		if (password != null && !password.equals("")) {
 			this.password = password;
-		}else{
+		} else {
 			this.password = null;
 		}
 	}
@@ -121,7 +126,7 @@ public class Database {
 		return true;
 	}
 
-	public void unlock(Context context) {
+	public void unlock(final Context context) {
 		// Create it, if it doesn't exist
 		init();
 		// Try to open it
@@ -132,7 +137,9 @@ public class Database {
 					context);
 			dbPasswordDialog.setTitle(R.string.message_db_locked);
 			final EditText dbPasswordInput = new EditText(context);
-			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+			dbPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT
+					| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
 			dbPasswordDialog.setView(dbPasswordInput);
 			dbPasswordDialog.setMessage(context.getResources().getString(
 					R.string.message_db_password));
@@ -164,6 +171,11 @@ public class Database {
 				Class.forName("org.h2.Driver");
 				connection = DriverManager.getConnection(getUrl());
 				open = true;
+				if(password == null || password.equalsIgnoreCase("")){
+					isEncrypted = false;
+				}else{
+					isEncrypted = true;
+				}
 				Log.d(this.getClass().getName(), "... opened");
 			} catch (ClassNotFoundException e) {
 			} catch (SQLException e) {
@@ -199,11 +211,10 @@ public class Database {
 				}
 				this.password = newPassword;
 
-			}else{
+			} else {
 				if (oldPassword != null && !oldPassword.equals("")) {
 					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
-							"AES", oldPassword.toCharArray(),
-							null, true);
+							"AES", oldPassword.toCharArray(), null, true);
 				} else {
 					org.h2.tools.ChangeFileEncryption.execute(DB_PATH, DB_NAME,
 							"AES", null, null, true);
@@ -283,19 +294,21 @@ public class Database {
 	public Connection getConnection() {
 
 		try {
-			
+
 			return DriverManager.getConnection(getUrl());
 
 		} catch (SQLException e) {
-			
-			Log.d(this.getClass().getName(), "getConnection first try exception" );
-			e.printStackTrace();			
+
+			Log.d(this.getClass().getName(),
+					"getConnection first try exception");
+			e.printStackTrace();
 			try {
 				unlock(context);
 				return DriverManager.getConnection(getUrl());
 			} catch (Exception e2) {
-				// TODO: handle exception				
-				Log.d(this.getClass().getName(), "getConnection second try exception" );
+				// TODO: handle exception
+				Log.d(this.getClass().getName(),
+						"getConnection second try exception");
 			}
 		}
 		return null;

@@ -117,6 +117,8 @@
     <string name="owner_removed">The owner has been removed</string>
     <string name="section_element_removed">The element has been removed</string>
     <string name="additional_info_removed">Information removed</string>
+    <string name="message_password_too_short">The password must be at least %d characters long</string>
+    <string name="message_password_character_is_wrong">The password must only contain digits and letters</string>
     <string name="message_saved">Saved</string>
     <string name="message_server_error_saving_claim">Server Internal Error</string>
     <string name="message_service_not_available">Service Not Available</string>
@@ -155,11 +157,11 @@
     <string name="message_db_locked">Data is password protected</string>
     <string name="message_db_password">Password to access data?</string>
     <string name="message_cant_open_db">Unable to access data</string>
-    <string name="message_check_upgrade_db">Checking db upgrade</string>
+    <string name="message_check_upgrade_db">Upgrading local data</string>
     <string name="message_no_application">Can\'t find an application to open the file </string>
     <string name="message_error_opening_file">Error opening the file : </string>
     <string name="message_old_db_password">Current password?</string>
-    <string name="message_new_db_password">New password?</string>
+    <string name="message_new_db_password">New password (leave blank for unencrypted data)?</string>
     <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>
     <string name="message_encryption_failed">Unable to encrypt local data</string>
     <string name="message_confirm_new_db_password">Confirm new password</string>

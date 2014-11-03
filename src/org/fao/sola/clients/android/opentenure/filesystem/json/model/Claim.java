@@ -78,7 +78,7 @@ public class Claim {
 	String version;
 
 	@SerializedName("dynamicForm")
-	FormPayload surveyForm;
+	FormPayload dynamicForm;
 
 	@SerializedName("claimant")
 	Claimant claimant;
@@ -198,12 +198,12 @@ public class Claim {
 		this.challengedClaimId = challengedClaimId;
 	}
 
-	public FormPayload getSurveyForm() {
-		return surveyForm;
+	public FormPayload getDynamicForm() {
+		return dynamicForm;
 	}
 
-	public void setSurveyForm(FormPayload surveyForm) {
-		this.surveyForm = surveyForm;
+	public void setDynamicForm(FormPayload dynamicForm) {
+		this.dynamicForm = dynamicForm;
 	}
 
 	public Claimant getClaimant() {

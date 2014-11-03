@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.DatabasePasswordTextWatcher;
 import org.fao.sola.clients.android.opentenure.network.AlertInitializationTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
@@ -59,6 +60,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -176,174 +178,16 @@ public class NewsFragment extends ListFragment {
 			AlertInitializationTask fakeTask = new AlertInitializationTask(this.getActivity());
 			fakeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, input);
 
-			// AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-			// rootView.getContext());
-			// alertDialog.setTitle(R.string.message_title_app_not_initialized);
-			// alertDialog.setMessage(getResources().getString(
-			// R.string.message_app_not_initialized));
-			//
-			// alertDialog.setPositiveButton(R.string.confirm,
-			// new OnClickListener() {
-			// @Override
-			// public void onClick(DialogInterface dialog,
-			// int which) {
-			// AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(
-			// rootView.getContext());
-			//
-			// return;
-			//
-			// }});
-			//
-			// alertDialog.show();
 			return true;
 
 		case R.id.action_lock:
 			if (OpenTenureApplication.getInstance().getDatabase().isOpen()) {
-				AlertDialog.Builder oldPasswordDialog = new AlertDialog.Builder(
-						rootView.getContext());
-				oldPasswordDialog.setTitle(R.string.title_lock_db);
-				final EditText oldPasswordInput = new EditText(
-						rootView.getContext());
-				oldPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT
-						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-				oldPasswordDialog.setView(oldPasswordInput);
-				oldPasswordDialog.setMessage(getResources().getString(
-						R.string.message_old_db_password));
-
-				oldPasswordDialog.setPositiveButton(R.string.confirm,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-								AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(
-										rootView.getContext());
-								newPasswordDialog
-										.setTitle(R.string.title_lock_db);
-								final EditText newPasswordInput = new EditText(
-										rootView.getContext());
-								newPasswordInput
-										.setInputType(InputType.TYPE_CLASS_TEXT
-												| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-								newPasswordDialog.setView(newPasswordInput);
-								newPasswordDialog
-										.setMessage(getResources()
-												.getString(
-														R.string.message_new_db_password));
-
-								newPasswordDialog.setPositiveButton(
-										R.string.confirm,
-										new OnClickListener() {
-
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												AlertDialog.Builder confirmNewPasswordDialog = new AlertDialog.Builder(
-														rootView.getContext());
-												confirmNewPasswordDialog
-														.setTitle(R.string.title_lock_db);
-												final EditText confirmNewPasswordInput = new EditText(
-														rootView.getContext());
-												confirmNewPasswordInput
-														.setInputType(InputType.TYPE_CLASS_TEXT
-																| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-												confirmNewPasswordDialog
-														.setView(confirmNewPasswordInput);
-												confirmNewPasswordDialog
-														.setMessage(getResources()
-																.getString(
-																		R.string.message_confirm_new_db_password));
-
-												confirmNewPasswordDialog
-														.setPositiveButton(
-																R.string.confirm,
-																new OnClickListener() {
-
-																	@Override
-																	public void onClick(
-																			DialogInterface dialog,
-																			int which) {
-																		String oldPassword = oldPasswordInput
-																				.getText()
-																				.toString();
-																		String newPassword = newPasswordInput
-																				.getText()
-																				.toString();
-																		String confirmNewPassword = confirmNewPasswordInput
-																				.getText()
-																				.toString();
-																		if (!newPassword
-																				.equals(confirmNewPassword)) {
-																			Toast.makeText(
-																					rootView.getContext(),
-																					R.string.message_password_dont_match,
-																					Toast.LENGTH_SHORT)
-																					.show();
-
-																		} else {
-																			if ("".equalsIgnoreCase(newPassword)) {
-																				newPassword = null;
-																			}
-																			OpenTenureApplication
-																					.getInstance()
-																					.getDatabase()
-																					.changeEncryption(
-																							oldPassword,
-																							newPassword);
-																			if (!OpenTenureApplication
-																					.getInstance()
-																					.getDatabase()
-																					.isOpen()) {
-																				Toast.makeText(
-																						rootView.getContext(),
-																						R.string.message_encryption_failed,
-																						Toast.LENGTH_SHORT)
-																						.show();
-																			}
-																		}
-																	}
-																});
-												confirmNewPasswordDialog
-														.setNegativeButton(
-																R.string.cancel,
-																new OnClickListener() {
-
-																	@Override
-																	public void onClick(
-																			DialogInterface dialog,
-																			int which) {
-																	}
-																});
-
-												confirmNewPasswordDialog.show();
-
-											}
-										});
-								newPasswordDialog.setNegativeButton(
-										R.string.cancel, new OnClickListener() {
-
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-											}
-										});
-
-								newPasswordDialog.show();
-							}
-						});
-				oldPasswordDialog.setNegativeButton(R.string.cancel,
-						new OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						});
-
-				oldPasswordDialog.show();
+				
+				if(OpenTenureApplication.getInstance().getDatabase().isEncrypted()){
+					changeOldPassword();
+				}else{
+					setNewPassword(null);
+				}
 			} else {
 				OpenTenureApplication.getInstance().getDatabase()
 						.unlock(rootView.getContext());
@@ -355,6 +199,190 @@ public class NewsFragment extends ListFragment {
 
 	}
 
+	private void changeOldPassword(){
+		AlertDialog.Builder oldPasswordBuilder = new AlertDialog.Builder(
+				rootView.getContext());
+		oldPasswordBuilder.setTitle(R.string.title_lock_db);
+		final EditText oldPasswordInput = new EditText(
+				rootView.getContext());
+		oldPasswordInput.setInputType(InputType.TYPE_CLASS_TEXT
+				| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		oldPasswordBuilder.setView(oldPasswordInput);
+		oldPasswordBuilder.setMessage(getResources().getString(
+				R.string.message_old_db_password));
+
+		oldPasswordBuilder.setPositiveButton(R.string.confirm,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+						setNewPassword(oldPasswordInput.getText().toString());
+					}
+				});
+		oldPasswordBuilder.setNegativeButton(R.string.cancel,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog,
+							int which) {
+					}
+				});
+
+		final AlertDialog oldPasswordDialog = oldPasswordBuilder.create();
+		oldPasswordDialog.show();
+	}
+	
+	private void setNewPassword(final String oldPassword){
+
+		AlertDialog.Builder newPasswordBuilder = new AlertDialog.Builder(
+				rootView.getContext());
+		newPasswordBuilder
+				.setTitle(R.string.title_lock_db);
+		final EditText newPasswordInput = new EditText(
+				rootView.getContext());
+		newPasswordInput
+				.setInputType(InputType.TYPE_CLASS_TEXT
+						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+		final DatabasePasswordTextWatcher newPasswordWatcher = new DatabasePasswordTextWatcher(newPasswordInput, rootView.getContext());
+		newPasswordInput.addTextChangedListener(newPasswordWatcher);
+		newPasswordBuilder.setView(newPasswordInput);
+		newPasswordBuilder
+				.setMessage(getResources()
+						.getString(
+								R.string.message_new_db_password));
+
+		newPasswordBuilder.setPositiveButton(
+				R.string.confirm,
+				new OnClickListener() {
+
+					@Override
+					public void onClick(
+							DialogInterface dialog,
+							int which) {
+
+					}
+				});
+		newPasswordBuilder.setNegativeButton(
+				R.string.cancel, new OnClickListener() {
+
+					@Override
+					public void onClick(
+							DialogInterface dialog,
+							int which) {
+					}
+				});
+
+		final AlertDialog newPasswordDialog = newPasswordBuilder.create();
+		newPasswordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+		    @Override
+		    public void onShow(DialogInterface dialog) {
+
+		        Button b = newPasswordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+		        b.setOnClickListener(
+						new View.OnClickListener() {
+
+					@Override
+					public void onClick(View dialog) {
+						if(!newPasswordWatcher.isValid()){
+							return;
+						}
+						AlertDialog.Builder confirmNewPasswordBuilder = new AlertDialog.Builder(
+								rootView.getContext());
+						confirmNewPasswordBuilder
+								.setTitle(R.string.title_lock_db);
+						final EditText confirmNewPasswordInput = new EditText(
+								rootView.getContext());
+						confirmNewPasswordInput
+								.setInputType(InputType.TYPE_CLASS_TEXT
+										| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+						final DatabasePasswordTextWatcher confirmPasswordChecker = new DatabasePasswordTextWatcher(confirmNewPasswordInput, rootView.getContext());
+
+						confirmNewPasswordInput.addTextChangedListener(confirmPasswordChecker);
+						confirmNewPasswordBuilder.setView(confirmNewPasswordInput);
+						confirmNewPasswordBuilder.setMessage(getResources().getString(R.string.message_confirm_new_db_password));
+
+						confirmNewPasswordBuilder
+						.setPositiveButton(
+								R.string.confirm,
+								new OnClickListener() {
+
+									@Override
+									public void onClick(
+											DialogInterface dialog,
+											int which) {
+									}
+								});
+
+						confirmNewPasswordBuilder
+						.setNegativeButton(
+								R.string.cancel,
+								new OnClickListener() {
+
+									@Override
+									public void onClick(
+											DialogInterface dialog,
+											int which) {
+									}
+								});
+
+						final AlertDialog confirmNewPasswordDialog = confirmNewPasswordBuilder.create();
+						confirmNewPasswordDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+						    @Override
+						    public void onShow(DialogInterface dialog) {
+
+						        Button b = confirmNewPasswordDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+
+						        b.setOnClickListener(
+										new View.OnClickListener() {
+
+									@Override
+									public void onClick(View dialog) {
+
+										String newPassword = newPasswordInput.getText().toString();
+										String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+										
+										if (!newPassword
+												.equals(confirmNewPassword)) {
+											Toast.makeText(
+													rootView.getContext(),
+													R.string.message_password_dont_match,
+													Toast.LENGTH_SHORT)
+													.show();
+
+										} else {
+											if ("".equalsIgnoreCase(newPassword)) {
+												newPassword = null;
+											}
+											OpenTenureApplication.getInstance().getDatabase().changeEncryption(oldPassword,newPassword);
+
+											if (!OpenTenureApplication.getInstance().getDatabase().isOpen()) {
+
+												Toast.makeText(
+														rootView.getContext(),
+														R.string.message_encryption_failed,
+														Toast.LENGTH_SHORT)
+														.show();
+											}
+											confirmNewPasswordDialog.dismiss();
+										}
+									}
+								});
+						    }
+						});
+						confirmNewPasswordDialog.show();
+						newPasswordDialog.dismiss();
+					}
+				});
+		    }
+		});
+		newPasswordDialog.show();
+	}
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		try {
