@@ -288,24 +288,22 @@ public class FileSystemUtilities {
 	}
 
 	public static boolean createMutipageFolder(String claimID) {
-
-		System.out.println("Ora creiamo una bella cartella");
+		
 		File multiFolder = null;
 		try {
 			new File(getAttachmentFolder(claimID), _MULTIPAGE).mkdir();
 			multiFolder = new File(getAttachmentFolder(claimID)
 					+ File.separator + _MULTIPAGE);
 
-			System.out.println("Creata qui " + multiFolder.getAbsolutePath());
 		} catch (Exception e) {
 			// TODO: handle exception
-			System.out.println("Cor cazzo ! " + e.getMessage());
+			Log.e("org.fao.sola.clients.android.opentenure.filesystem", e.getMessage());
 		}
 
 		if (multiFolder.exists() && multiFolder.isDirectory()) {
 			return true;
 		} else {
-			System.out.println("PAre non esista mannaggia peppa pig");
+			
 			return false;
 
 		}

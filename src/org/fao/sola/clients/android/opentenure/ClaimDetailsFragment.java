@@ -54,6 +54,8 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
+import com.google.android.gms.maps.model.Marker;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -156,15 +158,13 @@ public class ClaimDetailsFragment extends Fragment {
 		super.onCreateOptionsMenu(menu, inflater);
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		if (claim != null && !claim.isModifiable() ) {
+		if (claim != null && !claim.isModifiable()) {
 			menu.removeItem(R.id.action_save);
 		}
 
 		setHasOptionsMenu(true);
-		//setRetainInstance(true);
+		// setRetainInstance(true);
 	}
-	
-	
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -194,15 +194,12 @@ public class ClaimDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		 
+
 		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
 				false);
 		setHasOptionsMenu(true);
-		
-		
-		
-		//setRetainInstance(true);
+
+		// setRetainInstance(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
@@ -244,115 +241,112 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 		}
 
-		
-			((View) rootView.findViewById(R.id.claimant))
-					.setOnClickListener(new OnClickListener() {
+		((View) rootView.findViewById(R.id.claimant))
+				.setOnClickListener(new OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							// ////////
+					@Override
+					public void onClick(View v) {
+						// ////////
 
-							// Intent intent = new Intent(rootView.getContext(),
-							// SelectPersonActivity.class);
-							//
-							// // SOLA DB cannot store the same person twice
-							//
-							// ArrayList<String> idsWithSharesOrClaims = Person
-							// .getIdsWithSharesOrClaims();
-							//
-							// intent.putStringArrayListExtra(
-							// SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-							// idsWithSharesOrClaims);
-							//
-							// startActivityForResult(
-							// intent,
-							// SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
+						// Intent intent = new Intent(rootView.getContext(),
+						// SelectPersonActivity.class);
+						//
+						// // SOLA DB cannot store the same person twice
+						//
+						// ArrayList<String> idsWithSharesOrClaims = Person
+						// .getIdsWithSharesOrClaims();
+						//
+						// intent.putStringArrayListExtra(
+						// SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
+						// idsWithSharesOrClaims);
+						//
+						// startActivityForResult(
+						// intent,
+						// SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
 
-							String claimantId = ((TextView) rootView
-									.findViewById(R.id.claimant_id)).getText()
-									.toString();
+						String claimantId = ((TextView) rootView
+								.findViewById(R.id.claimant_id)).getText()
+								.toString();
 
-							if (claimantId != null
-									&& !claimantId.trim().equals("")) {
+						if (claimantId != null && !claimantId.trim().equals("")) {
 
-								Intent intent = new Intent(rootView
-										.getContext(), PersonActivity.class);
-								intent.putExtra(
-										PersonActivity.PERSON_ID_KEY,
-										((TextView) rootView
-												.findViewById(R.id.claimant_id))
-												.getText());
-								intent.putExtra(PersonActivity.MODE_KEY,
-										modeActivity.getMode().toString());
-								startActivityForResult(intent, PERSON_RESULT);
+							Intent intent = new Intent(rootView.getContext(),
+									PersonActivity.class);
+							intent.putExtra(PersonActivity.PERSON_ID_KEY,
+									((TextView) rootView
+											.findViewById(R.id.claimant_id))
+											.getText());
+							intent.putExtra(PersonActivity.MODE_KEY,
+									modeActivity.getMode().toString());
+							startActivityForResult(intent, PERSON_RESULT);
 
-							} else {
+						} else {
 
-								AlertDialog.Builder dialog = new AlertDialog.Builder(
-										rootView.getContext());
+							AlertDialog.Builder dialog = new AlertDialog.Builder(
+									rootView.getContext());
 
-								dialog.setTitle(R.string.new_entity);
-								dialog.setMessage(R.string.message_entity_type);
+							dialog.setTitle(R.string.new_entity);
+							dialog.setMessage(R.string.message_entity_type);
 
-								dialog.setPositiveButton(R.string.person,
-										new DialogInterface.OnClickListener() {
+							dialog.setPositiveButton(R.string.person,
+									new DialogInterface.OnClickListener() {
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												Intent intent = new Intent(
-														rootView.getContext(),
-														PersonActivity.class);
-												intent.putExtra(
-														PersonActivity.PERSON_ID_KEY,
-														PersonActivity.CREATE_PERSON_ID);
-												intent.putExtra(
-														PersonActivity.ENTIY_TYPE,
-														PersonActivity.TYPE_PERSON);
-												intent.putExtra(
-														PersonActivity.MODE_KEY,
-														modeActivity.getMode()
-																.toString());
-												startActivityForResult(intent,
-														PERSON_RESULT);
-											}
-										});
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											Intent intent = new Intent(rootView
+													.getContext(),
+													PersonActivity.class);
+											intent.putExtra(
+													PersonActivity.PERSON_ID_KEY,
+													PersonActivity.CREATE_PERSON_ID);
+											intent.putExtra(
+													PersonActivity.ENTIY_TYPE,
+													PersonActivity.TYPE_PERSON);
+											intent.putExtra(
+													PersonActivity.MODE_KEY,
+													modeActivity.getMode()
+															.toString());
+											startActivityForResult(intent,
+													PERSON_RESULT);
+										}
+									});
 
-								dialog.setNegativeButton(R.string.group,
-										new DialogInterface.OnClickListener() {
+							dialog.setNegativeButton(R.string.group,
+									new DialogInterface.OnClickListener() {
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												Intent intent = new Intent(
-														rootView.getContext(),
-														PersonActivity.class);
-												intent.putExtra(
-														PersonActivity.PERSON_ID_KEY,
-														PersonActivity.CREATE_PERSON_ID);
-												intent.putExtra(
-														PersonActivity.ENTIY_TYPE,
-														PersonActivity.TYPE_GROUP);
-												intent.putExtra(
-														PersonActivity.MODE_KEY,
-														modeActivity.getMode()
-																.toString());
-												startActivityForResult(intent,
-														PERSON_RESULT);
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											Intent intent = new Intent(rootView
+													.getContext(),
+													PersonActivity.class);
+											intent.putExtra(
+													PersonActivity.PERSON_ID_KEY,
+													PersonActivity.CREATE_PERSON_ID);
+											intent.putExtra(
+													PersonActivity.ENTIY_TYPE,
+													PersonActivity.TYPE_GROUP);
+											intent.putExtra(
+													PersonActivity.MODE_KEY,
+													modeActivity.getMode()
+															.toString());
+											startActivityForResult(intent,
+													PERSON_RESULT);
 
-											}
-										});
+										}
+									});
 
-								dialog.show();
-
-							}
+							dialog.show();
 
 						}
-					});
 
-			if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
+					}
+				});
+
+		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			((View) rootView.findViewById(R.id.challenge_to))
 					.setOnClickListener(new OnClickListener() {
 
@@ -387,10 +381,9 @@ public class ClaimDetailsFragment extends Fragment {
 						}
 					});
 		}
-			
+
 		return rootView;
 	}
-
 
 	private void preload() {
 
@@ -1046,7 +1039,6 @@ public class ClaimDetailsFragment extends Fragment {
 										.getTypebyDisplayValue(claimType)))
 							changed = true;
 						else {
-
 							String landUseDispValue = (String) ((Spinner) rootView
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
@@ -1054,7 +1046,6 @@ public class ClaimDetailsFragment extends Fragment {
 									&& new LandUse()
 											.getTypebyDisplayValue(landUseDispValue) != null)
 								changed = true;
-
 							else if (!claim
 									.getLandUse()
 									.equals(new LandUse()
@@ -1139,6 +1130,81 @@ public class ClaimDetailsFragment extends Fragment {
 						new SaveDetailsNegativeListener(this));
 				saveChangesDialog.show();
 
+			}
+		} else {
+
+			String claimName = ((EditText) rootView
+					.findViewById(R.id.claim_name_input_field)).getText()
+					.toString();
+			if (claimName != null && !claimName.trim().equals(""))
+				changed = true;
+			else {
+
+				String person = ((TextView) rootView
+						.findViewById(R.id.claimant_id)).getText().toString();
+				if (person != null && !person.trim().equals(""))
+					changed = true;
+				else {
+
+					String challengedClaim = ((TextView) rootView
+							.findViewById(R.id.challenge_to_claim_id))
+							.getText().toString();
+					if (challengedClaim != null
+							&& !challengedClaim.trim().equals(""))
+						changed = true;
+
+					else {
+
+						String notes = ((EditText) rootView
+								.findViewById(R.id.claim_notes_input_field))
+								.getText().toString();
+
+						if (notes != null && !notes.trim().equals(""))
+							changed = true;
+						else {
+
+							String startDate = ((EditText) rootView
+									.findViewById(R.id.date_of_start_input_field))
+									.getText().toString();
+
+							if (startDate != null
+									&& !startDate.trim().equals(""))
+								changed = true;
+							else {
+								System.out.println("step 5");
+								changed = isFormChanged();
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+			if (changed) {
+				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
+						this.getActivity());
+				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);
+				String dialogMessage = OpenTenureApplication.getContext()
+						.getString(R.string.message_discard_changes);
+
+				saveChangesDialog.setMessage(dialogMessage);
+
+				saveChangesDialog.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								// TODO Auto-generated method stub
+								return;
+							}
+						});
+
+				saveChangesDialog.setPositiveButton(R.string.confirm,
+						new SaveDetailsNegativeListener(this));
+				saveChangesDialog.show();
 			}
 		}
 		return changed;
@@ -1245,7 +1311,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		dateOfBirth.setText(sdf.format(localCalendar.getTime()));
 	}
-	
+
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);

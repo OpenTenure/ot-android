@@ -105,8 +105,8 @@
     <string name="last_name_label">Cognome *</string>
     <string name="date_of_birth">Data di nascita (AAAA-MM-GG)</string>
     <string name="date_of_birth_label">Data di nascita * (AAAA-MM-GG)</string>
-    <string name="date_of_start">Data di inizio del diritto (YYYY-MM-DD)</string>
-    <string name="date_of_start_label">Data di inizio del diritto (YYYY-MM-DD)</string>
+    <string name="date_of_start">Data di applicabilita\' del diritto (YYYY-MM-DD)</string>
+    <string name="date_of_start_label">Data di applicabilita\' del diritto (YYYY-MM-DD)</string>
     <string name="place_of_birth">Luogo di nascita</string>
     <string name="place_of_birth_label">Luogo di nascita *</string>
     <string name="date_of_establishment_label">Data di costituzione</string>
@@ -198,6 +198,7 @@
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>
     <string name="message_save_changes">Vuoi salvare i cambiamenti ?</string>
+    <string name="message_discard_changes">Vuoi veramente uscire senza salvare ?</string>
     <string name="message_adjacencies_saved">Adiacenze salvate</string>
     <string name="message_adjacencies_not_saved">Adiacenze non salvate</string>
     <string name="message_claim_modified">Claim modificato</string>

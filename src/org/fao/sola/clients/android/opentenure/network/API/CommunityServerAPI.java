@@ -340,6 +340,9 @@ public class CommunityServerAPI {
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
 		try {
+			
+			Log.d("CommunityServerAPI",
+					"GET ALL CLAIMS BY BOX JSON REQUEST " + url);
 
 			HttpResponse response = client.execute(request);
 

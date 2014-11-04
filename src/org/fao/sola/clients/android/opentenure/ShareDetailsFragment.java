@@ -113,11 +113,11 @@ public class ShareDetailsFragment extends Fragment {
 //		super.onCreateOptionsMenu(menu, inflater);
 //		Claim claim = Claim.getClaim(claimId);
 //		if (claim != null && !claim.isModifiable()) {
-//			System.out.println("Dovrei rimuovere i pulsanti");
+//			
 //			menu.removeItem(R.id.action_new);
 //			menu.removeItem(R.id.action_save);
 //		}
-//		else System.out.println("NON Dovrei rimuovere i pulsanti");
+//		
 //		
 //		setHasOptionsMenu(true);
 //		setRetainInstance(true);
@@ -131,7 +131,6 @@ public class ShareDetailsFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.share_details, container, false);
 		setHasOptionsMenu(true);
 		
-		System.out.println("Ripasso da on createView ShareDetails");
 
 		return rootView;
 
