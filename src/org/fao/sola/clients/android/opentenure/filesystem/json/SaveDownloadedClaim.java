@@ -233,6 +233,7 @@ public class SaveDownloadedClaim {
 			claimDB.setStatus(downloadedClaim.getStatusCode());
 			claimDB.setClaimNumber(downloadedClaim.getNr());
 			claimDB.setType(downloadedClaim.getTypeCode());
+			claimDB.setDynamicForm(downloadedClaim.getDynamicForm());
 
 			if (Person.getPerson(claimant.getId()) == null)
 				Person.createPerson(person);

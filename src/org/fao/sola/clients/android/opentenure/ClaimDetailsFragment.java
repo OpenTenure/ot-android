@@ -699,7 +699,7 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setChallengedClaim(challengedClaim);
 		// Still allow saving the claim if the dynamic part contains errors
 		isFormValid();
-		claim.setSurveyForm(formDispatcher.getEditedFormPayload());
+		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
 		claim.setVersion("0");
 
 		if (claim.create() == 1) {
@@ -781,7 +781,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		claim.setPerson(person);
 		claim.setChallengedClaim(challengedClaim);
-		claim.setSurveyForm(formDispatcher.getEditedFormPayload());
+		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
 
 		return claim.update();
 

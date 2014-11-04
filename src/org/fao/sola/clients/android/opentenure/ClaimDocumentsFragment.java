@@ -31,17 +31,13 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.button.listener.AddMultipageAttachmentListener;
-import org.fao.sola.clients.android.opentenure.button.listener.CreateMultipageFileListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
-import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.MD5;
 
 import android.app.Activity;
@@ -78,7 +74,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 	public static final String URI_KEY = "__URI__";
 	public static final String FILE_TYPE_KEY = "__FILE_TYPE__";
 	public static final String MIME_TYPE_KEY = "__MIME_TYPE__";
-	private static final int CAPTURE_MULTI_IMAGE_ACTIVITY_REQUEST_CODE = 10;
 	private Uri uri;
 	private String fileType;
 	private String mimeType;

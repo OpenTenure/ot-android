@@ -521,7 +521,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		if (claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
 			// setting up for an existing claim
 			Claim claim = Claim.getClaim(claimId);
-			originalFormPayload = claim.getSurveyForm();
+			originalFormPayload = claim.getDynamicForm();
 			if(originalFormPayload != null){
 				// There's a payload already attached to this claim
 				editedFormPayload = new FormPayload(originalFormPayload);
