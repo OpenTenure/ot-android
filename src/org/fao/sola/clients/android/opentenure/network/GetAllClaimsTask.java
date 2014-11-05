@@ -151,24 +151,24 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		String maxY = new String("" + bounds.northeast.latitude);
 
 		if (minX.startsWith("-"))
-			minX = minX.substring(0, 7);
+			minX = minX.substring(0, 11);
 		else
-			minX = minX.substring(0, 6);
+			minX = minX.substring(0, 10);
 
 		if (minY.startsWith("-"))
-			minY = minY.substring(0, 7);
+			minY = minY.substring(0, 11);
 		else
-			minY = minY.substring(0, 6);
+			minY = minY.substring(0, 10);
 
 		if (maxX.startsWith("-"))
-			maxX = maxX.substring(0, 7);
+			maxX = maxX.substring(0, 11);
 		else
-			maxX = maxX.substring(0, 6);
+			maxX = maxX.substring(0, 10);
 
 		if (maxY.startsWith("-"))
-			maxY = maxY.substring(0, 7);
+			maxY = maxY.substring(0, 11);
 		else
-			maxY = maxY.substring(0, 6);
+			maxY = maxY.substring(0, 10);
 
 		coordinates[0] = minX;
 		coordinates[1] = minY;
