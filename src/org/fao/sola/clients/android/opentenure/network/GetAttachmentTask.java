@@ -122,7 +122,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 					Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED  : "
 							+ res.getMessage());
-
+					
 					FileOutputStream fos = new FileOutputStream(file);
 					fos.write(res.getArray());
 					fos.close();
@@ -152,6 +152,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 					offSet = offSet + lenght;
 
 					/* Setting progress bar */
+					att.updateDownloadedBytes(file.length());
 					factor = (float) file.length() / att.getSize();
 					progress = (int) (factor * 100);
 					vh.getBar().setProgress(progress);

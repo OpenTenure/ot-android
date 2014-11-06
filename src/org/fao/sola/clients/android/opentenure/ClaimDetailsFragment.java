@@ -1171,7 +1171,6 @@ public class ClaimDetailsFragment extends Fragment {
 									&& !startDate.trim().equals(""))
 								changed = true;
 							else {
-								System.out.println("step 5");
 								changed = isFormChanged();
 							}
 

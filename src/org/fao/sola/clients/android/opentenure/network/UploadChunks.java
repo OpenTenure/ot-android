@@ -116,8 +116,12 @@ public class UploadChunks {
 					ApiResponse res = CommunityServerAPI.uploadChunk(json,
 							chunk);
 
-					if (res.getHttpStatusCode() == 200)
+					if (res.getHttpStatusCode() == 200){
+					
+						attachment.updateUploadedBytes(startPosition);
 						success = true;
+						
+					}
 					if (res.getHttpStatusCode() == 100)
 						success = false;
 

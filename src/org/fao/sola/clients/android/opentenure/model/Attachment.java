@@ -68,7 +68,7 @@ public class Attachment {
 				+ claimId + ", status=" + status + ", description="
 				+ description + ", fileName=" + fileName + ", fileType="
 				+ fileType + ", mimeType=" + mimeType + ", MD5Sum=" + MD5Sum
-				+ ", path=" + path + ", size=" + size + "]";
+				+ ", path=" + path + ", size=" + size + ", uploadedBytes=" + uploadedBytes + ", downloadedBytes=" + downloadedBytes + "]";
 	}
 
 	public String getAttachmentId() {
@@ -114,7 +114,7 @@ public class Attachment {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE) VALUES (?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE, DOWNLOADED_BYTES, UPLOADED_BYTES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, attachment.getAttachmentId());
 			statement.setString(2, attachment.getStatus());
 			statement.setString(3, attachment.getClaimId());
@@ -125,7 +125,8 @@ public class Attachment {
 			statement.setString(8, attachment.getMD5Sum());
 			statement.setString(9, attachment.getPath());
 			statement.setLong(10, attachment.getSize());
-
+			statement.setLong(11, 0);
+			statement.setLong(12, 0);
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -158,7 +159,7 @@ public class Attachment {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE) VALUES (?,?,?,?,?,?,?,?,?,?)");
+					.prepareStatement("INSERT INTO ATTACHMENT(ATTACHMENT_ID, STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE, DOWNLOADED_BYTES, UPLOADED_BYTES) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
 			statement.setString(1, getAttachmentId());
 			statement.setString(2, getStatus());
 			statement.setString(3, getClaimId());
@@ -169,6 +170,8 @@ public class Attachment {
 			statement.setString(8, getMD5Sum());
 			statement.setString(9, getPath());
 			statement.setLong(10, getSize());
+			statement.setLong(11, 0);
+			statement.setLong(12, 0);
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -364,7 +367,7 @@ public class Attachment {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
+					.prepareStatement("SELECT STATUS, CLAIM_ID, DESCRIPTION, FILE_NAME, FILE_TYPE, MIME_TYPE, MD5SUM, PATH, SIZE, UPLOADED_BYTES, DOWNLOADED_BYTES FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
 			statement.setString(1, attachmentId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
@@ -379,6 +382,8 @@ public class Attachment {
 				attachment.setMD5Sum(rs.getString(7));
 				attachment.setPath(rs.getString(8));
 				attachment.setSize(rs.getLong(9));
+				attachment.setUploadedBytes(rs.getLong(10));
+				attachment.setDownloadedBytes(rs.getLong(11));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -500,6 +505,170 @@ public class Attachment {
 		}
 		return attachments;
 	}
+	
+	public int updateDownloadedBytes(long bytes) {
+
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE ATTACHMENT SET DOWNLOADED_BYTES=? WHERE ATTACHMENT_ID=?");
+			statement.setLong(1, bytes);			
+			statement.setString(2, getAttachmentId());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+	
+	public int updateUploadedBytes(long bytes) {
+
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE ATTACHMENT SET UPLOADED_BYTES=? WHERE ATTACHMENT_ID=?");
+			statement.setLong(1, bytes);			
+			statement.setString(2, getAttachmentId());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+	
+	public long getUploadedBytes() {
+
+		
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		long bytes = 0 ;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT UPLOADED_BYTES FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
+			statement.setString(1, attachmentId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				
+			bytes = rs.getLong(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return bytes;
+	}
+	
+	public long getDownloadedBytes() {
+		
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		long bytes = 0 ;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT DOWNLOADED_BYTES FROM ATTACHMENT DOC WHERE DOC.ATTACHMENT_ID=?");
+			statement.setString(1, attachmentId);
+			rs = statement.executeQuery();
+			while (rs.next()) {
+			bytes = rs.getLong(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return bytes;
+	}
 
 	public String getFileType() {
 		return fileType;
@@ -533,6 +702,14 @@ public class Attachment {
 		this.size = size;
 	}
 
+	public void setUploadedBytes(Long uploadedBytes) {
+		this.uploadedBytes = uploadedBytes;
+	}
+
+	public void setDownloadedBytes(Long downloadedBytes) {
+		this.downloadedBytes = downloadedBytes;
+	}
+
 	String attachmentId;
 	String claimId;
 	String description;
@@ -543,5 +720,7 @@ public class Attachment {
 	String path;
 	String status;
 	Long size;
+	Long uploadedBytes;
+	Long downloadedBytes;
 
 }

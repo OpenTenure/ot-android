@@ -1020,6 +1020,8 @@ public class CommunityServerAPI {
 			SaveClaimResponse saveResponse = gson.fromJson(json,
 					SaveClaimResponse.class);
 
+			Log.d("CommunityServerAPI", "SAVE CLAIM JSON RESPONSE " + response.getStatusLine()
+					.getStatusCode());
 			saveResponse.setHttpStatusCode(response.getStatusLine()
 					.getStatusCode());
 

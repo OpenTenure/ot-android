@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.button.listener.DownloadAttachmentListener;
@@ -121,6 +122,14 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
+			vh.bar.setVisibility(View.VISIBLE);
+			/* Setting progress bar */
+			float factor = (float) ((float) att.getUploadedBytes() / att
+					.getSize());
+
+			int progress = (int) (factor * 100);
+
+			vh.bar.setProgress(progress);
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
@@ -133,6 +142,14 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
+			vh.bar.setVisibility(View.VISIBLE);
+			/* Setting progress bar */
+			float factor = (float) ((float) att.getDownloadedBytes() / att
+					.getSize());
+
+			int progress = (int) (factor * 100);
+
+			vh.bar.setProgress(progress);
 		} else if (att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
 			vh.status.setText(att.getStatus());
@@ -242,7 +259,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 		vh.downloadIcon.setOnClickListener(new DownloadAttachmentListener(att,
 				vh));
-		
+
 		vh.sendIcon.setOnClickListener(new UploadAttachmentListener(att, vh));
 
 		return convertView;
