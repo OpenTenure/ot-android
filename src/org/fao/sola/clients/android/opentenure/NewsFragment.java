@@ -362,11 +362,63 @@ public class NewsFragment extends ListFragment {
 
 											if (!OpenTenureApplication.getInstance().getDatabase().isOpen()) {
 
-												Toast.makeText(
-														rootView.getContext(),
-														R.string.message_encryption_failed,
-														Toast.LENGTH_SHORT)
-														.show();
+												AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(
+														rootView.getContext());
+												confirmationDialogBuilder.setTitle(R.string.title_lock_db);
+												confirmationDialogBuilder.setMessage(getResources().getString(
+														R.string.message_encryption_failed));
+
+												confirmationDialogBuilder.setPositiveButton(R.string.confirm,
+														new OnClickListener() {
+
+															@Override
+															public void onClick(DialogInterface dialog,
+																	int which) {
+															}
+														});
+
+												final AlertDialog confirmationDialog = confirmationDialogBuilder.create();
+												confirmationDialog.show();
+											}else{
+												
+												if(newPassword == null){
+													AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(
+															rootView.getContext());
+													confirmationDialogBuilder.setTitle(R.string.title_lock_db);
+													confirmationDialogBuilder.setMessage(getResources().getString(
+															R.string.message_data_unencrypted));
+
+													confirmationDialogBuilder.setPositiveButton(R.string.confirm,
+															new OnClickListener() {
+
+																@Override
+																public void onClick(DialogInterface dialog,
+																		int which) {
+																}
+															});
+
+													final AlertDialog confirmationDialog = confirmationDialogBuilder.create();
+													confirmationDialog.show();
+												}else{
+													AlertDialog.Builder confirmationDialogBuilder = new AlertDialog.Builder(
+															rootView.getContext());
+													confirmationDialogBuilder.setTitle(R.string.title_lock_db);
+													confirmationDialogBuilder.setMessage(getResources().getString(
+															R.string.message_encryption_set));
+
+													confirmationDialogBuilder.setPositiveButton(R.string.confirm,
+															new OnClickListener() {
+
+																@Override
+																public void onClick(DialogInterface dialog,
+																		int which) {
+																}
+															});
+
+													final AlertDialog confirmationDialog = confirmationDialogBuilder.create();
+													confirmationDialog.show();
+												}
+												
 											}
 											confirmNewPasswordDialog.dismiss();
 										}

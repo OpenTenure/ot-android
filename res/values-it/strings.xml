@@ -163,6 +163,8 @@
     <string name="message_enter_description">Immetti una descrizione</string>
     <string name="message_password_dont_match">Nuova password non confermata. Riprovare</string>
     <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
+    <string name="message_data_unencrypted">Attenzione: i tuoi dati locali non sono cifrati</string>
+    <string name="message_encryption_set">I dati locali sono cifrati. Fornisci la password per decifrarli al prossimo avvio di OpenTenure</string>
     <string name="message_add_marker">Aggiungere una posizione al perimetro?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
