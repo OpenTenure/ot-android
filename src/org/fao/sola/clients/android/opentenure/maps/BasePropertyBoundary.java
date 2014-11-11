@@ -57,6 +57,7 @@ import com.androidmapsextensions.PolylineOptions;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -239,25 +240,29 @@ public class BasePropertyBoundary {
 
 		int i = 0;
 
+		List<LatLng> coordList = new ArrayList<LatLng>();
 		for (Vertex vertex : vertices) {
 			coords[i++] = new Coordinate(vertex.getMapPosition().longitude,
 					vertex.getMapPosition().latitude);
+			coordList.add(vertex.getMapPosition());
 		}
 
 		if(vertices.size() == 2){
 			// the source is a line segment so we replicate the second vertex to create a three vertices polygon
 			coords[i++] = new Coordinate(vertices.get(1).getMapPosition().longitude,
 					vertices.get(1).getMapPosition().latitude);
+			coordList.add(vertices.get(1).getMapPosition());
 		}
 
 		// then we close the polygon
 
 		coords[coords.length - 1] = new Coordinate(vertices.get(0).getMapPosition().longitude,
 				vertices.get(0).getMapPosition().latitude);
+		coordList.add(vertices.get(0).getMapPosition());
 
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
-		area = polygon.getArea();
+		area = SphericalUtil.computeArea(coordList);
 		Geometry envelope = polygon.getEnvelope();
 		
 		
@@ -357,7 +362,7 @@ public class BasePropertyBoundary {
 		ClaimType ct = new ClaimType();
 		propertyMarker = createPropertyMarker(center,
 				claimSlogan + ", " + context.getString(R.string.type) + ": "
-						+ ct.getDisplayValueByType(claimType) + String.format(", Area: %.8f", area));
+						+ ct.getDisplayValueByType(claimType) + String.format(", Area: %.2f sqm", area));
 	}
 
 	public void showPropertyLocations() {
