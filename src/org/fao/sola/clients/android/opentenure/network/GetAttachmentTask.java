@@ -254,6 +254,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();
+			OpenTenureApplication.getDocumentsFragment().update();
 		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED))) {
 			
 			vh.getStatus().setText(AttachmentStatus._DOWNLOAD_FAILED);
@@ -271,7 +272,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();
-
+			OpenTenureApplication.getDocumentsFragment().update();
 		} else if ((att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE))) {
 
@@ -291,6 +292,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();
+			OpenTenureApplication.getDocumentsFragment().update();
 
 		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOADING))) {
 
@@ -303,6 +305,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();
+			OpenTenureApplication.getDocumentsFragment().update();
 
 		}
 

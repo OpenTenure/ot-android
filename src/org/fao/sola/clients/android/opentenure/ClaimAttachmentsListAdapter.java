@@ -118,31 +118,37 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_unmoderated));
+			vh.bar.setVisibility(View.GONE);
+			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.bar.setVisibility(View.VISIBLE);
+			vh.getSendIcon().setVisibility(View.INVISIBLE);
 			/* Setting progress bar */
 			float factor = (float) ((float) att.getUploadedBytes() / att
 					.getSize());
-
 			int progress = (int) (factor * 100);
-
 			vh.bar.setProgress(progress);
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
+			vh.bar.setVisibility(View.GONE);
+			vh.removeIcon.setVisibility(View.VISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
+			vh.bar.setVisibility(View.GONE);
+			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.bar.setVisibility(View.VISIBLE);
+			vh.getSendIcon().setVisibility(View.INVISIBLE);
 			/* Setting progress bar */
 			float factor = (float) ((float) att.getDownloadedBytes() / att
 					.getSize());
@@ -155,14 +161,18 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
+			vh.bar.setVisibility(View.GONE);
+			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
+			vh.bar.setVisibility(View.GONE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
 			vh.status.setText(att.getStatus());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
+			vh.bar.setVisibility(View.GONE);
 		}
 		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)
 				|| att.getStatus().equals(AttachmentStatus._CREATED)) {
@@ -211,6 +221,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				}
 			});
 
+			System.out.println("Si si dovrebbe vedersi il remove !!!!");
+			vh.getRemoveIcon().setVisibility(View.VISIBLE);
 		} else {
 
 			((ViewManager) convertView).removeView(vh.removeIcon);
@@ -218,10 +230,15 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 		Claim claim = Claim.getClaim(claimId);
 
-		if ((!claim.getStatus().equals(ClaimStatus._CREATED) && !claim
-				.getStatus().equals(ClaimStatus._UPLOADING))
+		if ((!claim.getStatus().equals(ClaimStatus._CREATED)
+				&& !claim.getStatus().equals(ClaimStatus._UPLOADING) && !att
+				.getStatus().equals(AttachmentStatus._DOWNLOADING))
 				&& (att.getPath() == null || att.getPath().equals(""))) {
+
 			vh.downloadIcon.setVisibility(View.VISIBLE);
+		} else {
+
+			vh.downloadIcon.setVisibility(View.INVISIBLE);
 		}
 
 		if ((!claim.getStatus().equals(ClaimStatus._CREATED)
@@ -261,6 +278,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				vh));
 
 		vh.sendIcon.setOnClickListener(new UploadAttachmentListener(att, vh));
+		vh.removeIcon.setVisibility(View.VISIBLE);
 
 		return convertView;
 	}

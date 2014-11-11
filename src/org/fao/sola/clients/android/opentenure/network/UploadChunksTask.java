@@ -27,19 +27,38 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.UUID;
+
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.MD5;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
+import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
+import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;
 import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import android.os.AsyncTask;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * Here transfers one chunk at time. Return true if all the chunks of an
@@ -47,22 +66,147 @@ import android.view.View;
  */
 
 public class UploadChunksTask extends
-		AsyncTask<Object, Void, ViewHolderResponse> {
+		AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
 
-		UploadChunks ulc = new UploadChunks();
-		UploadChunksResponse res = ulc.execute((String) params[0]);
+		boolean success = false;
+		DataInputStream dis = null;
 
+		UploadChunksResponse upResponse = new UploadChunksResponse();
 		ViewHolderResponse vhr = new ViewHolderResponse();
 
-		vhr.setRes(res);
+		try {
+
+			Attachment attachment = Attachment.getAttachment((String)params[0]);
+
+			File toTransfer = new File(attachment.getPath());
+
+			FileInputStream fis = new FileInputStream(toTransfer);
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			upResponse.setAttachmentId((String)params[0]);
+
+			dis = new DataInputStream(fis);
+
+			Integer startPosition = 0;
+
+			for (;;) {
+
+				byte[] chunk = new byte[500000];
+
+				int rsz = dis.read(chunk, 0, chunk.length);
+				if (rsz > 0) {
+					UploadChunkPayload payload = new UploadChunkPayload();
+
+					if (rsz < 500000)
+						chunk = Arrays.copyOfRange(chunk, 0, rsz);
+
+					payload.setMd5(MD5.calculateMD5(chunk));
+
+					payload.setAttachmentId((String)params[0]);
+					payload.setClaimId(attachment.getClaimId());
+					payload.setId(UUID.randomUUID().toString());
+					payload.setSize((long) rsz);
+					payload.setStartPosition(startPosition);
+
+					startPosition = startPosition + rsz;
+
+					Gson gson = new GsonBuilder()
+							.setPrettyPrinting()
+							.serializeNulls()
+							.setFieldNamingPolicy(
+									FieldNamingPolicy.UPPER_CAMEL_CASE)
+							.create();
+					String json = gson.toJson(payload);
+
+					/***
+					 * Calling the server.....
+					 * ***/
+
+					ApiResponse res = CommunityServerAPI.uploadChunk(json,
+							chunk);
+
+					if (res.getHttpStatusCode() == 200) {
+
+						attachment.updateUploadedBytes(startPosition);
+						success = true;						
+						
+						vhr.setRes(upResponse);
+						vhr.setVh((ViewHolder) params[1]);
+						
+						publishProgress(vhr);
+
+					}
+					if (res.getHttpStatusCode() == 100)
+						success = false;
+
+				} else
+					break;
+			}
+
+			
+			upResponse.setSuccess(success);
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				dis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		vhr.setRes(upResponse);
 		vhr.setVh((ViewHolder) params[1]);
 
 		return vhr;
 	}
+	
 
+	/*
+	 * 
+	 * 
+	 * (non-Javadoc)
+	 * @see android.os.AsyncTask#onProgressUpdate(Progress[])
+	 * 
+	 * Publish the progress
+	 */
+	@Override
+	protected void onProgressUpdate(ViewHolderResponse... holders) {
+		
+		ViewHolderResponse vhr= holders[0];
+		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
+		Attachment att = Attachment.getAttachment(res.getAttachmentId());
+		ProgressBar bar = vhr.getVh().getBar();
+		
+		float factor = (float) att.getUploadedBytes() / att.getSize();
+		int progress = (int) (factor * 100);
+
+		vhr.getVh().getStatus().setText(
+				att.getStatus() + ": " + progress + " %");
+		vhr.getVh().getStatus().setTextColor(
+				OpenTenureApplication.getContext().getResources()
+						.getColor(R.color.status_created));
+		
+		bar.setProgress(progress);
+		bar.setProgress(progress);
+		super.onProgressUpdate(holders);
+		
+	}
+	
+	
+	
+	@Override
 	protected void onPostExecute(final ViewHolderResponse vhr) {
 
 		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
@@ -107,12 +251,14 @@ public class UploadChunksTask extends
 					claim.update();
 				}
 
-				progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+				float factor = (float) att.getUploadedBytes() / att.getSize();
+				progress = (int) (factor * 100);
+				
 
 				vh.getBar().setProgress(progress);
 
 				vh.getStatus().setText(
-						claim.getStatus() + ": " + progress + " %");
+						att.getStatus() + ": " + progress + " %");
 				vh.getStatus().setTextColor(
 						OpenTenureApplication.getContext().getResources()
 								.getColor(R.color.status_created));
@@ -218,7 +364,9 @@ public class UploadChunksTask extends
 					claim.update();
 				}
 
-				progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+				factor = (float) att.getUploadedBytes()/ att.getSize();
+				progress = (int) (factor * 100);
+				
 				vh.getBar().setProgress(progress);
 
 				vh.getStatus()

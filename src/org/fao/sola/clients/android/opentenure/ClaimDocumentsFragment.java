@@ -627,6 +627,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
+		
+		
 		setRetainInstance(true);
 		setHasOptionsMenu(true);
 		if (savedInstanceState != null) {
@@ -638,6 +640,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 		}
 
 		update();
+		
+		OpenTenureApplication.setDocumentsFragment(this);
 		return rootView;
 	}
 

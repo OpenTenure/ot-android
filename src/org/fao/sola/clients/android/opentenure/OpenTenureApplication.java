@@ -73,6 +73,7 @@ public class OpenTenureApplication extends Application {
 	private static CookieStore cookieStore;
 	private static HttpContext http_context;
 	private static MainMapFragment mapFragment;
+	private static ClaimDocumentsFragment documentsFragment;
 
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
@@ -85,6 +86,14 @@ public class OpenTenureApplication extends Application {
 
 	public Database getDatabase() {
 		return database;
+	}
+
+	public static ClaimDocumentsFragment getDocumentsFragment() {
+		return documentsFragment;
+	}
+
+	public static void setDocumentsFragment(ClaimDocumentsFragment documentsFragment) {
+		OpenTenureApplication.documentsFragment = documentsFragment;
 	}
 
 	public boolean isOnline() {

@@ -206,7 +206,8 @@ public class SaveAttachmentTask extends
 			String claimId = toUpdate.getClaimId();
 			claim = Claim.getClaim(claimId);
 
-			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			float factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
+			progress = (int) (factor * 100);
 
 			vh.getBar().setProgress(progress);
 
@@ -293,6 +294,8 @@ public class SaveAttachmentTask extends
 
 				}
 			}
+			
+			OpenTenureApplication.getDocumentsFragment().update();
 
 			break;
 		case 403:
@@ -354,7 +357,9 @@ public class SaveAttachmentTask extends
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
 			}
-			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
+			progress = (int) (factor * 100);
+			
 			vh.getBar().setProgress(progress);
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -416,8 +421,7 @@ public class SaveAttachmentTask extends
 													R.string.message_service_not_available),
 							Toast.LENGTH_LONG);
 			toast.show();
-
-			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			
 
 			vh.getStatus().setText(claim.getStatus());
 			vh.getStatus().setTextColor(
@@ -460,7 +464,8 @@ public class SaveAttachmentTask extends
 				claim.update();
 			}
 
-			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
+			progress = (int) (factor * 100);
 
 			vh.getBar().setProgress(progress);
 
@@ -516,7 +521,9 @@ public class SaveAttachmentTask extends
 
 			claim = Claim.getClaim(toUpdate.getClaimId());
 
-			progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
+			progress = (int) (factor * 100);
+			
 			vh.getBar().setProgress(progress);
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
