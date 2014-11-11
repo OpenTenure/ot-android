@@ -32,8 +32,8 @@
     <string name="action_stop_rotating">Stop rotating the map</string>
     <string name="action_claim_map_snapshot">Attach a snapshot of this claim map</string>
     <string name="title_news">News</string>
-    <string name="title_map">Map</string>
-    <string name="title_claims">Claims</string>
+    <string name="title_map">Community Map</string>
+    <string name="title_claims">List of Claims</string>
     <string name="title_persons">Persons</string>
     <string name="title_challenged_claims">Challenged claims</string>
     <string name="title_claim">Claim</string>

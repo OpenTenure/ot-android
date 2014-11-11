@@ -32,8 +32,8 @@
     <string name="action_stop_rotating">Non ruotare la mappa</string>
     <string name="action_claim_map_snapshot">Allega una foto della mappa di questa richiesta</string>
     <string name="title_news">Notizie</string>
-    <string name="title_map">Mappa</string>
-    <string name="title_claims">Richieste</string>
+    <string name="title_map">Mappa della Comunita\'</string>
+    <string name="title_claims">Lista delle Richieste</string>
     <string name="title_persons">Persone</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
     <string name="title_claim">Richiesta</string>
