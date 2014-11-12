@@ -70,6 +70,14 @@ public class Vertex {
 		this.vertexId = UUID.randomUUID().toString();
 	}
 
+	public Vertex(Vertex vertex) {
+		this.vertexId = UUID.randomUUID().toString();
+		this.GPSPosition = vertex.getGPSPosition();
+		this.mapPosition = vertex.getMapPosition();
+		this.claimId = vertex.getClaimId();
+		this.sequenceNumber = vertex.getSequenceNumber();
+	}
+
 	public Vertex(LatLng mapPosition) {
 		this.vertexId = UUID.randomUUID().toString();
 		setMapPosition(mapPosition);
@@ -106,6 +114,14 @@ public class Vertex {
 
 	public void setMapPosition(LatLng mapPosition) {
 		this.mapPosition = mapPosition;
+	}
+
+	public static int createVertices(List<Vertex> vertices) {
+		int result = 0;
+		for(Vertex vertex:vertices){
+			result += createVertex(vertex);
+		}
+		return result;
 	}
 
 	public static int createVertex(Vertex vertex) {

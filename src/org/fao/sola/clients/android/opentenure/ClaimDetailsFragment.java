@@ -52,6 +52,7 @@ import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import com.google.android.gms.maps.model.Marker;
@@ -183,7 +184,9 @@ public class ClaimDetailsFragment extends Fragment {
 				String claimId = data
 						.getStringExtra(ClaimActivity.CLAIM_ID_KEY);
 				Claim challengedClaim = Claim.getClaim(claimId);
+				
 				loadChallengedClaim(challengedClaim);
+
 				break;
 			}
 		}
@@ -496,6 +499,7 @@ public class ClaimDetailsFragment extends Fragment {
 					.setText(challengedClaim.getStatus());
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
+			
 
 			// File challengedPersonPictureFile = Person
 			// .getPersonPictureFile(challengedPerson.getPersonId());
@@ -703,6 +707,10 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setVersion("0");
 
 		if (claim.create() == 1) {
+			List<Vertex> vertices = Vertex.getVertices(claim.getClaimId());
+			if(challengedClaim != null && (vertices == null || vertices.size() == 0)){
+				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(), claim.getClaimId());
+			}
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
@@ -715,6 +723,24 @@ public class ClaimDetailsFragment extends Fragment {
 
 		} else
 			return 5;
+
+	}
+	
+	private void copyVerticesFromChallengedClaim(String challengedClaimId, String challengingClaimId){
+		Log.d(this.getClass().getName(), "copying vertices from " + challengedClaimId + " to " + challengingClaimId);
+		// delete eventually existing vertices
+		Vertex.deleteVertices(challengingClaimId);
+		// get vertices from the challenged claim
+		List<Vertex> vertices = Vertex.getVertices(challengedClaimId);
+		List<Vertex> copiedVertices = new ArrayList<Vertex>();
+		for(Vertex vertex:vertices){
+			Vertex copiedVertex = new Vertex(vertex);
+			// associate it to the challenging claim id
+			copiedVertex.setClaimId(challengingClaimId);
+			copiedVertices.add(copiedVertex);
+		}
+		// save them again
+		Vertex.createVertices(copiedVertices);
 
 	}
 
@@ -783,8 +809,17 @@ public class ClaimDetailsFragment extends Fragment {
 		claim.setChallengedClaim(challengedClaim);
 		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
 
-		return claim.update();
+		int result = claim.update();
 
+		if (challengedClaim != null) {
+			List<Vertex> vertices = Vertex.getVertices(claim.getClaimId());
+			if (vertices == null || vertices.size() == 0) {
+				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(),
+						claim.getClaimId());
+			}
+		}
+		
+		return result;
 	}
 
 	@Override
