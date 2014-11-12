@@ -360,9 +360,17 @@ public class BasePropertyBoundary {
 		polylineOptions.color(color);
 		polyline = map.addPolyline(polylineOptions);
 		ClaimType ct = new ClaimType();
+		String areaString = null;
+		if(area < 10000){
+			areaString = String.format(", Area: %.2f m2", area);
+		}else if(area >= 10000 && area < 1000000){
+			areaString = String.format(", Area: %.2f ha", area/10000);
+		}else{
+			areaString = String.format(", Area: %.2f km2", area/1000000);
+		}
 		propertyMarker = createPropertyMarker(center,
 				claimSlogan + ", " + context.getString(R.string.type) + ": "
-						+ ct.getDisplayValueByType(claimType) + String.format(", Area: %.2f sqm", area));
+						+ ct.getDisplayValueByType(claimType) + areaString);
 	}
 
 	public void showPropertyLocations() {

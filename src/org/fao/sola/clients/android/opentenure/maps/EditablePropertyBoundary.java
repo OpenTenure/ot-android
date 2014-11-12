@@ -252,6 +252,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		updateVertices();
 		resetAdjacency(otherProperties);
 		hideMarkerEditControls();
+		calculateGeometry();
+		redrawBoundary();
 		selectedMarker = null;
 		return true;
 	}
@@ -283,6 +285,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		redrawBoundary();
 		updateVertices();
 		resetAdjacency(otherProperties);
+		calculateGeometry();
 		return true;
 	}
 	
@@ -576,6 +579,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			Vertex.createVertex(vertex);
 		}
 		calculateGeometry();
+		redrawBoundary();
 
 	}
 
@@ -794,6 +798,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						updateVertices();
 						redrawBoundary();
 						resetAdjacency(otherProperties);
+						calculateGeometry();
+						redrawBoundary();
 					}
 				});
 		dialog.setNegativeButton(R.string.cancel,
