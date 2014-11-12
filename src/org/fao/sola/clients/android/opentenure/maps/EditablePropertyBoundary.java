@@ -191,12 +191,16 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private boolean handleClick(Marker mark){
 		// Can only be a click on the property name, deselect and let the event flow
 		deselect();
-		if(propertyMarker != null && mark.getId().equalsIgnoreCase(propertyMarker.getId())){
-			if(isPropertyLocationsVisible()){
-				hidePropertyLocations();
-			}else{
-				showPropertyLocations();
+		try{
+			if(propertyMarker != null && mark.getId().equalsIgnoreCase(propertyMarker.getId())){
+				if(isPropertyLocationsVisible()){
+					hidePropertyLocations();
+				}else{
+					showPropertyLocations();
+				}
 			}
+		} catch (UnsupportedOperationException e) {
+			// Clustered markers have no ID and may throw this
 		}
 		// Let the flow continue in order to center the map around selected marker and display info window
 		return false;
