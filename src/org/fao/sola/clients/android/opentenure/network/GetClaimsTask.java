@@ -93,7 +93,8 @@ public class GetClaimsTask extends
 				List<ShareProperty> list = ShareProperty.getShares(claim
 						.getClaimId());
 
-				for (Iterator<ShareProperty> iterator2 = list.iterator(); iterator2.hasNext();) {
+				for (Iterator<ShareProperty> iterator2 = list.iterator(); iterator2
+						.hasNext();) {
 					ShareProperty share = (ShareProperty) iterator2.next();
 					share.deleteShare();
 					List<Owner> OwnersTBD = Owner.getOwners(share.getId());
@@ -114,7 +115,7 @@ public class GetClaimsTask extends
 					Vertex vertex = (Vertex) iterator2.next();
 					vertex.delete();
 				}
-
+				
 				List<Attachment> attachments = claim.getAttachments();
 
 				for (Iterator<Attachment> iterator2 = attachments.iterator(); iterator2
@@ -126,12 +127,13 @@ public class GetClaimsTask extends
 				}
 
 				List<PropertyLocation> locations = claim.getPropertyLocations();
-				for (Iterator<PropertyLocation> iterator2 = locations.iterator(); iterator2
-						.hasNext();) {
+				for (Iterator<PropertyLocation> iterator2 = locations
+						.iterator(); iterator2.hasNext();) {
 					PropertyLocation location = (PropertyLocation) iterator2
 							.next();
 					location.delete();
 				}
+				
 
 				List<Adjacency> adjacencies = Adjacency.getAdjacencies(claim
 						.getClaimId());
@@ -153,7 +155,9 @@ public class GetClaimsTask extends
 					FileSystemUtilities.deleteClaim(claim.getClaimId());
 				}
 
-				input.setDownloaded(input.getDownloaded() + 1);
+				// input.setDownloaded(input.getDownloaded() + 1);
+				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
+						.getDownloadedClaims() + 1);
 				publishProgress(input);
 
 			}
@@ -172,7 +176,8 @@ public class GetClaimsTask extends
 				 * stage the client does not have to retrieve it
 				 */
 
-				input.setDownloaded(input.getDownloaded() + 1);
+				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
+						.getDownloadedClaims() + 1);
 				publishProgress(input);
 
 			} else if ((claim == null)
@@ -198,7 +203,9 @@ public class GetClaimsTask extends
 
 				} else {
 
-					input.setDownloaded(input.getDownloaded() + 1);
+					OpenTenureApplication
+							.setDownloadedClaims(OpenTenureApplication
+									.getDownloadedClaims() + 1);
 					publishProgress(input);
 
 				}
@@ -209,9 +216,11 @@ public class GetClaimsTask extends
 				Log.d(this.getClass().getName(), "The claim  "
 						+ claimToDownload.getId() + " shall not be downloaded");
 
-				input.setDownloaded(input.getDownloaded() + 1);
+				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
+						.getDownloadedClaims() + 1);
 				publishProgress(input);
 			}
+			
 		}
 
 		return input;
@@ -236,8 +245,9 @@ public class GetClaimsTask extends
 					.findViewById(R.id.download_claim_label);
 			label.setVisibility(View.VISIBLE);
 
-			bar.setProgress(calculateProgress(input.getDownloaded(), input
-					.getClaims().size()));
+			bar.setProgress(calculateProgress(
+					OpenTenureApplication.getDownloadedClaims(),
+					OpenTenureApplication.getTotalClaimsToDownload()));
 		}
 
 	}
@@ -245,68 +255,96 @@ public class GetClaimsTask extends
 	@Override
 	protected void onPostExecute(final GetClaimsInput input) {
 
+
 		Toast toast;
 
-		if (input.isResult()) {
+		if ((OpenTenureApplication.getDownloadedClaims() == OpenTenureApplication
+				.getTotalClaimsToDownload())) {
+			if (input.isResult()) {
 
-			OpenTenureApplication.getMapFragment().refreshMap();
-			OpenTenureApplication.getLocalClaimsFragment().refresh();
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.message_claims_downloaded),
+						Toast.LENGTH_LONG);
+				
+				
+				//This two refresh operations takes a much time
+				OpenTenureApplication.getMapFragment().refreshMap();
+				OpenTenureApplication.getLocalClaimsFragment().refresh();
 
-			toast = Toast.makeText(OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources()
-							.getString(R.string.message_claims_downloaded),
-					Toast.LENGTH_LONG);
 
-			toast.show();
+				toast.show();
 
-			View mapView = input.getMapView();
+				View mapView = input.getMapView();
 
-			if (mapView != null) {
+				if (mapView != null) {
 
-				ProgressBar bar = (ProgressBar) mapView
-						.findViewById(R.id.progress_bar);
-				bar.setVisibility(View.GONE);
+					ProgressBar bar = (ProgressBar) mapView
+							.findViewById(R.id.progress_bar);
+					bar.setVisibility(View.GONE);
 
-				TextView label = (TextView) mapView
-						.findViewById(R.id.download_claim_label);
-				label.setVisibility(View.GONE);
+					TextView label = (TextView) mapView
+							.findViewById(R.id.download_claim_label);
+					label.setVisibility(View.GONE);
 
+				}				
+
+			} else if (!input.isResult()) {
+
+				String message = String
+						.format(OpenTenureApplication
+								.getContext()
+								.getResources()
+								.getString(
+										R.string.message_error_downloading_claims),
+								input.getDownloaded());
+
+				OpenTenureApplication.getMapFragment().refreshMap();
+				OpenTenureApplication.getLocalClaimsFragment().refresh();
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						message, Toast.LENGTH_LONG);
+				toast.show();
+
+				View mapView = input.getMapView();
+
+				if (mapView != null) {
+
+					ProgressBar bar = (ProgressBar) mapView
+							.findViewById(R.id.progress_bar);
+
+					bar.setVisibility(View.GONE);
+					TextView label = (TextView) mapView
+							.findViewById(R.id.download_claim_label);
+					label.setVisibility(View.GONE);
+				}
+
+				
+			} else {
+
+				View mapView = input.getMapView();
+
+				if (mapView != null) {
+
+					ProgressBar bar = (ProgressBar) mapView
+							.findViewById(R.id.progress_bar);
+
+					bar.setVisibility(View.GONE);
+					TextView label = (TextView) mapView
+							.findViewById(R.id.download_claim_label);
+					label.setVisibility(View.GONE);
+
+				}
 			}
-
 		} else {
-
-			String message = String.format(
-					OpenTenureApplication
-							.getContext()
-							.getResources()
-							.getString(
-									R.string.message_error_downloading_claims),
-					input.getDownloaded());
-
-			OpenTenureApplication.getMapFragment().refreshMap();
-			OpenTenureApplication.getLocalClaimsFragment().refresh();
-
-			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
-					Toast.LENGTH_LONG);
-			toast.show();
-
-			View mapView = input.getMapView();
-
-			if (mapView != null) {
-
-				ProgressBar bar = (ProgressBar) mapView
-						.findViewById(R.id.progress_bar);
-
-				bar.setVisibility(View.GONE);
-				TextView label = (TextView) mapView
-						.findViewById(R.id.download_claim_label);
-				label.setVisibility(View.GONE);
-			}
+			Log.d(this.getClass().getName(), "Task completed - Is not the main task");
 		}
 
 	}
 
 	private int calculateProgress(int downloaded, int total) {
+
+		System.out.println("Down " + downloaded + "total " + total);
 
 		int progress;
 

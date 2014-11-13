@@ -60,7 +60,11 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:singleLine="true" />
-
+	<LinearLayout 
+	    android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+	    android:orientation="horizontal">
             <Button
                 android:id="@+id/log_in_button"
                 android:layout_width="wrap_content"
@@ -70,6 +74,17 @@
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
                 android:text="@string/action_log_in_register" />
+            
+            <Button
+                android:id="@+id/log_in_cancel_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/cancel" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

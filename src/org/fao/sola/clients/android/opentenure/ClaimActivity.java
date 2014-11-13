@@ -46,6 +46,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.util.SparseArray;
 import android.view.KeyEvent;
@@ -155,6 +156,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	protected void onCreate(Bundle savedInstanceState) {
 		
 
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
 		mode = ModeDispatcher.Mode
 				.valueOf(getIntent().getStringExtra(MODE_KEY));
@@ -383,6 +385,11 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getTabsContainer().getChildAt(4), tabs.getTabsContainer()
 					.getChildAt(5), mViewPager);
 			return true;
+			// Respond to the action bar's Up/Home button
+	    case android.R.id.home:
+	        NavUtils.navigateUpFromSameTask(this);
+	        return true;
+	    
 		default:
 			return super.onOptionsItemSelected(item);
 		}

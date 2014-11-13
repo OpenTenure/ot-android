@@ -42,7 +42,17 @@ public class GetClaimsInput extends ApiResponse{
 	List<Claim> Claims;
 	View mapView;
 	int downloaded;
-	boolean result ; 
+	boolean result ;
+	boolean first;
+	
+
+	public boolean isFirst() {
+		return first;
+	}
+
+	public void setFirst(boolean first) {
+		this.first = first;
+	}
 
 	public List<Claim> getClaims() {
 		return Claims;

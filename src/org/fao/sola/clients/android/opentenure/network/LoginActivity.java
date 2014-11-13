@@ -24,14 +24,11 @@ import android.widget.Toast;
 
 //import com.abblasio.login.LoginPlainGe
 
-
-
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
 public class LoginActivity extends Activity {
-	
 
 	/**
 	 * The default email to populate the email field with.
@@ -52,6 +49,7 @@ public class LoginActivity extends Activity {
 	private EditText mPasswordView;
 	private View mLoginFormView;
 	private View mLoginStatusView;
+	private View questo;
 	private TextView mLoginStatusMessageView;
 	private OpenTenureApplication application;
 
@@ -83,7 +81,7 @@ public class LoginActivity extends Activity {
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
-
+		questo = this.getCurrentFocus();
 		findViewById(R.id.log_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -91,6 +89,16 @@ public class LoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
+
+		findViewById(R.id.log_in_cancel_button).setOnClickListener(
+				new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						finish();
+
+					}
+				});
+
 	}
 
 	@Override
@@ -154,7 +162,8 @@ public class LoginActivity extends Activity {
 			mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 			showProgress(true);
 			mAuthTask = new UserLoginTask();
-			mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mUsername, mPassword);
+			mAuthTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					mUsername, mPassword);
 		}
 	}
 
@@ -254,18 +263,18 @@ public class LoginActivity extends Activity {
 				break;
 
 			case 404:
-				mPasswordView.setError(getString(R.string.message_service_not_available));
+				mPasswordView
+						.setError(getString(R.string.message_service_not_available));
 				mPasswordView.requestFocus();
 
 				break;
 
 			case _NO_CONNECTION:
-				mPasswordView
-						.setError(getString(R.string.error_connection));
+				mPasswordView.setError(getString(R.string.error_connection));
 				mPasswordView.requestFocus();
 
-				break;	
-				
+				break;
+
 			case 80:
 				mPasswordView
 						.setError(getString(R.string.error_generic_conection));

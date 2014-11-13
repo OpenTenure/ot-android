@@ -68,8 +68,13 @@
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_claim"
             android:windowSoftInputMode="adjustPan"
+            android:icon="@drawable/sola_logo"
             >
-        </activity>
+         <!-- Parent activity meta-data to support 4.0 and lower -->
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="org.fao.sola.clients.android.opentenure.OpenTenure" />
+    </activity>
         <activity
             android:name="org.fao.sola.clients.android.opentenure.PersonActivity"
             android:theme="@style/Theme.Opentenure"

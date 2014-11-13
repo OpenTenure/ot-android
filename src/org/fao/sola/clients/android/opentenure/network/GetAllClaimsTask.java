@@ -57,7 +57,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		if (params[0] == null) {
 			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
 					.getAllClaims();
-
+			
 			GetClaimsInput claimToRetrieve = new GetClaimsInput();
 			claimToRetrieve.setClaims(listClaim);
 			claimToRetrieve.setMapView((View) params[1]);
@@ -133,9 +133,33 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 
 			return;
 		}
+		
+		
+		// Before to start downloading claims the input is divided in two and assigned to two thread. 
+		
+		OpenTenureApplication.setDownloadedClaims(0);
+		OpenTenureApplication.setTotalClaimsToDownload(input.getClaims().size());
+		
+		GetClaimsInput input2 = new GetClaimsInput();
+		
+		input2.setClaimId(input.getClaimId());
+		input2.setClaims(input.getClaims().subList((input.getClaims().size()/2), input.getClaims().size()));
+		input2.setDownloaded(input.getDownloaded());
+		input2.setHttpStatusCode(input.getHttpStatusCode());
+		input2.setMapView(input.getMapView());
+		input2.setMessage(input.getMessage());
+		input2.setFirst(false);
+		
 
+		input.setClaims(input.getClaims().subList(0, input.getClaims().size()/2));
+		input.setFirst(true);
 		GetClaimsTask task = new GetClaimsTask();
-		task.execute(input);
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input);		
+		
+		
+		GetClaimsTask task2 = new GetClaimsTask();
+		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input2);
+		
 
 		return;
 

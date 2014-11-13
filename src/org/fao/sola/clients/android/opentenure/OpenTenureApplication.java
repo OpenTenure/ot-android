@@ -80,6 +80,9 @@ public class OpenTenureApplication extends Application {
 	private static FragmentActivity newsFragmentActivity;
 	public static String _DEFAULT_COMMUNITY_SERVER = "https://ot.flossola.org";
 
+	private static int downloadedClaims = 0;
+	private static int TotalClaimsToDownload = 0;
+
 	public static OpenTenureApplication getInstance() {
 		return sInstance;
 	}
@@ -92,7 +95,8 @@ public class OpenTenureApplication extends Application {
 		return documentsFragment;
 	}
 
-	public static void setDocumentsFragment(ClaimDocumentsFragment documentsFragment) {
+	public static void setDocumentsFragment(
+			ClaimDocumentsFragment documentsFragment) {
 		OpenTenureApplication.documentsFragment = documentsFragment;
 	}
 
@@ -293,6 +297,24 @@ public class OpenTenureApplication extends Application {
 
 	public static void setNewsFragment(FragmentActivity newsFragment) {
 		OpenTenureApplication.newsFragmentActivity = newsFragment;
+	}
+
+	public static int getDownloadedClaims() {
+		return downloadedClaims;
+	}
+
+	public static void setDownloadedClaims(int downloadedClaims) {
+		synchronized (ACCESSIBILITY_SERVICE) {
+			OpenTenureApplication.downloadedClaims = downloadedClaims;
+		}
+	}
+
+	public static int getTotalClaimsToDownload() {
+		return TotalClaimsToDownload;
+	}
+
+	public static void setTotalClaimsToDownload(int totalClaimsToDownload) {
+		TotalClaimsToDownload = totalClaimsToDownload;
 	}
 
 	public static String getLocalization() {

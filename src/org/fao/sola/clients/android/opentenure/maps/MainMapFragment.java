@@ -546,6 +546,14 @@ public class MainMapFragment extends SupportMapFragment implements
 				}
 			}
 			return true;
+			
+		case R.id.action_center_community_area:
+			
+			MainMapFragment mapFrag = OpenTenureApplication
+			.getMapFragment();
+
+			mapFrag.boundCameraToInterestArea();
+			return true;
 
 		case R.id.action_download_claims:
 
@@ -824,8 +832,9 @@ public class MainMapFragment extends SupportMapFragment implements
 				bounds.include(cn);
 
 			}
+			
 			// set bounds with all the map points
-			map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),
+			map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),
 					400, 400, 10));
 
 		}
