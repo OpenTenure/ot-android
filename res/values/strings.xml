@@ -20,6 +20,7 @@
     <string name="action_print">Print</string>
     <string name="action_save">Save</string>
     <string name="action_center">Center</string>
+    <string name="action_view_community_area">View Community Area</string>
     <string name="action_submit">Submit</string>
     <string name="action_download_file">Download File</string>
     <string name="action_download_claims">Download Claims</string>

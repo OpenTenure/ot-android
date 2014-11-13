@@ -21,6 +21,7 @@
     <string name="action_save">Salva</string>
     <string name="action_download_file">Scarica File</string>
     <string name="action_center">Centra</string>
+    <string name="action_view_community_area">Area di interesse</string>
     <string name="action_submit">Invia</string>
     <string name="action_download_claims">Scarica Claims</string>
     <string name="action_new_picture">Aggiungi immagine</string>

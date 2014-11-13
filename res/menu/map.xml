@@ -13,7 +13,7 @@
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_center_community_area"
           android:icon="@android:drawable/ic_dialog_map"
-          android:title="@string/action_center"
+          android:title="@string/action_view_community_area"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_center_and_follow"
           android:icon="@android:drawable/ic_menu_mylocation"
