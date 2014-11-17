@@ -83,12 +83,12 @@ public class ClaimDeleteListener implements OnClickListener {
 				return;
 
 			} else if (OpenTenureApplication.getUsername().equals(
-					claim.getRecorderName()) && claim.isModifiable() ) {
+					claim.getRecorderName()) && claim.isUploadable() ) {
 				onlyLocal = false;
 
 			}
 		}
-
+		
 		if (!onlyLocal) {
 			if (claimId != null) {
 

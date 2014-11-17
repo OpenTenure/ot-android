@@ -98,6 +98,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private ModeDispatcher modeActivity;
 	private FormDispatcher formDispatcher;
 	private ClaimListener claimListener;
+	private boolean challengedJustLoaded = false;
 	private final Calendar localCalendar = Calendar.getInstance();
 	private static final int PERSON_RESULT = 100;
 
@@ -184,9 +185,9 @@ public class ClaimDetailsFragment extends Fragment {
 				String claimId = data
 						.getStringExtra(ClaimActivity.CLAIM_ID_KEY);
 				Claim challengedClaim = Claim.getClaim(claimId);
-				
-				loadChallengedClaim(challengedClaim);
 
+				loadChallengedClaim(challengedClaim);
+				challengedJustLoaded = true;
 				break;
 			}
 		}
@@ -371,7 +372,8 @@ public class ClaimDetailsFragment extends Fragment {
 																.toString())
 										|| claim.getStatus().equalsIgnoreCase(
 												Claim.Status.uploading
-														.toString())) {
+														.toString())
+										|| !claim.isUploadable()) {
 									excludeList.add(claim.getClaimId());
 								}
 							}
@@ -482,6 +484,8 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadChallengedClaim(Claim challengedClaim) {
 
 		if (challengedClaim != null) {
+			System.out.println("Il challenged claim è diverson da null ed è + "
+					+ challengedClaim.getName());
 			Person challengedPerson = challengedClaim.getPerson();
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setTextSize(8);
@@ -499,7 +503,6 @@ public class ClaimDetailsFragment extends Fragment {
 					.setText(challengedClaim.getStatus());
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
-			
 
 			// File challengedPersonPictureFile = Person
 			// .getPersonPictureFile(challengedPerson.getPersonId());
@@ -636,8 +639,11 @@ public class ClaimDetailsFragment extends Fragment {
 			else
 				claimant = Person.getPerson(claimantId);
 			loadClaimant(claimant);
-			loadChallengedClaim(claim.getChallengedClaim());
 
+			if (challengedJustLoaded) {
+				challengedJustLoaded = false;
+			} else
+				loadChallengedClaim(claim.getChallengedClaim());
 		}
 	}
 
@@ -708,8 +714,10 @@ public class ClaimDetailsFragment extends Fragment {
 
 		if (claim.create() == 1) {
 			List<Vertex> vertices = Vertex.getVertices(claim.getClaimId());
-			if(challengedClaim != null && (vertices == null || vertices.size() == 0)){
-				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(), claim.getClaimId());
+			if (challengedClaim != null
+					&& (vertices == null || vertices.size() == 0)) {
+				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(),
+						claim.getClaimId());
 			}
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
@@ -725,15 +733,17 @@ public class ClaimDetailsFragment extends Fragment {
 			return 5;
 
 	}
-	
-	private void copyVerticesFromChallengedClaim(String challengedClaimId, String challengingClaimId){
-		Log.d(this.getClass().getName(), "copying vertices from " + challengedClaimId + " to " + challengingClaimId);
+
+	private void copyVerticesFromChallengedClaim(String challengedClaimId,
+			String challengingClaimId) {
+		Log.d(this.getClass().getName(), "copying vertices from "
+				+ challengedClaimId + " to " + challengingClaimId);
 		// delete eventually existing vertices
 		Vertex.deleteVertices(challengingClaimId);
 		// get vertices from the challenged claim
 		List<Vertex> vertices = Vertex.getVertices(challengedClaimId);
 		List<Vertex> copiedVertices = new ArrayList<Vertex>();
-		for(Vertex vertex:vertices){
+		for (Vertex vertex : vertices) {
 			Vertex copiedVertex = new Vertex(vertex);
 			// associate it to the challenging claim id
 			copiedVertex.setClaimId(challengingClaimId);
@@ -818,7 +828,7 @@ public class ClaimDetailsFragment extends Fragment {
 						claim.getClaimId());
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -941,6 +951,14 @@ public class ClaimDetailsFragment extends Fragment {
 		case R.id.action_print:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
 			boolean mapPresent = false;
+
+			if (claim == null) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_save_snapshot_before_printing,
+						Toast.LENGTH_SHORT);
+				toast.show();
+				return true;
+			}
 
 			for (Attachment attachment : claim.getAttachments()) {
 				if (EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME
