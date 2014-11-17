@@ -44,6 +44,8 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import android.content.Context;
 
 public class Claim {
@@ -669,6 +671,232 @@ public class Claim {
 		return allClaims;
 	}
 
+	public static List<Claim> getSimplifiedClaims(Connection externalConnection) {
+		// Only loads what doesn't need subqueries on other tables
+		List<Claim> allClaims = new ArrayList<Claim>();
+		PreparedStatement statement = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION FROM CLAIM");
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				Claim claim = new Claim();
+				claim.setClaimId(claimId);
+				claim.setStatus(rs.getString(2));
+				claim.setClaimNumber(rs.getString(3));
+				claim.setName(rs.getString(4));
+				claim.setType((rs.getString(5)));
+				claim.setChallengeExpiryDate(rs.getDate(6));
+				claim.setDateOfStart(rs.getDate(7));
+				claim.setLandUse(rs.getString(8));
+				claim.setNotes(rs.getString(9));
+				claim.setRecorderName(rs.getString(10));
+				claim.setVersion(rs.getString(11));
+				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
+				allClaims.add(claim);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
+	public static List<Claim> getSimplifiedClaimsForMap(Connection externalConnection) {
+		// Only loads what's needed to draw properties on the maps
+		List<Claim> allClaims = new ArrayList<Claim>();
+		PreparedStatement statement = null;
+		String lastClaimId = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT "
+							+ "CLAIM.CLAIM_ID, "
+							+ "CLAIM.STATUS, "
+							+ "CLAIM.NAME, "
+							+ "CLAIM.TYPE, "
+							+ "PERSON.PERSON_ID, "
+							+ "PERSON.FIRST_NAME, "
+							+ "PERSON.LAST_NAME, "
+							+ "VERTEX.VERTEX_ID, "
+							+ "VERTEX.SEQUENCE_NUMBER, "
+							+ "VERTEX.GPS_LAT, "
+							+ "VERTEX.GPS_LON, "
+							+ "VERTEX.MAP_LAT, "
+							+ "VERTEX.MAP_LON "
+							+ "FROM CLAIM, PERSON, VERTEX "
+							+ "WHERE CLAIM.PERSON_ID=PERSON.PERSON_ID "
+							+ "AND CLAIM.CLAIM_ID=VERTEX.CLAIM_ID "
+							+ "ORDER BY CLAIM_ID, VERTEX.SEQUENCE_NUMBER");
+			ResultSet rs = statement.executeQuery();
+			List<Vertex> vertices = null;
+			Claim claim = null;
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
+					// It's a new claim so we add the previous one, if any, to the list
+					if(claim != null){
+						if(vertices != null){
+							claim.setVertices(vertices);
+						}else{
+							claim.setVertices(new ArrayList<Vertex>());
+						}
+						allClaims.add(claim);
+					}
+					vertices = new ArrayList<Vertex>();
+					claim = new Claim();
+					claim.setClaimId(claimId);
+					claim.setStatus(rs.getString(2));
+					claim.setName(rs.getString(3));
+					claim.setType((rs.getString(4)));
+					String personId = rs.getString(5);
+					String firstName = rs.getString(6);
+					String lastName = rs.getString(7);
+					Person person = new Person();
+					person.setPersonId(personId);
+					person.setFirstName(firstName);
+					person.setLastName(lastName);
+					claim.setPerson(person);
+				}
+				// It's a new vertex for the same claim
+				Vertex vertex = new Vertex();
+				vertex.setVertexId(rs.getString(8));
+				vertex.setSequenceNumber(rs.getInt(9));
+				vertex.setGPSPosition(new LatLng(rs.getBigDecimal(10)
+						.doubleValue(), rs.getBigDecimal(11).doubleValue()));
+				vertex.setMapPosition(new LatLng(rs.getBigDecimal(12)
+						.doubleValue(), rs.getBigDecimal(13).doubleValue()));
+				vertices.add(vertex);
+				lastClaimId = claimId;
+			}
+			if(claim != null){
+				if(vertices != null){
+					claim.setVertices(vertices);
+				}else{
+					claim.setVertices(new ArrayList<Vertex>());
+				}
+				allClaims.add(claim);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
+	public static List<Claim> getSimplifiedClaimsForList(Connection externalConnection) {
+		// Only loads what's needed to fill the list of locally stored claims
+		List<Claim> allClaims = new ArrayList<Claim>();
+		PreparedStatement statement = null;
+		String lastClaimId = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT "
+							+ "CP.CLAIM_ID, "
+							+ "CP.STATUS, "
+							+ "CP.NAME, "
+							+ "CP.TYPE, "
+							+ "CP.PERSON_ID, "
+							+ "CP.FIRST_NAME, "
+							+ "CP.LAST_NAME, "
+							+ "ATTACHMENT.ATTACHMENT_ID, "
+							+ "ATTACHMENT.STATUS, "
+							+ "ATTACHMENT.SIZE "
+							+ "FROM (SELECT "
+							+ "CLAIM.CLAIM_ID, "
+							+ "CLAIM.STATUS, "
+							+ "CLAIM.NAME, "
+							+ "CLAIM.TYPE, "
+							+ "PERSON.PERSON_ID, "
+							+ "PERSON.FIRST_NAME, "
+							+ "PERSON.LAST_NAME "
+							+ "FROM CLAIM, PERSON "
+							+ "WHERE CLAIM.PERSON_ID=PERSON.PERSON_ID) AS CP LEFT JOIN ATTACHMENT ON (CP.CLAIM_ID=ATTACHMENT.CLAIM_ID) "
+							+ "GROUP BY CP.CLAIM_ID, ATTACHMENT.ATTACHMENT_ID");
+			ResultSet rs = statement.executeQuery();
+			List<Attachment> attachments = null;
+			Claim claim = null;
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
+					// It's a new claim so we add the previous one, if any, to the list
+					if(claim != null){
+						if(attachments != null){
+							claim.setAttachments(attachments);
+						}else{
+							claim.setAttachments(new ArrayList<Attachment>());
+						}
+						allClaims.add(claim);
+					}
+					attachments = new ArrayList<Attachment>();
+					claim = new Claim();
+					claim.setClaimId(claimId);
+					claim.setStatus(rs.getString(2));
+					claim.setName(rs.getString(3));
+					claim.setType((rs.getString(4)));
+					String personId = rs.getString(5);
+					String firstName = rs.getString(6);
+					String lastName = rs.getString(7);
+					Person person = new Person();
+					person.setPersonId(personId);
+					person.setFirstName(firstName);
+					person.setLastName(lastName);
+					claim.setPerson(person);
+				}
+				// It's a new attachment for the same claim
+				Attachment attachment = new Attachment();
+				attachment.setAttachmentId(rs.getString(8));
+				attachment.setStatus(rs.getString(9));
+				attachment.setSize(rs.getLong(10));
+				attachments.add(attachment);
+				lastClaimId = claimId;
+			}
+			if(claim != null){
+				if(attachments != null){
+					claim.setAttachments(attachments);
+				}else{
+					claim.setAttachments(new ArrayList<Attachment>());
+				}
+				allClaims.add(claim);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
 	public static List<Claim> getChallengingClaims(String claimId) {
 		List<Claim> challengingClaims = new ArrayList<Claim>();
 		Connection localConnection = null;
@@ -767,6 +995,69 @@ public class Claim {
 		return allClaims;
 	}
 
+	public static List<Claim> getSimplifiedClaimsForMap() {
+		Connection localConnection = null;
+		List<Claim> allClaims = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			allClaims = getSimplifiedClaimsForMap(localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
+	public static List<Claim> getSimplifiedClaims() {
+		Connection localConnection = null;
+		List<Claim> allClaims = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			allClaims = getSimplifiedClaims(localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
+	public static List<Claim> getSimplifiedClaimsForList() {
+		Connection localConnection = null;
+		List<Claim> allClaims = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			allClaims = getSimplifiedClaimsForList(localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
 	public static int getNumberOfClaims() {
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -851,6 +1142,13 @@ public class Claim {
 				.getString(R.string.default_claim_name) : getName();
 		return claimName + ", " + context.getString(R.string.by) + ": "
 				+ getPerson().getFirstName() + " " + getPerson().getLastName();
+	}
+	
+	public static String getSlogan(String name, String firstName, String lastName, Context context) {
+		String claimName = name.equalsIgnoreCase("") ? context
+				.getString(R.string.default_claim_name) : name;
+		return claimName + ", " + context.getString(R.string.by) + ": "
+				+ firstName + " " + lastName;
 	}
 	
 	public boolean isUploadable() {

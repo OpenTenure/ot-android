@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
@@ -55,10 +56,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -308,11 +309,13 @@ public class FieldViewFactory {
 
 	public static View getViewForBooleanField(final Activity activity,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
-		final CheckBox bool;
-		bool = new CheckBox(activity);
+		final Switch bool;
+		bool = new Switch(activity);
 		bool.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		bool.setHint(field.getHint());
+		bool.setTextOn(activity.getResources().getString(R.string.yes));
+		bool.setTextOff(activity.getResources().getString(R.string.no));
 		if(payload.getBooleanPayload()!=null){
 			bool.setChecked(payload.getBooleanPayload().booleanValue());
 		}else{
@@ -328,7 +331,7 @@ public class FieldViewFactory {
 
 				@Override
 				public void onClick(View v) {
-					if (((CheckBox) v).isChecked()) {
+					if (((Switch) v).isChecked()) {
 						payload.setBooleanPayload(Boolean.valueOf(true));
 					}else{
 						payload.setBooleanPayload(Boolean.valueOf(false));

@@ -33,10 +33,6 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.model.ClaimType;
-import org.fao.sola.clients.android.opentenure.model.LandUse;
-import org.h2.constant.SysProperties;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,7 +49,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -155,7 +150,6 @@ public class AdjacentClaimsFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// handle item selection
-		Toast toast;
 		switch (item.getItemId()) {
 
 		case R.id.action_save:

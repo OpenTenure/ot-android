@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure.maps;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.R;
@@ -121,6 +122,11 @@ public class BasePropertyBoundary {
 	protected void reload() {
 		if (claimId != null) {
 			Claim claim = Claim.getClaim(claimId);
+			loadClaim(claim);
+		}
+	}
+	
+	protected void loadClaim(Claim claim) {
 			vertices = claim.getVertices();
 			name = claim.getName() == null
 					|| claim.getName().equalsIgnoreCase("") ? context
@@ -130,7 +136,6 @@ public class BasePropertyBoundary {
 			claimId = claim.getClaimId();
 			claimSlogan = claim.getSlogan(context);
 			claimType = claim.getType();
-			Log.d(this.getClass().getName(), "Reloaded claim: " + claim.toString());
 
 			if (status != null) {
 
@@ -166,59 +171,14 @@ public class BasePropertyBoundary {
 			if (vertices != null && vertices.size() > 0) {
 				calculateGeometry();
 			}
-
-		}
 	}
-
+	
 	public BasePropertyBoundary(final Context context, final GoogleMap map,
 			final Claim claim) {
 		this.context = context;
 		this.map = map;
 		if (claim != null) {
-			vertices = claim.getVertices();
-			name = claim.getName() == null
-					|| claim.getName().equalsIgnoreCase("") ? context
-					.getResources().getString(R.string.default_claim_name)
-					: claim.getName();
-			String status = claim.getStatus();
-			claimId = claim.getClaimId();
-			claimSlogan = claim.getSlogan(context);
-			claimType = claim.getType();
-
-			if (status != null) {
-
-				switch (Claim.Status.valueOf(status)) {
-
-				case unmoderated:
-					color = context.getResources().getColor(
-							R.color.status_unmoderated);
-					break;
-				case withdrawn:
-					color = context.getResources().getColor(
-							R.color.status_withdrawn);
-					break;
-				case moderated:
-					color = context.getResources().getColor(
-							R.color.status_moderated);
-					break;
-				case challenged:
-					color = context.getResources().getColor(
-							R.color.status_challenged);
-					break;
-				case reviewed:
-					color = context.getResources().getColor(
-							R.color.status_reviewed);
-					break;	
-				default:
-					color = context.getResources().getColor(
-							R.color.status_created);
-					break;
-				}
-			}
-
-			if (vertices != null && vertices.size() > 0) {
-				calculateGeometry();
-			}
+			loadClaim(claim);
 		}
 	}
 
@@ -362,11 +322,11 @@ public class BasePropertyBoundary {
 		ClaimType ct = new ClaimType();
 		String areaString = null;
 		if(area < 10000){
-			areaString = String.format(", Area: %.2f m2", area);
+			areaString = String.format(Locale.US, ", Area: %.2f m2", area);
 		}else if(area >= 10000 && area < 1000000){
-			areaString = String.format(", Area: %.2f ha", area/10000);
+			areaString = String.format(Locale.US, ", Area: %.2f ha", area/10000);
 		}else{
-			areaString = String.format(", Area: %.2f km2", area/1000000);
+			areaString = String.format(Locale.US, ", Area: %.2f km2", area/1000000);
 		}
 		propertyMarker = createPropertyMarker(center,
 				claimSlogan + ", " + context.getString(R.string.type) + ": "

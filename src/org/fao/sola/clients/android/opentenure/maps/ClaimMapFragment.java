@@ -41,7 +41,6 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -423,7 +422,7 @@ public class ClaimMapFragment extends Fragment implements
 		Polygon boundsPoly = getPolygon(bounds);
 
 		if(allClaims == null){
-			allClaims = Claim.getAllClaims();
+			allClaims = Claim.getSimplifiedClaimsForMap();
 		}
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {

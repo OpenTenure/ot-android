@@ -297,7 +297,7 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	protected void update() {
-		List<Claim> claims = Claim.getAllClaims();
+		List<Claim> claims = Claim.getSimplifiedClaimsForList();
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 
 		for (Claim claim : claims) {

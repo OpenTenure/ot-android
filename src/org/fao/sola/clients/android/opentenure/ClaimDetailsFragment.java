@@ -55,8 +55,6 @@ import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
-import com.google.android.gms.maps.model.Marker;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -65,11 +63,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -360,7 +356,7 @@ public class ClaimDetailsFragment extends Fragment {
 							// Excluding from the list of claims that can be
 							// challenged
 							ArrayList<String> excludeList = new ArrayList<String>();
-							List<Claim> claims = Claim.getAllClaims();
+							List<Claim> claims = Claim.getSimplifiedClaims();
 							for (Claim claim : claims) {
 								// Challenges and local claims not yet
 								// uploaded

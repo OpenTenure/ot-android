@@ -721,7 +721,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		Polygon boundsPoly = getPolygon(bounds);
 
 		if (allClaims == null) {
-			allClaims = Claim.getAllClaims();
+			allClaims = Claim.getSimplifiedClaimsForMap();
 		}
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
@@ -791,7 +791,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 		hideVisibleProperties();
 
-		allClaims = Claim.getAllClaims();
+		allClaims = Claim.getSimplifiedClaimsForMap();
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
 			visibleProperties.add(new BasePropertyBoundary(

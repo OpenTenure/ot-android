@@ -92,6 +92,9 @@ public class SectionElementFragment extends Fragment {
 		if(savedInstanceState != null && savedInstanceState.getString(ELEMENT_TEMPLATE_KEY) != null){
 			elementTemplate = SectionTemplate.fromJson(savedInstanceState.getString(ELEMENT_TEMPLATE_KEY));
 		}
+		if(savedInstanceState != null && savedInstanceState.getString(SectionElementActivity.MODE_KEY) != null){
+			mode = Mode.valueOf(savedInstanceState.getString(SectionElementActivity.MODE_KEY));
+		}
 		update();
 		return rootView;
 	}
@@ -147,6 +150,7 @@ public class SectionElementFragment extends Fragment {
 	public void onSaveInstanceState(Bundle outState) {
 		outState.putString(ELEMENT_PAYLOAD_KEY, elementPayload.toJson());
 		outState.putString(ELEMENT_TEMPLATE_KEY, elementTemplate.toJson());
+		outState.putString(SectionElementActivity.MODE_KEY, mode.toString());
 		super.onSaveInstanceState(outState);
 	}
 }
