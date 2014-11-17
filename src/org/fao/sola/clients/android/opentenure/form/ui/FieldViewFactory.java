@@ -86,6 +86,7 @@ public class FieldViewFactory {
 		}
 
 		final Spinner spinner = new Spinner(activity);
+		spinner.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		
 		if(mode == Mode.MODE_RO){
 			spinner.setEnabled(false);   
@@ -136,10 +137,10 @@ public class FieldViewFactory {
 		}
 		final EditText text;
 		text = new EditText(activity);
+		text.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		text.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-		text.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
 			text.setText(payload.getStringPayload());
 		}
@@ -148,6 +149,7 @@ public class FieldViewFactory {
 			text.setClickable(false); 
 			text.setLongClickable(false);
 		}else{
+			text.setHint(field.getHint());
 			text.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -197,8 +199,8 @@ public class FieldViewFactory {
 		number = new EditText(activity);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
+		number.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
-		number.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
@@ -207,6 +209,7 @@ public class FieldViewFactory {
 			number.setClickable(false); 
 			number.setLongClickable(false);
 		}else{
+			number.setHint(field.getHint());
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -256,7 +259,7 @@ public class FieldViewFactory {
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		number.setHint(field.getHint());
+		number.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		if(payload.getStringPayload()!=null){
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
@@ -265,6 +268,7 @@ public class FieldViewFactory {
 			number.setClickable(false); 
 			number.setLongClickable(false);
 		}else{
+			number.setHint(field.getHint());
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -313,7 +317,6 @@ public class FieldViewFactory {
 		bool = new Switch(activity);
 		bool.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		bool.setHint(field.getHint());
 		bool.setTextOn(activity.getResources().getString(R.string.yes));
 		bool.setTextOff(activity.getResources().getString(R.string.no));
 		if(payload.getBooleanPayload()!=null){
@@ -327,6 +330,7 @@ public class FieldViewFactory {
 			bool.setClickable(false);
 			bool.setLongClickable(false);
 		}else{
+			bool.setHint(field.getHint());
 			bool.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -361,10 +365,10 @@ public class FieldViewFactory {
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
 		datetime = new EditText(activity);
+		datetime.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
-		datetime.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
 			datetime.setText(payload.getStringPayload());
 		}
@@ -373,6 +377,7 @@ public class FieldViewFactory {
 			datetime.setClickable(false); 
 			datetime.setLongClickable(false);
 		}else{
+			datetime.setHint(field.getHint());
 			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
 				@Override
@@ -460,10 +465,10 @@ public class FieldViewFactory {
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
 		datetime = new EditText(activity);
+		datetime.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
-		datetime.setHint(field.getHint());
 		if(payload.getStringPayload()!=null){
 			datetime.setText(payload.getStringPayload());
 		}
@@ -472,6 +477,7 @@ public class FieldViewFactory {
 			datetime.setClickable(false); 
 			datetime.setLongClickable(false);
 		}else{
+			datetime.setHint(field.getHint());
 			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
 				@Override

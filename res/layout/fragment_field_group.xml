@@ -1,11 +1,19 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_field_group"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_scroll_field_group"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/light_background_opentenure"
     android:baselineAligned="false"
-    android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp" >
+    android:orientation="vertical" >
 
-</LinearLayout>
+	<LinearLayout android:id="@+id/fragment_field_group"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@color/light_background_opentenure"
+	    android:baselineAligned="false"
+	    android:orientation="vertical"
+	    android:paddingLeft="16dp"
+	    android:paddingRight="16dp" >
+	
+	</LinearLayout>
+</ScrollView>
