@@ -41,7 +41,10 @@ import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -615,7 +618,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			return true;
 		case R.id.action_download_tiles:
-			
+
 			if(!OpenTenureApplication.getInstance().isOnline()){
 				Toast.makeText(
 						mapView.getContext(),
@@ -623,52 +626,85 @@ public class MainMapFragment extends SupportMapFragment implements
 										R.string.error_connection), Toast.LENGTH_LONG).show();
 				
 				return true;
-			}
-			
-
-			int currentZoomLevel = (int) map.getCameraPosition().zoom;
-			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
-			
-			if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
-
-				int tilesToDownload = Tile.getTilesToDownload();
-			
-
-				SharedPreferences OpenTenurePreferences = PreferenceManager
-						.getDefaultSharedPreferences(mapView.getContext());
-				WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,OpenTenurePreferences);
-				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-				List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
-
-				if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
-				
-					Tile.createTiles(tiles);
-					Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
-					tilesToDownload = Tile.getTilesToDownload(); 
-					Toast.makeText(getActivity().getBaseContext(),
-							String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
-							.show();
+			}else{
+				if(OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())){
+					downloadTiles();
 				}else{
-					Toast.makeText(getActivity().getBaseContext(),
-							String.format(getActivity().getBaseContext().getResources().getString(R.string.too_many_tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
-							.show();
-				}
+					// Avoid to automatically download tiles over mobile data
+					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
+							mapView.getContext());
+					confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+					confirmDownloadBuilder.setMessage(getResources().getString(
+							R.string.message_data_over_mobile));
 
-				if(Task.getTask(TileDownloadTask.TASK_ID) == null){
-					TileDownloadTask task = new TileDownloadTask();
-					task.setContext(getActivity().getBaseContext());
-					task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+					confirmDownloadBuilder.setPositiveButton(R.string.confirm,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									downloadTiles();
+								}
+							});
+					confirmDownloadBuilder.setNegativeButton(R.string.cancel,
+							new OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
+
+					final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+					confirmDownloadDialog.show();
 				}
-			} else {
-				Toast.makeText(getActivity().getBaseContext(),
-						R.string.zoom_level_too_low, Toast.LENGTH_LONG)
-						.show();
 			}
-
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private void downloadTiles(){
+		int currentZoomLevel = (int) map.getCameraPosition().zoom;
+		int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
+		
+		if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+
+			int tilesToDownload = Tile.getTilesToDownload();
+		
+
+			SharedPreferences OpenTenurePreferences = PreferenceManager
+					.getDefaultSharedPreferences(mapView.getContext());
+			WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,OpenTenurePreferences);
+			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+			List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
+
+			if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
+			
+				Tile.createTiles(tiles);
+				Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
+				tilesToDownload = Tile.getTilesToDownload(); 
+				Toast.makeText(getActivity().getBaseContext(),
+						String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
+						.show();
+			}else{
+				Toast.makeText(getActivity().getBaseContext(),
+						String.format(getActivity().getBaseContext().getResources().getString(R.string.too_many_tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
+						.show();
+			}
+
+			if(Task.getTask(TileDownloadTask.TASK_ID) == null){
+				TileDownloadTask task = new TileDownloadTask();
+				task.setContext(getActivity().getBaseContext());
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+		} else {
+			Toast.makeText(getActivity().getBaseContext(),
+					R.string.zoom_level_too_low, Toast.LENGTH_LONG)
+					.show();
+		}
+
 	}
 
 	private void storeCameraPosition(CameraPosition cameraPosition) {

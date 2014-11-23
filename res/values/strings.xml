@@ -15,7 +15,7 @@
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="action_login">Log In</string>
-    <string name="action_download_tiles">Download offline tiles</string>
+    <string name="action_download_tiles">Download images to local data for offline map usage</string>
     <string name="action_logout">Log Out</string>
     <string name="action_print">Print</string>
     <string name="action_save">Save</string>
@@ -62,6 +62,7 @@
     <string name="title_activity_share_details">Open Tenure: Share details</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>
+    <string name="title_confirm_data_transfer">Confirm data transfer</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="title_remove_person_dialog">Remove person</string>
@@ -162,6 +163,7 @@
     <string name="message_no_application">Can\'t find an application to open the file</string>
     <string name="message_error_opening_file">Error opening the file : </string>
     <string name="message_old_db_password">Current password?</string>
+    <string name="message_data_over_mobile">You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan</string>
     <string name="message_new_db_password">New password (leave blank for unencrypted data)?</string>
     <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>
     <string name="message_encryption_failed">Unable to encrypt local data</string>

@@ -818,6 +818,9 @@ public class Claim {
 							+ "CP.STATUS, "
 							+ "CP.NAME, "
 							+ "CP.TYPE, "
+							+ "CP.CLAIM_NUMBER, "
+							+ "CP.CHALLANGE_EXPIRY_DATE, "
+							+ "CP.RECORDER_NAME, "
 							+ "CP.PERSON_ID, "
 							+ "CP.FIRST_NAME, "
 							+ "CP.LAST_NAME, "
@@ -829,6 +832,9 @@ public class Claim {
 							+ "CLAIM.STATUS, "
 							+ "CLAIM.NAME, "
 							+ "CLAIM.TYPE, "
+							+ "CLAIM.CLAIM_NUMBER, "
+							+ "CLAIM.CHALLANGE_EXPIRY_DATE, "
+							+ "CLAIM.RECORDER_NAME, "
 							+ "PERSON.PERSON_ID, "
 							+ "PERSON.FIRST_NAME, "
 							+ "PERSON.LAST_NAME "
@@ -856,9 +862,12 @@ public class Claim {
 					claim.setStatus(rs.getString(2));
 					claim.setName(rs.getString(3));
 					claim.setType((rs.getString(4)));
-					String personId = rs.getString(5);
-					String firstName = rs.getString(6);
-					String lastName = rs.getString(7);
+					claim.setClaimNumber((rs.getString(5)));
+					claim.setChallengeExpiryDate((rs.getDate(6)));
+					claim.setRecorderName((rs.getString(7)));
+					String personId = rs.getString(8);
+					String firstName = rs.getString(9);
+					String lastName = rs.getString(10);
 					Person person = new Person();
 					person.setPersonId(personId);
 					person.setFirstName(firstName);
@@ -867,9 +876,9 @@ public class Claim {
 				}
 				// It's a new attachment for the same claim
 				Attachment attachment = new Attachment();
-				attachment.setAttachmentId(rs.getString(8));
-				attachment.setStatus(rs.getString(9));
-				attachment.setSize(rs.getLong(10));
+				attachment.setAttachmentId(rs.getString(11));
+				attachment.setStatus(rs.getString(12));
+				attachment.setSize(rs.getLong(13));
 				attachments.add(attachment);
 				lastClaimId = claimId;
 			}

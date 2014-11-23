@@ -8,7 +8,7 @@
     <string name="action_new">Aggiungi</string>
     <string name="action_done">Fatto</string>
     <string name="action_login">Log In</string>
-    <string name="action_download_tiles">Scarica mappe offline</string>
+    <string name="action_download_tiles">Scarica le immagini dati locali per usare le mappe quando sei offline</string>
     <string name="action_logout">Log Out</string>
     <string name="action_print">Stampa</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
@@ -61,6 +61,7 @@
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
     <string name="title_activity_share_details">Open Tenure: Dettaglio della quota</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
+    <string name="title_confirm_data_transfer">Conferma trasferimento dati</string>
     <string name="title_lock_db">Cifratura dei dati locali</string>
     <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
     <string name="title_exit_dialog">Uscita</string>
@@ -159,6 +160,7 @@
     <string name="message_cant_open_db">Impossibile accedere ai dati</string>
     <string name="message_check_upgrade_db">Aggiornamento dei dati locali</string>
     <string name="message_old_db_password">Password attuale?</string>
+    <string name="message_data_over_mobile">Stai per trasferire una quantita\' di dati possibilmente grande usando una connessione internet mobile. Il costo associato puo\' essere elevato a secondo del tuo piano tariffario</string>
     <string name="message_new_db_password">Nuova password (lasciare vuoto per non cifrare i dati)?</string>
     <string name="message_confirm_new_db_password">Conferma la nuova password</string>
     <string name="message_enter_description">Immetti una descrizione</string>
