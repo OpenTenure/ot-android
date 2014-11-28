@@ -793,6 +793,7 @@ public class Claim {
 					claim.setVertices(new ArrayList<Vertex>());
 				}
 				allClaims.add(claim);
+				nClaims++;
 			}
 			Log.d(Claim.class.getName(), "Retrieved " + nVertices + " vertices for " + nClaims + " claims");
 		} catch (SQLException e) {
@@ -883,13 +884,16 @@ public class Claim {
 					person.setLastName(rs.getString(10));
 					claim.setPerson(person);
 				}
-				// It's a new attachment for the same claim
-				Attachment attachment = new Attachment();
-				attachment.setAttachmentId(rs.getString(11));
-				attachment.setStatus(rs.getString(12));
-				attachment.setSize(rs.getLong(13));
-				attachments.add(attachment);
-				nAttachments++;
+				String attachmentId = rs.getString(11);
+				if(attachmentId != null){
+					// It's a new attachment for the same claim
+					Attachment attachment = new Attachment();
+					attachment.setAttachmentId(attachmentId);
+					attachment.setStatus(rs.getString(12));
+					attachment.setSize(rs.getLong(13));
+					attachments.add(attachment);
+					nAttachments++;
+				}
 				lastClaimId = claimId;
 			}
 			if(claim != null){
@@ -899,6 +903,7 @@ public class Claim {
 					claim.setAttachments(new ArrayList<Attachment>());
 				}
 				allClaims.add(claim);
+				nClaims++;
 			}
 			Log.d(Claim.class.getName(), "Retrieved " + nAttachments + " attachments for " + nClaims + " claims");
 		} catch (SQLException e) {
