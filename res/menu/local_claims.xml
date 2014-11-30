@@ -15,4 +15,9 @@
           android:title="@string/action_logout"          
           android:showAsAction="ifRoom" 
           android:orderInCategory="3"/>
+    <item android:id="@+id/action_backup_db"
+          android:icon="@android:drawable/ic_menu_upload"
+          android:title="@string/action_backup_db"          
+          android:showAsAction="never" 
+          android:orderInCategory="4"/>
 </menu>

@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.model;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,10 +39,14 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.h2.tools.RunScript;
 
 import android.app.AlertDialog;
@@ -256,7 +261,13 @@ public class Database {
 		InputStream is = null;
 		OutputStream os = null;
 		try {
-			is = context.getAssets().open(DB_FILE_NAME);
+			try {
+				// Look for a database to import in the public directory: useful for debugging 
+				is = new FileInputStream(FileSystemUtilities.getOpentenureFolder() + File.separator + DB_FILE_NAME);
+			} catch (Exception e) {
+				// Otherwise, use the one provided with the package 
+				is = context.getAssets().open(DB_FILE_NAME);
+			}
 			String outFileName = DB_PATH + "/" + DB_FILE_NAME;
 
 			os = new FileOutputStream(outFileName);
@@ -306,7 +317,6 @@ public class Database {
 				unlock(context);
 				return DriverManager.getConnection(getUrl());
 			} catch (Exception e2) {
-				// TODO: handle exception
 				Log.d(this.getClass().getName(),
 						"getConnection second try exception");
 			}
@@ -373,6 +383,19 @@ public class Database {
 			}
 		}
 		return true;
+	}
+
+	public void exportDB() {
+		String exportPath = null;
+		try{
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+			exportPath = FileSystemUtilities.getOpentenureFolder() + File.separator + dateFormat.format(new Date()) + "-db-backup.zip";
+		}catch(Exception e){
+		}
+		Log.d(this.getClass().getName(), "Exporting OpenTenure database to a public folder in <" + exportPath
+				+ ">");
+		exec("BACKUP TO '" + exportPath + "'");
+		Log.d(this.getClass().getName(), "Export complete");
 	}
 
 	public List<String> getUpgradePath() {
