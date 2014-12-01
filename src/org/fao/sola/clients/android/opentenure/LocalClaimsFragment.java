@@ -142,18 +142,27 @@ public class LocalClaimsFragment extends ListFragment {
 		// handle item selection
 
 		switch (item.getItemId()) {
+		case R.id.action_backup_db:
+			OpenTenureApplication.getInstance().getDatabase().exportDB();
+			String backupMessage = String.format(OpenTenureApplication
+					.getContext().getString(
+							R.string.message_db_backed_up));
+
+			Toast backupToast = Toast.makeText(OpenTenureApplication.getContext(),
+					backupMessage, Toast.LENGTH_LONG);
+			backupToast.show();
+			return true;
 		case R.id.action_new:
 
 			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
 					"isInitialized").getValue())) {
-				Toast toast;
-				String toastMessage = String.format(OpenTenureApplication
+				String newMessage = String.format(OpenTenureApplication
 						.getContext().getString(
 								R.string.message_app_not_yet_initialized));
 
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						toastMessage, Toast.LENGTH_LONG);
-				toast.show();
+				Toast newToast = Toast.makeText(OpenTenureApplication.getContext(),
+						newMessage, Toast.LENGTH_LONG);
+				newToast.show();
 
 				return true;
 			}

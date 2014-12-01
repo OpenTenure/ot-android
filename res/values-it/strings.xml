@@ -10,6 +10,7 @@
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Scarica le immagini dati locali per usare le mappe quando sei offline</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_backup_db">Backup dei dati locali</string>
     <string name="action_print">Stampa</string>
     <string name="action_remove_attachment">Rimuovi allegato</string>
     <string name="action_remove_owner">Rimuovi quote</string>
@@ -202,6 +203,7 @@
     <string name="message_app_initialized_default">L\'applicazione è pronta per lavorare e comunicare con il Default Open Tenure Community Server </string>
     <string name="message_title_app_initializing">Sto inizializzando OpenTenure</string>
     <string name="message_app_initializing">Attendere&#8230;</string>
+    <string name="message_db_backed_up">E\' stata creata una copia dei dati locali</string>
     <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>

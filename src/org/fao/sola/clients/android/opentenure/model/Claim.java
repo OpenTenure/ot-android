@@ -47,6 +47,7 @@ import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
+import android.util.Log;
 
 public class Claim {
 	
@@ -743,6 +744,8 @@ public class Claim {
 			ResultSet rs = statement.executeQuery();
 			List<Vertex> vertices = null;
 			Claim claim = null;
+			int nClaims = 0;
+			int nVertices = 0;
 			while (rs.next()) {
 				String claimId = rs.getString(1);
 				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
@@ -754,6 +757,7 @@ public class Claim {
 							claim.setVertices(new ArrayList<Vertex>());
 						}
 						allClaims.add(claim);
+						nClaims++;
 					}
 					vertices = new ArrayList<Vertex>();
 					claim = new Claim();
@@ -779,6 +783,7 @@ public class Claim {
 				vertex.setMapPosition(new LatLng(rs.getBigDecimal(12)
 						.doubleValue(), rs.getBigDecimal(13).doubleValue()));
 				vertices.add(vertex);
+				nVertices++;
 				lastClaimId = claimId;
 			}
 			if(claim != null){
@@ -788,7 +793,9 @@ public class Claim {
 					claim.setVertices(new ArrayList<Vertex>());
 				}
 				allClaims.add(claim);
+				nClaims++;
 			}
+			Log.d(Claim.class.getName(), "Retrieved " + nVertices + " vertices for " + nClaims + " claims");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -811,6 +818,8 @@ public class Claim {
 		PreparedStatement statement = null;
 		String lastClaimId = null;
 		try {
+			
+			// Join Claim, Person and Attachment to get everything we need at once
 
 			statement = externalConnection
 					.prepareStatement("SELECT "
@@ -840,10 +849,12 @@ public class Claim {
 							+ "PERSON.LAST_NAME "
 							+ "FROM CLAIM, PERSON "
 							+ "WHERE CLAIM.PERSON_ID=PERSON.PERSON_ID) AS CP LEFT JOIN ATTACHMENT ON (CP.CLAIM_ID=ATTACHMENT.CLAIM_ID) "
-							+ "GROUP BY CP.CLAIM_ID, ATTACHMENT.ATTACHMENT_ID");
+							+ "ORDER BY CP.CLAIM_ID");
 			ResultSet rs = statement.executeQuery();
 			List<Attachment> attachments = null;
 			Claim claim = null;
+			int nClaims = 0;
+			int nAttachments = 0;
 			while (rs.next()) {
 				String claimId = rs.getString(1);
 				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
@@ -855,6 +866,7 @@ public class Claim {
 							claim.setAttachments(new ArrayList<Attachment>());
 						}
 						allClaims.add(claim);
+						nClaims++;
 					}
 					attachments = new ArrayList<Attachment>();
 					claim = new Claim();
@@ -866,20 +878,22 @@ public class Claim {
 					claim.setChallengeExpiryDate((rs.getDate(6)));
 					claim.setRecorderName((rs.getString(7)));
 					String personId = rs.getString(8);
-					String firstName = rs.getString(9);
-					String lastName = rs.getString(10);
 					Person person = new Person();
 					person.setPersonId(personId);
-					person.setFirstName(firstName);
-					person.setLastName(lastName);
+					person.setFirstName(rs.getString(9));
+					person.setLastName(rs.getString(10));
 					claim.setPerson(person);
 				}
-				// It's a new attachment for the same claim
-				Attachment attachment = new Attachment();
-				attachment.setAttachmentId(rs.getString(11));
-				attachment.setStatus(rs.getString(12));
-				attachment.setSize(rs.getLong(13));
-				attachments.add(attachment);
+				String attachmentId = rs.getString(11);
+				if(attachmentId != null){
+					// It's a new attachment for the same claim
+					Attachment attachment = new Attachment();
+					attachment.setAttachmentId(attachmentId);
+					attachment.setStatus(rs.getString(12));
+					attachment.setSize(rs.getLong(13));
+					attachments.add(attachment);
+					nAttachments++;
+				}
 				lastClaimId = claimId;
 			}
 			if(claim != null){
@@ -889,7 +903,9 @@ public class Claim {
 					claim.setAttachments(new ArrayList<Attachment>());
 				}
 				allClaims.add(claim);
+				nClaims++;
 			}
+			Log.d(Claim.class.getName(), "Retrieved " + nAttachments + " attachments for " + nClaims + " claims");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {

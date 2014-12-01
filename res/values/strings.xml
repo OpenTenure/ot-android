@@ -17,6 +17,7 @@
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Download images to local data for offline map usage</string>
     <string name="action_logout">Log Out</string>
+    <string name="action_backup_db">Backup local data</string>
     <string name="action_print">Print</string>
     <string name="action_save">Save</string>
     <string name="action_center">Center</string>
@@ -212,6 +213,7 @@
     <string name="message_title_app_not_initialized">The application is not initialized</string>
     <string name="message_app_not_initialized_network">The network\'s connection is not available</string>
     <string name="message_app_not_yet_initialized">The application is not yet initialized</string>
+    <string name="message_db_backed_up">A copy of the local database has been created</string>
     <string name="message_app_not_initialized">Check in \'Settings\' that the settings of your Open Tenure Community Server are correct and run again the initialization process</string>
     <string name="message_title_app_initialized">The application is initialized</string>
     <string name="message_app_initialized_default">The app is ready to work and communicate to the Default Open Tenure Community Server </string>
