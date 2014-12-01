@@ -6,12 +6,12 @@
           android:showAsAction="ifRoom" 
           android:orderInCategory="1"/>
     <item android:id="@+id/action_login"
-          android:icon="@drawable/login_door"
+          android:icon="@drawable/login"
           android:title="@string/action_login"
           android:showAsAction="ifRoom" 
           android:orderInCategory="2"/>
     <item android:id="@+id/action_logout"
-          android:icon="@drawable/logout_door"
+          android:icon="@drawable/logout"
           android:title="@string/action_logout"          
           android:showAsAction="ifRoom" 
           android:orderInCategory="3"/>

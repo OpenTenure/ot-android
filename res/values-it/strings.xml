@@ -51,6 +51,7 @@
     <string name="title_claim_challenges">Opposizioni</string>
     <string name="title_export">Esportando il Claim come file compresso</string>
     <string name="title_section">Sezione</string>
+    <string name="title_initialization_process">Processo di Inizializzazione</string>
     <string name="title_item">Elemento</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>

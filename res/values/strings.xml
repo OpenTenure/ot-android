@@ -65,6 +65,7 @@
     <string name="title_confirm_data_transfer">Confirm data transfer</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
     <string name="title_exit_dialog">Exit</string>
+    <string name="title_initialization_process">Initialization Process</string>
     <string name="title_remove_person_dialog">Remove person</string>
     <string name="title_save_claim_dialog">The claim has been modified</string>
     <string name="title_save_person_dialog">The person has been modified</string>
@@ -156,11 +157,13 @@
     <string name="message_claims_downloaded">Claims correctly downloaded</string>
     <string name="message_error_downloading_claims">Downloaded %s claims. Not all claims have been downloaded</string>
     <string name="message_login_no_more_valid">Session expired. Do login again</string>
+    <string name="message_initialize_before"> Do initialization before </string>
     <string name="message_db_locked">Data is password protected</string>
     <string name="message_db_password">Password to access data?</string>
     <string name="message_cant_open_db">Unable to access data</string>
     <string name="message_check_upgrade_db">Upgrading local data</string>
     <string name="message_no_application">Can\'t find an application to open the file</string>
+    <string name="message_default_initialization">You are about to initialize the application with the default Community Server. Default Community Server should be used just for demo purpose. Do you want to continue? Otherwise press Cancel and put a community server URL in settings  </string>
     <string name="message_error_opening_file">Error opening the file : </string>
     <string name="message_old_db_password">Current password?</string>
     <string name="message_data_over_mobile">You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan</string>
