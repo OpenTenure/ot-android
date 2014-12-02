@@ -177,6 +177,27 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					.getChildAt(2), tabs.getTabsContainer().getChildAt(3),
 					mViewPager);
 		} 
+		
+		if(!OpenTenureApplication.getInstance().isOnline()){
+			// Alert the user about missing connection
+			AlertDialog.Builder alertConnectionBuilder = new AlertDialog.Builder(
+					this);
+			alertConnectionBuilder.setTitle(R.string.title_no_connection);
+			alertConnectionBuilder.setMessage(getResources().getString(
+					R.string.message_no_connection_at_startup));
+
+			alertConnectionBuilder.setPositiveButton(R.string.confirm,
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+						}
+					});
+
+			final AlertDialog alertConnectionDialog = alertConnectionBuilder.create();
+			alertConnectionDialog.show();
+		}
 	}
 
 	private void setAlpha(float alpha, View... views) {

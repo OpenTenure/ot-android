@@ -70,6 +70,7 @@
     <string name="title_save_claim_dialog">Il Claim e\' stato modificato</string>
     <string name="title_save_person_dialog">La persona e\' stata modificata</string>
     <string name="title_save_group_dialog">Il gruppo e\' stato modificato</string>
+    <string name="title_no_connection">Nessuna connessione</string>
     <string name="choose_file">Scegli un\'applicazione per selezionare un file</string>
     <string name="person_name">Nome della Persona</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -162,6 +163,7 @@
     <string name="message_check_upgrade_db">Aggiornamento dei dati locali</string>
     <string name="message_old_db_password">Password attuale?</string>
     <string name="message_data_over_mobile">Stai per trasferire una quantita\' di dati possibilmente grande usando una connessione internet mobile. Il costo associato puo\' essere elevato a secondo del tuo piano tariffario</string>
+    <string name="message_no_connection_at_startup">Nessuna connessione Internet disponibile. Le informazioni di configurazione potrebbero non riflettere cambiamenti recenti e non sara\' possibile trasferire informazioni. Connettiti ad Internet se vuoi trasferire informazioni usando OpenTenure</string>
     <string name="message_new_db_password">Nuova password (lasciare vuoto per non cifrare i dati)?</string>
     <string name="message_confirm_new_db_password">Conferma la nuova password</string>
     <string name="message_enter_description">Immetti una descrizione</string>

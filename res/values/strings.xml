@@ -70,6 +70,7 @@
     <string name="title_save_claim_dialog">The claim has been modified</string>
     <string name="title_save_person_dialog">The person has been modified</string>
     <string name="title_save_group_dialog">The group has been modified</string>
+    <string name="title_no_connection">No connection</string>
     <string name="choose_file">Choose an application to select a file</string>
     <string name="person_name">Person Name</string>
     <string name="community_recorder_name">Community recorder</string>
@@ -165,6 +166,7 @@
     <string name="message_error_opening_file">Error opening the file : </string>
     <string name="message_old_db_password">Current password?</string>
     <string name="message_data_over_mobile">You are about to transfer a possibly large amount of data over a mobile internet connection. The associated cost can be high depending on your actual data plan</string>
+    <string name="message_no_connection_at_startup">No Internet connection is available. Configuration may not reflect recent changes and you won\'t be able do upload or download information. Connect to the Internet if you plan to transfer data using OpenTenure</string>
     <string name="message_new_db_password">New password (leave blank for unencrypted data)?</string>
     <string name="message_password_dont_match">New password not confirmed. Please, retry.</string>
     <string name="message_encryption_failed">Unable to encrypt local data</string>

@@ -566,27 +566,38 @@ public class MainMapFragment extends SupportMapFragment implements
 						R.string.message_login_before, Toast.LENGTH_LONG);
 				toast.show();
 				return true;
-			}
+			} else {
+				if(OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())){
+					downloadClaims();
+				}else{
+					// Avoid to automatically download claims over mobile data
+					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
+							mapView.getContext());
+					confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+					confirmDownloadBuilder.setMessage(getResources().getString(
+							R.string.message_data_over_mobile));
 
-			else {
-				ProgressBar bar = (ProgressBar) mapView
-						.findViewById(R.id.progress_bar);
+					confirmDownloadBuilder.setPositiveButton(R.string.confirm,
+							new OnClickListener() {
 
-				bar.setVisibility(View.VISIBLE);
-				bar.setProgress(0);
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									downloadClaims();
+								}
+							});
+					confirmDownloadBuilder.setNegativeButton(R.string.cancel,
+							new OnClickListener() {
 
-				TextView label = (TextView) mapView
-						.findViewById(R.id.download_claim_label);
-				label.setVisibility(View.VISIBLE);
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
 
-				OpenTenureApplication.setMapFragment(this);
-
-				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-
-				GetAllClaimsTask task = new GetAllClaimsTask();
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
-						mapView);
-
+					final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+					confirmDownloadDialog.show();
+				}
 				return true;
 			}
 		case R.id.action_login:
@@ -663,6 +674,26 @@ public class MainMapFragment extends SupportMapFragment implements
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private void downloadClaims(){
+		ProgressBar bar = (ProgressBar) mapView
+				.findViewById(R.id.progress_bar);
+
+		bar.setVisibility(View.VISIBLE);
+		bar.setProgress(0);
+
+		TextView label = (TextView) mapView
+				.findViewById(R.id.download_claim_label);
+		label.setVisibility(View.VISIBLE);
+
+		OpenTenureApplication.setMapFragment(this);
+
+		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+
+		GetAllClaimsTask task = new GetAllClaimsTask();
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
+				mapView);
 	}
 	
 	private void downloadTiles(){
