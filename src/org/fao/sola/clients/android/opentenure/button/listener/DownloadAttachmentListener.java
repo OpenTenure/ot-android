@@ -33,6 +33,8 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,15 +53,50 @@ public class DownloadAttachmentListener implements OnClickListener {
 	}
 
 	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
+	public void onClick(final View v) {
 
+		if(OpenTenureApplication.getInstance().isConnectedWifi(v.getContext())){
+			downloadAttachment(v);
+		}else{
+			// Avoid to automatically download claims over mobile data
+			AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
+					v.getContext());
+			confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+			confirmDownloadBuilder.setMessage(v.getResources().getString(
+					R.string.message_data_over_mobile));
+
+			confirmDownloadBuilder.setPositiveButton(R.string.confirm,
+					new android.content.DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							downloadAttachment(v);
+						}
+					});
+			confirmDownloadBuilder.setNegativeButton(R.string.cancel,
+					new android.content.DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+						}
+					});
+
+			final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+			confirmDownloadDialog.show();
+		}
+		
+
+	}
+	
+	private void downloadAttachment(View v){
 		Object[] params = new Object[2];
 		params[0] = attachment;
 		params[1] = vh;
 		
-		vh.getBar().setVisibility(View.VISIBLE);
-		vh.getStatus().setVisibility(View.GONE);
+		vh.getBarAttachment().setVisibility(View.VISIBLE);
+		vh.getAttachmentStatus().setVisibility(View.GONE);
 
 		GetAttachmentTask task = new GetAttachmentTask();
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
@@ -67,8 +104,6 @@ public class DownloadAttachmentListener implements OnClickListener {
 		Toast toast = Toast.makeText(OpenTenureApplication.getContext(),
 				R.string.message_downloading_attachment, Toast.LENGTH_LONG);
 		toast.show();
-		
-
 	}
 
 }

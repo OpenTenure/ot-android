@@ -552,6 +552,20 @@ public class MainMapFragment extends SupportMapFragment implements
 			
 		case R.id.action_center_community_area:
 			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
+			
 			MainMapFragment mapFrag = OpenTenureApplication
 			.getMapFragment();
 
@@ -559,6 +573,20 @@ public class MainMapFragment extends SupportMapFragment implements
 			return true;
 
 		case R.id.action_download_claims:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			if (!OpenTenureApplication.isLoggedin()) {
 				Toast toast = Toast.makeText(
@@ -566,30 +594,55 @@ public class MainMapFragment extends SupportMapFragment implements
 						R.string.message_login_before, Toast.LENGTH_LONG);
 				toast.show();
 				return true;
-			}
+			} else {
+				if(OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())){
+					downloadClaims();
+				}else{
+					// Avoid to automatically download claims over mobile data
+					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
+							mapView.getContext());
+					confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+					confirmDownloadBuilder.setMessage(getResources().getString(
+							R.string.message_data_over_mobile));
 
-			else {
-				ProgressBar bar = (ProgressBar) mapView
-						.findViewById(R.id.progress_bar);
+					confirmDownloadBuilder.setPositiveButton(R.string.confirm,
+							new OnClickListener() {
 
-				bar.setVisibility(View.VISIBLE);
-				bar.setProgress(0);
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									downloadClaims();
+								}
+							});
+					confirmDownloadBuilder.setNegativeButton(R.string.cancel,
+							new OnClickListener() {
 
-				TextView label = (TextView) mapView
-						.findViewById(R.id.download_claim_label);
-				label.setVisibility(View.VISIBLE);
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							});
 
-				OpenTenureApplication.setMapFragment(this);
-
-				LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-
-				GetAllClaimsTask task = new GetAllClaimsTask();
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
-						mapView);
-
+					final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+					confirmDownloadDialog.show();
+				}
 				return true;
 			}
 		case R.id.action_login:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			OpenTenureApplication.setActivity(getActivity());
 
@@ -618,6 +671,20 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			return true;
 		case R.id.action_download_tiles:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			if(!OpenTenureApplication.getInstance().isOnline()){
 				Toast.makeText(
@@ -663,6 +730,26 @@ public class MainMapFragment extends SupportMapFragment implements
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+	
+	private void downloadClaims(){
+		ProgressBar bar = (ProgressBar) mapView
+				.findViewById(R.id.progress_bar);
+
+		bar.setVisibility(View.VISIBLE);
+		bar.setProgress(0);
+
+		TextView label = (TextView) mapView
+				.findViewById(R.id.download_claim_label);
+		label.setVisibility(View.VISIBLE);
+
+		OpenTenureApplication.setMapFragment(this);
+
+		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
+
+		GetAllClaimsTask task = new GetAllClaimsTask();
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
+				mapView);
 	}
 	
 	private void downloadTiles(){

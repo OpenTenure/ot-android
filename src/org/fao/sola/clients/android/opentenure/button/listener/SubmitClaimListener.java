@@ -42,6 +42,8 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,7 +65,7 @@ public class SubmitClaimListener implements OnClickListener {
 		doIt(v);
 	}
 
-	private void doIt(View v) {
+	private void doIt(final View v) {
 
 		if (!OpenTenureApplication.isLoggedin()) {
 			Toast toast = Toast.makeText(v.getContext(),
@@ -72,85 +74,120 @@ public class SubmitClaimListener implements OnClickListener {
 			return;
 
 		} else {
+			if(OpenTenureApplication.getInstance().isConnectedWifi(v.getContext())){
+				submitClaim(v);
+			}else{
+				// Avoid to automatically download claims over mobile data
+				AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
+						v.getContext());
+				confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+				confirmDownloadBuilder.setMessage(v.getResources().getString(
+						R.string.message_data_over_mobile));
 
-			if (claimId != null) {
+				confirmDownloadBuilder.setPositiveButton(R.string.confirm,
+						new android.content.DialogInterface.OnClickListener() {
 
-				List<Vertex> vertices = Vertex.getVertices(claimId);
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+								submitClaim(v);
+							}
+						});
+				confirmDownloadBuilder.setNegativeButton(R.string.cancel,
+						new android.content.DialogInterface.OnClickListener() {
 
-				if (vertices.size() < 3) {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+							}
+						});
 
-					Toast toast = Toast.makeText(v.getContext(),
-							R.string.message_map_not_yet_draw,
-							Toast.LENGTH_LONG);
-					toast.show();
-					return;
-
-				}
-				JsonUtilities.createClaimJson(claimId);
-
-				Log.d(this.getClass().getName(),
-						"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
-				Log.d(this.getClass().getName(),
-						"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
-				
-				Claim claim = Claim.getClaim(claimId);
-				
-				FormPayload payload = claim.getDynamicForm();
-
-				if (payload != null) {
-					
-					FormTemplate template = payload.getFormTemplate();
-
-					if(template != null){
-						
-						FieldConstraint failedConstraint = template.getFailedConstraint(payload);
-						
-						if(failedConstraint != null){
-							Toast toast = Toast.makeText(v.getContext(),
-									failedConstraint.getErrorMsg(),
-									Toast.LENGTH_LONG);
-							toast.show();
-							return;
-						}
-					}
-				}
-
-				int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus(), claim.getAttachments());
-
-				vh.getBar().setVisibility(View.VISIBLE);
-				vh.getBar().setProgress(progress);
-
-				String status = claim.getStatus();
-				if (status.equals(ClaimStatus._MODERATED)
-						|| status.equals(ClaimStatus._UPDATE_ERROR)
-						|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
-					vh.getStatus().setText(
-							ClaimStatus._UPDATING + ": " + progress + " %");
-				else
-					vh.getStatus().setText(
-							ClaimStatus._UPLOADING + ": " + progress + " %");
-				vh.getStatus().setTextColor(
-						OpenTenureApplication.getContext().getResources()
-								.getColor(R.color.status_created));
-				vh.getStatus().setVisibility(View.VISIBLE);
-
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-				SaveClaimTask saveClaimtask = new SaveClaimTask();
-				saveClaimtask.execute(claimId, vh);
-			} else {
-				Toast toast = Toast.makeText(v.getContext(),
-						R.string.message_save_claim_before_submit,
-						Toast.LENGTH_SHORT);
-				toast.show();
+				final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+				confirmDownloadDialog.show();
 			}
 			return;
 		}
 
+	}
+	
+	private void submitClaim(View v){
+		if (claimId != null) {
+
+			List<Vertex> vertices = Vertex.getVertices(claimId);
+
+			if (vertices.size() < 3) {
+
+				Toast toast = Toast.makeText(v.getContext(),
+						R.string.message_map_not_yet_draw,
+						Toast.LENGTH_LONG);
+				toast.show();
+				return;
+
+			}
+			JsonUtilities.createClaimJson(claimId);
+
+			Log.d(this.getClass().getName(),
+					"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
+			Log.d(this.getClass().getName(),
+					"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
+			
+			Claim claim = Claim.getClaim(claimId);
+			
+			FormPayload payload = claim.getDynamicForm();
+
+			if (payload != null) {
+				
+				FormTemplate template = payload.getFormTemplate();
+
+				if(template != null){
+					
+					FieldConstraint failedConstraint = template.getFailedConstraint(payload);
+					
+					if(failedConstraint != null){
+						Toast toast = Toast.makeText(v.getContext(),
+								failedConstraint.getErrorMsg(),
+								Toast.LENGTH_LONG);
+						toast.show();
+						return;
+					}
+				}
+			}
+
+
+int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus());
+
+			vh.getBar().setVisibility(View.VISIBLE);
+			vh.getBar().setProgress(progress);
+
+			String status = claim.getStatus();
+			if (status.equals(ClaimStatus._MODERATED)
+					|| status.equals(ClaimStatus._UPDATE_ERROR)
+					|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
+				vh.getStatus().setText(
+						ClaimStatus._UPDATING + ": " + progress + " %");
+			else
+				vh.getStatus().setText(
+						ClaimStatus._UPLOADING + ": " + progress + " %");
+			vh.getStatus().setTextColor(
+					OpenTenureApplication.getContext().getResources()
+							.getColor(R.color.status_created));
+			vh.getStatus().setVisibility(View.VISIBLE);
+
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+
+			}
+
+			SaveClaimTask saveClaimtask = new SaveClaimTask();
+			saveClaimtask.execute(claimId, vh);
+		} else {
+			Toast toast = Toast.makeText(v.getContext(),
+					R.string.message_save_claim_before_submit,
+					Toast.LENGTH_SHORT);
+			toast.show();
+		}
 	}
 
 }
