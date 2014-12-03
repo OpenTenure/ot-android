@@ -153,8 +153,7 @@ public class SubmitClaimListener implements OnClickListener {
 				}
 			}
 
-
-int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus());
 
 			vh.getBar().setVisibility(View.VISIBLE);
 			vh.getBar().setProgress(progress);
@@ -177,7 +176,6 @@ int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus())
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-
 			}
 
 			SaveClaimTask saveClaimtask = new SaveClaimTask();
