@@ -75,7 +75,8 @@ public class Claim {
 	}
 
 	public List<AdditionalInfo> getAdditionalInfo() {
-		return additionalInfo;
+		// No longer used
+		return new ArrayList<AdditionalInfo>();
 	}
 
 	public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
@@ -133,7 +134,18 @@ public class Claim {
 		this.claimId = claimId;
 	}
 
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	public void setChallengedClaimId(String challengedClaimId) {
+		this.challengedClaimId = challengedClaimId;
+	}
+
 	public Person getPerson() {
+		if(personId != null && person == null){
+			person = Person.getPerson(personId);
+		}
 		return person;
 	}
 
@@ -142,6 +154,9 @@ public class Claim {
 	}
 
 	public List<Vertex> getVertices() {
+		if(claimId != null && vertices == null){
+			vertices = Vertex.getVertices(claimId);
+		}
 		return vertices;
 	}
 
@@ -150,6 +165,9 @@ public class Claim {
 	}
 
 	public List<PropertyLocation> getPropertyLocations() {
+		if(claimId != null && propertyLocations == null){
+			propertyLocations = PropertyLocation.getPropertyLocations(claimId);
+		}
 		return propertyLocations;
 	}
 
@@ -158,6 +176,9 @@ public class Claim {
 	}
 
 	public Claim getChallengedClaim() {
+		if(challengedClaimId != null && challengedClaim == null){
+			challengedClaim = Claim.getClaim(challengedClaimId);
+		}
 		return challengedClaim;
 	}
 
@@ -174,6 +195,9 @@ public class Claim {
 	}
 
 	public List<Attachment> getAttachments() {
+		if(claimId != null && attachments == null){
+			attachments = Attachment.getAttachments(claimId);
+		}
 		return attachments;
 	}
 
@@ -182,6 +206,9 @@ public class Claim {
 	}
 
 	public List<ShareProperty> getShares() {
+		if(claimId != null && shares == null){
+			shares = ShareProperty.getShares(claimId);
+		}
 		return shares;
 	}
 
@@ -510,10 +537,9 @@ public class Claim {
 				claim.setStatus(rs.getString(1));
 				claim.setClaimNumber(rs.getString(2));
 				claim.setName(rs.getString(3));
-				claim.setPerson(Person.getPerson(rs.getString(4)));
+				claim.setPersonId(rs.getString(4));
 				claim.setType((rs.getString(5)));
-				claim.setChallengedClaim(Claim.getClaim(rs.getString(6)));
-				// claim.setChallengingClaims(getChallengingClaims(claimId));
+				claim.setChallengedClaimId(rs.getString(6));
 				claim.setChallengeExpiryDate(rs.getDate(7));
 				claim.setDateOfStart(rs.getDate(8));
 				claim.setLandUse(rs.getString(9));
@@ -526,13 +552,6 @@ public class Claim {
 				}else{
 					claim.setDynamicForm(new FormPayload());
 				}
-				claim.setVertices(Vertex.getVertices(claimId));
-				claim.setPropertyLocations(PropertyLocation
-						.getPropertyLocations(claimId));
-				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setShares(ShareProperty.getShares(claimId));
-				claim.setAdditionalInfo(AdditionalInfo
-						.getClaimAdditionalInfo(claimId));
 			}
 
 		} catch (SQLException e) {
@@ -577,10 +596,9 @@ public class Claim {
 				claim.setStatus(rs.getString(1));
 				claim.setClaimNumber(rs.getString(2));
 				claim.setName(rs.getString(3));
-				claim.setPerson(Person.getPerson(rs.getString(4)));
+				claim.setPersonId(rs.getString(4));
 				claim.setType((rs.getString(5)));
-				claim.setChallengedClaim(Claim.getClaim(rs.getString(6)));
-				// claim.setChallengingClaims(getChallengingClaims(claimId));
+				claim.setChallengedClaimId(rs.getString(6));
 				claim.setChallengeExpiryDate(rs.getDate(7));
 				claim.setDateOfStart(rs.getDate(8));
 				claim.setLandUse(rs.getString(9));
@@ -593,12 +611,6 @@ public class Claim {
 				}else{
 					claim.setDynamicForm(new FormPayload());
 				}
-				claim.setVertices(Vertex.getVertices(claimId));
-				claim.setPropertyLocations(PropertyLocation
-						.getPropertyLocations(claimId));
-				claim.setAttachments(Attachment.getAttachments(claimId));
-				claim.setShares(ShareProperty.getShares(claimId));
-				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
 			}
 
 		} catch (SQLException e) {
@@ -1199,8 +1211,10 @@ public class Claim {
 	private String type;
 	private String status;
 	private Person person;
+	private String personId;
 	private Date dateOfStart;
 	private Claim challengedClaim;
+	private String challengedClaimId;
 	private AdjacenciesNotes adjacenciesNotes;
 	private List<Vertex> vertices;
 	private List<PropertyLocation> propertyLocations;
