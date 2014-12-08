@@ -33,6 +33,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.DatabasePasswordTextWatcher;
+import org.fao.sola.clients.android.opentenure.model.Link;
 import org.fao.sola.clients.android.opentenure.network.AlertInitializationTask;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
@@ -54,7 +55,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -72,6 +75,8 @@ import android.widget.Toast;
 public class NewsFragment extends ListFragment {
 	private View rootView;
 	MenuItem alert;
+	private String filter = null;
+	private static final String FILTER_KEY = "filter";
 
 	public NewsFragment() {
 	}
@@ -117,7 +122,45 @@ public class NewsFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.fragment_news, container, false);
 		setHasOptionsMenu(true);
+		EditText inputSearch = (EditText) rootView
+				.findViewById(R.id.filter_input_field);
+		inputSearch.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+		inputSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence cs, int arg1, int arg2,
+					int arg3) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence arg0, int arg1,
+					int arg2, int arg3) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				filter = arg0.toString();
+				((NewsListAdapter) getListAdapter()).getFilter().filter(
+						filter);
+			}
+		});
+
 		update();
+
+		if (savedInstanceState != null
+				&& savedInstanceState.getString(FILTER_KEY) != null) {
+			filter = savedInstanceState.getString(FILTER_KEY);
+			((NewsListAdapter) getListAdapter()).getFilter().filter(
+					filter);
+		}
+		update();
+		if (savedInstanceState != null
+				&& savedInstanceState.getString(FILTER_KEY) != null) {
+			filter = savedInstanceState.getString(FILTER_KEY);
+			((NewsListAdapter) getListAdapter()).getFilter().filter(
+					filter);
+		}
+
 		return rootView;
 	}
 
@@ -523,25 +566,22 @@ public class NewsFragment extends ListFragment {
 	}
 
 	protected void update() {
+		List<Link> links = Link.getLinks();
 		List<String> news = new ArrayList<String>();
-		news.add("Community web site\nVisit the Open Tenure Community web site and tell us what you think about the new look and feel.");
-		news.add("FLOSS SOLA news\nLook at the latest news on FLOSS SOLA web site.");
 		List<String> urls = new ArrayList<String>();
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(rootView.getContext());
-
-		String csUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF,
-				"http://ot.flossola.org");
-		urls.add(csUrl);
-		urls.add("http://www.flossola.org/home");
-		ArrayAdapter<String> adapter = new NewsListAdapter(
-				rootView.getContext(), news.toArray(new String[news.size()]),
-				urls.toArray(new String[urls.size()]));
+		for(Link link:links){
+			news.add(link.getDesc());
+			urls.add(link.getUrl());
+		}
+		ArrayAdapter<Link> adapter = new NewsListAdapter(rootView.getContext(), links);
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();
 	}
-
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString(FILTER_KEY, filter);
+		super.onSaveInstanceState(outState);
+	}
 	private void initialize() {
 		Log.d(this.getClass().getName(),
 				"starting tasks for static data download");
