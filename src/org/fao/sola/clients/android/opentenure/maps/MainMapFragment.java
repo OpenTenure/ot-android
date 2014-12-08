@@ -552,6 +552,20 @@ public class MainMapFragment extends SupportMapFragment implements
 			
 		case R.id.action_center_community_area:
 			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
+			
 			MainMapFragment mapFrag = OpenTenureApplication
 			.getMapFragment();
 
@@ -559,6 +573,20 @@ public class MainMapFragment extends SupportMapFragment implements
 			return true;
 
 		case R.id.action_download_claims:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			if (!OpenTenureApplication.isLoggedin()) {
 				Toast toast = Toast.makeText(
@@ -601,6 +629,19 @@ public class MainMapFragment extends SupportMapFragment implements
 				return true;
 			}
 		case R.id.action_login:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+				return true;
+			}
 
 			OpenTenureApplication.setActivity(getActivity());
 
@@ -629,6 +670,20 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			return true;
 		case R.id.action_download_tiles:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			if(!OpenTenureApplication.getInstance().isOnline()){
 				Toast.makeText(

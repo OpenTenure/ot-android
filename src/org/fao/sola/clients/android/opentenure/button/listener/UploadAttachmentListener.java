@@ -72,8 +72,8 @@ public class UploadAttachmentListener implements OnClickListener {
 			return;
 		}
 
-		vh.getBar().setVisibility(View.VISIBLE);
-		vh.getStatus().setVisibility(View.GONE);
+		vh.getBarAttachment().setVisibility(View.VISIBLE);
+		vh.getAttachmentStatus().setVisibility(View.GONE);
 
 		SaveAttachmentTask task = new SaveAttachmentTask();
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,

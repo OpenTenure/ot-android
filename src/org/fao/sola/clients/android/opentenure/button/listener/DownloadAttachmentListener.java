@@ -95,8 +95,8 @@ public class DownloadAttachmentListener implements OnClickListener {
 		params[0] = attachment;
 		params[1] = vh;
 		
-		vh.getBar().setVisibility(View.VISIBLE);
-		vh.getStatus().setVisibility(View.GONE);
+		vh.getBarAttachment().setVisibility(View.VISIBLE);
+		vh.getAttachmentStatus().setVisibility(View.GONE);
 
 		GetAttachmentTask task = new GetAttachmentTask();
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);

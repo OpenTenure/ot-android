@@ -148,6 +148,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_open_tenure);
 		ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		
 
 		Log.d(this.getClass().getName(),
 				"Starting with " + activityManager.getMemoryClass()
@@ -178,6 +179,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					mViewPager);
 		} 
 		
+
 		if(!OpenTenureApplication.getInstance().isOnline()){
 			// Alert the user about missing connection
 			AlertDialog.Builder alertConnectionBuilder = new AlertDialog.Builder(
@@ -198,6 +200,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			final AlertDialog alertConnectionDialog = alertConnectionBuilder.create();
 			alertConnectionDialog.show();
 		}
+
 	}
 
 	private void setAlpha(float alpha, View... views) {
@@ -478,4 +481,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	public Mode getMode() {
 		return mode;
 	}
+
+
 }

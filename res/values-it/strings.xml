@@ -20,6 +20,8 @@
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
     <string name="action_save">Salva</string>
+    <string name="action_add_claimant">Aggiungi Richiedente</string>
+    <string name="action_modify_claimant">Modifica Richiedente</string>
     <string name="action_download_file">Scarica File</string>
     <string name="action_center">Centra</string>
     <string name="action_view_community_area">Area di interesse</string>
@@ -38,6 +40,7 @@
     <string name="title_claims">Lista delle Richieste</string>
     <string name="title_persons">Persone</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
+    <string name="title_challenged_claim">Claim sfidato</string>
     <string name="title_claim">Richiesta</string>
     <string name="title_person_details">Dettagli della persona</string>
     <string name="title_group_details">Dettagli del gruppo</string>
@@ -52,6 +55,7 @@
     <string name="title_claim_challenges">Opposizioni</string>
     <string name="title_export">Esportando il Claim come file compresso</string>
     <string name="title_section">Sezione</string>
+    <string name="title_initialization_process">Processo di Inizializzazione</string>
     <string name="title_item">Elemento</string>
     <string name="title_activity_settings">Impostazioni</string>
     <string name="title_activity_claim">Open Tenure: Nuova richiesta</string>
@@ -109,7 +113,7 @@
     <string name="last_name_label">Cognome *</string>
     <string name="date_of_birth">Data di nascita (AAAA-MM-GG)</string>
     <string name="date_of_birth_label">Data di nascita * (AAAA-MM-GG)</string>
-    <string name="date_of_start">Data di applicabilita\' del diritto (YYYY-MM-DD)</string>
+    <string name="date_of_start">AAAA-MM-GG</string>
     <string name="date_of_start_label">Data di applicabilita\' del diritto (YYYY-MM-DD)</string>
     <string name="place_of_birth">Luogo di nascita</string>
     <string name="place_of_birth_label">Luogo di nascita *</string>
@@ -284,6 +288,7 @@
     <string name="south">Sud</string>
     <string name="east">Est</string>
     <string name="west">Ovest</string>
+    <string name="status">stato : </string>
     <string name="north_adjacency">Adiacenza Nord</string>
     <string name="south_adjacency">Adiacenza Sud</string>
     <string name="east_adjacency">Adiacenza Est</string>

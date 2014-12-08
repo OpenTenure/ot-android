@@ -153,7 +153,7 @@ public class SubmitClaimListener implements OnClickListener {
 				}
 			}
 
-			int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus(), claim.getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus());
 
 			vh.getBar().setVisibility(View.VISIBLE);
 			vh.getBar().setProgress(progress);

@@ -41,6 +41,8 @@ import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
+import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -395,8 +397,15 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			return true;
 			// Respond to the action bar's Up/Home button
 	    case android.R.id.home:
-	        NavUtils.navigateUpFromSameTask(this);
-	        return true;
+	    	 // This is called when the Home (Up) button is pressed in the action bar.
+            Intent upIntent;
+			
+				upIntent = NavUtils.getParentActivityIntent(this);
+				upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	            startActivity(upIntent);
+	            finish();
+			
+            return true;
 	    
 		default:
 			return super.onOptionsItemSelected(item);

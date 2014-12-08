@@ -4,11 +4,11 @@
           android:title="@string/action_download_tiles"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_login"
-          android:icon="@drawable/login_door"
+          android:icon="@drawable/login"
           android:title="@string/action_login"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout"
-          android:icon="@drawable/logout_door"
+          android:icon="@drawable/logout"
           android:title="@string/action_logout"          
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_center_community_area"
@@ -16,11 +16,11 @@
           android:title="@string/action_view_community_area"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_center_and_follow"
-          android:icon="@android:drawable/ic_menu_mylocation"
+          android:icon="@drawable/position"
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_download_claims"
-          android:icon="@android:drawable/ic_menu_myplaces"
+          android:icon="@drawable/flag"
           android:title="@string/action_download_claims"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/map_provider_google_normal"

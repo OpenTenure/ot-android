@@ -177,6 +177,20 @@ public class LocalClaimsFragment extends ListFragment {
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		case R.id.action_login:
+			
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						toastMessage, Toast.LENGTH_LONG);
+				toast.show();
+
+				return true;
+			}
 
 			OpenTenureApplication.setActivity(getActivity());
 

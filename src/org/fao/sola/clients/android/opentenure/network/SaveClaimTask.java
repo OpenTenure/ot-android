@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
@@ -343,8 +344,28 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
+			AttachmentViewHolder avh = new AttachmentViewHolder();
+			
+			avh.setBar(vh.getBar());
+			avh.setChallengeExpiryDate(vh.getChallengeExpiryDate());
+			avh.setIconChallenged(vh.getIconChallenged());
+			avh.setIconLocal(vh.getIconLocal());
+			avh.setIconModerated(vh.getIconModerated());
+			avh.setIconReviewed(vh.getIconReviewed());
+			avh.setIconUnmoderated(vh.getIconUnmoderated());
+			avh.setIconWithdrawn(vh.getIconWithdrawn());
+			
+			avh.setId(vh.getId());
+			avh.setNumber(vh.getNumber());
+			avh.setPicture(vh.getPicture());
+			avh.setPosition(vh.getPosition());
+			avh.setRemove(vh.getRemove());
+			avh.setSend(vh.getSend());
+			avh.setSlogan(vh.getSlogan());
+			avh.setStatus(vh.getStatus());
+			
 
-			int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus(), claim.getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
 			vh.getStatus().setVisibility(View.VISIBLE);
@@ -357,7 +378,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
 				saveAttachmentTask.executeOnExecutor(
 						AsyncTask.THREAD_POOL_EXECUTOR, attachment.getId(),
-						vhr.getVh());
+						avh);
 
 			}
 

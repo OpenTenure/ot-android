@@ -37,6 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
 
+import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
@@ -93,13 +94,13 @@ public class UploadChunksTask extends
 
 			for (;;) {
 
-				byte[] chunk = new byte[500000];
+				byte[] chunk = new byte[50000];
 
 				int rsz = dis.read(chunk, 0, chunk.length);
 				if (rsz > 0) {
 					UploadChunkPayload payload = new UploadChunkPayload();
 
-					if (rsz < 500000)
+					if (rsz < 50000)
 						chunk = Arrays.copyOfRange(chunk, 0, rsz);
 
 					payload.setMd5(MD5.calculateMD5(chunk));
@@ -133,7 +134,7 @@ public class UploadChunksTask extends
 						success = true;						
 						
 						vhr.setRes(upResponse);
-						vhr.setVh((ViewHolder) params[1]);
+						vhr.setVh((AttachmentViewHolder) params[1]);
 						
 						publishProgress(vhr);
 
@@ -187,19 +188,23 @@ public class UploadChunksTask extends
 		ViewHolderResponse vhr= holders[0];
 		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
 		Attachment att = Attachment.getAttachment(res.getAttachmentId());
-		ProgressBar bar = vhr.getVh().getBar();
+		ProgressBar bar = ((AttachmentViewHolder)vhr.getVh()).getBarAttachment();
+		TextView status = ((AttachmentViewHolder)vhr.getVh()).getAttachmentStatus();
 		
 		float factor = (float) att.getUploadedBytes() / att.getSize();
 		int progress = (int) (factor * 100);
 
-		vhr.getVh().getStatus().setText(
+		if(status != null){
+		status.setText(
 				att.getStatus() + ": " + progress + " %");
-		vhr.getVh().getStatus().setTextColor(
+		status.setTextColor(
 				OpenTenureApplication.getContext().getResources()
 						.getColor(R.color.status_created));
-		
+		}
+		if(bar != null){
 		bar.setProgress(progress);
 		bar.setProgress(progress);
+		}
 		super.onProgressUpdate(holders);
 		
 	}
@@ -210,7 +215,7 @@ public class UploadChunksTask extends
 	protected void onPostExecute(final ViewHolderResponse vhr) {
 
 		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
-		ViewHolder vh = (ViewHolder) vhr.getVh();
+		AttachmentViewHolder vh = (AttachmentViewHolder) vhr.getVh();
 		Claim claim = null;
 
 		if (res.getSuccess()) {
@@ -254,8 +259,8 @@ public class UploadChunksTask extends
 				float factor = (float) att.getUploadedBytes() / att.getSize();
 				progress = (int) (factor * 100);
 				
-
-				vh.getBar().setProgress(progress);
+				if( vh.getBarAttachment()!=null )
+				vh.getBarAttachment().setProgress(progress);
 
 				vh.getStatus().setText(
 						att.getStatus() + ": " + progress + " %");
@@ -367,7 +372,8 @@ public class UploadChunksTask extends
 				factor = (float) att.getUploadedBytes()/ att.getSize();
 				progress = (int) (factor * 100);
 				
-				vh.getBar().setProgress(progress);
+				if( vh.getBarAttachment()!=null )
+				vh.getBarAttachment().setProgress(progress);
 
 				vh.getStatus()
 						.setText(

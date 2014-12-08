@@ -140,19 +140,52 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		OpenTenureApplication.setDownloadedClaims(0);
 		OpenTenureApplication.setTotalClaimsToDownload(input.getClaims().size());
 		
+		
+		
+		List<Claim> inputList = input.getClaims();
+		
+		List<Claim> inputList1 = inputList.subList(0, (inputList.size()/2)/2);
+		List<Claim> inputList2 = inputList.subList((inputList.size()/2)/2, (inputList.size()/2));
+		List<Claim> inputList3 = inputList.subList((inputList.size()/2), (inputList.size()/2)+(inputList.size()/4));
+		List<Claim> inputList4 = inputList.subList((inputList.size()/2)+(inputList.size()/4), inputList.size());
+		
+		System.out.println("Le dimensioni : " +0+"  "+(inputList.size()/2)/2+"   "+(inputList.size()/2)+"   "+((inputList.size()/2)+(inputList.size()/4)) +"   "  +inputList.size());
+		System.out.println("Gli input size : "+inputList1.size()+"   "+inputList2.size()+"   "+inputList3.size() +"   "+inputList4.size());
 		GetClaimsInput input2 = new GetClaimsInput();
 		
 		input2.setClaimId(input.getClaimId());
-		input2.setClaims(input.getClaims().subList((input.getClaims().size()/2), input.getClaims().size()));
+		input2.setClaims(inputList2);
 		input2.setDownloaded(input.getDownloaded());
 		input2.setHttpStatusCode(input.getHttpStatusCode());
 		input2.setMapView(input.getMapView());
 		input2.setMessage(input.getMessage());
 		input2.setFirst(false);
 		
+		GetClaimsInput input3 = new GetClaimsInput();
+		
+		input3.setClaimId(input.getClaimId());
+		input3.setClaims(inputList3);
+		input3.setDownloaded(input.getDownloaded());
+		input3.setHttpStatusCode(input.getHttpStatusCode());
+		input3.setMapView(input.getMapView());
+		input3.setMessage(input.getMessage());
+		input3.setFirst(false);
+		
+		
+		
+		GetClaimsInput input4 = new GetClaimsInput();
+		input4.setClaimId(input.getClaimId());
+		input4.setClaims(inputList4);
+		input4.setDownloaded(input.getDownloaded());
+		input4.setHttpStatusCode(input.getHttpStatusCode());
+		input4.setMapView(input.getMapView());
+		input4.setMessage(input.getMessage());
+		input4.setFirst(false);
+		
 
-		input.setClaims(input.getClaims().subList(0, input.getClaims().size()/2));
+		input.setClaims(inputList1);
 		input.setFirst(true);
+		
 		GetClaimsTask task = new GetClaimsTask();
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input);		
 		
@@ -160,6 +193,11 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		GetClaimsTask task2 = new GetClaimsTask();
 		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input2);
 		
+		GetClaimsTask task3 = new GetClaimsTask();
+		task3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input3);
+		
+		GetClaimsTask task4 = new GetClaimsTask();
+		task4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input4);
 
 		return;
 

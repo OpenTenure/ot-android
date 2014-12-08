@@ -46,6 +46,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
@@ -704,11 +705,12 @@ public class FileSystemUtilities {
 		return true;
 	}
 
-	public static int getUploadProgress(String claimId, String status,
-			List<Attachment> attachments) {
+	public static int getUploadProgress(String claimId, String status) {
 
 		int progress = 0;
-
+		List<Attachment> attachments=Claim.getClaim(claimId).getAttachments();
+		
+	
 		if (attachments.size() == 0)
 			progress = 100;
 		else {
@@ -730,9 +732,9 @@ public class FileSystemUtilities {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 
-				if (attachment.getStatus().equals(AttachmentStatus._UPLOADED)) {
+				if (!attachment.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
 
-					uploadedSize = uploadedSize + attachment.getSize();
+					uploadedSize = uploadedSize + attachment.getUploadedBytes();
 
 				}
 
@@ -741,7 +743,9 @@ public class FileSystemUtilities {
 			float factor = (float) uploadedSize / totalSize;
 
 			progress = (int) (factor * 100);
-
+			System.out.println("attachments.size  "+attachments.size());
+			System.out.println("Il progresso e' "+ progress);
+			System.out.println("Il claim è "+ claimId);
 		}
 
 		return progress;
