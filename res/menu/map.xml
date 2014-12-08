@@ -20,7 +20,7 @@
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_download_claims"
-          android:icon="@drawable/flag"
+          android:icon="@drawable/cloud"
           android:title="@string/action_download_claims"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/map_provider_google_normal"

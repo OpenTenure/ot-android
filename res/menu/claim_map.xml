@@ -16,7 +16,7 @@
           android:title="@string/action_center"
           android:showAsAction="ifRoom" />    
     <item android:id="@+id/action_new_picture"
-          android:icon="@drawable/camera"
+          android:icon="@drawable/screenshot"
           android:title="@string/action_claim_map_snapshot"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/map_provider_google_normal"
