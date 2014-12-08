@@ -63,7 +63,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -110,9 +109,6 @@ public class NewsFragment extends ListFragment {
 
 			Log.d(this.getClass().getName(),
 					"starting tasks for static data download");
-
-			ProgressBar bar = (ProgressBar) rootView
-					.findViewById(R.id.progress_bar);
 
 			if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
 				Log.d(this.getClass().getName(),
@@ -456,7 +452,6 @@ public class NewsFragment extends ListFragment {
 		List<String> news = new ArrayList<String>();
 		news.add("Community web site\nVisit the Open Tenure Community web site and tell us what you think about the new look and feel.");
 		news.add("FLOSS SOLA news\nLook at the latest news on FLOSS SOLA web site.");
-		news.add("Outage\nOpen Tenure service might be down next week due to planned maintenance.");
 		List<String> urls = new ArrayList<String>();
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(rootView.getContext());
@@ -465,7 +460,6 @@ public class NewsFragment extends ListFragment {
 				OpenTenurePreferencesActivity.CS_URL_PREF,
 				"http://ot.flossola.org");
 		urls.add(csUrl);
-		urls.add("http://www.flossola.org/home");
 		urls.add("http://www.flossola.org/home");
 		ArrayAdapter<String> adapter = new NewsListAdapter(
 				rootView.getContext(), news.toArray(new String[news.size()]),
