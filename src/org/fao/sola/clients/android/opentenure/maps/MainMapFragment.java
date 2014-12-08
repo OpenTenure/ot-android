@@ -640,6 +640,7 @@ public class MainMapFragment extends SupportMapFragment implements
 				toast = Toast.makeText(OpenTenureApplication.getContext(),
 						toastMessage, Toast.LENGTH_LONG);
 				toast.show();
+				return true;
 			}
 
 			OpenTenureApplication.setActivity(getActivity());

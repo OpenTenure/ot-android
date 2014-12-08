@@ -32,12 +32,16 @@
     <string name="action_export">Export</string>
     <string name="action_rotate">Rotate map using device compass</string>
     <string name="action_stop_rotating">Stop rotating the map</string>
+    <string name="action_modify_claimant">Modify Claimant</string>
+    <string name="action_add_claimant">Add Claimant</string>
+    <string name="action_select_challenge">Select Claim to Challenge</string>
     <string name="action_claim_map_snapshot">Attach a snapshot of this claim map</string>
     <string name="title_news">News</string>
     <string name="title_map">Community Map</string>
     <string name="title_claims">List of Claims</string>
     <string name="title_persons">Persons</string>
     <string name="title_challenged_claims">Challenged claims</string>
+    <string name="title_challenged_claim">Challenged claim : </string>
     <string name="title_claim">Claim</string>
     <string name="title_person_details">Person details</string>
     <string name="title_group_details">Group details</string>
@@ -109,7 +113,7 @@
     <string name="last_name_label">Last name *</string>    
     <string name="date_of_birth">Date of birth (YYYY-MM-DD)</string>
     <string name="date_of_birth_label">Date of birth * (YYYY-MM-DD)</string>
-    <string name="date_of_start">Date claim applies from (YYYY-MM-DD)</string>
+    <string name="date_of_start">YYYY-MM-DD</string>
     <string name="date_of_start_label">Date claim applies from (YYYY-MM-DD)</string>
     <string name="place_of_birth">Place of birth</string>
     <string name="place_of_birth_label">Place of birth *</string>
@@ -292,6 +296,7 @@
     <string name="south">South</string>
     <string name="east">East</string>
     <string name="west">West</string>
+    <string name="status">status : </string>
     <string name="north_east">North-East</string>
     <string name="north_west">North-West</string>
     <string name="south_east">South-East</string>

@@ -116,7 +116,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 				/* Setting progress bar */
 				factor = (float) file.length() / att.getSize();
 				int progress = (int) (factor * 100);
-				vh.getBar().setProgress(progress);
+				vh.getBarAttachment().setProgress(progress);
 
 				if (res.getHttpStatusCode() == HttpStatus.SC_OK) {
 
@@ -155,7 +155,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 					att.updateDownloadedBytes(file.length());
 					factor = (float) file.length() / att.getSize();
 					progress = (int) (factor * 100);
-					vh.getBar().setProgress(progress);
+					vh.getBarAttachment().setProgress(progress);
 
 				} else if (res.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
 
@@ -238,11 +238,11 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
 
-			vh.getStatus().setVisibility(View.VISIBLE);
-			vh.getStatus().setText(AttachmentStatus._UPLOADED);
-			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
+			vh.getAttachmentStatus().setText(AttachmentStatus._UPLOADED);
+			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
 					R.color.status_unmoderated));
-			vh.getBar().setVisibility(View.GONE);
+			vh.getBarAttachment().setVisibility(View.GONE);
 			vh.getDownloadIcon().setVisibility(View.GONE);
 
 			Toast toast;
@@ -257,11 +257,11 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			OpenTenureApplication.getDocumentsFragment().update();
 		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED))) {
 			
-			vh.getStatus().setText(AttachmentStatus._DOWNLOAD_FAILED);
-			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+			vh.getAttachmentStatus().setText(AttachmentStatus._DOWNLOAD_FAILED);
+			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
 					R.color.status_challenged));
-			vh.getStatus().setVisibility(View.VISIBLE);
-			vh.getBar().setVisibility(View.GONE);
+			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
+			vh.getBarAttachment().setVisibility(View.GONE);
 
 			Toast toast;
 
@@ -276,11 +276,11 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 		} else if ((att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE))) {
 
-			vh.getStatus().setText(AttachmentStatus._DOWNLOAD_INCOMPLETE);
-			vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+			vh.getAttachmentStatus().setText(AttachmentStatus._DOWNLOAD_INCOMPLETE);
+			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
 					R.color.status_created));
-			vh.getStatus().setVisibility(View.VISIBLE);
-			vh.getBar().setVisibility(View.GONE);
+			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
+			vh.getBarAttachment().setVisibility(View.GONE);
 
 			Toast toast;
 

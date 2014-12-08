@@ -113,17 +113,17 @@ public class AddClaimantAttachmentTask extends
 			try {
 				AttachmentViewHolder	 vh = (AttachmentViewHolder) vhResponse.getVh();
 				
-				vh.getBar().setVisibility(View.INVISIBLE);
+				vh.getBarAttachment().setVisibility(View.INVISIBLE);
 				vh.getSendIcon().setVisibility(View.INVISIBLE);
-				vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
+				vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
 						R.color.status_unmoderated));
-				vh.getStatus().setText(AttachmentStatus._UPLOADED);
-				vh.getStatus().setVisibility(View.VISIBLE);
+				vh.getAttachmentStatus().setText(AttachmentStatus._UPLOADED);
+				vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 				vh.getRemoveIcon().setVisibility(View.INVISIBLE);
 			} catch (ClassCastException e) {
-				ViewHolder vh = (ViewHolder) vhResponse.getVh();
+				AttachmentViewHolder vh = (AttachmentViewHolder) vhResponse.getVh();
 				
-				vh.getBar().setVisibility(View.INVISIBLE);
+				vh.getBarAttachment().setVisibility(View.INVISIBLE);
 				vh.getSend().setVisibility(View.INVISIBLE);
 				vh.getStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
 						R.color.status_unmoderated));

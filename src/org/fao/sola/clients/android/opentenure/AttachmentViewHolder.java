@@ -31,34 +31,53 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
-public class AttachmentViewHolder extends ViewHolder{
-	
+public class AttachmentViewHolder extends ViewHolder {
 
 	ImageView downloadIcon;
 	ImageView removeIcon;
 	ImageView sendIcon;
+	ProgressBar barAttachment;
+	TextView attachmentStatus;
+	
+
 	public ImageView getDownloadIcon() {
 		return downloadIcon;
 	}
+
 	public void setDownloadIcon(ImageView downloadIcon) {
 		this.downloadIcon = downloadIcon;
 	}
+
 	public ImageView getRemoveIcon() {
 		return removeIcon;
 	}
+
 	public void setRemoveIcon(ImageView removeIcon) {
 		this.removeIcon = removeIcon;
 	}
+
 	public ImageView getSendIcon() {
 		return sendIcon;
 	}
+
 	public void setSendIcon(ImageView sendIcon) {
 		this.sendIcon = sendIcon;
-	}	
-	
-	
-	
-	
+	}
+
+	public ProgressBar getBarAttachment() {
+		return barAttachment;
+	}
+
+	public void setBarAttachment(ProgressBar barAttachment) {
+		this.barAttachment = barAttachment;
+	}
+
+	public TextView getAttachmentStatus() {
+		return attachmentStatus;
+	}
+
+	public void setAttachmentStatus(TextView attachmentStatus) {
+		this.attachmentStatus = attachmentStatus;
+	}
 
 }

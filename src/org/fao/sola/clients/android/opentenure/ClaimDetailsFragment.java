@@ -229,8 +229,7 @@ public class ClaimDetailsFragment extends Fragment {
 				status = (TextView) rootView.findViewById(R.id.claim_status);
 
 				int progress = FileSystemUtilities.getUploadProgress(
-						claim.getClaimId(), claim.getStatus(),
-						claim.getAttachments());
+						claim.getClaimId(), claim.getStatus());
 
 				// Setting the update value in the progress bar
 				bar.setVisibility(View.VISIBLE);
@@ -241,7 +240,14 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 		}
 
-		((View) rootView.findViewById(R.id.claimant))
+		String claimantId = ((TextView) rootView.findViewById(R.id.claimant_id))
+				.getText().toString();
+
+		if (claimantId != null && !claimantId.trim().equals(""))
+			((View) rootView.findViewById(R.id.claimant_slogan))
+					.setVisibility(View.VISIBLE);
+
+		((View) rootView.findViewById(R.id.claimant_button))
 				.setOnClickListener(new OnClickListener() {
 
 					@Override
@@ -267,6 +273,8 @@ public class ClaimDetailsFragment extends Fragment {
 						String claimantId = ((TextView) rootView
 								.findViewById(R.id.claimant_id)).getText()
 								.toString();
+
+						System.out.println("claimantId" + claimantId);
 
 						if (claimantId != null && !claimantId.trim().equals("")) {
 
@@ -347,7 +355,7 @@ public class ClaimDetailsFragment extends Fragment {
 				});
 
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
-			((View) rootView.findViewById(R.id.challenge_to))
+			((View) rootView.findViewById(R.id.challenge_button))
 					.setOnClickListener(new OnClickListener() {
 
 						@Override
@@ -397,8 +405,7 @@ public class ClaimDetailsFragment extends Fragment {
 		List<String> list = ct.getClaimsTypesDispalyValues();
 
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
-				OpenTenureApplication.getContext(),
-				android.R.layout.simple_spinner_item, list) {
+				OpenTenureApplication.getContext(), R.layout.my_spinner, list) {
 		};
 		dataAdapter.setDropDownViewResource(R.layout.my_spinner);
 
@@ -413,8 +420,8 @@ public class ClaimDetailsFragment extends Fragment {
 		List<String> landUseslist = lu.getDisplayValues();
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
-				OpenTenureApplication.getContext(),
-				android.R.layout.simple_spinner_item, landUseslist) {
+				OpenTenureApplication.getContext(), R.layout.my_spinner,
+				landUseslist) {
 		};
 		dataAdapterLU.setDropDownViewResource(R.layout.my_spinner);
 
@@ -439,8 +446,7 @@ public class ClaimDetailsFragment extends Fragment {
 				.setTextSize(8);
 		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 				.setText("");
-		((TextView) rootView.findViewById(R.id.challenge_to_claim_status))
-				.setText("");
+
 
 		// Challenged claimant
 		ImageView challengedClaimantImageView = (ImageView) rootView
@@ -491,14 +497,25 @@ public class ClaimDetailsFragment extends Fragment {
 					.setBackgroundColor(getResources().getColor(
 							R.color.light_background_opentenure));
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
-					.setText(challengedClaim.getName() + ", "
-							+ getResources().getString(R.string.by) + ": "
-							+ challengedPerson.getFirstName() + " "
-							+ challengedPerson.getLastName());
-			((TextView) rootView.findViewById(R.id.challenge_to_claim_status))
-					.setText(challengedClaim.getStatus());
+					.setText(getResources().getString(
+							R.string.title_challenged_claims)
+							+ " "
+							+ challengedClaim.getName()
+							+ ", "
+							+ getResources().getString(R.string.by)
+							+ ": "
+							+ challengedPerson.getFirstName()
+							+ " "
+							+ challengedPerson.getLastName() + ", " +getResources().getString(
+									R.string.status) +  challengedClaim.getStatus());
+			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
+					.setVisibility(View.VISIBLE);
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
+			
+			((View) rootView
+					.findViewById(R.id.challenge_button))
+					.setEnabled(false);
 
 			// File challengedPersonPictureFile = Person
 			// .getPersonPictureFile(challengedPerson.getPersonId());
@@ -525,32 +542,34 @@ public class ClaimDetailsFragment extends Fragment {
 
 							((TextView) rootView
 									.findViewById(R.id.challenge_to_claim_slogan))
-									.setBackgroundColor(getResources()
-											.getColor(
-													R.color.dark_background_opentenure));
-
-							((TextView) rootView
-									.findViewById(R.id.challenge_to_claim_slogan))
-									.setText(getResources()
-											.getString(
-													R.string.message_touch_to_select_a_claim));
-
-							((TextView) rootView
-									.findViewById(R.id.challenge_to_claim_status))
-									.setText("");
+									.setVisibility(View.GONE);
 
 							((ImageView) rootView
 									.findViewById(R.id.action_remove_challenge))
 									.setVisibility(View.INVISIBLE);
+							((View) rootView
+									.findViewById(R.id.challenge_button))
+									.setEnabled(true);
 
 						}
 					});
 
+		} else {
+
+			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
+					.setVisibility(View.GONE);
+			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
+					.setVisibility(View.GONE);
 		}
 	}
 
 	private void loadClaimant(Person claimant) {
+
 		if (claimant != null) {
+
+			((TextView) rootView.findViewById(R.id.claimant_button))
+					.setText(getResources().getText(
+							R.string.action_modify_claimant));
 
 			((TextView) rootView.findViewById(R.id.claimant_id)).setTextSize(8);
 			((TextView) rootView.findViewById(R.id.claimant_id))
@@ -558,6 +577,8 @@ public class ClaimDetailsFragment extends Fragment {
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
 					.setBackgroundColor(getResources().getColor(
 							R.color.light_background_opentenure));
+			((TextView) rootView.findViewById(R.id.claimant_slogan))
+					.setVisibility(View.VISIBLE);
 			((TextView) rootView.findViewById(R.id.claimant_slogan))
 					.setText(claimant.getFirstName() + " "
 							+ claimant.getLastName());
@@ -572,10 +593,16 @@ public class ClaimDetailsFragment extends Fragment {
 					.findViewById(R.id.action_remove_person);
 			claimantRemove.setVisibility(View.INVISIBLE);
 
+		} else {
+
+			((TextView) rootView.findViewById(R.id.claimant_slogan))
+					.setVisibility(View.GONE);
 		}
 	}
 
 	public void load(Claim claim) {
+
+		System.out.println("Ma passo da load ????????????????");
 
 		if (claim != null) {
 
@@ -754,6 +781,12 @@ public class ClaimDetailsFragment extends Fragment {
 
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
+
+		System.out.println("Ma passo da updateClaim ????????????????");
+		if (person != null)
+			((View) rootView.findViewById(R.id.claimant_slogan))
+					.setVisibility(View.VISIBLE);
+
 		Claim challengedClaim = Claim
 				.getClaim(((TextView) rootView
 						.findViewById(R.id.challenge_to_claim_id)).getText()

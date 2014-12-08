@@ -67,7 +67,7 @@
             android:name="org.fao.sola.clients.android.opentenure.ClaimActivity"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_claim"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="stateVisible|adjustResize"
             android:icon="@drawable/sola_logo"
             >
          <!-- Parent activity meta-data to support 4.0 and lower -->

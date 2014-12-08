@@ -187,7 +187,7 @@ public class ChallengingClaimsListAdapter extends ArrayAdapter<ClaimListTO> impl
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
@@ -211,7 +211,7 @@ public class ChallengingClaimsListAdapter extends ArrayAdapter<ClaimListTO> impl
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
@@ -269,7 +269,7 @@ public class ChallengingClaimsListAdapter extends ArrayAdapter<ClaimListTO> impl
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
@@ -291,7 +291,7 @@ public class ChallengingClaimsListAdapter extends ArrayAdapter<ClaimListTO> impl
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus(), claims.get(position).getAttachments());
+			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
