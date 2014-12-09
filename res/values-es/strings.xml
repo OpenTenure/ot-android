@@ -94,7 +94,7 @@
     <string name="group_name">Nombre</string>
     <string name="signature">Firma</string>
     <string name="software_version_title">Versión del Software</string>
-    <string name="software_version">0.9.2</string>
+    <string name="software_version">0.9.4</string>
     <string name="claim_date">Fecha de la Demanda</string>    
     <string name="claim_name">Nombre de la demanda</string>
     <string name="claim_name_label">Nombre de la demanda *</string>

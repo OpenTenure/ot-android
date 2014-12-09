@@ -393,8 +393,8 @@ public class OpenTenureApplication extends Application {
 				+ "-" + locale.getCountry().toLowerCase();
 
 		/* to remove in the future */
-		if (!OpenTenureApplication.localization.equals("en-us"))
-			OpenTenureApplication.localization = "en-us";
+		//if (!OpenTenureApplication.localization.equals("en-us"))
+		//	OpenTenureApplication.localization = "en-us";
 
 	}
 
