@@ -744,8 +744,7 @@ public class FileSystemUtilities {
 
 			progress = (int) (factor * 100);
 			System.out.println("attachments.size  "+attachments.size());
-			System.out.println("Il progresso e' "+ progress);
-			System.out.println("Il claim è "+ claimId);
+			System.out.println("Progress "+ progress);
 		}
 
 		return progress;

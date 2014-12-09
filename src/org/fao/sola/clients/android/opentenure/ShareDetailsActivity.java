@@ -47,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -134,6 +135,86 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			share.setClaimId(claimId);
 
 		}
+		
+
+		
+		ImageView newOwner = (ImageView) findViewById(R.id.action_new_owner);
+		//Plus button to add a new Owner to the share
+		newOwner.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Claim claim = Claim.getClaim(claimId);
+				if (claim.getAvailableShares() >= 0) {
+
+					AlertDialog.Builder dialog = new AlertDialog.Builder(
+							((ViewGroup) getWindow().getDecorView()).getContext());
+
+					dialog.setTitle(R.string.new_entity);
+					dialog.setMessage(R.string.message_entity_type);
+
+					dialog.setPositiveButton(R.string.person,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent intent = new Intent(
+											((ViewGroup) getWindow().getDecorView())
+													.getContext(),
+											PersonActivity.class);
+									intent.putExtra(PersonActivity.PERSON_ID_KEY,
+											PersonActivity.CREATE_PERSON_ID);
+									intent.putExtra(PersonActivity.ENTIY_TYPE,
+											PersonActivity.TYPE_PERSON);
+									intent.putExtra(PersonActivity.MODE_KEY, mode);
+									startActivityForResult(intent, PERSON_RESULT);
+								}
+							});
+
+					dialog.setNegativeButton(R.string.group,
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									Intent intent = new Intent(
+											((ViewGroup) getWindow().getDecorView())
+													.getContext(),
+											PersonActivity.class);
+									intent.putExtra(PersonActivity.PERSON_ID_KEY,
+											PersonActivity.CREATE_PERSON_ID);
+									intent.putExtra(PersonActivity.ENTIY_TYPE,
+											PersonActivity.TYPE_GROUP);
+									intent.putExtra(PersonActivity.MODE_KEY, mode);
+									startActivityForResult(intent, PERSON_RESULT);
+
+								}
+							});
+
+					dialog.show();
+
+				} else {
+					Toast toast = Toast.makeText(
+							OpenTenureApplication.getContext(),
+							R.string.message_no_available_shares,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				}
+				return ;
+				
+			}
+		});
+		
+		Claim claim = Claim.getClaim(claimId);
+		if (!claim.getStatus().equals(ClaimStatus._CREATED)
+				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
+				&& !claim.getStatus()
+						.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+
+			newOwner.setClickable(false);
+			newOwner.setEnabled(false);
+		}
 
 	}
 
@@ -155,81 +236,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_new:
-			Claim claim = Claim.getClaim(claimId);
-			if (claim.getAvailableShares() >= 0) {
-
-				AlertDialog.Builder dialog = new AlertDialog.Builder(
-						((ViewGroup) getWindow().getDecorView()).getContext());
-
-				dialog.setTitle(R.string.new_entity);
-				dialog.setMessage(R.string.message_entity_type);
-
-				dialog.setPositiveButton(R.string.person,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent(
-										((ViewGroup) getWindow().getDecorView())
-												.getContext(),
-										PersonActivity.class);
-								intent.putExtra(PersonActivity.PERSON_ID_KEY,
-										PersonActivity.CREATE_PERSON_ID);
-								intent.putExtra(PersonActivity.ENTIY_TYPE,
-										PersonActivity.TYPE_PERSON);
-								intent.putExtra(PersonActivity.MODE_KEY, mode);
-								startActivityForResult(intent, PERSON_RESULT);
-							}
-						});
-
-				dialog.setNegativeButton(R.string.group,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								Intent intent = new Intent(
-										((ViewGroup) getWindow().getDecorView())
-												.getContext(),
-										PersonActivity.class);
-								intent.putExtra(PersonActivity.PERSON_ID_KEY,
-										PersonActivity.CREATE_PERSON_ID);
-								intent.putExtra(PersonActivity.ENTIY_TYPE,
-										PersonActivity.TYPE_GROUP);
-								intent.putExtra(PersonActivity.MODE_KEY, mode);
-								startActivityForResult(intent, PERSON_RESULT);
-
-							}
-						});
-
-				dialog.show();
-
-				//
-				// Intent intent = new
-				// Intent(OpenTenureApplication.getContext(),
-				// SelectPersonActivity.class);
-				//
-				// // SOLA DB cannot store the same person twice
-				//
-				// ArrayList<String> idsWithSharesOrClaims =
-				// Person.getIdsWithSharesOrClaims();
-				//
-				// intent.putStringArrayListExtra(
-				// SelectPersonActivity.EXCLUDE_PERSON_IDS_KEY,
-				// idsWithSharesOrClaims);
-				//
-				// startActivityForResult(intent,
-				// SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
-			} else {
-				Toast toast = Toast.makeText(
-						OpenTenureApplication.getContext(),
-						R.string.message_no_available_shares,
-						Toast.LENGTH_SHORT);
-				toast.show();
-			}
-			return true;
 		case R.id.action_save:
 
 			save();

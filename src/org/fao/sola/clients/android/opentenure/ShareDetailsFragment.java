@@ -46,9 +46,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class ShareDetailsFragment extends Fragment {
@@ -127,11 +129,12 @@ public class ShareDetailsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		
 		setRetainInstance(true);
 		rootView = inflater.inflate(R.layout.share_details, container, false);
 		setHasOptionsMenu(true);
 		
-
+		
 		return rootView;
 
 	}

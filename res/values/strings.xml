@@ -90,6 +90,7 @@
     <string name="claim">Claim</string>
     <string name="date">Date</string>
     <string name="share_value">Percentage value : </string>
+    <string name="add_owner">Add Owner </string>
     <string name="additional_info">Additional information</string>
     <string name="adjacency">Adjacency</string>
     <string name="adjacencies">Adjacencies</string>

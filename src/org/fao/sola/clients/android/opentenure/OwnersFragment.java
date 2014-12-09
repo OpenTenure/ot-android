@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 
 import android.app.Activity;
@@ -44,6 +45,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class OwnersFragment extends ListFragment {
@@ -141,6 +143,8 @@ public class OwnersFragment extends ListFragment {
 		setHasOptionsMenu(true);
 		setRetainInstance(true);
 		update();
+		
+		
 
 		return rootView;
 	}

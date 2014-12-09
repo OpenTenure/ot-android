@@ -268,10 +268,10 @@ public class GetClaimsTask extends
 						Toast.LENGTH_LONG);
 				
 				
-				System.out.println("Ora faccio il refresh");
+				
 				OpenTenureApplication.getMapFragment().refreshMap();
 				OpenTenureApplication.getLocalClaimsFragment().refresh();
-				System.out.println("Refresh fatto !");
+				
 
 				toast.show();
 
@@ -298,10 +298,10 @@ public class GetClaimsTask extends
 								.getString(
 										R.string.message_error_downloading_claims),
 								input.getDownloaded());
-				System.out.println("Ora faccio il refresh");
+				
 				OpenTenureApplication.getMapFragment().refreshMap();
 				OpenTenureApplication.getLocalClaimsFragment().refresh();
-				System.out.println("Refresh fatto !");
+				
 
 				toast = Toast.makeText(OpenTenureApplication.getContext(),
 						message, Toast.LENGTH_LONG);
@@ -345,8 +345,7 @@ public class GetClaimsTask extends
 
 	private int calculateProgress(int downloaded, int total) {
 
-		System.out.println("Down " + downloaded + "total " + total);
-
+		
 		int progress;
 
 		float factor = (float) downloaded / total;

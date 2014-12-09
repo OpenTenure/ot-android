@@ -88,6 +88,7 @@
     <string name="person_type">Tipo di persona *</string>
     <string name="claim">Richiesta</string>
     <string name="share_value">Valore percentuale : </string>
+    <string name="add_owner">Aggiungi proprietario</string>
     <string name="date">Data</string>
     <string name="additional_info">Informazioni aggiuntive</string>
     <string name="adjacency">Adiacenza</string>

@@ -463,9 +463,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 				return getString(R.string.title_news).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_map).toUpperCase(l);
-			//case 2:
-			//	System.out.println("Case 2 !!!!!!");
-			//	return getString(R.string.title_persons).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_claims).toUpperCase(l);
 			}

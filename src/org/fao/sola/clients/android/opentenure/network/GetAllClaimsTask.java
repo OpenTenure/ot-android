@@ -149,8 +149,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		List<Claim> inputList3 = inputList.subList((inputList.size()/2), (inputList.size()/2)+(inputList.size()/4));
 		List<Claim> inputList4 = inputList.subList((inputList.size()/2)+(inputList.size()/4), inputList.size());
 		
-		System.out.println("Le dimensioni : " +0+"  "+(inputList.size()/2)/2+"   "+(inputList.size()/2)+"   "+((inputList.size()/2)+(inputList.size()/4)) +"   "  +inputList.size());
-		System.out.println("Gli input size : "+inputList1.size()+"   "+inputList2.size()+"   "+inputList3.size() +"   "+inputList4.size());
+		
 		GetClaimsInput input2 = new GetClaimsInput();
 		
 		input2.setClaimId(input.getClaimId());

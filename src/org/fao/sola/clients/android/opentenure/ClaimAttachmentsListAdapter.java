@@ -225,7 +225,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				}
 			});
 
-			System.out.println("Si si dovrebbe vedersi il remove !!!!");
+			
 			vh.getRemoveIcon().setVisibility(View.VISIBLE);
 		} else {
 

@@ -486,8 +486,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadChallengedClaim(Claim challengedClaim) {
 
 		if (challengedClaim != null) {
-			System.out.println("Il challenged claim è diverson da null ed è + "
-					+ challengedClaim.getName());
+			
 			Person challengedPerson = challengedClaim.getPerson();
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setTextSize(8);
@@ -602,8 +601,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 	public void load(Claim claim) {
 
-		System.out.println("Ma passo da load ????????????????");
-
+		
 		if (claim != null) {
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
@@ -782,7 +780,7 @@ public class ClaimDetailsFragment extends Fragment {
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
 
-		System.out.println("Ma passo da updateClaim ????????????????");
+		
 		if (person != null)
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setVisibility(View.VISIBLE);
