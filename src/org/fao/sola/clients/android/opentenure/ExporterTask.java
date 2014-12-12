@@ -32,14 +32,15 @@ import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 
 
-import android.app.Activity;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;	
 import android.util.Log;
+import android.widget.Toast;
 
 
-public class ExporterTask extends AsyncTask<String, Void, Boolean >{
+public class ExporterTask extends AsyncTask<String, Void, String[] >{
 
 
 	protected ProgressDialog progressDialog;
@@ -62,7 +63,7 @@ public class ExporterTask extends AsyncTask<String, Void, Boolean >{
 	}
 
 	@Override
-	protected Boolean doInBackground(String... params) {
+	protected String[] doInBackground(String... params) {
 
 
 		try {				
@@ -72,14 +73,53 @@ public class ExporterTask extends AsyncTask<String, Void, Boolean >{
 			ZipUtilities.AddFilesWithAESEncryption((String)params[0],(String) params[1]);
 
 			progressDialog.dismiss();
+			params[0] = "true";
 
-			return true;				
+			return params;				
 		} catch (Exception e) {
 			Log.d("ExporterTask","And error has occured creating the compressed claim ");
-			return false;
+			params[0] = "false";
+			return params;
 		}
 
 	}
+	
+	@Override
+	protected void onPostExecute(String[] params){
+		
+		if (Boolean.parseBoolean(params[0])) {
+			
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(R.string.message_claim_exported,params[1]
+							));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_LONG);
+			toast.show();
+			
+		}
+		else{
+			
+			Toast toast;
+
+			String message = String.format(OpenTenureApplication.getContext()
+					.getString(R.string.message_claim_exported_error,params[1]
+							));
+
+			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
+					Toast.LENGTH_LONG);
+			toast.show();			
+			
+		}
+		
+		
+		
+		
+	}
+	
+	
 
 
 

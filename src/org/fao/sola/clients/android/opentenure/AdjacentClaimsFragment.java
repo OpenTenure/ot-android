@@ -165,7 +165,15 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 	protected boolean save() {
 
+		Toast toast;
 		String claimId = claimActivity.getClaimId();
+		
+		if(claimId == null){			
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_save_claim_before_adding_content, Toast.LENGTH_LONG);
+			toast.show();
+			return true;			
+		}
 
 		AdjacenciesNotes adjacenciesNotes = new AdjacenciesNotes();
 		adjacenciesNotes.setClaimId(claimId);
@@ -183,7 +191,7 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 		int result = AdjacenciesNotes.createAdjacenciesNotes(adjacenciesNotes);
 
-		Toast toast;
+		
 
 		if (result == 1) {
 
@@ -204,7 +212,16 @@ public class AdjacentClaimsFragment extends ListFragment {
 
 	protected boolean updateNotes() {
 
+		
+		Toast toast;
 		String claimId = claimActivity.getClaimId();
+		
+		if(claimId == null){			
+			toast = Toast.makeText(OpenTenureApplication.getContext(),
+					R.string.message_save_claim_before_adding_content, Toast.LENGTH_LONG);
+			toast.show();
+			return true;			
+		}
 
 		AdjacenciesNotes adjacenciesNotes = new AdjacenciesNotes();
 		adjacenciesNotes.setClaimId(claimId);
@@ -221,8 +238,6 @@ public class AdjacentClaimsFragment extends ListFragment {
 				.findViewById(R.id.west_adjacency)).getText().toString());
 
 		int result = AdjacenciesNotes.updateAdjacenciesNotes(adjacenciesNotes);
-
-		Toast toast;
 
 		if (result == 1) {
 
