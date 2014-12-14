@@ -105,6 +105,9 @@ public class SectionElementFragment extends Fragment {
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
 			// Add label
 			TextView label = new TextView(getActivity());
+			label.setTextSize(20);
+			label.setPadding(0, 10, 0, 8);
+			label.setTextAppearance(getActivity(), android.R.attr.textAppearanceMedium);
 			label.setLayoutParams(new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
