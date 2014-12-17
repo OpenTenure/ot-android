@@ -86,7 +86,8 @@ public class FieldViewFactory {
 		}
 
 		final Spinner spinner = new Spinner(activity);
-		spinner.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		spinner.setPadding(0, 10, 0, 8);
+		spinner.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		
 		if(mode == Mode.MODE_RO){
 			spinner.setEnabled(false);   
@@ -137,7 +138,10 @@ public class FieldViewFactory {
 		}
 		final EditText text;
 		text = new EditText(activity);
-		text.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		text.setPadding(0, 10, 0, 8);
+		text.setTextSize(20);
+		text.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
+		text.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		text.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
@@ -197,9 +201,12 @@ public class FieldViewFactory {
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
+		number.setPadding(0, 10, 0, 8);
+		number.setTextSize(20);
+		number.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		number.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		number.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		if(payload.getStringPayload()!=null){
 			number.setText(payload.getBigDecimalPayload().toPlainString());
@@ -256,10 +263,13 @@ public class FieldViewFactory {
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
+		number.setPadding(0, 10, 0, 8);
+		number.setTextSize(20);
+		number.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		number.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		number.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		if(payload.getStringPayload()!=null){
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
@@ -315,6 +325,9 @@ public class FieldViewFactory {
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final Switch bool;
 		bool = new Switch(activity);
+		bool.setPadding(0, 10, 0, 8);
+		bool.setTextSize(20);
+		bool.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
 		bool.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		bool.setTextOn(activity.getResources().getString(R.string.yes));
@@ -365,7 +378,10 @@ public class FieldViewFactory {
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
 		datetime = new EditText(activity);
-		datetime.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		datetime.setPadding(0, 10, 0, 8);
+		datetime.setTextSize(20);
+		datetime.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
+		datetime.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
@@ -465,7 +481,10 @@ public class FieldViewFactory {
 		final EditText datetime;
 		final Calendar localCalendar = Calendar.getInstance();
 		datetime = new EditText(activity);
-		datetime.setBackgroundColor(activity.getResources().getColor(R.color.dark_background_opentenure));
+		datetime.setPadding(0, 10, 0, 8);
+		datetime.setTextSize(20);
+		datetime.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
+		datetime.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
