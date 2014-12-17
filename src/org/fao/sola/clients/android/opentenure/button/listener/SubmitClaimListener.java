@@ -39,6 +39,7 @@ import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 
@@ -112,6 +113,11 @@ public class SubmitClaimListener implements OnClickListener {
 	
 	private void submitClaim(View v){
 		if (claimId != null) {
+			
+			Person person = Claim.getClaim(claimId).getPerson();
+			
+			//Here the claimant picture is added as attachment just before to submit claim
+			person.addPersonPictureAsAttachment(claimId);
 
 			List<Vertex> vertices = Vertex.getVertices(claimId);
 

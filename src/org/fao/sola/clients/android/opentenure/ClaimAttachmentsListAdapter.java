@@ -71,7 +71,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		this.ids = ids;
 		this.claimId = claimId;
 		this.readOnly = readOnly;
-	}
+		
+		}
 
 	// static class ViewHolder {
 	// TextView id;
@@ -84,8 +85,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		AttachmentViewHolder vh;
-
+		AttachmentViewHolder vh;		
+		
 		if (convertView == null) {
 			convertView = inflater.inflate(
 					R.layout.claim_attachments_list_item, parent, false);
@@ -116,6 +117,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 		String attachmentId = vh.id.getText().toString();
 		final Attachment att = Attachment.getAttachment(attachmentId);
+
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
 			vh.attachmentStatus.setText(att.getStatus());
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(

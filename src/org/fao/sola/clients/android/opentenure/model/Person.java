@@ -701,6 +701,29 @@ public class Person {
 		return new File(FileSystemUtilities.getClaimantFolder(personId)
 				+ File.separator + personId + "_" + size + ".png");
 	}
+	
+	public boolean addPersonPictureAsAttachment(String claimId) {
+		
+		File image = getPersonPictureFile(personId);
+		if(image != null && image.exists()){
+		Claim claim = Claim.getClaim(claimId);
+		
+		Attachment att = new Attachment();
+		att.setAttachmentId(personId);
+		att.setClaimId(claimId);
+		att.setDescription("person photo");
+		att.setFileName(image.getName());
+		att.setFileType("personPhoto");
+		att.setMD5Sum(MD5.calculateMD5(image));
+		att.setMimeType("image/jpeg");
+		att.setSize(image.length());
+		att.setPath(image.getPath());
+		att.setStatus("created");
+		
+		att.create();
+		}
+		return true;
+	}
 
 	public static Bitmap getPersonPicture(Context context, String personId,
 			int size) {

@@ -49,6 +49,7 @@ import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
+import org.fao.sola.clients.android.opentenure.network.GetClaimantPhotoTask;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.util.Log;
@@ -282,26 +283,50 @@ public class SaveDownloadedClaim {
 			FileSystemUtilities.createClaimantFolder(claimant.getId());
 			FileSystemUtilities.createClaimFileSystem(downloadedClaim.getId());
 
+			org.fao.sola.clients.android.opentenure.model.Attachment alreadyPresent;
 			List<Attachment> attachments = downloadedClaim.getAttachments();
 			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 					.hasNext();) {
 
 				org.fao.sola.clients.android.opentenure.model.Attachment attachmentDB = new org.fao.sola.clients.android.opentenure.model.Attachment();
 				Attachment attachment = (Attachment) iterator.next();
+				// Here the Claimant Photo handling
+				if (attachment.getId().equals(claimant.getId())) {
 
-				attachmentDB.setAttachmentId(attachment.getId());
-				attachmentDB.setClaimId(downloadedClaim.getId());
-				attachmentDB.setDescription(attachment.getDescription());
-				attachmentDB.setFileName(attachment.getFileName());
-				attachmentDB.setFileType(attachment.getTypeCode());
-				attachmentDB.setMD5Sum(attachment.getMd5());
-				attachmentDB.setMimeType(attachment.getMimeType());
-				attachmentDB.setStatus(AttachmentStatus._UPLOADED);
-				attachmentDB.setSize(attachment.getSize());
+					attachmentDB.setAttachmentId(attachment.getId());
+					attachmentDB.setClaimId(downloadedClaim.getId());
+					attachmentDB.setDescription(attachment.getDescription());
+					attachmentDB.setFileName(attachment.getFileName());
+					attachmentDB.setFileType(attachment.getTypeCode());
+					attachmentDB.setMD5Sum(attachment.getMd5());
+					attachmentDB.setMimeType(attachment.getMimeType());
+					attachmentDB.setStatus(AttachmentStatus._UPLOADED);
+					attachmentDB.setSize(attachment.getSize());
+					attachmentDB.setPath(FileSystemUtilities.getClaimantFolder(
+							claimant.getId()).getAbsolutePath());
 
-				org.fao.sola.clients.android.opentenure.model.Attachment alreadyPresent = org.fao.sola.clients.android.opentenure.model.Attachment
-						.getAttachment(attachment.getId());
+					alreadyPresent = org.fao.sola.clients.android.opentenure.model.Attachment
+							.getAttachment(attachment.getId());
 
+					GetClaimantPhotoTask task = new GetClaimantPhotoTask();
+					task.execute(attachmentDB);
+
+				}
+
+				else {
+					attachmentDB.setAttachmentId(attachment.getId());
+					attachmentDB.setClaimId(downloadedClaim.getId());
+					attachmentDB.setDescription(attachment.getDescription());
+					attachmentDB.setFileName(attachment.getFileName());
+					attachmentDB.setFileType(attachment.getTypeCode());
+					attachmentDB.setMD5Sum(attachment.getMd5());
+					attachmentDB.setMimeType(attachment.getMimeType());
+					attachmentDB.setStatus(AttachmentStatus._UPLOADED);
+					attachmentDB.setSize(attachment.getSize());
+
+					alreadyPresent = org.fao.sola.clients.android.opentenure.model.Attachment
+							.getAttachment(attachment.getId());
+				}
 				if (alreadyPresent == null) {
 
 					attachmentDB.setPath("");
