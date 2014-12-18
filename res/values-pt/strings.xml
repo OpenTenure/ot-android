@@ -92,16 +92,16 @@
     <string name="group_name">Nome</string>
     <string name="signature">Assinatura</string>
     <string name="software_version_title">Versão do Software</string>
-    <string name="software_version">0.9.2</string>
-    <string name="claim_date">Data do requerimento</string>    
+    <string name="software_version">0.9.4</string>
+    <string name="claim_date">Data do requerimento</string>
     <string name="claim_name">Nome do requerimento</string>
     <string name="claim_name_label">Nome do requerimento *</string>
     <string name="claim_type">Tipo de requerimento *</string>
-    <string name="default_claim_name">Novo requerimento</string>    
+    <string name="default_claim_name">Novo requerimento</string>
     <string name="first_name">Primeiro nome</string>
     <string name="first_name_label">Primeiro nome *</string>
     <string name="last_name">Último nome</string>
-    <string name="last_name_label">Último nome *</string>    
+    <string name="last_name_label">Último nome *</string>
     <string name="date_of_birth">Data de nascimento (DD-MM-AAAA)</string>
     <string name="date_of_birth_label">Data de nascimento * (DD-MM-AAAA)</string>
     <string name="date_of_start">Data da aplicação do requerimento a partir de (DD-MM-AAAA)</string>
@@ -125,10 +125,10 @@
     <string name="message_connection_error">Conexão não disponível</string>
     <string name="message_attachment_downloaded">Anexo %s transferido</string>
     <string name="message_attachment_downloading">O anexo %s ainda transferindo </string>
-    <string name="message_attachment_download_failed">Transferência do anexo %s falhou </string>    
+    <string name="message_attachment_download_failed">Transferência do anexo %s falhou </string>
     <string name="message_attachment_download_not_complete">Transferência do anexo %s não está completa </string>
     <string name="message_remove_person">Pessoa %s removida</string>
-    <string name="message_remove_person_dialog">Você realmente deseja remover %s?</string>  
+    <string name="message_remove_person_dialog">Você realmente deseja remover %s?</string>
     <string name="message_error_remove_person">Pessoa %s não removida </string>
     <string name="message_remaining_days">Dias restantes para questionar o requerimento:  </string>
     <string name="message_map_snapshot_saved">Imagem do mapa salva</string>
@@ -182,13 +182,13 @@
     <string name="message_no_available_shares_adding_new">Libere algumas parcelas deste requerimento antes de adicionar uma nova parcela</string>
     <string name="message_share_saved">Parcelas salvas</string>
     <string name="message_share_not_saved">Erro no processo de salvar </string>
-	<string name="message_already_owner">A pessoa selecionada já compartilha este requerimento</string>
+    <string name="message_already_owner">A pessoa selecionada já compartilha este requerimento</string>
     <string name="message_touch_to_select_a_person">Toque para selecionar uma pessoa</string>
     <string name="message_touch_to_select_a_claim">Toque para selecionar um requerimento</string>
     <string name="message_error_mandatory_fields">Preencha os campos obrigatórios antes de salvar</string>
     <string name="message_error_mandatory_field_first_name">É necessário preencher o campo primeiro nome antes de salvar</string>
     <string name="message_error_mandatory_field_last_name">É necessário preencher o campo último nome antes de salvar</string>
-    <string name="message_error_mandatory_field_gender">É necessário preencher o campo sexo antes de salvar</string>    
+    <string name="message_error_mandatory_field_gender">É necessário preencher o campo sexo antes de salvar</string>
     <string name="message_error_mandatory_birthdate">Data de nascimento não está no formato correto ou não foi preenchida</string>
     <string name="message_error_startdate">Data do inicio do direito não está no formato correto ou não foi preenchida</string>
     <string name="message_remove_quest">Deseja realmente retirar o Requerimento?</string>
@@ -210,13 +210,40 @@
     <string name="message_title_app_initialized">O aplicativo foi inicializado</string>
     <string name="message_app_initialized_default">O aplicativo está pronto para funcionar e se comunicar com o padrão inicial do Servidor da Comunidade Open Tenure</string>
     <string name="message_app_initialized">O aplicativo está pronto para funcionar e se comunicar com o Servidor da Comunidade Open Tenure</string>
-	<string name="check_location_service">Nenhuma informação local disponível. Verifique se o serviço de localização está ativado nas suas configurações.</string>
-	<string name="tiles_queued">Existem %d arquivos na lista de transferência</string>
-	<string name="too_many_tiles_queued">Existem %d arquivos na lista de transferência. Por favor, espere antes de baixar outros arquivos</string>
-	<string name="all_tiles_downloaded">Todos os arquivos da lista de download foram transferidos</string>
-	<string name="not_all_tiles_downloaded">%d arquivos para esta área do mapa não foram transferidos. Verifique se você está satisfeito com o resultado ou repeta a tranferência</string>
-	<string name="zoom_level_too_low">A área é muito grande. Aumente o zoom antes de baixar os dados locais para o mapa</string>
-	<string name="yes">Sim</string>
+    <string name="check_location_service">Nenhuma informação local disponível. Verifique se o serviço de localização está ativado nas suas configurações.</string>
+    <string name="tiles_queued">Existem %d arquivos na lista de transferência</string>
+    <string name="too_many_tiles_queued">Existem %d arquivos na lista de transferência. Por favor, espere antes de baixar outros arquivos</string>
+    <string name="all_tiles_downloaded">Todos os arquivos da lista de download foram transferidos</string>
+    <string name="not_all_tiles_downloaded">%d arquivos para esta área do mapa não foram transferidos. Verifique se você está satisfeito com o resultado ou repeta a tranferência</string>
+    <string name="zoom_level_too_low">A área é muito grande. Aumente o zoom antes de baixar os dados locais para o mapa</string>
+    <string name="adjacencies">Propriedades Limitrofes</string>
+    <string name="message_claim_exported_error">O requerimento %s não foi exportado</string>
+    <string name="message_claim_exported">Exportado o requerimento %s</string>
+    <string name="north_adjacency">Descreva a propriedade ao norte do seu requerimento</string>
+    <string name="south_adjacency">Descreva a propriedade ao sul do seu requerimento</string>
+    <string name="east_adjacency">Descreva a propriedade ao leste do seu requerimento</string>
+    <string name="west_adjacency">Descreva a propriedade ao oeste do seu requerimento</string>
+    <string name="add_owner">Adicionar Proprietário</string>
+    <string name="action_modify_claimant">Modificar Requerente</string>
+    <string name="action_add_claimant">Adicionar Requerente</string>
+    <string name="action_select_challenge">Selecionar Requerimento para Questionar</string>
+    <string name="title_challenged_claim">Requerimento questionado:</string>
+    <string name="date_of_start">DD-MM-AAAA</string>
+    <string name="status">status:</string>
+    <string name="title_no_connection">Sem conexão</string>
+    <string name="message_no_connection_at_startup">Sem conexão com a Internet. A configuração pode não mostrar as mudanças recentes e você não poderá fazer o upload ou download das informações. Conecte-se à Internet, se você pretende transferir dados usando OpenTenure</string>
+    <string name="action_backup_db">Backup de dados locais</string>
+    <string name="message_db_backed_up">Foi criada uma cópia do banco de dados local</string>
+    <string name="title_initialization_process">Inicializando o Processo</string>
+    <string name="message_initialize_before">Fazer a inicialização depois</string>
+    <string name="message_default_initialization">Você está prestes a iniciar a aplicação com o Servidor da Comunidade no modo padrão. O modo padrão do Servidor da Comunidade deve ser usado apenas para fins de demonstração. Deseja continuar? Caso contrário pressione Cancelar e insira, nas configurações, a URL do servidor da comunidade</string>
+    <string name="action_backup_db">Backup de dados locais</string>
+    <string name="message_db_backed_up">Uma cópia do banco de dados local foi criada</string>
+    <string name="action_download_tiles">Para uso do mapa offline, transferir as imagens para arquivo local</string>
+    <string name="title_confirm_data_transfer">Confirmar a transferência de dados</string>
+    <string name="message_data_over_mobile">Você está prestes a transferir uma grande quantidade de dados através de uma conexão de internet móvel. O custo pode ser alto dependendo do seu plano de dados.</string>
+    <string name="action_view_community_area">Ver Área da Comunidade</string>
+    <string name="yes">Sim</string>
     <string name="person">Pessoa</string>
     <string name="group">Grupo</string>
     <string name="no">Não</string>
@@ -286,115 +313,116 @@
     <string name="north_west">Noroeste</string>
     <string name="south_east">Sudeste</string>
     <string name="south_west">Sudoeste</string>
-    
     <string name="hint_type_to_filter">Digite alguns caracteres para filtrar a lista</string>
     <string name="shares_prompt">Selecione parcelas</string>
+
     <string-array name="claim_statuses">
-        <item >Não moderado</item>
-        <item >Moderado</item>
-        <item >Rejeiado</item>
-        <item >Local</item>
-        </string-array>
+        <item>Não moderado</item>
+        <item>Moderado</item>
+        <item>Rejeiado</item>
+        <item>Local</item>
+    </string-array>
     <string-array name="share_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >11</item>
-        <item >12</item>
-        <item >13</item>
-        <item >14</item>
-        <item >15</item>
-        <item >16</item>
-        <item >17</item>
-        <item >18</item>
-        <item >19</item>
-        <item >20</item>
-        <item >21</item>
-        <item >22</item>
-        <item >23</item>
-        <item >24</item>
-        <item >25</item>
-        <item >26</item>
-        <item >27</item>
-        <item >28</item>
-        <item >29</item>
-        <item >30</item>
-        <item >31</item>
-        <item >32</item>
-        <item >33</item>
-        <item >34</item>
-        <item >35</item>
-        <item >36</item>
-        <item >37</item>
-        <item >38</item>
-        <item >39</item>
-        <item >40</item>
-        <item >41</item>
-        <item >42</item>
-        <item >43</item>
-        <item >44</item>
-        <item >45</item>
-        <item >46</item>
-        <item >47</item>
-        <item >48</item>
-        <item >49</item>
-        <item >50</item>
-        <item >51</item>
-        <item >52</item>
-        <item >53</item>
-        <item >54</item>
-        <item >55</item>
-        <item >56</item>
-        <item >57</item>
-        <item >58</item>
-        <item >59</item>
-        <item >60</item>
-        <item >61</item>
-        <item >62</item>
-        <item >63</item>
-        <item >64</item>
-        <item >65</item>
-        <item >66</item>
-        <item >67</item>
-        <item >68</item>
-        <item >69</item>
-        <item >70</item>
-        <item >71</item>
-        <item >72</item>
-        <item >73</item>
-        <item >74</item>
-        <item >75</item>
-        <item >76</item>
-        <item >77</item>
-        <item >78</item>
-        <item >79</item>
-        <item >80</item>
-        <item >81</item>
-        <item >82</item>
-        <item >83</item>
-        <item >84</item>
-        <item >85</item>
-        <item >86</item>
-        <item >87</item>
-        <item >88</item>
-        <item >89</item>
-        <item >90</item>
-        <item >91</item>
-        <item >92</item>
-        <item >93</item>
-        <item >94</item>
-        <item >95</item>
-        <item >96</item>
-        <item >97</item>
-        <item >98</item>
-        <item >99</item>
-        <item >100</item>
-        </string-array>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+        <item>91</item>
+        <item>92</item>
+        <item>93</item>
+        <item>94</item>
+        <item>95</item>
+        <item>96</item>
+        <item>97</item>
+        <item>98</item>
+        <item>99</item>
+        <item>100</item>
+    </string-array>
+
 </resources>
