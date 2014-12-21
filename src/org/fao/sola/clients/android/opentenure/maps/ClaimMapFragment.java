@@ -325,13 +325,8 @@ public class ClaimMapFragment extends Fragment implements
 
 		hideVisibleProperties();
 
-		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, false);
-		}else{
-			currentProperty = new EditablePropertyBoundary(mapView.getContext(),
-					map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, true);
-		}
+		currentProperty = new EditablePropertyBoundary(mapView.getContext(),
+				map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, modeActivity.getMode());
 		
 		centerMapOnCurrentProperty(null);
 		reloadVisibleProperties();
@@ -388,14 +383,14 @@ public class ClaimMapFragment extends Fragment implements
 
 			});
 
-			this.map.setOnMarkerClickListener(new OnMarkerClickListener() {
-
-				@Override
-				public boolean onMarkerClick(final Marker mark) {
-					return currentProperty.handleMarkerClick(mark);
-				}
-			});
 		}
+		this.map.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+			@Override
+			public boolean onMarkerClick(final Marker mark) {
+				return currentProperty.handleMarkerClick(mark);
+			}
+		});
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
 		return mapView;
 

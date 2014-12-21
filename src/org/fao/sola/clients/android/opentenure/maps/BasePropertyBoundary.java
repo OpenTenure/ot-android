@@ -48,7 +48,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.util.Log;
 
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.Marker;

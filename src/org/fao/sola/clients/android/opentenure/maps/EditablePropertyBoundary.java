@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.markers.ActiveMarkerRegistrar;
@@ -82,7 +83,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private List<BasePropertyBoundary> otherProperties;
 	private ClaimDispatcher claimActivity;
 	private ActiveMarkerRegistrar amr;
-	private boolean allowDragging;
+	private ModeDispatcher.Mode mode;
 
 	private UpMarker up;
 	private DownMarker down;
@@ -111,7 +112,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 	
 	private boolean handleMarkerEditClick(Marker mark){
-		if(remove == null || relativeEdit == null || cancel == null){
+		if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || remove == null || relativeEdit == null || cancel == null){
 			return false;
 		}
 		try {
@@ -133,7 +134,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	private boolean handleRelativeMarkerEditClick(Marker mark){
-		if(up == null || down == null || left == null || right == null || add == null || moveTo == null || cancel == null || target == null){
+		if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || up == null || down == null || left == null || right == null || add == null || moveTo == null || cancel == null || target == null){
 			return false;
 		}
 		
@@ -164,12 +165,17 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	
 	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
 		if (verticesMap.containsKey(mark)) {
-			deselect();
-			selectedMarker = mark;
-			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
-			selectedMarker.showInfoWindow();
-			showMarkerEditControls();
-			return true;
+			if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+				deselect();
+				selectedMarker = mark;
+				selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+				selectedMarker.showInfoWindow();
+				showMarkerEditControls();
+				return true;
+			}else{
+				mark.showInfoWindow();
+				return true;
+			}
 		}
 		return false;
 		
@@ -177,26 +183,35 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	private boolean handlePropertyLocationMarkerClick(final Marker mark){
 		if (propertyLocationsMap.containsKey(mark)) {
-			deselect();
-			selectedMarker = mark;
-			selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
-			selectedMarker.showInfoWindow();
-			showMarkerEditControls();
-			return true;
+			if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+				deselect();
+				selectedMarker = mark;
+				selectedMarker.setIcon(BitmapDescriptorFactory.defaultMarker());
+				selectedMarker.showInfoWindow();
+				showMarkerEditControls();
+				return true;
+			}else{
+				mark.showInfoWindow();
+				return true;
+			}
 		}
 		return false;
 		
 	}
 
 	private boolean handleClick(Marker mark){
-		// Can only be a click on the property name, deselect and let the event flow
-		deselect();
 		try{
+			// Can only be a click on the property name, deselect and let the event flow
+
 			if(propertyMarker != null && mark.getId().equalsIgnoreCase(propertyMarker.getId())){
-				if(isPropertyLocationsVisible()){
-					hidePropertyLocations();
-				}else{
-					showPropertyLocations();
+
+				if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
+					deselect();
+				}
+
+				if(!mark.isInfoWindowShown()){
+					mark.showInfoWindow();
+					return true;
 				}
 			}
 		} catch (UnsupportedOperationException e) {
@@ -521,10 +536,10 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	}
 
 	public EditablePropertyBoundary(final Context context, final GoogleMap map, final Claim claim,
-			final ClaimDispatcher claimActivity, final List<BasePropertyBoundary> existingProperties, boolean allowDragging) {
+			final ClaimDispatcher claimActivity, final List<BasePropertyBoundary> existingProperties, ModeDispatcher.Mode mode) {
 		super(context, map, claim);
 		this.claimActivity = claimActivity;
-		this.allowDragging = allowDragging;
+		this.mode = mode;
 		this.selectedMarker = null;
 		this.otherProperties = existingProperties;
 		this.amr = new ActiveMarkerRegistrar();
@@ -535,6 +550,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 				verticesMap.put(mark, vertex);
 			}
 		}
+		showPropertyLocations();
 	}
 	
 	public void setOtherProperties(List<BasePropertyBoundary> otherProperties) {
@@ -843,7 +859,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	private Marker createMarker(int index, LatLng position) {
 		Marker marker;
-		if(allowDragging){
+		if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(index + ", Lat: " + position.latitude + ", Lon: " + position.longitude)
@@ -866,7 +882,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	@Override
 	protected Marker createLocationMarker(LatLng position, String description) {
 		Marker marker;
-		if(allowDragging){
+		if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(description)
