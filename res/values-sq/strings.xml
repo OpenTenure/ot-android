@@ -92,7 +92,6 @@
     <string name="group_name">Emër</string>
     <string name="signature">Nënshkrimi</string>
     <string name="software_version_title">Versioni i programit</string>
-    <string name="software_version">0.9.4</string>
     <string name="claim_date">Data e pretendimit</string>    
     <string name="claim_name">Emri i pretendimit</string>
     <string name="claim_name_label">Emri i pretendimit *</string>

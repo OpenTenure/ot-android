@@ -92,7 +92,6 @@
     <string name="group_name">Nome</string>
     <string name="signature">Assinatura</string>
     <string name="software_version_title">Versão do Software</string>
-    <string name="software_version">0.9.4</string>
     <string name="claim_date">Data do requerimento</string>
     <string name="claim_name">Nome do requerimento</string>
     <string name="claim_name_label">Nome do requerimento *</string>
@@ -216,7 +215,6 @@
     <string name="all_tiles_downloaded">Todos os arquivos da lista de download foram transferidos</string>
     <string name="not_all_tiles_downloaded">%d arquivos para esta área do mapa não foram transferidos. Verifique se você está satisfeito com o resultado ou repeta a tranferência</string>
     <string name="zoom_level_too_low">A área é muito grande. Aumente o zoom antes de baixar os dados locais para o mapa</string>
-    <string name="adjacencies">Propriedades Limitrofes</string>
     <string name="message_claim_exported_error">O requerimento %s não foi exportado</string>
     <string name="message_claim_exported">Exportado o requerimento %s</string>
     <string name="north_adjacency">Descreva a propriedade ao norte do seu requerimento</string>
@@ -228,7 +226,6 @@
     <string name="action_add_claimant">Adicionar Requerente</string>
     <string name="action_select_challenge">Selecionar Requerimento para Questionar</string>
     <string name="title_challenged_claim">Requerimento questionado:</string>
-    <string name="date_of_start">DD-MM-AAAA</string>
     <string name="status">status:</string>
     <string name="title_no_connection">Sem conexão</string>
     <string name="message_no_connection_at_startup">Sem conexão com a Internet. A configuração pode não mostrar as mudanças recentes e você não poderá fazer o upload ou download das informações. Conecte-se à Internet, se você pretende transferir dados usando OpenTenure</string>
@@ -237,9 +234,6 @@
     <string name="title_initialization_process">Inicializando o Processo</string>
     <string name="message_initialize_before">Fazer a inicialização depois</string>
     <string name="message_default_initialization">Você está prestes a iniciar a aplicação com o Servidor da Comunidade no modo padrão. O modo padrão do Servidor da Comunidade deve ser usado apenas para fins de demonstração. Deseja continuar? Caso contrário pressione Cancelar e insira, nas configurações, a URL do servidor da comunidade</string>
-    <string name="action_backup_db">Backup de dados locais</string>
-    <string name="message_db_backed_up">Uma cópia do banco de dados local foi criada</string>
-    <string name="action_download_tiles">Para uso do mapa offline, transferir as imagens para arquivo local</string>
     <string name="title_confirm_data_transfer">Confirmar a transferência de dados</string>
     <string name="message_data_over_mobile">Você está prestes a transferir uma grande quantidade de dados através de uma conexão de internet móvel. O custo pode ser alto dependendo do seu plano de dados.</string>
     <string name="action_view_community_area">Ver Área da Comunidade</string>
@@ -301,10 +295,6 @@
     <string name="calculated_adjacencies">Requerimento limítrofe</string>
     <string name="adjacent_claims">Requerimentos limítrofes</string>
     <string name="adjacent_properties">Propriedades limítrofes</string>
-    <string name="north_adjacency">Limite Norte</string>
-    <string name="south_adjacency">Limite Sul</string>
-    <string name="east_adjacency">Limite Leste</string>
-    <string name="west_adjacency">Limite Oeste</string>
     <string name="north">Norte</string>
     <string name="south">Sul</string>
     <string name="east">Leste</string>

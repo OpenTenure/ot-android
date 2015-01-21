@@ -92,7 +92,6 @@
     <string name="group_name">Nom</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Version du Logiciel</string>
-    <string name="software_version">0.9.4</string>
     <string name="claim_date">Date de la déclaration</string>    
     <string name="claim_name">Nom de la déclaration</string>
     <string name="claim_name_label">Date de la déclaration *</string>
@@ -104,7 +103,6 @@
     <string name="last_name_label">Nom *</string>    
     <string name="date_of_birth">Date de naissance (AAAA-MM-JJ)</string>
     <string name="date_of_birth_label">Date de naissance * (AAAA-MM-JJ)</string>
-    <string name="date_of_start">La date de la déclaration s\'applique à partir du (AAAA-MM-JJ)</string>
     <string name="date_of_start_label">La date de la déclaration s\'applique à partir du (AAAA-MM-JJ)</string>
     <string name="place_of_birth">Lieu de naissance</string>
     <string name="place_of_birth_label">Lieu de naissance *</string>
@@ -286,8 +284,6 @@
     <string name="north_west">Nord-Ouest</string>
     <string name="south_east">Sud-Est</string>
     <string name="south_west">Sud-Ouest</string>
-	<string name="title_claims">Liste des déclarations</string>
-	<string name="title_map">Plan de la communauté</string>
 	<string name="action_view_community_area">Voir l’étendue de la communauté</string>
 	<string name="title_initialization_process">Initialisation</string>
 	<string name="message_initialize_before"> Procéder d’abord à l’initialisation </string>

@@ -94,7 +94,6 @@
     <string name="group_name">Nombre</string>
     <string name="signature">Firma</string>
     <string name="software_version_title">Versión del Software</string>
-    <string name="software_version">0.9.4</string>
     <string name="claim_date">Fecha de la Demanda</string>
     <string name="claim_name">Nombre de la demanda</string>
     <string name="claim_name_label">Nombre de la demanda *</string>
@@ -218,7 +217,6 @@
     <string name="all_tiles_downloaded">Todos los mosaicos en la lista de descarga han sido descargados con éxito</string>
     <string name="not_all_tiles_downloaded">No se han descargado %d mosaicos de esta área del mapa. Verifique si esta satisfecho con el resultado o reinicie la descarga</string>
     <string name="zoom_level_too_low">El área es muy larga. Incremente el nivel de visión antes de descargar datos locales para el mapa</string>
-    <string name="adjacencies">Propiedades Adyacentes</string>
     <string name="message_claim_exported_error">La demanda %s no esta exportada</string>
     <string name="message_claim_exported">La demanda se exporto %s</string>
     <string name="north_adjacency">Describa la propiedad al norte del reclamo</string>
@@ -226,11 +224,8 @@
     <string name="east_adjacency">Describa la propiedad al este del reclamo</string>
     <string name="west_adjacency">Describa la propiedad al oeste del reclamo</string>
     <string name="add_owner">Agregar Propietario </string>
-    <string name="action_modify_claimant">Modificar desafiante</string>
-    <string name="action_add_claimant">Agregar Desafiante</string>
     <string name="action_select_challenge">Selecione la Demanda a desafiar</string>
     <string name="title_challenged_claim">Demanda desafiada : </string>
-    <string name="date_of_start">AAAA-MM-DD</string>
     <string name="status">Estatus : </string>
     <string name="title_no_connection">Sin conexion</string>
     <string name="message_no_connection_at_startup">No hay conexión a Internet disponible. La configuración puede no reflejar los cambios recientes y usted no será capaz de cargar o descargar información. Conéctese a Internet si va a transferir datos utilizando OpenTenure</string>
@@ -239,9 +234,6 @@
     <string name="title_initialization_process">Proceso de Inicializacion</string>
     <string name="message_initialize_before"> Realize una inicializacion antes </string>
     <string name="message_default_initialization">Va a inicializar la aplicación con el servidor de comunidades establecido por defecto. Este servidor de comunidades predeterminado se debe utilizar sólo para fines de demostración. ¿Desea continuar? De lo contrario, pulse Cancelar y coloque la dirección URL del servidor comunitario en la configuración  </string>
-    <string name="action_backup_db">Respaldar datos locales</string>
-    <string name="message_db_backed_up">Se ha creado una copia de la base de datos local</string>
-    <string name="action_download_tiles">Descarge las imagenes de los mapas a los datos locales para uso sin internet</string>
     <string name="title_confirm_data_transfer">Confirme la transferencia de los datos</string>
     <string name="message_data_over_mobile">Estas a punto de transferir una posible gran cantidad de datos a través de una conexión a Internet móvil. El costo asociado puede ser alto en función de su plan de datos actual</string>
     <string name="action_view_community_area">Ver el Area Comunitaria</string>
@@ -303,10 +295,6 @@
     <string name="calculated_adjacencies">Adyacentes a la demanda</string>
     <string name="adjacent_claims">Adyacentes a las demandas</string>
     <string name="adjacent_properties">Propiedades adyacentes</string>
-    <string name="north_adjacency">Adyacente al norte</string>
-    <string name="south_adjacency">Adyacente al Sur</string>
-    <string name="east_adjacency">Adyacente al Este</string>
-    <string name="west_adjacency">Adyacente al Oeste</string>
     <string name="north">Norte</string>
     <string name="south">Sur</string>
     <string name="east">Este</string>
