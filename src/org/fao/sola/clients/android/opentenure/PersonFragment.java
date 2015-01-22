@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -183,9 +184,9 @@ public class PersonFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					if (personPictureFile != null) {
-						
+
 						Person.deleteAllBmp(personActivity.getPersonId());
-						
+
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,
@@ -293,18 +294,34 @@ public class PersonFragment extends Fragment {
 		// ID TYPE Spinner
 		Spinner spinnerIT = (Spinner) rootView
 				.findViewById(R.id.id_type_spinner);
+		Spinner spinnerGender = (Spinner) rootView
+				.findViewById(R.id.gender_spinner);
 
 		IdType it = new IdType();
 
 		List<String> idTypelist = it.getDisplayValues();
 
+		List<String> genderList = new ArrayList<String>();
+
+		genderList.add(OpenTenureApplication.getContext().getResources()
+				.getString(R.string.gender_masculine));
+		genderList.add(OpenTenureApplication.getContext().getResources()
+				.getString(R.string.gender_feminine));
+
 		ArrayAdapter<String> dataAdapterIT = new ArrayAdapter<String>(
-				OpenTenureApplication.getContext(),
-				android.R.layout.simple_spinner_item, idTypelist) {
+				OpenTenureApplication.getContext(), R.layout.my_spinner,
+				idTypelist) {
 		};
-		dataAdapterIT.setDropDownViewResource(R.layout.my_spinner);
+
+		ArrayAdapter<String> dataAdapterGender = new ArrayAdapter<String>(
+				OpenTenureApplication.getContext(), R.layout.my_spinner,
+				genderList) {
+		};
+
+		// dataAdapterIT.setDropDownViewResource(R.layout.my_spinner);
 
 		spinnerIT.setAdapter(dataAdapterIT);
+		spinnerGender.setAdapter(dataAdapterGender);
 
 	}
 
@@ -322,21 +339,19 @@ public class PersonFragment extends Fragment {
 				.setText(person.getPostalAddress());
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
 				.setText(person.getEmailAddress());
-		((RadioButton) rootView.findViewById(R.id.gender_feminine_input_field))
-				.setChecked((person.getGender().equals("F")));
-		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
-				.setChecked((person.getGender().equals("M")));
-
-		((RadioButton) rootView.findViewById(R.id.gender_masculine_input_field))
-				.setChecked((person.getGender().equals("M")));
-		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
-				.setText(person.getMobilePhoneNumber());
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(person.getContactPhoneNumber());
 		((Spinner) rootView.findViewById(R.id.id_type_spinner))
 				.setSelection(new IdType().getIndexByCodeType(person
 						.getIdType()));
+
+		if (person.getGender().equals("M")) {
+			((Spinner) rootView.findViewById(R.id.gender_spinner))
+					.setSelection(0);
+		} else
+			((Spinner) rootView.findViewById(R.id.gender_spinner))
+					.setSelection(1);
 
 		((EditText) rootView.findViewById(R.id.id_number)).setText(person
 				.getIdNumber());
@@ -354,22 +369,17 @@ public class PersonFragment extends Fragment {
 					.setFocusable(false);
 			((EditText) rootView.findViewById(R.id.email_address_input_field))
 					.setFocusable(false);
-			((RadioButton) rootView
-					.findViewById(R.id.gender_feminine_input_field))
-					.setClickable(false);
-			((RadioButton) rootView
-					.findViewById(R.id.gender_masculine_input_field))
-					.setClickable(false);
-
-			((EditText) rootView
-					.findViewById(R.id.mobile_phone_number_input_field))
-					.setFocusable(false);
 			((EditText) rootView
 					.findViewById(R.id.contact_phone_number_input_field))
 					.setFocusable(false);
 			((Spinner) rootView.findViewById(R.id.id_type_spinner))
 					.setFocusable(false);
 			((Spinner) rootView.findViewById(R.id.id_type_spinner))
+					.setClickable(false);
+
+			((Spinner) rootView.findViewById(R.id.gender_spinner))
+					.setFocusable(false);
+			((Spinner) rootView.findViewById(R.id.gender_spinner))
 					.setClickable(false);
 			((EditText) rootView.findViewById(R.id.id_number))
 					.setFocusable(false);
@@ -403,9 +413,6 @@ public class PersonFragment extends Fragment {
 		((EditText) rootView.findViewById(R.id.email_address_input_field))
 				.setText(person.getEmailAddress());
 
-		((EditText) rootView.findViewById(R.id.mobile_phone_number_input_field))
-				.setText(person.getMobilePhoneNumber());
-
 		((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field))
 				.setText(person.getContactPhoneNumber());
@@ -432,10 +439,6 @@ public class PersonFragment extends Fragment {
 					.setFocusable(false);
 
 			((EditText) rootView
-					.findViewById(R.id.mobile_phone_number_input_field))
-					.setFocusable(false);
-
-			((EditText) rootView
 					.findViewById(R.id.contact_phone_number_input_field))
 					.setFocusable(false);
 
@@ -445,7 +448,6 @@ public class PersonFragment extends Fragment {
 
 		claimantImageView.setImageBitmap(Person.getPersonPicture(
 				rootView.getContext(), person.getPersonId(), 128));
-		
 
 	}
 
@@ -511,9 +513,7 @@ public class PersonFragment extends Fragment {
 		person.setEmailAddress(((EditText) rootView
 				.findViewById(R.id.email_address_input_field)).getText()
 				.toString());
-		person.setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field)).getText()
-				.toString());
+
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
@@ -528,12 +528,19 @@ public class PersonFragment extends Fragment {
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
 
-		if (((RadioButton) rootView
-				.findViewById(R.id.gender_feminine_input_field)).isChecked())
+		String gender = (String) ((Spinner) rootView
+				.findViewById(R.id.gender_spinner)).getSelectedItem();
+		if (gender.equals(OpenTenureApplication.getContext().getResources()
+				.getString(R.string.gender_feminine)))
 			person.setGender("F");
-		if (((RadioButton) rootView
-				.findViewById(R.id.gender_masculine_input_field)).isChecked())
+		else
 			person.setGender("M");
+		// if (((RadioButton) rootView
+		// .findViewById(R.id.gender_feminine_input_field)).isChecked())
+		// person.setGender("F");
+		// if (((RadioButton) rootView
+		// .findViewById(R.id.gender_masculine_input_field)).isChecked())
+		// person.setGender("M");
 
 		person.setPersonType(Person._PHYSICAL);
 
@@ -587,9 +594,6 @@ public class PersonFragment extends Fragment {
 				.toString());
 		person.setEmailAddress(((EditText) rootView
 				.findViewById(R.id.email_address_input_field)).getText()
-				.toString());
-		person.setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field)).getText()
 				.toString());
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
@@ -653,9 +657,6 @@ public class PersonFragment extends Fragment {
 		person.setEmailAddress(((EditText) rootView
 				.findViewById(R.id.email_address_input_field)).getText()
 				.toString());
-		person.setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field)).getText()
-				.toString());
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
@@ -714,19 +715,9 @@ public class PersonFragment extends Fragment {
 		person.setEmailAddress(((EditText) rootView
 				.findViewById(R.id.email_address_input_field)).getText()
 				.toString());
-		person.setMobilePhoneNumber(((EditText) rootView
-				.findViewById(R.id.mobile_phone_number_input_field)).getText()
-				.toString());
 		person.setContactPhoneNumber(((EditText) rootView
 				.findViewById(R.id.contact_phone_number_input_field)).getText()
 				.toString());
-		if (((RadioButton) rootView
-				.findViewById(R.id.gender_feminine_input_field)).isChecked())
-			person.setGender("F");
-		if (((RadioButton) rootView
-				.findViewById(R.id.gender_masculine_input_field)).isChecked())
-			person.setGender("M");
-
 		person.setPersonType(Person._PHYSICAL);
 
 		String idTypeDispValue = (String) ((Spinner) rootView
@@ -735,6 +726,14 @@ public class PersonFragment extends Fragment {
 
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
+		
+		String gender = (String) ((Spinner) rootView
+				.findViewById(R.id.gender_spinner)).getSelectedItem();
+		if (gender.equals(OpenTenureApplication.getContext().getResources()
+				.getString(R.string.gender_feminine)))
+			person.setGender("F");
+		else
+			person.setGender("M");
 
 		if (person.getFirstName() == null
 				|| person.getFirstName().trim().equals(""))
@@ -1000,31 +999,6 @@ public class PersonFragment extends Fragment {
 									&& !person.getIdNumber().equals(numberId))
 								changed = true;
 
-							else {
-
-								String mobile = ((EditText) rootView
-										.findViewById(R.id.mobile_phone_number_input_field))
-										.getText().toString();
-
-								if ((mobile == null || mobile.equals(""))
-										&& (person.getMobilePhoneNumber() != null && !person
-												.getMobilePhoneNumber().equals(
-														"")))
-
-									changed = true;
-
-								else if ((mobile != null && !mobile.equals(""))
-										&& (person.getMobilePhoneNumber() == null || person
-												.getMobilePhoneNumber().equals(
-														"")))
-									changed = true;
-								else if ((mobile != null && person
-										.getMobilePhoneNumber() != null)
-										&& !mobile.equals(person
-												.getMobilePhoneNumber())) {
-									changed = true;
-								}
-
 								else {
 
 									String contact = ((EditText) rootView
@@ -1097,7 +1071,7 @@ public class PersonFragment extends Fragment {
 									}
 
 								}
-							}
+							
 						}
 
 					}
@@ -1235,32 +1209,6 @@ public class PersonFragment extends Fragment {
 														.getTypebyDisplayValue(idType)))
 									changed = true;
 
-								else {
-
-									String mobile = ((EditText) rootView
-											.findViewById(R.id.mobile_phone_number_input_field))
-											.getText().toString();
-
-									if ((mobile == null || mobile.equals(""))
-											&& (person.getMobilePhoneNumber() != null && !person
-													.getMobilePhoneNumber()
-													.equals("")))
-
-										changed = true;
-
-									else if ((mobile != null && !mobile
-											.equals(""))
-											&& (person.getMobilePhoneNumber() == null || person
-													.getMobilePhoneNumber()
-													.equals("")))
-										changed = true;
-									else if ((mobile != null && person
-											.getMobilePhoneNumber() != null)
-											&& !mobile.equals(person
-													.getMobilePhoneNumber())) {
-										changed = true;
-									}
-
 									else {
 
 										String contact = ((EditText) rootView
@@ -1338,7 +1286,7 @@ public class PersonFragment extends Fragment {
 										}
 
 									}
-								}
+								
 
 							}
 						}

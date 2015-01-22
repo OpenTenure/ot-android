@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -82,6 +83,13 @@ public class ShareDetailsActivity extends FragmentActivity implements
 	public void onResume() {
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
+		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
 	};
 
 	@Override
@@ -89,6 +97,13 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
+		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
 
 		if (intent.getStringExtra(MODE_KEY) != null)
 			mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));

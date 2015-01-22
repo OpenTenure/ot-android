@@ -194,6 +194,8 @@ public class ClaimDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		System.out.println("Locale : " + OpenTenureApplication.getLocalization() +"    ");
 
 		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
 				false);
@@ -274,7 +276,7 @@ public class ClaimDetailsFragment extends Fragment {
 								.findViewById(R.id.claimant_id)).getText()
 								.toString();
 
-						System.out.println("claimantId" + claimantId);
+						
 
 						if (claimantId != null && !claimantId.trim().equals("")) {
 

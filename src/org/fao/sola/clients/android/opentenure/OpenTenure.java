@@ -82,6 +82,13 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	public void onResume() {
 		OpenTenureApplication.getInstance().getDatabase().open();
 		super.onResume();
+		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
 	};
 	
 	@Override
@@ -146,6 +153,15 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
+		
+		
 		setContentView(R.layout.activity_open_tenure);
 		ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		

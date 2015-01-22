@@ -36,6 +36,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -105,26 +106,48 @@ public class PDFClaimExporter {
 						R.string.app_name)
 						+ " "
 						+ context.getResources().getString(R.string.claim)
-						+ ": " + claim.getName() + " (" + context.getResources().getString(
-								R.string.claimant) + ": " + claim.getPerson().getFirstName() + " " + claim.getPerson().getLastName() + ")");
+						+ ": "
+						+ claim.getName()
+						+ " ("
+						+ context.getResources().getString(R.string.claimant)
+						+ ": "
+						+ claim.getPerson().getFirstName()
+						+ " "
+						+ claim.getPerson().getLastName() + ")");
 			}
 			newLine();
 			drawBitmap(bitmapFromResource(context, R.drawable.sola_logo, 128,
 					110));
 			newLine();
 			drawHorizontalLine();
+			
+
+			if (claim.getPerson().getPersonType().equals(Person._PHYSICAL)) {
+				newLine();
+				writeText(context.getResources().getString(R.string.first_name)
+						+ ": " + claim.getPerson().getFirstName());
+				newLine();
+				writeText(context.getResources().getString(R.string.last_name)
+						+ ": " + claim.getPerson().getLastName());
+			}
+			else{
+				newLine();
+				writeText(context.getResources().getString(R.string.group_name)
+						+ ": " + claim.getPerson().getFirstName());
+				}
 			newLine();
-			writeText(context.getResources().getString(R.string.first_name)
-					+ ": " + claim.getPerson().getFirstName());
-			newLine();
-			writeText(context.getResources().getString(R.string.last_name)
-					+ ": " + claim.getPerson().getLastName());
-			newLine();
-			writeText(context.getResources().getString(R.string.date_of_birth)
-					+ ": " + claim.getPerson().getDateOfBirth());
-			newLine();
-			writeText(context.getResources().getString(R.string.place_of_birth)
-					+ ": " + claim.getPerson().getPlaceOfBirth());
+			if (claim.getPerson().getPersonType().equals(Person._GROUP))
+				writeText(context.getResources().getString(
+						R.string.date_of_establishment_label)
+						+ ": "
+						+ (claim.getPerson().getDateOfBirth() != null ? claim
+								.getPerson().getDateOfBirth() : ""));
+			else
+				writeText(context.getResources().getString(
+						R.string.date_of_birth)
+						+ ": "
+						+ (claim.getPerson().getDateOfBirth() != null ? claim
+								.getPerson().getDateOfBirth() : ""));
 			newLine();
 			writeText(context.getResources().getString(R.string.postal_address)
 					+ ": " + claim.getPerson().getPostalAddress());

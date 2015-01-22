@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import android.app.AlertDialog;
@@ -631,15 +632,19 @@ public class NewsFragment extends ListFragment {
 
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(getActivity());
-			String defaultFormUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.CS_URL_PREF,
+			String formUrlServer = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.FORM_URL_PREF,
 					OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-			if (!defaultFormUrl.equalsIgnoreCase("")) {
-				defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+			String formUrl = "" ;
+			if (!formUrlServer.equalsIgnoreCase("")) {
+				formUrl = String.format(
+						CommunityServerAPIUtilities.HTTPS_GETFORM, formUrlServer,
+						OpenTenureApplication.getLocalization());
 			}
-			String formUrl = OpenTenurePreferences
-					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-							defaultFormUrl);
+			System.out.println(" formUrl " + formUrl);
+//			formUrl = OpenTenurePreferences
+//					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
+//							formUrl);
 			FormRetriever formRetriever = new FormRetriever();
 			formRetriever.setFormUrl(formUrl);
 			formRetriever.execute();

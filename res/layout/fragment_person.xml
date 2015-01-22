@@ -5,9 +5,9 @@
     android:background="@color/light_background_opentenure"
     android:baselineAligned="false"
     android:orientation="horizontal"
+    android:paddingBottom="5dp"
     android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="5dp" >
+    android:paddingRight="16dp" >
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,17 +21,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingBottom="6dp"
             android:gravity="bottom"
-            android:text="@string/first_name_label" />
+            android:text="@string/first_name_label"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/first_name_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/first_name"
-            android:inputType="textCapWords" >
+            android:inputType="textCapWords"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
 
         <TextView
@@ -39,72 +42,78 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingBottom="6dp"
             android:gravity="bottom"
-            android:text="@string/last_name_label" />
+            android:text="@string/last_name_label"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/last_name_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/last_name"
-            android:inputType="textCapWords" >
+            android:inputType="textCapWords"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
 
         <TextView
             android:id="@+id/date_of_birth_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="6dp"
             android:layout_weight="1"
             android:gravity="bottom"
-            android:text="@string/date_of_birth_label" />
+            android:text="@string/date_of_birth_label"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/date_of_birth_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/date_of_birth"
-            android:inputType="date" >
+            android:inputType="date"
+            android:textAppearance="?android:attr/textAppearanceMedium" >            
         </EditText>
 
         <TextView
             android:id="@+id/gender_label"
+            android:paddingBottom="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="bottom"
-            android:text="@string/gender" />
+            android:text="@string/gender"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" >
-
-            <RadioGroup
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@color/dark_background_opentenure"
-                android:orientation="horizontal" >
-
-                <RadioButton
-                    android:id="@+id/gender_masculine_input_field"
+            
+            <LinearLayout
+                    android:layout_height="36dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender_masculine" />
+                    android:background="@android:color/white" >
 
-                <RadioButton
-                    android:id="@+id/gender_feminine_input_field"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gender_feminine" />
-            </RadioGroup>
+                    <Spinner
+                        android:id="@+id/gender_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"                        
+                        android:gravity="bottom"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
+            
+            
+            
         </LinearLayout>
 
-	<!-- <TextView
+        <!--
+         <TextView
             android:id="@+id/place_of_birth_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -120,14 +129,15 @@
             android:background="@color/dark_background_opentenure"
             android:hint="@string/place_of_birth"
             android:inputType="text" >
-        </EditText>  -->
+        </EditText>
+        -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="horizontal" 
-            android:baselineAligned="false">
+            android:baselineAligned="false"
+            android:orientation="horizontal" >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -140,16 +150,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="2"
-                    android:gravity="bottom"                   
-                    android:text="@string/id_type" />
+                    android:gravity="bottom"
+                    android:text="@string/id_type"
+                    android:paddingBottom="6dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                <Spinner
-                    android:id="@+id/id_type_spinner"
+                <LinearLayout
+                    android:layout_height="36dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="30sp"
-                    android:layout_weight="1"
-                    android:background="@color/dark_background_opentenure"
-                    android:gravity="bottom" />
+                    android:background="@android:color/white" >
+
+                    <Spinner
+                        android:id="@+id/id_type_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"                        
+                        android:gravity="bottom"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -161,19 +179,22 @@
                 <TextView
                     android:id="@+id/id_number_label"
                     android:layout_width="fill_parent"
+                    android:paddingBottom="6dp"
                     android:layout_height="0dp"
                     android:layout_weight="2"
                     android:gravity="bottom"
-                    android:text="@string/id_number" />
+                    android:text="@string/id_number"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
                     android:id="@+id/id_number"
                     android:layout_width="match_parent"
-                    android:layout_height="30sp"
+                    android:layout_height="36dp"
                     android:layout_weight="1"
-                    android:background="@color/dark_background_opentenure"
+                    android:background="@android:color/white"
                     android:hint="@string/id_number"
-                    android:inputType="text" >
+                    android:inputType="text"
+                    android:textAppearance="?android:attr/textAppearanceMedium" >
                 </EditText>
             </LinearLayout>
         </LinearLayout>
@@ -182,17 +203,20 @@
             android:id="@+id/postal_address_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="6dp"
             android:gravity="bottom"
-            android:text="@string/postal_address" />
+            android:text="@string/postal_address"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/postal_address_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/postal_address"
-            android:inputType="textPostalAddress" >
+            android:inputType="textPostalAddress"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
 
         <TextView
@@ -200,35 +224,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingBottom="6dp"
             android:gravity="bottom"
-            android:text="@string/email_address" />
+            android:text="@string/email_address"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/email_address_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/email_address"
-            android:inputType="textEmailAddress" >
-        </EditText>
-
-        <TextView
-            android:id="@+id/mobile_phone_number_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:text="@string/mobile_phone_number" />
-
-        <EditText
-            android:id="@+id/mobile_phone_number_input_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:hint="@string/mobile_phone_number"
-            android:inputType="phone" >
+            android:inputType="textEmailAddress"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
 
         <TextView
@@ -236,17 +245,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingBottom="6dp"
             android:gravity="bottom"
-            android:text="@string/contact_phone_number" />
+            android:text="@string/contact_phone_number"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText
             android:id="@+id/contact_phone_number_input_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
+            android:background="@android:color/white"
             android:hint="@string/contact_phone_number"
-            android:inputType="phone" >
+            android:inputType="phone"
+            android:textAppearance="?android:attr/textAppearanceMedium" >
         </EditText>
     </LinearLayout>
 

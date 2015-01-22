@@ -31,17 +31,23 @@ import java.io.File;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.button.listener.DownloadAttachmentListener;
+import org.fao.sola.clients.android.opentenure.button.listener.UpdateAttachmentListener;
 import org.fao.sola.clients.android.opentenure.button.listener.UploadAttachmentListener;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.DocumentType;
 import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -49,7 +55,9 @@ import android.view.ViewGroup;
 import android.view.ViewManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,22 +79,15 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		this.ids = ids;
 		this.claimId = claimId;
 		this.readOnly = readOnly;
-		
-		}
 
-	// static class ViewHolder {
-	// TextView id;
-	// TextView slogan;
-	// TextView status;
-	// ImageView downloadIcon;
-	// ImageView removeIcon;
-	// ProgressbarAttachment barAttachment;
-	// }
+	}
 
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		AttachmentViewHolder vh;		
-		
+		AttachmentViewHolder vh;
+
+		String props[] = slogans.get(position).trim().split("-");
+
 		if (convertView == null) {
 			convertView = inflater.inflate(
 					R.layout.claim_attachments_list_item, parent, false);
@@ -95,23 +96,51 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.id = (TextView) convertView.findViewById(R.id.attachment_id);
 			vh.slogan = (TextView) convertView
 					.findViewById(R.id.attachment_description);
-//			vh.status = (TextView) convertView
-//					.findViewById(R.id.attachment_status);
-			//vh.barAttachment = (ProgressbarAttachment) convertView.findViewById(R.id.progress_barAttachment);
-			vh.barAttachment = (ProgressBar) convertView.findViewById(R.id.progress_bar_attachment);
-			vh.attachmentStatus = (TextView) convertView.findViewById(R.id.attachment_status);
+			vh.attachmentFileType = (TextView) convertView
+					.findViewById(R.id.attachment_file_type);
+			vh.attachmentType = (Spinner) convertView
+					.findViewById(R.id.attachment_type);
+
+			// Attachment Type Spinner set up
+			DocumentType dt = new DocumentType();
+			List<String> list = dt.getDocumentTypesDispalyValues();
+
+			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
+					OpenTenureApplication.getContext(), R.layout.my_spinner,
+					list) {
+			};
+			dataAdapter.setDropDownViewResource(R.layout.my_spinner);
+
+			vh.attachmentType.setAdapter(dataAdapter);
+
+			vh.attachmentType.setSelection(dt.getIndexByCodeType(props[1]
+					.trim()));
+
+			// **********************
+
+			vh.barAttachment = (ProgressBar) convertView
+					.findViewById(R.id.progress_bar_attachment);
+			vh.attachmentStatus = (TextView) convertView
+					.findViewById(R.id.attachment_status);
 			vh.downloadIcon = (ImageView) convertView
 					.findViewById(R.id.download_file);
+			vh.saveIcon = (ImageView) convertView
+					.findViewById(R.id.update_attachment);
 			vh.removeIcon = (ImageView) convertView
 					.findViewById(R.id.remove_icon);
 			vh.sendIcon = (ImageView) convertView
 					.findViewById(R.id.action_submit_attachment);
+			vh.clickableArea = (LinearLayout) convertView
+					.findViewById(R.id.clickable_area);
+			vh.clickableArea2 = (LinearLayout) convertView
+					.findViewById(R.id.clickable_area2);
 			convertView.setTag(vh);
 		} else {
 			vh = (AttachmentViewHolder) convertView.getTag();
 		}
 
-		vh.slogan.setText(slogans.get(position));
+		vh.slogan.setText(props[0].trim());
+		vh.attachmentFileType.setText(props[2].trim());
 		vh.id.setTextSize(8);
 		vh.id.setText(ids.get(position));
 
@@ -125,7 +154,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOADING)) {
-			
+
 			vh.barAttachment.setVisibility(View.VISIBLE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 			/* Setting progress barAttachment */
@@ -133,8 +162,9 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 					.getSize());
 			int progress = (int) (factor * 100);
 			vh.barAttachment.setProgress(progress);
-			
-			vh.attachmentStatus.setText(att.getStatus() +" :" + progress + "%" );
+
+			vh.attachmentStatus
+					.setText(att.getStatus() + " :" + progress + "%");
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
@@ -143,6 +173,90 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.removeIcon.setVisibility(View.VISIBLE);
+			vh.saveIcon.setVisibility(View.VISIBLE);
+			vh.clickableArea.setVisibility(View.VISIBLE);
+			vh.clickableArea2.setVisibility(View.VISIBLE);
+
+			vh.clickableArea.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setDataAndType(Uri.parse("file://" + att.getPath()),
+								att.getMimeType());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						OpenTenureApplication.getDocumentsFragment().startActivity(intent);
+					} catch (ActivityNotFoundException e) {
+
+						Log.d(this.getClass().getName(),
+								"No Activity Found Exception to handle :"
+										+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication.getContext().getResources()
+										.getString(R.string.message_no_application)
+										+ " " + att.getFileName(), Toast.LENGTH_LONG)
+								.show();
+
+						e.getMessage();
+					}
+
+					catch (Throwable t) {
+
+						Log.d(this.getClass().getName(),
+								"Error opening :" + att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication.getContext().getResources()
+										.getString(R.string.message_error_opening_file),
+								Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+
+			vh.clickableArea2.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setDataAndType(Uri.parse("file://" + att.getPath()),
+								att.getMimeType());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						OpenTenureApplication.getDocumentsFragment().startActivity(intent);
+					} catch (ActivityNotFoundException e) {
+
+						Log.d(this.getClass().getName(),
+								"No Activity Found Exception to handle :"
+										+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication.getContext().getResources()
+										.getString(R.string.message_no_application)
+										+ " " + att.getFileName(), Toast.LENGTH_LONG)
+								.show();
+
+						e.getMessage();
+					}
+
+					catch (Throwable t) {
+
+						Log.d(this.getClass().getName(),
+								"Error opening :" + att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication.getContext().getResources()
+										.getString(R.string.message_error_opening_file),
+								Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
 			vh.attachmentStatus.setText(att.getStatus());
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
@@ -179,6 +293,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 			vh.barAttachment.setVisibility(View.GONE);
+			vh.saveIcon.setVisibility(View.VISIBLE);
 		}
 		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)
 				|| att.getStatus().equals(AttachmentStatus._CREATED)) {
@@ -227,11 +342,22 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 				}
 			});
 
-			
 			vh.getRemoveIcon().setVisibility(View.VISIBLE);
 		} else {
 
 			((ViewManager) convertView).removeView(vh.removeIcon);
+
+			vh.slogan.setFocusable(false);
+			vh.attachmentType.setClickable(false);
+			vh.attachmentType.setFocusable(false);
+
+		}
+
+		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)
+				|| att.getStatus().equals(AttachmentStatus._CREATED)) {
+
+			vh.saveIcon
+					.setOnClickListener(new UpdateAttachmentListener(att, vh));
 		}
 
 		Claim claim = Claim.getClaim(claimId);
@@ -256,29 +382,11 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			if (att.getStatus().equals(AttachmentStatus._CREATED)
 					|| att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)
 					|| att.getStatus().equals(
-							AttachmentStatus._UPLOAD_INCOMPLETE))
+							AttachmentStatus._UPLOAD_INCOMPLETE)) {
 				vh.sendIcon.setVisibility(View.VISIBLE);
+				vh.saveIcon.setVisibility(View.VISIBLE);
+			}
 		}
-
-		// vh.downloadIcon.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View v) {
-		//
-		// String[] params = new String[2];
-		// params[0] = att.getClaimId();
-		// params[1] = att.getAttachmentId();
-		//
-		// GetAttachmentTask task = new GetAttachmentTask();
-		// task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
-		//
-		// Toast toast = Toast.makeText(
-		// OpenTenureApplication.getContext(),
-		// R.string.message_downloading_attachment,
-		// Toast.LENGTH_SHORT);
-		// toast.show();
-		//
-		// }
-		// });
 
 		vh.downloadIcon.setOnClickListener(new DownloadAttachmentListener(att,
 				vh));

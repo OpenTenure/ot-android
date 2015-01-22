@@ -20,25 +20,93 @@
             android:layout_height="wrap_content"
             android:background="@drawable/item_color"
             android:gravity="left|center"
-            android:text="@string/title_item" />
+            android:text="@string/title_item"
+            android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/attachment_description"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/item_color"
-            android:gravity="left|center"
-            android:text="@string/title_item" />
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/attachment_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/item_color"
-            android:gravity="left|center"
-            android:paddingTop="10sp"
-            android:text="@string/title_item" />
-        
+            <EditText
+                android:id="@+id/attachment_description"
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:background="@android:color/white"
+                android:gravity="left|center"
+                android:inputType="textMultiLine|textCapSentences"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:scrollHorizontally="false"
+                android:scrollbars="vertical"
+                android:text="@string/title_item"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="8dp"
+                android:background="@color/light_background_opentenure" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:background="@android:color/white" >
+
+                <Spinner
+                    android:id="@+id/attachment_type"
+                    android:layout_width="350dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/attachment_file_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/title_item"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                    <TextView
+                        android:id="@+id/attachment_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/item_color"
+                        android:paddingTop="8dp"
+                        android:text="@string/title_item"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/clickable_area"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <TextView                        
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/title_item"
+                        android:textAppearance="?android:attr/textAppearanceMedium" 
+                        android:visibility="invisible"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
         <ProgressBar
             android:id="@+id/progress_bar_attachment"
             style="?android:attr/progressBarStyleHorizontal"
@@ -50,33 +118,77 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/download_file"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:contentDescription="@string/action_download_file"
-        android:visibility="invisible"
-        android:src="@drawable/ic_download_file" /> 
-        
-    
-       <ImageView
-        android:id="@+id/action_submit_attachment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:contentDescription="@string/action_submit"
-        android:src="@drawable/ic_submit_big"
-        android:visibility="gone" /> 
-    
-    <ImageView
-        android:id="@+id/remove_icon"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:contentDescription="@string/action_remove_attachment"
-        android:src="@android:drawable/ic_delete" />
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/download_file"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/action_download_file"
+            android:paddingRight="20dp"
+            android:src="@drawable/ic_download_document"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/update_attachment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/action_save"
+            android:paddingRight="20dp"
+            android:src="@drawable/ic_save_document"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/action_submit_attachment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/action_submit"
+            android:paddingRight="20dp"
+            android:src="@drawable/ic_submit_big"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/remove_icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:contentDescription="@string/action_remove_attachment"
+            android:paddingRight="20dp"
+            android:src="@android:drawable/ic_delete" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/clickable_area2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <TextView
+           
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:text="@string/title_item"
+            android:textAppearance="?android:attr/textAppearanceMedium" 
+            android:visibility="invisible"/>
+    </LinearLayout>
+</LinearLayout>
 </LinearLayout>

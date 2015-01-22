@@ -126,6 +126,13 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
+		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
 	};
 
 	@Override
@@ -158,6 +165,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
+//		Locale locale = new Locale("km-KM");
+//		Locale.setDefault(locale);
+//		android.content.res.Configuration config = new android.content.res.Configuration();
+//		config.locale = locale;
+//		getBaseContext().getResources().updateConfiguration(config,
+//		      getBaseContext().getResources().getDisplayMetrics());
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
@@ -267,6 +280,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		// break;
 
 		case 0:
+			sv.setScrollContainer(true);
 			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
 					true);
 			sv.setContentTitle("  ");

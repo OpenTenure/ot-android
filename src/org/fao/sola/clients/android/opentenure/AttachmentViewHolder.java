@@ -28,7 +28,9 @@
 package org.fao.sola.clients.android.opentenure;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class AttachmentViewHolder extends ViewHolder {
@@ -36,9 +38,14 @@ public class AttachmentViewHolder extends ViewHolder {
 	ImageView downloadIcon;
 	ImageView removeIcon;
 	ImageView sendIcon;
+	ImageView saveIcon;
 	ProgressBar barAttachment;
 	TextView attachmentStatus;
-	
+	TextView attachmentFileType;
+	Spinner attachmentType;
+	LinearLayout clickableArea;
+	LinearLayout clickableArea2;
+
 
 	public ImageView getDownloadIcon() {
 		return downloadIcon;
@@ -68,6 +75,14 @@ public class AttachmentViewHolder extends ViewHolder {
 		return barAttachment;
 	}
 
+	public LinearLayout getClickableArea() {
+		return clickableArea;
+	}
+
+	public void setClickableArea(LinearLayout clickableArea) {
+		this.clickableArea = clickableArea;
+	}
+
 	public void setBarAttachment(ProgressBar barAttachment) {
 		this.barAttachment = barAttachment;
 	}
@@ -79,5 +94,38 @@ public class AttachmentViewHolder extends ViewHolder {
 	public void setAttachmentStatus(TextView attachmentStatus) {
 		this.attachmentStatus = attachmentStatus;
 	}
+
+	public TextView getAttachmentFileType() {
+		return attachmentFileType;
+	}
+
+	public void setAttachmentFileType(TextView attachmentFileType) {
+		this.attachmentFileType = attachmentFileType;
+	}
+
+	public Spinner getAttachmentType() {
+		return attachmentType;
+	}
+
+	public void setAttachmentType(Spinner attachmentType) {
+		this.attachmentType = attachmentType;
+	}
+
+	public ImageView getSaveIcon() {
+		return saveIcon;
+	}
+
+	public void setSaveIcon(ImageView saveIcon) {
+		this.saveIcon = saveIcon;
+	}
+
+	public LinearLayout getClickableArea2() {
+		return clickableArea2;
+	}
+
+	public void setClickableArea2(LinearLayout clickableArea2) {
+		this.clickableArea2 = clickableArea2;
+	}
+
 
 }

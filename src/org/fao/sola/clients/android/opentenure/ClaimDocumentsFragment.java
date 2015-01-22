@@ -659,10 +659,13 @@ public class ClaimDocumentsFragment extends ListFragment {
 		/*
 		 * 
 		 * */
+		
+		System.out.println("MA da qui ci passo ? ");
+		
 		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
 				.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
-
+		
 		if (att != null && att.getPath() != null && !att.getPath().equals("")) {
 
 			try {
@@ -670,7 +673,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 				intent.setDataAndType(Uri.parse("file://" + att.getPath()),
 						att.getMimeType());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
 				startActivity(intent);
 			} catch (ActivityNotFoundException e) {
 
@@ -721,10 +723,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 				
 				{
 					String slogan = attachment.getDescription()
-							+ ", Type: "
-							+ (new DocumentType())
-									.getDisplayVauebyType(attachment
-											.getFileType()) + " - "
+							+ " - "
+							+ (attachment.getFileType()) + " - "
 							+ attachment.getMimeType();
 					slogans.add(slogan);
 					ids.add(attachment.getAttachmentId());
