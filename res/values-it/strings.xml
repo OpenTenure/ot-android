@@ -125,6 +125,7 @@
     <string name="contact_phone_number">Telefono di contatto</string>
     <string name="password">Password</string>
     <string name="attachment_removed">Allegato rimosso</string>
+    <string name="attachment_updated">Allegato aggiornato</string>
     <string name="owner_removed">Quota rimossa</string>
     <string name="section_element_removed">Elemento rimosso</string>
     <string name="additional_info_removed">Informazione rimossa</string>
