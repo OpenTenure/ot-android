@@ -111,6 +111,7 @@ public class Claim {
 				+ ", challengeExpiryDate=" + challengeExpiryDate
 				+ ", dateOfStart=" + dateOfStart
 				+ ", version=" + version
+				+ ", claimArea=" + claimArea
 				+ ", challengingClaims="
 				// + Arrays.toString(challengingClaims.toArray())
 				+ ", attachments=" + Arrays.toString(attachments.toArray())
@@ -290,6 +291,16 @@ public class Claim {
 
 	public void setRecorderName(String recorderName) {
 		this.recorderName = recorderName;
+	}
+	
+	
+
+	public long getClaimArea() {
+		return claimArea;
+	}
+
+	public void setClaimArea(long claimArea) {
+		this.claimArea = claimArea;
 	}
 
 	public static int createClaim(Claim claim) {
@@ -528,7 +539,7 @@ public class Claim {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, CLAIM_AREA, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
@@ -546,7 +557,8 @@ public class Claim {
 				claim.setNotes(rs.getString(10));
 				claim.setRecorderName(rs.getString(11));
 				claim.setVersion(rs.getString(12));
-				Clob clob = rs.getClob(13);
+				claim.setClaimArea(rs.getInt(13));
+				Clob clob = rs.getClob(14);
 				if(clob != null){
 					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
@@ -587,7 +599,7 @@ public class Claim {
 		try {
 
 			statement = externalConnection
-					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
+					.prepareStatement("SELECT STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, CLAIM_AREA, SURVEY_FORM FROM CLAIM WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -605,7 +617,8 @@ public class Claim {
 				claim.setNotes(rs.getString(10));
 				claim.setRecorderName(rs.getString(11));
 				claim.setVersion(rs.getString(12));
-				Clob clob = rs.getClob(13);
+				claim.setClaimArea(rs.getInt(13));
+				Clob clob = rs.getClob(14);
 				if(clob != null){
 					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
@@ -635,7 +648,7 @@ public class Claim {
 		try {
 
 			statement = externalConnection
-					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, SURVEY_FORM FROM CLAIM");
+					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, PERSON_ID, TYPE, CHALLENGED_CLAIM_ID, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, CLAIM_AREA, SURVEY_FORM FROM CLAIM");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				String claimId = rs.getString(1);
@@ -653,7 +666,8 @@ public class Claim {
 				claim.setNotes(rs.getString(11));
 				claim.setRecorderName(rs.getString(12));
 				claim.setVersion(rs.getString(13));
-				Clob clob = rs.getClob(14);
+				claim.setClaimArea(rs.getInt(14));
+				Clob clob = rs.getClob(15);
 				if(clob != null){
 					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
 				}else{
@@ -691,7 +705,7 @@ public class Claim {
 		try {
 
 			statement = externalConnection
-					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION FROM CLAIM");
+					.prepareStatement("SELECT CLAIM_ID, STATUS, CLAIM_NUMBER, NAME, TYPE, CHALLANGE_EXPIRY_DATE, DATE_OF_START, LAND_USE, NOTES, RECORDER_NAME, VERSION, CLAIM_AREA FROM CLAIM");
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				String claimId = rs.getString(1);
@@ -707,6 +721,7 @@ public class Claim {
 				claim.setNotes(rs.getString(9));
 				claim.setRecorderName(rs.getString(10));
 				claim.setVersion(rs.getString(11));
+				claim.setClaimArea(rs.getInt(12));
 				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
 				allClaims.add(claim);
 			}
@@ -1205,6 +1220,44 @@ public class Claim {
 			return true;
 		else return false;
 	}
+	
+	public int updateArea(long area){
+		
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE CLAIM SET CLAIM_AREA=? WHERE CLAIM_ID=?");
+			statement.setLong(1, area);
+			statement.setString(2, getClaimId());
+			result = statement.executeUpdate();
+		
+	} catch (SQLException e) {
+		e.printStackTrace();
+	} catch (Exception exception) {
+		exception.printStackTrace();
+	} finally {
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+			}
+		}
+		if (localConnection != null) {
+			try {
+				localConnection.close();
+			} catch (SQLException e) {
+			}
+		}
+	}
+		
+		return result;
+	}
 
 	private String claimId;
 	private String name;
@@ -1229,6 +1282,7 @@ public class Claim {
 	private String claimNumber;
 	private String recorderName;
 	private String version;
+	private long claimArea;
 	private FormPayload dynamicForm;
 
 }

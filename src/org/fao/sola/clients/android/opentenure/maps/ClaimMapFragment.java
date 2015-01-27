@@ -329,7 +329,7 @@ public class ClaimMapFragment extends Fragment implements
 				map, Claim.getClaim(claimActivity.getClaimId()), claimActivity, visibleProperties, modeActivity.getMode());
 		
 		centerMapOnCurrentProperty(null);
-		reloadVisibleProperties();
+		reloadVisibleProperties(true);
 		showVisibleProperties();
 		drawAreaOfInterest();
 
@@ -411,7 +411,7 @@ public class ClaimMapFragment extends Fragment implements
 		return polygon;
 	}
 	
-	private void reloadVisibleProperties(){
+	private void reloadVisibleProperties(boolean updateArea){
 
 		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
 		Polygon boundsPoly = getPolygon(bounds);
@@ -424,7 +424,7 @@ public class ClaimMapFragment extends Fragment implements
 			if (!claim.getClaimId()
 					.equalsIgnoreCase(claimActivity.getClaimId())) {
 				BasePropertyBoundary bpb = new BasePropertyBoundary(
-						mapView.getContext(), map, claim);
+						mapView.getContext(), map, claim, updateArea);
 				Polygon claimPoly = bpb.getPolygon();
 				if(claimPoly != null && claimPoly.intersects(boundsPoly)){
 					visibleProperties.add(bpb);
@@ -692,7 +692,7 @@ public class ClaimMapFragment extends Fragment implements
 	@Override
 	public void onCameraChange(CameraPosition cameraPosition) {
 		hideVisibleProperties();
-		reloadVisibleProperties();
+		reloadVisibleProperties(false);
 		showVisibleProperties();
 		currentProperty.redrawBoundary();
 		currentProperty.refreshMarkerEditControls();

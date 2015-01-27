@@ -75,6 +75,8 @@ public class OpenTenureApplication extends Application {
 	private static HttpContext http_context;
 	private static MainMapFragment mapFragment;
 	private static ClaimDocumentsFragment documentsFragment;
+	private static ClaimDetailsFragment detailsFragment;
+	private static String claimId;
 
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
@@ -385,12 +387,30 @@ public class OpenTenureApplication extends Application {
 		OpenTenureApplication.localization = localization;
 	}
 
+	public static ClaimDetailsFragment getDetailsFragment() {
+		return detailsFragment;
+	}
+
+	public static void setDetailsFragment(ClaimDetailsFragment detailsFragment) {
+		OpenTenureApplication.detailsFragment = detailsFragment;
+	}
+
+	public static String getClaimId() {
+		return claimId;
+	}
+
+	public static void setClaimId(String claimId) {
+		OpenTenureApplication.claimId = claimId;
+	}
+
 	public static void setLocalization(Locale locale) {
 
 		locale.getDisplayLanguage();
 
 		OpenTenureApplication.localization = locale.getLanguage().toLowerCase()
 				+ "-" + locale.getCountry().toLowerCase();
+		
+		System.out.println("LOCALE " + localization + " !!!!");
 
 		/* to remove in the future */
 		//if (!OpenTenureApplication.localization.equals("en-us"))

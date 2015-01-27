@@ -234,6 +234,8 @@
 	<string name="all_tiles_downloaded">All tiles in the download list have been downloaded</string>
 	<string name="not_all_tiles_downloaded">%d tiles for this map area have not been downloaded. Check that you are happy with the result or retry the download</string>
 	<string name="zoom_level_too_low">The area is too large. Increase the zoom level before downloading local data for the map</string>
+	<string name="claim_area_label">Area</string>
+	<string name="square_meters">m2</string>
 	<string name="yes">Yes</string>
     <string name="person">Person</string>
     <string name="group">Group</string>

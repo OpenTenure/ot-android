@@ -205,8 +205,6 @@ public class GetClaimantPhotoTask extends
 	@Override
 	protected void onPostExecute(Attachment attachment) {
 
-		
-		System.out.println("Attachment status alla fine : " + attachment.getStatus());
 		if (OpenTenureApplication.getLocalClaimsFragment() != null)
 			OpenTenureApplication.getLocalClaimsFragment().refresh();
 

@@ -194,8 +194,9 @@ public class ClaimDetailsFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		System.out.println("Locale : " + OpenTenureApplication.getLocalization() +"    ");
+
+		OpenTenureApplication.setClaimId(claimActivity.getClaimId());
+		OpenTenureApplication.setDetailsFragment(this);
 
 		rootView = inflater.inflate(R.layout.fragment_claim_details, container,
 				false);
@@ -275,8 +276,6 @@ public class ClaimDetailsFragment extends Fragment {
 						String claimantId = ((TextView) rootView
 								.findViewById(R.id.claimant_id)).getText()
 								.toString();
-
-						
 
 						if (claimantId != null && !claimantId.trim().equals("")) {
 
@@ -449,7 +448,6 @@ public class ClaimDetailsFragment extends Fragment {
 		((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 				.setText("");
 
-
 		// Challenged claimant
 		ImageView challengedClaimantImageView = (ImageView) rootView
 				.findViewById(R.id.challenge_to_claimant_picture);
@@ -488,7 +486,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadChallengedClaim(Claim challengedClaim) {
 
 		if (challengedClaim != null) {
-			
+
 			Person challengedPerson = challengedClaim.getPerson();
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_id))
 					.setTextSize(8);
@@ -507,15 +505,16 @@ public class ClaimDetailsFragment extends Fragment {
 							+ ": "
 							+ challengedPerson.getFirstName()
 							+ " "
-							+ challengedPerson.getLastName() + ", " +getResources().getString(
-									R.string.status) +  challengedClaim.getStatus());
+							+ challengedPerson.getLastName()
+							+ ", "
+							+ getResources().getString(R.string.status)
+							+ challengedClaim.getStatus());
 			((TextView) rootView.findViewById(R.id.challenge_to_claim_slogan))
 					.setVisibility(View.VISIBLE);
 			ImageView challengedClaimantImageView = (ImageView) rootView
 					.findViewById(R.id.challenge_to_claimant_picture);
-			
-			((View) rootView
-					.findViewById(R.id.challenge_button))
+
+			((View) rootView.findViewById(R.id.challenge_button))
 					.setEnabled(false);
 
 			// File challengedPersonPictureFile = Person
@@ -601,9 +600,28 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
+	
+	
+	public void reloadArea(Claim claim){
+		
+		((TextView) rootView.findViewById(R.id.claim_area_label))
+		.setText(R.string.claim_area_label );
+
+		((TextView) rootView.findViewById(R.id.claim_area_label))
+			.setVisibility(View.VISIBLE);
+
+		((TextView) rootView.findViewById(R.id.claim_area))
+			.setText(claim.getClaimArea() + " "+ OpenTenureApplication.getContext()
+					.getString(R.string.square_meters));
+
+		((TextView) rootView.findViewById(R.id.claim_area))
+		 .setVisibility(View.VISIBLE);
+		
+		
+	}
+	
 	public void load(Claim claim) {
 
-		
 		if (claim != null) {
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
@@ -618,6 +636,24 @@ public class ClaimDetailsFragment extends Fragment {
 
 			((EditText) rootView.findViewById(R.id.claim_notes_input_field))
 					.setText(claim.getNotes());
+
+			if (claim.getClaimArea() > 0) {
+
+				
+				
+				((TextView) rootView.findViewById(R.id.claim_area_label))
+				.setText(R.string.claim_area_label );
+
+				((TextView) rootView.findViewById(R.id.claim_area_label))
+					.setVisibility(View.VISIBLE);
+
+				((TextView) rootView.findViewById(R.id.claim_area))
+					.setText(claim.getClaimArea() + " "+ OpenTenureApplication.getContext()
+							.getString(R.string.square_meters));
+
+				((TextView) rootView.findViewById(R.id.claim_area))
+				 .setVisibility(View.VISIBLE);
+			}
 
 			if (claim.getDateOfStart() != null) {
 
@@ -670,6 +706,7 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
+	
 	public int saveClaim() {
 
 		Person person = Person.getPerson(((TextView) rootView
@@ -742,6 +779,8 @@ public class ClaimDetailsFragment extends Fragment {
 				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(),
 						claim.getClaimId());
 			}
+			
+			OpenTenureApplication.setClaimId(claim.getClaimId());
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
 			claimActivity.setClaimId(claim.getClaimId());
@@ -782,7 +821,6 @@ public class ClaimDetailsFragment extends Fragment {
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
 
-		
 		if (person != null)
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setVisibility(View.VISIBLE);

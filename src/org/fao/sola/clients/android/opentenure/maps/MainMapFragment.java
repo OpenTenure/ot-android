@@ -848,7 +848,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
 			BasePropertyBoundary bpb = new BasePropertyBoundary(
-					mapView.getContext(), map, claim);
+					mapView.getContext(), map, claim, false);
 			Polygon claimPoly = bpb.getPolygon();
 			if (claimPoly != null && claimPoly.intersects(boundsPoly)) {
 				visibleProperties.add(bpb);
@@ -917,7 +917,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
 			visibleProperties.add(new BasePropertyBoundary(
-					mapView.getContext(), map, claim));
+					mapView.getContext(), map, claim, false));
 		}
 
 		showVisibleProperties();

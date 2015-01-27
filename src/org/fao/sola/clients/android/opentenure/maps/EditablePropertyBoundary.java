@@ -271,7 +271,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		updateVertices();
 		resetAdjacency(otherProperties);
 		hideMarkerEditControls();
-		calculateGeometry();
+		calculateGeometry(Claim.getClaim(claimId), true);
 		redrawBoundary();
 		selectedMarker = null;
 		return true;
@@ -304,7 +304,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		redrawBoundary();
 		updateVertices();
 		resetAdjacency(otherProperties);
-		calculateGeometry();
+		calculateGeometry(Claim.getClaim(claimId), true);
 		return true;
 	}
 	
@@ -537,7 +537,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public EditablePropertyBoundary(final Context context, final GoogleMap map, final Claim claim,
 			final ClaimDispatcher claimActivity, final List<BasePropertyBoundary> existingProperties, ModeDispatcher.Mode mode) {
-		super(context, map, claim);
+		super(context, map, claim, true);
 		this.claimActivity = claimActivity;
 		this.mode = mode;
 		this.selectedMarker = null;
@@ -598,7 +598,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			vertex.setSequenceNumber(i);
 			Vertex.createVertex(vertex);
 		}
-		calculateGeometry();
+		calculateGeometry(Claim.getClaim(claimId), true);
 		redrawBoundary();
 
 	}
@@ -818,7 +818,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						updateVertices();
 						redrawBoundary();
 						resetAdjacency(otherProperties);
-						calculateGeometry();
+						calculateGeometry(Claim.getClaim(claimId), true);
 						redrawBoundary();
 					}
 				});
