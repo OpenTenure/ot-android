@@ -660,8 +660,6 @@ public class ClaimDocumentsFragment extends ListFragment {
 		 * 
 		 * */
 		
-		System.out.println("MA da qui ci passo ? ");
-		
 		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
 				.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);

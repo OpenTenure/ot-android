@@ -110,6 +110,7 @@ public class JsonUtilities {
 				tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
 				tempClaim.setNotes(claim.getNotes());
+				tempClaim.setClaimArea(claim.getClaimArea());
 				if (claim.getRecorderName() != null
 						&& !claim.getRecorderName().equals(""))
 					tempClaim.setRecorderName(claim.getRecorderName());

@@ -14,6 +14,7 @@
     <string name="action_remove_section_element">Remove element</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
+    <string name="khmer_language">Khmer</string>
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Download images to local data for offline map usage</string>
     <string name="action_logout">Log Out</string>
@@ -102,7 +103,7 @@
     <string name="group_name">Name</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Software Version</string>
-    <string name="software_version">0.9.5</string>
+    <string name="software_version">0.9.6</string>
     <string name="claim_date">Claim date</string>    
     <string name="claim_name">Claim name</string>
     <string name="claim_name_label">Claim name *</string>
@@ -307,6 +308,15 @@
     <string name="north_west">North-West</string>
     <string name="south_east">South-East</string>
     <string name="south_west">South-West</string>
+    <string name="created">created</string>
+    <string name="uploading">uploading</string>
+    <string name="uploaded">uploaded</string>
+    <string name="deleted">deleted</string>
+    <string name="upload_incomplete">upload incomplete</string>
+    <string name="upload_error">upload error</string>
+    <string name="download_incomplete">download incomplete</string>
+    <string name="download_failed">download failed</string>
+    <string name="downloading">downloading</string>
     
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>

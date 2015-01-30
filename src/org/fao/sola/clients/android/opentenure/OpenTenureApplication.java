@@ -43,9 +43,12 @@ import org.fao.sola.clients.android.opentenure.model.Database;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -66,6 +69,7 @@ public class OpenTenureApplication extends Application {
 
 	private static String localization;
 	private static Locale locale;
+	static boolean khmer = false;
 	private static boolean loggedin;
 	private static String username;
 	private static Activity activity;
@@ -166,11 +170,36 @@ public class OpenTenureApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		context = getApplicationContext();
+
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
+
+		setKhmer(klocale);
+
+		if (isKhmer()) {
+			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			this.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+			setLocalization(locale);
+		} else {
+
+			locale = Resources.getSystem().getConfiguration().locale;
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+
+			setLocalization(locale);
+		}
+
 		sInstance = this;
 		sInstance.initializeInstance();
-		context = getApplicationContext();
-		locale = getResources().getConfiguration().locale;
-		setLocalization(locale);
 
 		FileSystemUtilities.createClaimsFolder();
 		FileSystemUtilities.createClaimantsFolder();
@@ -403,18 +432,26 @@ public class OpenTenureApplication extends Application {
 		OpenTenureApplication.claimId = claimId;
 	}
 
+	public static boolean isKhmer() {
+		return khmer;
+	}
+
+	public static void setKhmer(boolean khmer) {
+		OpenTenureApplication.khmer = khmer;
+	}
+
 	public static void setLocalization(Locale locale) {
 
 		locale.getDisplayLanguage();
+		if (!isKhmer()) {
 
-		OpenTenureApplication.localization = locale.getLanguage().toLowerCase()
-				+ "-" + locale.getCountry().toLowerCase();
-		
-		System.out.println("LOCALE " + localization + " !!!!");
+			OpenTenureApplication.localization = locale.getLanguage()
+					.toLowerCase() + "-" + locale.getCountry();
+		} else {
 
-		/* to remove in the future */
-		//if (!OpenTenureApplication.localization.equals("en-us"))
-		//	OpenTenureApplication.localization = "en-us";
+			OpenTenureApplication.localization = locale.getLanguage();
+
+		}
 
 	}
 

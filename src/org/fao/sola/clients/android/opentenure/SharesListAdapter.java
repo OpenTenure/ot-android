@@ -108,7 +108,8 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 
 		int numb = Owner.getOwners(shares.get(position).getId()).size();
 
-		vh.owners_num.setText("Owners : " + numb);
+		vh.owners_num.setText(OpenTenureApplication.getContext().getString(
+				R.string.owners)+ " : " + numb);
 
 		vh.slogan.setText(shares.get(position).getSlogan());
 		convertView.setOnClickListener(new OnClickListener() {

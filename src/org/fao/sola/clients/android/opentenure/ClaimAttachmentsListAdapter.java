@@ -148,7 +148,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		final Attachment att = Attachment.getAttachment(attachmentId);
 
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.uploaded));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_unmoderated));
 			vh.barAttachment.setVisibility(View.GONE);
@@ -164,11 +165,13 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.barAttachment.setProgress(progress);
 
 			vh.attachmentStatus
-					.setText(att.getStatus() + " :" + progress + "%");
+					.setText(OpenTenureApplication.getContext().getResources()
+							.getString(R.string.uploading) + " :" + progress + "%");
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.created));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
@@ -258,13 +261,15 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			});
 
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.download_failed));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.downloading));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.VISIBLE);
@@ -278,18 +283,21 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.barAttachment.setProgress(progress);
 		} else if (att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.download_incomplete));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.upload_incomplete));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
-			vh.attachmentStatus.setText(att.getStatus());
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
+					.getString(R.string.upload_error));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 			vh.barAttachment.setVisibility(View.GONE);

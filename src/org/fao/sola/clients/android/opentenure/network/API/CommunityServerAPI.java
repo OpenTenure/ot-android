@@ -922,6 +922,8 @@ public class CommunityServerAPI {
 		if(csUrl.trim().equals(""))
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
+		System.out.println("Localization " + OpenTenureApplication.getLocalization());
+		
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl,
 				OpenTenureApplication.getLocalization());

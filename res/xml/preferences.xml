@@ -30,4 +30,9 @@
         android:title="@string/software_version_title"
         android:summary="@string/software_version"
         android:dialogTitle="@string/software_version_title" />
+    
+    <CheckBoxPreference
+      android:title="@string/khmer_language"
+      android:key="locale" />
+    
 </PreferenceScreen>

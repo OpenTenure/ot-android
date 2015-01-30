@@ -376,6 +376,8 @@ public class PersonFragment extends Fragment {
 					.setFocusable(false);
 			((Spinner) rootView.findViewById(R.id.id_type_spinner))
 					.setClickable(false);
+			((ImageView) rootView
+			.findViewById(R.id.claimant_picture)).setClickable(false);
 
 			((Spinner) rootView.findViewById(R.id.gender_spinner))
 					.setFocusable(false);
@@ -437,6 +439,9 @@ public class PersonFragment extends Fragment {
 
 			((EditText) rootView.findViewById(R.id.email_address_input_field))
 					.setFocusable(false);
+			
+			((ImageView) rootView
+					.findViewById(R.id.claimant_picture)).setClickable(false);
 
 			((EditText) rootView
 					.findViewById(R.id.contact_phone_number_input_field))

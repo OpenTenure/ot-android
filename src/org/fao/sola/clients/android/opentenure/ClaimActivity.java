@@ -42,8 +42,11 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -126,13 +129,30 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
-		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
+
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
+		OpenTenureApplication.setKhmer(klocale);
+
+		if (OpenTenureApplication.isKhmer()) {
+			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		} else {
+
+			Locale locale = Resources.getSystem().getConfiguration().locale;
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+
+			OpenTenureApplication.setLocalization(locale);
+		}
 	};
 
 	@Override
@@ -164,13 +184,19 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
+
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(this);
+		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
+
+		if (klocale) {
+			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		}
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
@@ -182,31 +208,29 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		// Setup the form before creating the section adapter
 
 		if (savedInstanceState != null) {
-		
+
 			savedInstanceClaimId = savedInstanceState.getString(CLAIM_ID_KEY);
 			savedInstanceMode = savedInstanceState.getString(MODE_KEY);
 		}
 		String localClaimId = null;
 
-		if(savedInstanceClaimId == null){
+		if (savedInstanceClaimId == null) {
 			localClaimId = getIntent().getExtras().getString(CLAIM_ID_KEY);
-		}else{
+		} else {
 			localClaimId = savedInstanceClaimId;
 		}
 
-		if(savedInstanceMode == null){
-			mode = ModeDispatcher.Mode
-					.valueOf(getIntent().getStringExtra(MODE_KEY));
-		}else{
-			mode = ModeDispatcher.Mode
-					.valueOf(savedInstanceMode);
+		if (savedInstanceMode == null) {
+			mode = ModeDispatcher.Mode.valueOf(getIntent().getStringExtra(
+					MODE_KEY));
+		} else {
+			mode = ModeDispatcher.Mode.valueOf(savedInstanceMode);
 		}
 
 		if (localClaimId != null
 				&& !localClaimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
 			setClaimId(localClaimId);
 		}
-
 
 		// Setup the form before creating the section adapter
 
@@ -410,17 +434,19 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					.getChildAt(5), mViewPager);
 			return true;
 			// Respond to the action bar's Up/Home button
-	    case android.R.id.home:
-	    	 // This is called when the Home (Up) button is pressed in the action bar.
-            Intent upIntent;
-			
-				upIntent = NavUtils.getParentActivityIntent(this);
-				upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-	            startActivity(upIntent);
-	            finish();
-			
-            return true;
-	    
+		case android.R.id.home:
+			// This is called when the Home (Up) button is pressed in the action
+			// bar.
+			Intent upIntent;
+
+			upIntent = NavUtils.getParentActivityIntent(this);
+			upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+					| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(upIntent);
+			finish();
+
+			return true;
+
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -474,17 +500,29 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				SectionTemplate sectionTemplate = formTemplate.getSectionTemplateList().get(sectionPosition);
-				if(sectionTemplate == null){
+				SectionTemplate sectionTemplate = formTemplate
+						.getSectionTemplateList().get(sectionPosition);
+				if (sectionTemplate == null) {
 					return null;
 				}
-				if(sectionTemplate.getMaxOccurrences() > 1){
-					fragment = new SectionFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition), sectionTemplate, mode);
-				}else{
-					if(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().size()==0){
-						editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().add(new SectionElementPayload(sectionTemplate));
+				if (sectionTemplate.getMaxOccurrences() > 1) {
+					fragment = new SectionFragment(editedFormPayload
+							.getSectionPayloadList().get(sectionPosition),
+							sectionTemplate, mode);
+				} else {
+					if (editedFormPayload.getSectionPayloadList()
+							.get(sectionPosition)
+							.getSectionElementPayloadList().size() == 0) {
+						editedFormPayload
+								.getSectionPayloadList()
+								.get(sectionPosition)
+								.getSectionElementPayloadList()
+								.add(new SectionElementPayload(sectionTemplate));
 					}
-					fragment = new SectionElementFragment(editedFormPayload.getSectionPayloadList().get(sectionPosition).getSectionElementPayloadList().get(0), sectionTemplate, mode);
+					fragment = new SectionElementFragment(editedFormPayload
+							.getSectionPayloadList().get(sectionPosition)
+							.getSectionElementPayloadList().get(0),
+							sectionTemplate, mode);
 				}
 			}
 			fragmentReferences.put(position, fragment);
@@ -494,26 +532,28 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		@Override
 		public int getCount() {
 
-				return NUMBER_OF_STATIC_SECTIONS + getNumberOfSections();
+			return NUMBER_OF_STATIC_SECTIONS + getNumberOfSections();
 
 		}
-		
-		private int getNumberOfSections(){
-			if(editedFormPayload != null){
+
+		private int getNumberOfSections() {
+			if (editedFormPayload != null) {
 				return editedFormPayload.getSectionPayloadList().size();
-			}else if(formTemplate != null){
+			} else if (formTemplate != null) {
 				return formTemplate.getSectionTemplateList().size();
-			}else{
+			} else {
 				return 0;
 			}
 		}
 
-		private String getSectionTitle(int position){
-			if(editedFormPayload != null){
-				return editedFormPayload.getSectionPayloadList().get(position).getDisplayName().toUpperCase(Locale.US);
-			}else if(formTemplate != null){
-				return formTemplate.getSectionTemplateList().get(position).getDisplayName().toUpperCase(Locale.getDefault());
-			}else{
+		private String getSectionTitle(int position) {
+			if (editedFormPayload != null) {
+				return editedFormPayload.getSectionPayloadList().get(position)
+						.getDisplayName().toUpperCase(Locale.US);
+			} else if (formTemplate != null) {
+				return formTemplate.getSectionTemplateList().get(position)
+						.getDisplayName().toUpperCase(Locale.getDefault());
+			} else {
 				return "";
 			}
 		}
@@ -560,27 +600,30 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			// setting up for an existing claim
 			Claim claim = Claim.getClaim(claimId);
 			originalFormPayload = claim.getDynamicForm();
-			if(originalFormPayload != null){
+			if (originalFormPayload != null) {
 				// There's a payload already attached to this claim
 				editedFormPayload = new FormPayload(originalFormPayload);
 				// Try to retrieve its template
-				formTemplate = SurveyFormTemplate.getFormTemplateByName(originalFormPayload.getFormTemplateName());
-				if(formTemplate == null){
+				formTemplate = SurveyFormTemplate
+						.getFormTemplateByName(originalFormPayload
+								.getFormTemplateName());
+				if (formTemplate == null) {
 					// We don't have the original template for this payload
 					// let's try to rebuild it from the payload itself
 					formTemplate = new FormTemplate(originalFormPayload);
 
 				}
-				
-			}else{
+
+			} else {
 				// A payload has not been created for this claim
 				// so we refer to the default template for the dynamic part
-				formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
+				formTemplate = SurveyFormTemplate
+						.getDefaultSurveyFormTemplate();
 				originalFormPayload = new FormPayload(formTemplate);
 				originalFormPayload.setClaimId(claimId);
 				editedFormPayload = new FormPayload(originalFormPayload);
 			}
-		}else{
+		} else {
 			// It's a newly created claim
 			// so we refer to the default template for the dynamic part
 			formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
@@ -603,10 +646,10 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onClaimSaved() {
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
 				.get(1);
-		if(editedFormPayload != null){
+		if (editedFormPayload != null) {
 			editedFormPayload.setClaimId(claimId);
 		}
-		if(originalFormPayload != null){
+		if (originalFormPayload != null) {
 			originalFormPayload.setClaimId(claimId);
 		}
 		if (claimMapFragment != null)

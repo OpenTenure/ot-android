@@ -1,4 +1,5 @@
 /**
+ * 
  * ******************************************************************************************
  * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
@@ -134,6 +135,7 @@ public class BasePropertyBoundary {
 		name = claim.getName() == null || claim.getName().equalsIgnoreCase("") ? context
 				.getResources().getString(R.string.default_claim_name) : claim
 				.getName();
+		
 		String status = claim.getStatus();
 		claimId = claim.getClaimId();
 		claimSlogan = claim.getSlogan(context);
@@ -241,7 +243,7 @@ public class BasePropertyBoundary {
 			
 			 int digit = (int) (Math.abs(area) % 10);
 			 if(digit > 0 && digit < 5)
-				 area = area + 5 - digit ; 
+				 area = area - digit ; 
 			 else if (digit > 5 && digit < 9)
 				 area = area + 10 - digit; 
 			 else if (digit == 9)
@@ -302,7 +304,16 @@ public class BasePropertyBoundary {
 		tf.setTextAlign(Align.CENTER);
 		tf.setAntiAlias(true);
 		tf.setColor(color);
-		tf.getTextBounds(name, 0, name.length(), boundsText);
+		try{
+			tf.getTextBounds(name, 0, name.length(), boundsText);
+			}
+		catch(Exception e){
+			name = context
+					.getResources().getString(R.string.default_claim_name);
+			if(name != null)
+			tf.getTextBounds(name, 0, name.length(), boundsText);
+		}
+		
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmpText = Bitmap.createBitmap(boundsText.width(),
 				boundsText.height() - boundsText.bottom, conf);

@@ -104,6 +104,9 @@ public class Claim {
 	@SerializedName("eastAdjacency")
 	String eastAdjacency;
 	
+	@SerializedName("claimArea")
+	long claimArea;
+	
 	@SerializedName("recorderName")
 	String recorderName;
 
@@ -317,6 +320,15 @@ public class Claim {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+
+	public long getClaimArea() {
+		return claimArea;
+	}
+
+	public void setClaimArea(long claimArea) {
+		this.claimArea = claimArea;
+	}
+
 	
 	
 	

@@ -418,7 +418,8 @@ public class ClaimDeleteListener implements OnClickListener {
 												.getContext()
 												.getResources()
 												.getString(
-														R.string.message_error_deleting_claim),
+														R.string.message_error_deleting_claim
+														),
 										Toast.LENGTH_SHORT);
 								toast.show();
 

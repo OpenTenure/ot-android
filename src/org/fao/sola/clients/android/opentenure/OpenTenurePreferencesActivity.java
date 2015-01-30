@@ -35,9 +35,12 @@ public class OpenTenurePreferencesActivity extends Activity {
 	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
 	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
 	public static final String FORM_URL_PREF = "form_template_url_pref";
+	public static final String KHMER = "khmer";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        
 
         // Display the fragment as the main content.
         getFragmentManager().beginTransaction()

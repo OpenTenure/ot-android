@@ -49,6 +49,7 @@ import org.fao.sola.clients.android.opentenure.network.response.ViewHolderRespon
 
 import android.view.View;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -263,10 +264,15 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 							+ " "
 							+ res.getHttpStatusCode()
 							+ "  "
-							+ res.getMessage(), Toast.LENGTH_LONG);
+							+ OpenTenureApplication.getContext().getResources()
+							.getString(R.string.message_login_no_more_valid), Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
+			
+			FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+					.getActivity();
+			fa.invalidateOptionsMenu();
 
 			ViewHolder vh = vhr.getVh();
 

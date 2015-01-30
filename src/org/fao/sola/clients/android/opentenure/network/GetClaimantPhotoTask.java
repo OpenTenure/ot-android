@@ -65,6 +65,15 @@ public class GetClaimantPhotoTask extends
 
 		att.setStatus(AttachmentStatus._DOWNLOADING);
 		Attachment.updateAttachment(att);
+		
+		Claim claim = Claim.getClaim(att.getClaimId());
+		if(claim == null){
+			
+			Log.d("CommunityServerAPI", " CLAIMANT PICTURE : CLAIM DOES NOT EXIST : "
+					+ att.getClaimId());
+			return null;
+			
+		}
 
 		/* create the File object to write */
 		File file = new File(FileSystemUtilities.getClaimantFolder(Claim

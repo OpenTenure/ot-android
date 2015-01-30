@@ -102,7 +102,6 @@
     <string name="group_name">ឈ្មោះ</string>
     <string name="signature">ហត្ថលេខា</string>
     <string name="software_version_title">សេរីកម្មវិធី</string>
-    <string name="software_version">0.9.4</string>
     <string name="claim_date">ការបរិច្ឆេទទាមទា</string>
     <string name="claim_name">ឈ្មោះអ្នកទាមទា</string>
     <string name="claim_name_label">ឈ្មោះអ្នកទាមទា*</string>
@@ -331,7 +330,16 @@
     <string name="action_view_community_area">បង្ហាញតំបន់សហគមន៍</string>
     <string name="hint_type_to_filter">សរសេរអក្សរដើម្បីបំពេញនៅក្នុងបញ្ជី</string>
     <string name="shares_prompt">ជ្រើរើសរូបរាង</string>
-
+    <string name="claim_area_label">ផ្ទៃដី</string>
+    <string name="square_meters">ម៉ែតការេ​​</string>
+    <string name="created">បង្កើត</string>
+    <string name="uploading">កំពុងបញ្ចូលឯកសារ</string>
+    <string name="uploaded">បានបញ្ចូលឯកសារ</string>
+    <string name="deleted">បានលុប</string>    
+    <string name="upload_error">បញ្ចូលឯកសារមានបញ្ហា</string>
+    <string name="download_incomplete">ទាញយកឯកសារមិនបានបញ្ចប់</string>
+    <string name="download_failed">ទាញយកឯកសារបានសារបរាជ័យ</string>
+    <string name="downloading">កំពុងទាញយកឯកសារ</string>
     <string-array name="claim_statuses">
         <item>មិនល្មម</item>
         <item>ល្មម</item>
