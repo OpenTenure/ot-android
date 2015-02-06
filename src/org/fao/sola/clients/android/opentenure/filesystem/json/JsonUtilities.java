@@ -167,8 +167,8 @@ public class JsonUtilities {
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
-				for (Iterator<Attachment> iterator = claim.getAttachments().iterator(); iterator
-						.hasNext();) {
+				for (Iterator<Attachment> iterator = claim.getAttachments()
+						.iterator(); iterator.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
 					org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment attach = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment();
@@ -195,8 +195,8 @@ public class JsonUtilities {
 
 				List<Location> locations = new ArrayList<Location>();
 
-				for (Iterator<PropertyLocation> iterator = claim.getPropertyLocations()
-						.iterator(); iterator.hasNext();) {
+				for (Iterator<PropertyLocation> iterator = claim
+						.getPropertyLocations().iterator(); iterator.hasNext();) {
 
 					PropertyLocation propertyLocation = (PropertyLocation) iterator
 							.next();
@@ -285,8 +285,7 @@ public class JsonUtilities {
 					share.setOwners(ownersJson);
 					share.setId("" + shareDB.getId());
 
-					share.setNominator(shareDB.getShares());
-					share.setDenominator(100);
+					share.setPercentage(shareDB.getShares());
 
 					shares.add(share);
 
@@ -329,9 +328,9 @@ public class JsonUtilities {
 					Gson gson = new GsonBuilder()
 							.setPrettyPrinting()
 							.serializeNulls()
-//							.setFieldNamingPolicy(
-//									FieldNamingPolicy.UPPER_CAMEL_CASE)
-									.excludeFieldsWithModifiers(Modifier.TRANSIENT)
+							// .setFieldNamingPolicy(
+							// FieldNamingPolicy.UPPER_CAMEL_CASE)
+							.excludeFieldsWithModifiers(Modifier.TRANSIENT)
 							.create();
 
 					String g = gson.toJson(tempClaim);
@@ -405,8 +404,8 @@ public class JsonUtilities {
 	/** Transform Calendar to ISO 8601 string. */
 	public static String fromCalendar(final Calendar calendar) {
 		Date date = calendar.getTime();
-		String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US)
-				.format(date);
+		String formatted = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ",
+				Locale.US).format(date);
 		return formatted.substring(0, 22) + ":" + formatted.substring(22);
 	}
 
@@ -425,7 +424,8 @@ public class JsonUtilities {
 		} catch (IndexOutOfBoundsException e) {
 			throw new ParseException("Invalid length", 0);
 		}
-		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).parse(s);
+		Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US)
+				.parse(s);
 		calendar.setTime(date);
 		return calendar;
 	}

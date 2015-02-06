@@ -27,24 +27,39 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import android.app.Activity;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
 
-public class OpenTenurePreferencesActivity extends Activity {
+
+import android.preference.PreferenceActivity;
+
+public class OpenTenurePreferencesActivity extends PreferenceActivity implements
+		OnSharedPreferenceChangeListener {
 	public static final String CS_URL_PREF = "cs_url_pref";
 	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
 	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
 	public static final String FORM_URL_PREF = "form_template_url_pref";
 	public static final String KHMER = "khmer";
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        
 
-        // Display the fragment as the main content.
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new OpenTenurePreferencesFragment())
-                .commit();
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Display the fragment as the main content.
+		getFragmentManager()
+				.beginTransaction()
+				.replace(android.R.id.content,
+						new OpenTenurePreferencesFragment()).commit();
+
+		
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+			String key) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

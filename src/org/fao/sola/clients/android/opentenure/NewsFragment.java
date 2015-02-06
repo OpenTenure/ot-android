@@ -641,7 +641,7 @@ public class NewsFragment extends ListFragment {
 						CommunityServerAPIUtilities.HTTPS_GETFORM, formUrlServer,
 						OpenTenureApplication.getLocalization());
 			}
-			System.out.println(" formUrl " + formUrl);
+			
 //			formUrl = OpenTenurePreferences
 //					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
 //							formUrl);

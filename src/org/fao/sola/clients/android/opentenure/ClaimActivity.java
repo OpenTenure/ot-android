@@ -130,13 +130,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
 
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
-		OpenTenureApplication.setKhmer(klocale);
-
+		System.out.println("Claim A On resume ");
+		
 		if (OpenTenureApplication.isKhmer()) {
 			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		} else if(OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq-AL");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
@@ -153,7 +157,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 			OpenTenureApplication.setLocalization(locale);
 		}
-	};
+		System.out.println("OpenTenureApplication.getLocalization " + OpenTenureApplication.getLocalization());
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -184,20 +189,36 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
-
-		if (klocale) {
+		
+		System.out.println("Claim A On create ");
+		
+		if (OpenTenureApplication.isKhmer()) {
 			Locale locale = new Locale("km-KM");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
+		}else if (OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq-AL");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+		} else {
+
+			Locale locale = Resources.getSystem().getConfiguration().locale;
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+
+			OpenTenureApplication.setLocalization(locale);
 		}
 
+		System.out.println("OpenTenureApplication.getLocalization " + OpenTenureApplication.getLocalization());
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim);

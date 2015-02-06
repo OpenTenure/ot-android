@@ -92,15 +92,15 @@
     <string name="group_name">Emër</string>
     <string name="signature">Nënshkrimi</string>
     <string name="software_version_title">Versioni i programit</string>
-    <string name="claim_date">Data e pretendimit</string>    
+    <string name="claim_date">Data e pretendimit</string>
     <string name="claim_name">Emri i pretendimit</string>
     <string name="claim_name_label">Emri i pretendimit *</string>
     <string name="claim_type">Tipi i pretendimit *</string>
-    <string name="default_claim_name">Pretendim i ri</string>    
+    <string name="default_claim_name">Pretendim i ri</string>
     <string name="first_name">Emri</string>
     <string name="first_name_label">Emri *</string>
     <string name="last_name">Atësia</string>
-    <string name="last_name_label">Atësia *</string>    
+    <string name="last_name_label">Atësia *</string>
     <string name="date_of_birth">Datëlindja (VVVV-MM-DD)</string>
     <string name="date_of_birth_label">Datëlindja * (VVVV-MM-DD)</string>
     <string name="date_of_start">Data e pretendimit vlen nga (VVVV-MM-DD)</string>
@@ -124,7 +124,7 @@
     <string name="message_connection_error">Lidhja e pa disponoheshe</string>
     <string name="message_attachment_downloaded">Shkarkoni skedarin bashkangjitur %s</string>
     <string name="message_attachment_downloading">Skedari %s bashkangjitur, është duke u shkarkuar </string>
-    <string name="message_attachment_download_failed">Shkarkimi i skedarit %s dështoi </string>    
+    <string name="message_attachment_download_failed">Shkarkimi i skedarit %s dështoi </string>
     <string name="message_attachment_download_not_complete">Shkarkimi i skedarit %s nuk përfundoi </string>
     <string name="message_remove_person">Personi %s u fshi</string>
     <string name="message_remove_person_dialog">A jeni i sigurt se doni të fshini %s?</string>
@@ -181,13 +181,13 @@
     <string name="message_no_available_shares_adding_new">Zvogëloni numrin e pjesëve në këtë pretendim përpara se të shtoni një pjesë të re</string>
     <string name="message_share_saved">Pjesa u ruajt</string>
     <string name="message_share_not_saved">Gabim gjatë ruajtjes së pjesës</string>
-	<string name="message_already_owner">Personi i selektuar tashmë e ka një pjese tek ky pretendim</string>
+    <string name="message_already_owner">Personi i selektuar tashmë e ka një pjese tek ky pretendim</string>
     <string name="message_touch_to_select_a_person">Preke për të zgjedhur një person</string>
     <string name="message_touch_to_select_a_claim">Preke për të zgjedhur një pretendim</string>
     <string name="message_error_mandatory_fields">Plotësoni të gjitha fushat e detyruara përpara se ta ruani</string>
     <string name="message_error_mandatory_field_first_name">Plotëso fushën e detyruar emri, përpara se ta ruani</string>
     <string name="message_error_mandatory_field_last_name">Plotëso fushën e detyruar mbiemri, përpara se ta ruani</string>
-    <string name="message_error_mandatory_field_gender">Plotëso fushën e detyruar gjinia, përpara se ta ruani</string>    
+    <string name="message_error_mandatory_field_gender">Plotëso fushën e detyruar gjinia, përpara se ta ruani</string>
     <string name="message_error_mandatory_birthdate">Datëlindja nuk është ne formatin e duhur ose është bosh</string>
     <string name="message_error_startdate">Data e fillimit të të drejtave nuk është në formatin e duhur ose është bosh</string>
     <string name="message_remove_quest">Doni ta tërhiqni këtë pretendim?</string>
@@ -209,13 +209,13 @@
     <string name="message_title_app_initialized"> Aplikacioni u inicializua </string>
     <string name="message_app_initialized_default">Aplikacioni është i gatshëm të punojë dhe komunikojë me Komunitetin kryesor të Open Tenure Server</string>
     <string name="message_app_initialized">Aplikacioni është i gatshëm të punojë dhe komunikojë me Komunitetin Open Tenure Server</string>
-	<string name="check_location_service">S\'ka informacion mbi vendndodhjen. Kontrollo nëse shërbimi i vendndodhjes është i hapur tek konfigurimet.</string>
-	<string name="tiles_queued"> Janë  %d tiles në listën e shkarkimit </string>
-	<string name="too_many_tiles_queued">Janë  %d tiles në listën e shkarkimit. Ju lutem prisni përpara se të shkarkoni tile shtese</string>
-	<string name="all_tiles_downloaded">Të gjitha tilet në listën e shkarkimit u shkarkuan</string>
-	<string name="not_all_tiles_downloaded">%d tiles për ketë sipërfaqe harte nuk u shkarkuan. Kontrollo nëse është e mjaftueshme ose riprovoni shkarkimin</string>
-	<string name="zoom_level_too_low">Sipërfaqja është shumë e madhe. Zmadhohuni më shumë që të mund të shkarkoni të dhënat nga harta</string>
-	<string name="yes">Po</string>
+    <string name="check_location_service">S\'ka informacion mbi vendndodhjen. Kontrollo nëse shërbimi i vendndodhjes është i hapur tek konfigurimet.</string>
+    <string name="tiles_queued"> Janë  %d tiles në listën e shkarkimit </string>
+    <string name="too_many_tiles_queued">Janë  %d tiles në listën e shkarkimit. Ju lutem prisni përpara se të shkarkoni tile shtese</string>
+    <string name="all_tiles_downloaded">Të gjitha tilet në listën e shkarkimit u shkarkuan</string>
+    <string name="not_all_tiles_downloaded">%d tiles për ketë sipërfaqe harte nuk u shkarkuan. Kontrollo nëse është e mjaftueshme ose riprovoni shkarkimin</string>
+    <string name="zoom_level_too_low">Sipërfaqja është shumë e madhe. Zmadhohuni më shumë që të mund të shkarkoni të dhënat nga harta</string>
+    <string name="yes">Po</string>
     <string name="person">Person</string>
     <string name="group">Grup</string>
     <string name="no">Jo</string>
@@ -285,115 +285,143 @@
     <string name="north_west">Veri-Perëndim</string>
     <string name="south_east">Jug-Lindje</string>
     <string name="south_west">Jug-Perëndim</string>
-    
+    <string name="adjacencies">Pronat Kufitare</string>
+    <string name="message_claim_exported_error">Pretendimi %s nuk u eksportua</string>
+    <string name="message_claim_exported">Pretendimi %s u eksportua</string>
+    <string name="north_adjacency">Përshkruani pasurinë në veri të pretendimit tuaj</string>
+    <string name="south_adjacency"> Përshkruani pasurinë në jug të pretendimit tuaj </string>
+    <string name="east_adjacency"> Përshkruani pasurinë në lindje të pretendimit tuaj </string>
+    <string name="west_adjacency"> Përshkruani pasurinë në perëndim të pretendimit tuaj </string>
+    <string name="add_owner">Shto Pronarin </string>
+    <string name="action_modify_claimant">Modifiko Pretenduesin</string>
+    <string name="action_add_claimant">Shto Pretenduesin</string>
+    <string name="action_select_challenge">Zgjidh pretendimin për ta kundërshtuar</string>
+    <string name="title_challenged_claim">Pretendimet e kundërshtuara : </string>
+    <string name="date_of_start">VVVV-MM-DD</string>
+    <string name="status">status : </string>
+    <string name="title_no_connection">Lidhja mungon</string>
+    <string name="message_no_connection_at_startup">Lidhja me Internetin mungon. Konfigurimi mund të mos i reflektojë ndryshimet e fundit dhe nuk do jeni në gjendje të ngarkoni apo shkarkoni të dhëna. Lidhuni në internet nëse doni të transferoni të dhëna me OpenTenure</string>
+    <string name="action_backup_db">Backup të dhënat lokale</string>
+    <string name="message_db_backed_up">Një kopje e bazës të të dhënave lokale u krijua</string>
+    <string name="title_initialization_process">Inicializim Procesi</string>
+    <string name="message_initialize_before"> Përpara, bëni Inicializimin </string>
+    <string name="message_default_initialization">Aplikacioni po hapet me të dhënat aktuale të Komunitetit Server. Të dhënat aktuale të Komunitetit Server duhet të përdoren vetëm për qëllime demonstrimi. A doni të vazhdoni? Përndryshe shtypni Anulo dhe vendosni të dhënat e Komunitetit Server tek konfigurimi</string>
+    <string name="action_backup_db">Backup të dhënat lokale</string>
+    <string name="message_db_backed_up">Një kopje e bazës së të dhënave lokale u krijua</string>
+    <string name="action_download_tiles">Shkarko imazhet tek memoria lokale për të mundësuar përdorimin e hartës kur të jeni shkëputur nga interneti</string>
+    <string name="title_confirm_data_transfer">Konfirmo transferimin e të dhënave</string>
+    <string name="message_data_over_mobile">Ju jeni duke transferuar një sasi të madhe të dhënash nëpërmjet lidhjes së internetit me celular. Kostoja e internetit mund të jetë e lartë në varësi të planit tarifor të internetit që ju keni</string>
+    <string name="action_view_community_area">Shiko Zonën e Komunitetit</string>
     <string name="hint_type_to_filter">Shtypni disa karaktere të filtroni nga lista</string>
     <string name="shares_prompt">Zgjidhni pjesët</string>
+
     <string-array name="claim_statuses">
-        <item >I pa moderuar</item>
-        <item >I moderuar</item>
-        <item >I refuzuar</item>
-        <item >Lokal</item>
-        </string-array>
+        <item>I pa moderuar</item>
+        <item>I moderuar</item>
+        <item>I refuzuar</item>
+        <item>Lokal</item>
+    </string-array>
     <string-array name="share_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >11</item>
-        <item >12</item>
-        <item >13</item>
-        <item >14</item>
-        <item >15</item>
-        <item >16</item>
-        <item >17</item>
-        <item >18</item>
-        <item >19</item>
-        <item >20</item>
-        <item >21</item>
-        <item >22</item>
-        <item >23</item>
-        <item >24</item>
-        <item >25</item>
-        <item >26</item>
-        <item >27</item>
-        <item >28</item>
-        <item >29</item>
-        <item >30</item>
-        <item >31</item>
-        <item >32</item>
-        <item >33</item>
-        <item >34</item>
-        <item >35</item>
-        <item >36</item>
-        <item >37</item>
-        <item >38</item>
-        <item >39</item>
-        <item >40</item>
-        <item >41</item>
-        <item >42</item>
-        <item >43</item>
-        <item >44</item>
-        <item >45</item>
-        <item >46</item>
-        <item >47</item>
-        <item >48</item>
-        <item >49</item>
-        <item >50</item>
-        <item >51</item>
-        <item >52</item>
-        <item >53</item>
-        <item >54</item>
-        <item >55</item>
-        <item >56</item>
-        <item >57</item>
-        <item >58</item>
-        <item >59</item>
-        <item >60</item>
-        <item >61</item>
-        <item >62</item>
-        <item >63</item>
-        <item >64</item>
-        <item >65</item>
-        <item >66</item>
-        <item >67</item>
-        <item >68</item>
-        <item >69</item>
-        <item >70</item>
-        <item >71</item>
-        <item >72</item>
-        <item >73</item>
-        <item >74</item>
-        <item >75</item>
-        <item >76</item>
-        <item >77</item>
-        <item >78</item>
-        <item >79</item>
-        <item >80</item>
-        <item >81</item>
-        <item >82</item>
-        <item >83</item>
-        <item >84</item>
-        <item >85</item>
-        <item >86</item>
-        <item >87</item>
-        <item >88</item>
-        <item >89</item>
-        <item >90</item>
-        <item >91</item>
-        <item >92</item>
-        <item >93</item>
-        <item >94</item>
-        <item >95</item>
-        <item >96</item>
-        <item >97</item>
-        <item >98</item>
-        <item >99</item>
-        <item >100</item>
-        </string-array>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+        <item>91</item>
+        <item>92</item>
+        <item>93</item>
+        <item>94</item>
+        <item>95</item>
+        <item>96</item>
+        <item>97</item>
+        <item>98</item>
+        <item>99</item>
+        <item>100</item>
+    </string-array>
+
 </resources>

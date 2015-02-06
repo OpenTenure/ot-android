@@ -27,20 +27,157 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 
 public class OpenTenurePreferencesFragment extends PreferenceFragment {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preferences);
-        
-        
-        
-        
-        
-    }
- }
+		// Load the preferences from an XML resource
+		addPreferencesFromResource(R.xml.preferences);
+
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+
+		if (OpenTenurePreferences.getBoolean("albanian_language", true)) {
+
+			findPreference("default_language").setEnabled(true);
+			findPreference("khmer_language").setEnabled(true);
+			findPreference("albanian_language").setEnabled(false);
+			findPreference("albanian_language").setSelectable(false);
+			System.out.println("isSelectable() "
+					+ findPreference("albanian_language").isSelectable());
+		}
+		if (OpenTenurePreferences.getBoolean("default_language", true)) {
+
+			findPreference("albanian_language").setEnabled(true);
+			findPreference("khmer_language").setEnabled(true);
+			findPreference("default_language").setEnabled(false);
+			findPreference("default_language").setSelectable(false);
+			System.out.println("isSelectable() "
+					+ findPreference("default_language").isSelectable());
+		}
+		if (OpenTenurePreferences.getBoolean("khmer_language", true)) {
+
+			findPreference("albanian_language").setEnabled(true);
+			findPreference("default_language").setEnabled(true);
+			findPreference("khmer_language").setEnabled(false);
+			findPreference("khmer_language").setSelectable(false);
+			System.out.println("isSelectable() "
+					+ findPreference("khmer_language").isSelectable());
+		}
+
+		OpenTenurePreferences
+				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+					public void onSharedPreferenceChanged(
+							SharedPreferences prefs, String key) {
+
+						if (key.equals("default_language")) {
+							System.out.println("Clicco default");
+							// Reset other items
+
+							if (prefs.getBoolean("default_language", true)) {
+
+								SharedPreferences.Editor editor = prefs.edit();
+
+								editor.putBoolean("khmer_language", false);
+								editor.putBoolean("albanian_language", false);
+
+								editor.commit();
+
+								synchronized (this) {
+									setPreferenceScreen(null);
+									addPreferencesFromResource(R.xml.preferences);
+
+								}
+
+								Intent i = OpenTenureApplication
+										.getContext()
+										.getPackageManager()
+										.getLaunchIntentForPackage(
+												OpenTenureApplication
+														.getContext()
+														.getPackageName());
+								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								System.exit(2);
+								startActivity(i);
+
+							}
+						}
+
+						if (key.equals("khmer_language")) {
+							// Reset other items
+							System.out.println("Clicco khmer");
+
+							if (prefs.getBoolean("khmer_language", true)) {
+
+								SharedPreferences.Editor editor = prefs.edit();
+								editor.putBoolean("default_language", false);
+								editor.putBoolean("albanian_language", false);
+
+								editor.commit();
+
+								synchronized (this) {
+									setPreferenceScreen(null);
+									addPreferencesFromResource(R.xml.preferences);
+
+								}
+
+								Intent i = OpenTenureApplication
+										.getContext()
+										.getPackageManager()
+										.getLaunchIntentForPackage(
+												OpenTenureApplication
+														.getContext()
+														.getPackageName());
+								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+								System.exit(2);
+								startActivity(i);
+							}
+
+						}
+
+						if (key.equals("albanian_language")) {
+
+							System.out.println("Clicco albanese");
+							// Reset other items
+
+							if (prefs.getBoolean("albanian_language", true)) {
+
+								SharedPreferences.Editor editor = prefs.edit();
+								editor.putBoolean("default_language", false);
+								editor.putBoolean("khmer_language", false);
+
+								editor.commit();
+
+								synchronized (this) {
+									setPreferenceScreen(null);
+									addPreferencesFromResource(R.xml.preferences);
+
+								}
+
+								Intent i = OpenTenureApplication
+										.getContext()
+										.getPackageManager()
+										.getLaunchIntentForPackage(
+												OpenTenureApplication
+														.getContext()
+														.getPackageName());
+								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+								System.exit(2);
+								startActivity(i);
+							}
+
+						}
+					}
+				});
+
+	}
+}
