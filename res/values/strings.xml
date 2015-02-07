@@ -15,6 +15,8 @@
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
     <string name="khmer_language">Khmer</string>
+    <string name="albanian_language">Albanian</string>
+    <string name="default_language">Default</string>
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Download images to local data for offline map usage</string>
     <string name="action_logout">Log Out</string>
@@ -317,6 +319,7 @@
     <string name="download_incomplete">download incomplete</string>
     <string name="download_failed">download failed</string>
     <string name="downloading">downloading</string>
+    <string name="language">Language</string>
     
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>

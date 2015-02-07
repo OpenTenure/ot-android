@@ -70,6 +70,7 @@ public class OpenTenureApplication extends Application {
 	private static String localization;
 	private static Locale locale;
 	static boolean khmer = false;
+	static boolean albanian = false;
 	private static boolean loggedin;
 	private static String username;
 	private static Activity activity;
@@ -174,12 +175,20 @@ public class OpenTenureApplication extends Application {
 
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
 
-		setKhmer(klocale);
+		setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
+		setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 
 		if (isKhmer()) {
 			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			this.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+			setLocalization(locale);
+		} else if (isAlbanian()) {
+			Locale locale = new Locale("sq-AL");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			this.locale = locale;
@@ -440,10 +449,18 @@ public class OpenTenureApplication extends Application {
 		OpenTenureApplication.khmer = khmer;
 	}
 
+	public static boolean isAlbanian() {
+		return albanian;
+	}
+
+	public static void setAlbanian(boolean albanian) {
+		OpenTenureApplication.albanian = albanian;
+	}
+
 	public static void setLocalization(Locale locale) {
 
 		locale.getDisplayLanguage();
-		if (!isKhmer()) {
+		if (!isKhmer() && !isAlbanian()) {
 
 			OpenTenureApplication.localization = locale.getLanguage()
 					.toLowerCase() + "-" + locale.getCountry();

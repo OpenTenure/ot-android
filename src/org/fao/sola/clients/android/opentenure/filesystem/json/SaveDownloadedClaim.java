@@ -398,7 +398,7 @@ public class SaveDownloadedClaim {
 
 				shareDB.setClaimId(downloadedClaim.getId());
 				shareDB.setId(share.getId());
-				shareDB.setShares(share.getNominator());
+				shareDB.setShares(share.getPercentage());
 
 				if (ShareProperty.getShare(share.getId()) == null)
 					shareDB.create();

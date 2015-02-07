@@ -301,6 +301,7 @@
     <string name="south_west">Sud-Ovest</string>
     <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
     <string name="shares_prompt">Seleziona le quote</string>
+     <string name="language">Linguaggio</string>
 
     <string-array name="claim_statuses">
         <item>Da moderare</item>

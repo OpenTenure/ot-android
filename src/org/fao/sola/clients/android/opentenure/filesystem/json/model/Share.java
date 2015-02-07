@@ -35,8 +35,8 @@ import com.google.gson.annotations.SerializedName;
 public class Share {
 
 	@SerializedName("id") String id;
-	@SerializedName("nominator") int nominator;
-	@SerializedName("denominator") int denominator;
+	@SerializedName("percentage") int percentage;
+	
 
 	@SerializedName("owners") List<Person> owners;
 
@@ -48,21 +48,6 @@ public class Share {
 		this.id = id;
 	}
 
-	public int getNominator() {
-		return nominator;
-	}
-
-	public void setNominator(int nominator) {
-		this.nominator = nominator;
-	}
-
-	public int getDenominator() {
-		return denominator;
-	}
-
-	public void setDenominator(int denominator) {
-		this.denominator = denominator;
-	}
 
 	public List<Person> getOwners() {
 		return owners;
@@ -72,5 +57,14 @@ public class Share {
 		this.owners = owners;
 	}
 
+	public int getPercentage() {
+		return percentage;
+	}
+
+	public void setPercentage(int percentage) {
+		this.percentage = percentage;
+	}
+
+	
 
 }

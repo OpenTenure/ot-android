@@ -91,12 +91,21 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
-		
-		OpenTenureApplication.setKhmer(klocale);
+
+		OpenTenureApplication.setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
+		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 		
 		if (OpenTenureApplication.isKhmer()) {
 			Locale locale = new Locale("km-KM");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+
+			OpenTenureApplication.setLocalization(locale);
+		} else if (OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq-AL");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
@@ -180,13 +189,12 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
 
-		OpenTenureApplication.setKhmer(klocale);
+		OpenTenureApplication.setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
+		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 
 		if (OpenTenureApplication.isKhmer()) {
 			Locale locale = new Locale("km-KM");
@@ -197,7 +205,15 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					getBaseContext().getResources().getDisplayMetrics());
 			OpenTenureApplication.setLocalization(locale);
 		}
-		else{
+		else if (OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq-AL");
+			Locale.setDefault(locale);
+			android.content.res.Configuration config = new android.content.res.Configuration();
+			config.locale = locale;
+			getBaseContext().getResources().updateConfiguration(config,
+					getBaseContext().getResources().getDisplayMetrics());
+			OpenTenureApplication.setLocalization(locale);
+		} else {
 		
 		Locale locale = Resources.getSystem().getConfiguration().locale;
 		Locale.setDefault(locale);

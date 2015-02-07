@@ -306,7 +306,9 @@ public class MainMapFragment extends SupportMapFragment implements
 		OpenTenureApplication.setMapFragment(this);
 
 		redrawVisibleProperties();
-
+		
+		OpenTenureApplication.setActivity(getActivity());
+		
 		return mapView;
 	}
 
