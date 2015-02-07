@@ -59,7 +59,7 @@ public class LocalMapTileProvider implements TileProvider {
 		ByteArrayOutputStream buffer = null;
 		String tileFileName = OpenTenureApplication.getContext()
 				.getExternalFilesDir(null).getAbsolutePath()
-				+ "/tiles/" + zoom + "/" + x + "/" + y + ".png";
+				+ "/tiles/" + zoom + "/" + x + "/" + y + ".jpg";
 
 		if (BitmapFactory.decodeFile(tileFileName) == null) {
 			File checkFile = new File(tileFileName);

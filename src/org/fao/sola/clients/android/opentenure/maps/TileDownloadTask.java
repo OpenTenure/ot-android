@@ -80,7 +80,6 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 				InputStream is = null;
 				FileOutputStream fos = null;
 				long lastModified = outputFile.lastModified();
-				long length = outputFile.length();
 				boolean fileExists = outputFile.exists();
 				if (!fileExists
 						|| (fileExists && (lastModified > (System
@@ -114,6 +113,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 					} catch (IOException e) {
 						failures++;
 						e.printStackTrace();
+						outputFile.delete();
 					} finally {
 						if (is != null) {
 							try {
@@ -128,6 +128,8 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 							}
 						}
 					}
+				}else if(fileExists){
+					outputFile.delete();
 				}
 				tile.delete();
 			}
@@ -160,5 +162,8 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 							R.string.all_tiles_downloaded), Toast.LENGTH_LONG)
 					.show();
 		}
+		int deletedTiles = Tile.deleteAllTiles();
+		Log.d(this.getClass().getName(),
+				"Deleted " + deletedTiles + " tiles still in the queue at the end of the download task");
 	}
 }
