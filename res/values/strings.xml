@@ -17,6 +17,9 @@
     <string name="khmer_language">Khmer</string>
     <string name="albanian_language">Albanian</string>
     <string name="default_language">Default</string>
+    <string name="tiles_provider">Tiles Provider</string>
+    <string name="tms_tiles_provider">TMS Tiles Provider</string>
+    <string name="geoserver_tiles_provider">GeoServer Tiles Provider</string>
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Download images to local data for offline map usage</string>
     <string name="action_logout">Log Out</string>
@@ -290,6 +293,9 @@
     <string name="form_template_url_pref_title">Form URL</string>
     <string name="form_template_url_pref_summary">URL for the survey form</string>
     <string name="form_template_url_pref_dialog_title">Enter the URL for the survey form</string>
+    <string name="tms_url_pref_title">TMS URL</string>
+    <string name="tms_url_pref_summary">Base URL of your Tiles Map Server</string>
+    <string name="tms_url_pref_dialog_title">Enter the URL of your Tiles Map Server</string>
     <string name="property">Property</string>
     <string name="id_type">Id Type</string>
     <string name="id_number">Id Number</string>
@@ -323,11 +329,10 @@
     
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>
-    <string-array name="claim_statuses">
-        <item >Unmoderated</item>
-        <item >Moderated</item>
-        <item >Rejected</item>
-        <item >Local</item>
+    <string name="tiles_provider_dialog_title">Select the type of your offline map tiles provider</string>
+    <string-array name="tiles_provider_values">
+        <item >TMS</item>
+        <item >GeoServer</item>
         </string-array>
     <string-array name="share_values">
         <item >1</item>

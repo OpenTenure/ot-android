@@ -169,14 +169,16 @@ public class SectionFragment extends ListFragment {
 				StringBuffer sb = new StringBuffer();
 				Iterator<FieldTemplate> iterator = sectionTemplate.getFieldTemplateList().iterator();
 				for(FieldPayload field:sectionElement.getFieldPayloadList()){
-					FieldTemplate template = iterator.next();
 					if(sb.length() != 0){
 						sb.append(",");
 					}
 					List<FieldConstraintOption> options = null;
-					for(FieldConstraint constraint:template.getFieldConstraintList()){
-						if(constraint instanceof OptionConstraint){
-							options = ((OptionConstraint)constraint).getFieldConstraintOptionList(); 
+					if(iterator.hasNext()){
+						FieldTemplate template = iterator.next();
+						for(FieldConstraint constraint:template.getFieldConstraintList()){
+							if(constraint instanceof OptionConstraint){
+								options = ((OptionConstraint)constraint).getFieldConstraintOptionList(); 
+							}
 						}
 					}
 					

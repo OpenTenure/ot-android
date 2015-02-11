@@ -28,17 +28,22 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.model.Tile;
+
+import android.content.SharedPreferences;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.UrlTileProvider;
 
-public class GoogleMapsTileProvider {
+public class OfflineTmsMapTilesProvider extends UrlTileProvider implements OfflineTilesProvider{
 
 	// array indexes for array to hold bounding boxes.
 	public static final int MINX = 0;
@@ -56,11 +61,24 @@ public class GoogleMapsTileProvider {
 	public static final int SOUTH_WEST_X = 2;
 	public static final int SOUTH_WEST_Y = 3;
 
-    private static final String URL_STRING = "http://khm1.google.com/kh/v=152&x=%d&y=%d&z=%d";
+    final String URL_STRING;
     
-    private static String getUrl(int x, int y, int zoom){
+    public OfflineTmsMapTilesProvider(int width, int height, SharedPreferences preferences) {
+    	super(width, height);
+		URL_STRING = preferences.getString(
+				OpenTenurePreferencesActivity.TMS_URL_PREF,
+				"http://khm1.google.com/kh/v=152&x=%d&y=%d&z=%d");
+	}
+    
+    private String getUrl(int x, int y, int zoom){
         return String.format(Locale.US, URL_STRING, x, y, zoom);
     }
+
+	@Override
+	public URL getTileUrl(int arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	private static double mercatorFromLatitude(double latitude) {
 	    double radians = Math.log(Math.tan(Math.toRadians(latitude+90.0)/2));
@@ -78,7 +96,7 @@ public class GoogleMapsTileProvider {
 	    return result;
 	}
 	
-	public static List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom){
+	public List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom){
 		List<Tile> tiles = new ArrayList<Tile>();
 		
 		int[] northeast = tileOfCoordinate(llb.northeast, startZoom);
@@ -88,9 +106,10 @@ public class GoogleMapsTileProvider {
 			
 			for(int x = southwest[X] ; x <= northeast[X] ; x++){
 				for(int y = northeast[Y] ; y <= southwest[Y] ; y++){
+					String fileName = getBaseStorageDir() + zoom + "/" + x + "/" + y + getTilesSuffix();
 					Tile tile = new Tile();
 					tile.setUrl(getUrl(x, y, zoom));
-					tile.setFileName(OpenTenureApplication.getContext().getExternalFilesDir(null).getAbsolutePath() + "/tiles/" + zoom + "/" + x + "/" + y + ".jpg");
+					tile.setFileName(fileName);
 					tiles.add(tile);
 				}
 			}
@@ -104,6 +123,21 @@ public class GoogleMapsTileProvider {
 		}
 		
 		return tiles;
+	}
+
+	@Override
+	public TilesProviderType getType() {
+		return TilesProviderType.TMS;
+	}
+
+	@Override
+	public String getBaseStorageDir() {
+		return OpenTenureApplication.getContext().getExternalFilesDir(null).getAbsolutePath() + "/tiles/" + getType() + "/" ;
+	}
+
+	@Override
+	public String getTilesSuffix() {
+		return ".jpg";
 	}
 
 }

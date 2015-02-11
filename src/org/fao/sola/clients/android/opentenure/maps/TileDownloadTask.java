@@ -49,7 +49,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 	public static final String TASK_ID = "TileDownloadTask";
 	private static final int TILES_PER_BATCH = 50;
-	private static final long TILE_CACHE_TIME = 30 * 24 * 60 * 60 * 1000;
+	private static final long TILE_REFRESH_TIME = 21 * 24 * 60 * 60 * 1000;
 	private static final long TIMEOUT = 8000;
 	private Context context;
 
@@ -83,7 +83,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 				boolean fileExists = outputFile.exists();
 				if (!fileExists
 						|| (fileExists && (lastModified > (System
-								.currentTimeMillis() - TILE_CACHE_TIME)))) {
+								.currentTimeMillis() - TILE_REFRESH_TIME)))) {
 					try {
 
 						URL url = new URL(tile.getUrl());

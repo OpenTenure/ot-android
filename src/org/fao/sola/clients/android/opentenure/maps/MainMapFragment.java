@@ -33,6 +33,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Task;
@@ -762,12 +763,19 @@ public class MainMapFragment extends SupportMapFragment implements
 			int tilesToDownload = Tile.getTilesToDownload();
 		
 
-//			SharedPreferences OpenTenurePreferences = PreferenceManager
-//					.getDefaultSharedPreferences(mapView.getContext());
 			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-//			WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256, OpenTenurePreferences);
-//			List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
-			List<Tile> tiles = GoogleMapsTileProvider.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
+			
+			SharedPreferences sharedPrefs = PreferenceManager
+			.getDefaultSharedPreferences(mapView.getContext());
+
+			List<Tile> tiles = null;
+			OfflineTilesProvider provider = null;
+			if(sharedPrefs.getString("tiles_provider", OfflineTilesProvider.TilesProviderType.GeoServer.toString()).equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
+				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			}else{
+				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			}
+			tiles = provider.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
 
 			if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
 			
