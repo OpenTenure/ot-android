@@ -61,13 +61,14 @@ public class OfflineTmsMapTilesProvider extends UrlTileProvider implements Offli
 	public static final int SOUTH_WEST_X = 2;
 	public static final int SOUTH_WEST_Y = 3;
 
-    final String URL_STRING;
+    private String URL_STRING;
     
     public OfflineTmsMapTilesProvider(int width, int height, SharedPreferences preferences) {
     	super(width, height);
 		URL_STRING = preferences.getString(
 				OpenTenurePreferencesActivity.TMS_URL_PREF,
-				"http://khm1.google.com/kh/v=152&x=%d&y=%d&z=%d");
+				"http://khm1.google.com/kh/v=152");
+		URL_STRING += "&x=%d&y=%d&z=%d";
 	}
     
     private String getUrl(int x, int y, int zoom){

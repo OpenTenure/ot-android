@@ -27,9 +27,9 @@
         android:key="tiles_provider"
         android:title="@string/tiles_provider_dialog_title"
         android:dialogTitle="@string/tiles_provider"
-        android:entries="@array/tiles_provider_values"
+        android:entries="@array/tiles_provider_keys"
         android:entryValues="@array/tiles_provider_values"
-        android:defaultValue="@string/geoserver_tiles_provider" />
+        android:defaultValue="GeoServer" />
     <EditTextPreference
         android:defaultValue="http://demo.flossola.org/geoserver/sola"
         android:dialogTitle="@string/geoserver_url_pref_dialog_title"
@@ -49,7 +49,7 @@
         android:summary="@string/tms_url_pref_summary"
         android:title="@string/tms_url_pref_title" />
     <EditTextPreference
-        android:defaultValue="https://ot.flossola.org/ws/en-us/claim/getDefaultFormTemplate"
+        android:defaultValue=""
         android:dialogTitle="@string/form_template_url_pref_dialog_title"
         android:key="form_template_url_pref"
         android:summary="@string/form_template_url_pref_summary"
