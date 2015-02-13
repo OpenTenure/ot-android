@@ -130,22 +130,22 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
 
-		System.out.println("Claim A On resume ");
-		
 		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km-KM");
+			Locale locale = new Locale("km");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
-		} else if(OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq-AL");
+			OpenTenureApplication.setLocalization(locale);
+		} else if (OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
+			OpenTenureApplication.setLocalization(locale);
 		} else {
 
 			Locale locale = Resources.getSystem().getConfiguration().locale;
@@ -157,7 +157,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 			OpenTenureApplication.setLocalization(locale);
 		}
-		System.out.println("OpenTenureApplication.getLocalization " + OpenTenureApplication.getLocalization());
+
 	}
 
 	@Override
@@ -189,23 +189,25 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
-		System.out.println("Claim A On create ");
-		
+
 		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km-KM");
+			Locale locale = new Locale("km");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
-		}else if (OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq-AL");
+
+			OpenTenureApplication.setLocalization(locale);
+		} else if (OpenTenureApplication.isAlbanian()) {
+			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
+
+			OpenTenureApplication.setLocalization(locale);
 		} else {
 
 			Locale locale = Resources.getSystem().getConfiguration().locale;
@@ -218,7 +220,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			OpenTenureApplication.setLocalization(locale);
 		}
 
-		System.out.println("OpenTenureApplication.getLocalization " + OpenTenureApplication.getLocalization());
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_claim);

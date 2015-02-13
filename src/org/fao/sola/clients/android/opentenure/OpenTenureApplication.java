@@ -71,6 +71,8 @@ public class OpenTenureApplication extends Application {
 	private static Locale locale;
 	static boolean khmer = false;
 	static boolean albanian = false;
+	static String _KHMER_LOCALIZATION = "km-KH";
+	static String _ALBANIAN_LOCALIZATION = "sq-AL";
 	private static boolean loggedin;
 	private static String username;
 	private static Activity activity;
@@ -170,6 +172,8 @@ public class OpenTenureApplication extends Application {
 
 	@Override
 	public void onCreate() {
+		
+		
 		super.onCreate();
 		context = getApplicationContext();
 
@@ -180,7 +184,7 @@ public class OpenTenureApplication extends Application {
 		setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 
 		if (isKhmer()) {
-			Locale locale = new Locale("km-KM");
+			Locale locale = new Locale("km"); 
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			this.locale = locale;
@@ -188,7 +192,7 @@ public class OpenTenureApplication extends Application {
 					getBaseContext().getResources().getDisplayMetrics());
 			setLocalization(locale);
 		} else if (isAlbanian()) {
-			Locale locale = new Locale("sq-AL");
+			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			this.locale = locale;
@@ -459,15 +463,19 @@ public class OpenTenureApplication extends Application {
 
 	public static void setLocalization(Locale locale) {
 
+		Resources.getSystem().getConfiguration().setLocale(locale);
+		
 		locale.getDisplayLanguage();
-		if (!isKhmer() && !isAlbanian()) {
+		if (isKhmer() ) {
 
+			OpenTenureApplication.localization = OpenTenureApplication._KHMER_LOCALIZATION;
+		} else if (isAlbanian()) {
+
+			OpenTenureApplication.localization = OpenTenureApplication._ALBANIAN_LOCALIZATION;
+			
+		} else {
 			OpenTenureApplication.localization = locale.getLanguage()
 					.toLowerCase() + "-" + locale.getCountry();
-		} else {
-
-			OpenTenureApplication.localization = locale.getLanguage();
-
 		}
 
 	}

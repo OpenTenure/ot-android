@@ -927,6 +927,8 @@ public class CommunityServerAPI {
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl,
 				OpenTenureApplication.getLocalization());
+		
+		System.out.println("URL " + url);
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();

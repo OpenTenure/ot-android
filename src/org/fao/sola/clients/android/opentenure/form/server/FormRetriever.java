@@ -75,6 +75,8 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 			Log.d(this.getClass().getName()
 					, "Got dynamic survey form: " + body);
 			
+			if(body.trim().equals("{}"))
+				return 100;
 			
 			FormTemplate ft = FormTemplate.fromJson(body);
 			result = SurveyFormTemplate.saveDefaultFormTemplate(ft);

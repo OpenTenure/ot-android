@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_download_tiles"
-          android:icon="@drawable/ic_download_file"
+          android:icon="@drawable/ic_download_tiles"
           android:title="@string/action_download_tiles"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/action_login"

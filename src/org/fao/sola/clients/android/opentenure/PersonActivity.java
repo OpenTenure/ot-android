@@ -34,6 +34,7 @@ import org.fao.sola.clients.android.opentenure.model.Person;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -98,13 +99,7 @@ public class PersonActivity extends FragmentActivity implements
 	public void onResume() {
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
-		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
+
 	};
 
 	@Override
@@ -125,13 +120,6 @@ public class PersonActivity extends FragmentActivity implements
 
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
 
 		setEntityType(intent.getStringExtra(ENTIY_TYPE));
 

@@ -924,7 +924,8 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						}
 						Attachment att = new Attachment();
 						att.setClaimId(claimId);
-						att.setDescription("Map");
+						att.setDescription(context.getResources().getString(
+								R.string.action_map));
 						att.setFileName(DEFAULT_MAP_FILE_NAME);
 						att.setFileType(DEFAULT_MAP_FILE_TYPE);						
 						att.setMimeType(DEFAULT_MAP_MIME_TYPE);

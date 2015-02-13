@@ -66,12 +66,6 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
 		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
 	};
 
 	@Override
@@ -80,12 +74,6 @@ public class SelectClaimActivity extends FragmentActivity implements ModeDispatc
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_person);
 		
-//		Locale locale = new Locale("km-KM");
-//		Locale.setDefault(locale);
-//		android.content.res.Configuration config = new android.content.res.Configuration();
-//		config.locale = locale;
-//		getBaseContext().getResources().updateConfiguration(config,
-//		      getBaseContext().getResources().getDisplayMetrics());
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		mViewPager = (ViewPager) findViewById(R.id.person_pager);

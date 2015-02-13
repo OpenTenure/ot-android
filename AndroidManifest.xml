@@ -78,6 +78,7 @@
         <activity
             android:name="org.fao.sola.clients.android.opentenure.PersonActivity"
             android:theme="@style/Theme.Opentenure"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_person" >
         </activity>
         <activity

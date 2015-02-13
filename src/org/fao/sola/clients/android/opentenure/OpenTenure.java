@@ -96,16 +96,18 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 		
 		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km-KM");
+			Locale locale = new Locale("km");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
+			
+			
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
 
 			OpenTenureApplication.setLocalization(locale);
 		} else if (OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq-AL");
+			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
@@ -197,7 +199,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
 
 		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km-KM");
+			Locale locale = new Locale("km");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
@@ -206,7 +208,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			OpenTenureApplication.setLocalization(locale);
 		}
 		else if (OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq-AL");
+			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
 			config.locale = locale;
@@ -478,19 +480,6 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-		boolean klocale = OpenTenurePreferences.getBoolean("locale", false);
-
-		if (klocale) {
-			Locale locale = new Locale("km-KM");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-		}
 
 		getMenuInflater().inflate(R.menu.open_tenure, menu);
 		return true;

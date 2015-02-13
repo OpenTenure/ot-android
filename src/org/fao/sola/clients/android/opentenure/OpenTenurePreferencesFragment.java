@@ -51,8 +51,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 			findPreference("khmer_language").setEnabled(true);
 			findPreference("albanian_language").setEnabled(false);
 			findPreference("albanian_language").setSelectable(false);
-			System.out.println("isSelectable() "
-					+ findPreference("albanian_language").isSelectable());
+			
 		}
 		if (OpenTenurePreferences.getBoolean("default_language", true)) {
 
@@ -60,8 +59,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 			findPreference("khmer_language").setEnabled(true);
 			findPreference("default_language").setEnabled(false);
 			findPreference("default_language").setSelectable(false);
-			System.out.println("isSelectable() "
-					+ findPreference("default_language").isSelectable());
+			
 		}
 		if (OpenTenurePreferences.getBoolean("khmer_language", true)) {
 
@@ -69,8 +67,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 			findPreference("default_language").setEnabled(true);
 			findPreference("khmer_language").setEnabled(false);
 			findPreference("khmer_language").setSelectable(false);
-			System.out.println("isSelectable() "
-					+ findPreference("khmer_language").isSelectable());
+			
 		}
 
 		OpenTenurePreferences
@@ -79,7 +76,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 							SharedPreferences prefs, String key) {
 
 						if (key.equals("default_language")) {
-							System.out.println("Clicco default");
+							
 							// Reset other items
 
 							if (prefs.getBoolean("default_language", true)) {
@@ -113,7 +110,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 
 						if (key.equals("khmer_language")) {
 							// Reset other items
-							System.out.println("Clicco khmer");
+							
 
 							if (prefs.getBoolean("khmer_language", true)) {
 
@@ -145,7 +142,7 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 
 						if (key.equals("albanian_language")) {
 
-							System.out.println("Clicco albanese");
+							
 							// Reset other items
 
 							if (prefs.getBoolean("albanian_language", true)) {
