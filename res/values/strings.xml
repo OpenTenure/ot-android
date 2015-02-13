@@ -110,7 +110,7 @@
     <string name="group_name">Name</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Software Version</string>
-    <string name="software_version">0.9.6</string>
+    <string name="software_version">0.9.7</string>
     <string name="claim_date">Claim date</string>    
     <string name="claim_name">Claim name</string>
     <string name="claim_name_label">Claim name *</string>
