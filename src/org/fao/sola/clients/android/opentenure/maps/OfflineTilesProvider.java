@@ -25,42 +25,22 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * *********************************************************************************************
  */
-package org.fao.sola.clients.android.opentenure;
+package org.fao.sola.clients.android.opentenure.maps;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Bundle;
+import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.model.Tile;
 
-import android.preference.PreferenceActivity;
+import com.google.android.gms.maps.model.LatLngBounds;
 
-public class OpenTenurePreferencesActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
-	public static final String CS_URL_PREF = "cs_url_pref";
-	public static final String TMS_URL_PREF = "tms_url_pref";
-	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
-	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
-	public static final String FORM_URL_PREF = "form_template_url_pref";
-	public static final String KHMER = "khmer";
+public interface OfflineTilesProvider {
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		// Display the fragment as the main content.
-		getFragmentManager()
-				.beginTransaction()
-				.replace(android.R.id.content,
-						new OpenTenurePreferencesFragment()).commit();
-
-		
-	}
-
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
-		// TODO Auto-generated method stub
-
-	}
+	public static final int TILE_WIDTH = 256;
+	public static final int TILE_HEIGHT = 256;
+	public enum TilesProviderType{TMS, GeoServer};
+	public TilesProviderType getType();
+	public List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom);
+	public String getBaseStorageDir();
+	public String getTilesSuffix();
 
 }

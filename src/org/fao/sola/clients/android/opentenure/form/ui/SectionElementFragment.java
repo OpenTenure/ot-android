@@ -29,7 +29,10 @@ package org.fao.sola.clients.android.opentenure.form.ui;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
+import org.fao.sola.clients.android.opentenure.form.FieldType;
+import org.fao.sola.clients.android.opentenure.form.FieldValueType;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 
@@ -103,6 +106,18 @@ public class SectionElementFragment extends Fragment {
 		LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.fragment_field_group);
 		int i = 0;
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
+			FieldPayload fieldPayload = null;
+			if(elementPayload.getFieldPayloadList().size() > i){
+				fieldPayload = elementPayload.getFieldPayloadList().get(i);
+			}else{
+				// For some reason the payload of this form has fewer fields than the template
+				// used to build it. This is probably due to editing the template without
+				// changing its id, so we build a dummy text field on the fly not to break
+				// the GUI
+				fieldPayload = new FieldPayload();
+				fieldPayload.setFieldType(FieldType.TEXT);
+				fieldPayload.setFieldValueType(FieldValueType.TEXT);
+			}
 			// Add label
 			TextView label = new TextView(getActivity());
 			label.setTextSize(20);
@@ -116,31 +131,25 @@ public class SectionElementFragment extends Fragment {
 			// Add input field
 			switch(field.getFieldType()){
 			case DATE:
-				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), field, fieldPayload, mode));
 				break;
 			case TIME:
-				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), field, fieldPayload, mode));
 				break;
 			case SNAPSHOT:
 			case DOCUMENT:
 			case GEOMETRY:
 			case TEXT:
-				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), field, fieldPayload, mode));
 				break;
 			case DECIMAL:
-				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), field, fieldPayload, mode));
 				break;
 			case INTEGER:
-				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), field, fieldPayload, mode));
 				break;
 			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, elementPayload.
-						getFieldPayloadList().get(i), mode));
+				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, fieldPayload, mode));
 				break;
 			default:
 				break;

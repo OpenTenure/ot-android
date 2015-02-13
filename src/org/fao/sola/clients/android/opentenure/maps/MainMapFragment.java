@@ -33,6 +33,7 @@ import java.util.List;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Task;
@@ -93,8 +94,8 @@ public class MainMapFragment extends SupportMapFragment implements
 	public static final String MAIN_MAP_LONGITUDE = "__MAIN_MAP_LONGITUDE__";
 	public static final String MAIN_MAP_TYPE = "__MAIN_MAP_PROVIDER__";
 	private static final int MAP_LABEL_FONT_SIZE = 16;
-	private static final int MAX_ZOOM_LEVELS_TO_DOWNLOAD = 4;
-	private static final int MAX_TILES_IN_DOWNLOAD_QUEUE = 2000;
+	private static final int MAX_ZOOM_LEVELS_TO_DOWNLOAD = 3;
+	private static final int MAX_TILES_IN_DOWNLOAD_QUEUE = 1000;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 
@@ -396,7 +397,6 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		menu.clear();
 		inflater.inflate(R.menu.map, menu);
 
 		super.onCreateOptionsMenu(menu, inflater);
@@ -762,11 +762,19 @@ public class MainMapFragment extends SupportMapFragment implements
 			int tilesToDownload = Tile.getTilesToDownload();
 		
 
-			SharedPreferences OpenTenurePreferences = PreferenceManager
-					.getDefaultSharedPreferences(mapView.getContext());
-			WmsMapTileProvider wmtp = new WmsMapTileProvider(256, 256,OpenTenurePreferences);
 			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-			List<Tile> tiles = wmtp.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
+			
+			SharedPreferences sharedPrefs = PreferenceManager
+			.getDefaultSharedPreferences(mapView.getContext());
+
+			List<Tile> tiles = null;
+			OfflineTilesProvider provider = null;
+			if(sharedPrefs.getString("tiles_provider", OfflineTilesProvider.TilesProviderType.GeoServer.toString()).equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
+				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			}else{
+				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			}
+			tiles = provider.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
 
 			if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
 			

@@ -74,7 +74,8 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
 					public void onSharedPreferenceChanged(
 							SharedPreferences prefs, String key) {
-
+						// LANGUAGE SELECTION REQUIRES RESTARTING THE APPLICATION
+						
 						if (key.equals("default_language")) {
 							
 							// Reset other items
@@ -172,6 +173,28 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 								startActivity(i);
 							}
 
+						}
+
+						// TILES PROVIDER SELECTION
+						
+						if (key.equals("tms_tiles_provider")) {
+
+							if (prefs.getBoolean("tms_tiles_provider", true)) {
+
+								SharedPreferences.Editor editor = prefs.edit();
+								editor.putBoolean("geoserver_tiles_provider", false);
+								editor.commit();
+							}
+						}
+
+						if (key.equals("geoserver_tiles_provider")) {
+
+							if (prefs.getBoolean("geoserver_tiles_provider", true)) {
+
+								SharedPreferences.Editor editor = prefs.edit();
+								editor.putBoolean("tms_tiles_provider", false);
+								editor.commit();
+							}
 						}
 					}
 				});

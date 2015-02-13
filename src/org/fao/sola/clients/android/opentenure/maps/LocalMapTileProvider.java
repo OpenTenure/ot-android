@@ -34,18 +34,29 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
 
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 
 public class LocalMapTileProvider implements TileProvider {
-	private static final int TILE_WIDTH = 256;
-	private static final int TILE_HEIGHT = 256;
+	public static final long TILE_MAX_CACHE_TIME = 28 * 24 * 60 * 60 * 1000;
+	public static final int TILE_WIDTH = 256;
+	public static final int TILE_HEIGHT = 256;
 	private static final int BUFFER_SIZE = 16 * 1024;
-
+	private OfflineTilesProvider tilesProvider;
 	public LocalMapTileProvider() {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+		if(prefs.getString("tiles_provider", TilesProviderType.GeoServer.toString()).equals(TilesProviderType.GeoServer.toString())){
+			tilesProvider = new OfflineWmsMapTileProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
+		}else{
+			tilesProvider = new OfflineTmsMapTilesProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
+		}
 	}
 
 	@Override
@@ -57,9 +68,7 @@ public class LocalMapTileProvider implements TileProvider {
 	private byte[] readTileImage(int x, int y, int zoom) {
 		InputStream in = null;
 		ByteArrayOutputStream buffer = null;
-		String tileFileName = OpenTenureApplication.getContext()
-				.getExternalFilesDir(null).getAbsolutePath()
-				+ "/tiles/" + zoom + "/" + x + "/" + y + ".png";
+		String tileFileName = tilesProvider.getBaseStorageDir() + zoom + "/" + x + "/" + y + tilesProvider.getTilesSuffix();
 
 		if (BitmapFactory.decodeFile(tileFileName) == null) {
 			File checkFile = new File(tileFileName);
@@ -67,24 +76,32 @@ public class LocalMapTileProvider implements TileProvider {
 		}
 
 		try {
-			in = new FileInputStream(tileFileName);
-			buffer = new ByteArrayOutputStream();
+			File tileFile = new File(tileFileName);
+			if(tileFile.exists()){
+				if(tileFile.lastModified() > (System
+						.currentTimeMillis() - TILE_MAX_CACHE_TIME)){
+					// The tile does not comply our caching policy
+					// so we delete it and return null
+					tileFile.delete();
+				}else{
+					in = new FileInputStream(tileFileName);
+					buffer = new ByteArrayOutputStream();
 
-			int nRead;
-			byte[] data = new byte[BUFFER_SIZE];
+					int nRead;
+					byte[] data = new byte[BUFFER_SIZE];
 
-			while ((nRead = in.read(data, 0, BUFFER_SIZE)) != -1) {
-				buffer.write(data, 0, nRead);
+					while ((nRead = in.read(data, 0, BUFFER_SIZE)) != -1) {
+						buffer.write(data, 0, nRead);
+					}
+					buffer.flush();
+
+					return buffer.toByteArray();
+				}
 			}
-			buffer.flush();
-
-			return buffer.toByteArray();
 		} catch (IOException e) {
 
-			return null;
 		} catch (OutOfMemoryError e) {
 
-			return null;
 		} finally {
 			if (in != null)
 				try {
@@ -97,6 +114,7 @@ public class LocalMapTileProvider implements TileProvider {
 				} catch (Exception ignored) {
 				}
 		}
+		return null;
 	}
 
 }
