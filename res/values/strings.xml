@@ -328,7 +328,10 @@
     <string name="download_failed">download failed</string>
     <string name="downloading">downloading</string>
     <string name="language">Language</string>
-    
+    <string name="map_sources">Map sources</string>
+    <string name="general">General</string>
+    <string name="dynamic_form">Dynamic form</string>
+    <string name="information">Information</string>
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>
     <string name="tiles_provider_dialog_title">Select the type of your offline map tiles provider</string>

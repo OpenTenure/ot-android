@@ -106,6 +106,7 @@ public class OfflineWmsMapTileProvider extends UrlTileProvider implements Offlin
                 bbox[MINY], bbox[MAXX], bbox[MAXY]);
     }
 
+    @Override
     public synchronized URL getTileUrl(int x, int y, int zoom) {
         try {       
             Log.d("TileRequest", "x = " + x + ", y = " + y + ", zoom = " + zoom);

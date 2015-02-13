@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +68,7 @@ public class OfflineTmsMapTilesProvider extends UrlTileProvider implements Offli
     	super(width, height);
 		URL_STRING = preferences.getString(
 				OpenTenurePreferencesActivity.TMS_URL_PREF,
-				"http://khm1.google.com/kh/v=152");
-		URL_STRING += "&x=%d&y=%d&z=%d";
+				"http://khm1.google.com/kh/v=152&x=%d&y=%d&z=%d");
 	}
     
     private String getUrl(int x, int y, int zoom){
@@ -76,9 +76,22 @@ public class OfflineTmsMapTilesProvider extends UrlTileProvider implements Offli
     }
 
 	@Override
-	public URL getTileUrl(int arg0, int arg1, int arg2) {
-		// TODO Auto-generated method stub
-		return null;
+	public URL getTileUrl(int x, int y, int zoom) {
+        try {       
+            URL url = null;
+
+            try {
+                url = new URL(String.format(Locale.US, URL_STRING, x, y, zoom));
+            } 
+            catch (MalformedURLException e) {
+                throw new AssertionError(e);
+            }
+            return url;
+        }
+        catch (RuntimeException e) {
+            throw e;
+        }
+
 	}
 
 	private static double mercatorFromLatitude(double latitude) {

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <PreferenceCategory android:title="@string/general" >
     <EditTextPreference
         android:defaultValue="https://ot.flossola.org"
         android:dialogTitle="@string/cs_url_pref_dialog_title"
         android:key="cs_url_pref"
         android:summary="@string/cs_url_pref_summary"
         android:title="@string/cs_url_pref_title" />
-
+	</PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/map_sources" >
     <ListPreference
         android:defaultValue="GeoServer"
         android:dialogTitle="@string/tiles_provider"
@@ -15,7 +18,6 @@
         android:entryValues="@array/tiles_provider_values"
         android:key="tiles_provider"
         android:title="@string/tiles_provider_dialog_title" />
-
     <EditTextPreference
         android:defaultValue="http://demo.flossola.org/geoserver/sola"
         android:dialogTitle="@string/geoserver_url_pref_dialog_title"
@@ -29,24 +31,22 @@
         android:summary="@string/geoserver_layer_pref_summary"
         android:title="@string/geoserver_layer_pref_title" />
     <EditTextPreference
-        android:defaultValue="http://khm1.google.com/kh/v=152"
+        android:defaultValue="http://khm1.google.com/kh/v=152&amp;x=%d&amp;y=%d&amp;z=%d"
         android:dialogTitle="@string/tms_url_pref_dialog_title"
         android:key="tms_url_pref"
         android:summary="@string/tms_url_pref_summary"
         android:title="@string/tms_url_pref_title" />
-    <EditTextPreference
-        android:defaultValue=""
-        android:dialogTitle="@string/form_template_url_pref_dialog_title"
-        android:key="form_template_url_pref"
-        android:summary="@string/form_template_url_pref_summary"
-        android:title="@string/form_template_url_pref_title" />
-
-    <Preference
-        android:dialogTitle="@string/software_version_title"
-        android:key="software_version_pref"
-        android:summary="@string/software_version"
-        android:title="@string/software_version_title" />
-
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/dynamic_form" >
+	    <EditTextPreference
+	        android:defaultValue=""
+	        android:dialogTitle="@string/form_template_url_pref_dialog_title"
+	        android:key="form_template_url_pref"
+	        android:summary="@string/form_template_url_pref_summary"
+	        android:title="@string/form_template_url_pref_title" />
+	</PreferenceCategory>
+    
     <PreferenceCategory android:title="@string/language" >
         <CheckBoxPreference
             android:defaultValue="true"
@@ -62,4 +62,12 @@
             android:title="@string/albanian_language" />
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/information" >
+	    <Preference
+	        android:dialogTitle="@string/software_version_title"
+	        android:key="software_version_pref"
+	        android:summary="@string/software_version"
+	        android:title="@string/software_version_title" />
+	</PreferenceCategory>
+    
 </PreferenceScreen>
