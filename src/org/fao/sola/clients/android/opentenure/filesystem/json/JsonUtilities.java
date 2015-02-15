@@ -163,7 +163,13 @@ public class JsonUtilities {
 					person.setPhysicalPerson(false);
 
 				tempClaim.setClaimant(person);
-				tempClaim.setDynamicForm(claim.getDynamicForm());
+
+				if (claim.getDynamicForm() != null
+						&& claim.getDynamicForm().getSectionPayloadList() != null
+						&& claim.getDynamicForm().getSectionPayloadList()
+								.size() > 0) {
+					tempClaim.setDynamicForm(claim.getDynamicForm());
+				}
 
 				List<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment> attachments = new ArrayList<org.fao.sola.clients.android.opentenure.filesystem.json.model.Attachment>();
 
