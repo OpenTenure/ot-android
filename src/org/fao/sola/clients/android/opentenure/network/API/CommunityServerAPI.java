@@ -1083,7 +1083,6 @@ public class CommunityServerAPI {
 
 	public static SaveAttachmentResponse saveAttachment(String attachment,
 			String attachmentId) {
-
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
@@ -1100,7 +1099,6 @@ public class CommunityServerAPI {
 
 		HttpPost request = new HttpPost(url);
 		SaveAttachmentResponse saveAttachmentResponse = null;
-
 		StringEntity entity;
 		try {
 

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.button.listener.ExportClaimListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SubmitClaimListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -142,6 +143,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					.findViewById(R.id.claimant_picture);
 			vh.send = (ImageView) convertView
 					.findViewById(R.id.action_submit_to_server);
+			vh.export = (ImageView) convertView
+					.findViewById(R.id.action_export_to_server);
 			vh.remove = (ImageView) convertView
 					.findViewById(R.id.action_remove_claim);
 			
@@ -162,6 +165,9 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				position).getId(), vh));
 		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
 				.getId(), vh));
+		
+		vh.export.setOnClickListener(new ExportClaimListener(claims.get(position)
+				.getId()));
 
 		if (claims.get(position).getStatus().equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
@@ -193,7 +199,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(claims.get(position).getStatus() + " " + progress
+			vh.status.setText(getContext().getResources().getString(R.string.uploading) + " " + progress
 					+ " %");
 
 			vh.status.setVisibility(View.VISIBLE);
@@ -217,7 +223,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(claims.get(position).getStatus() + " " + progress
+			vh.status.setText(getContext().getResources().getString(R.string.updating) + " " + progress
 					+ " %");
 
 			vh.status.setVisibility(View.VISIBLE);
@@ -231,7 +237,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-			vh.status.setText(claims.get(position).getStatus());
+			vh.status.setText(getContext().getResources().getString(R.string.upload_error));
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 
@@ -251,12 +257,11 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-			vh.status.setText(claims.get(position).getStatus());
+			vh.status.setText(getContext().getResources().getString(R.string.update_error));
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 
 			vh.status.setVisibility(View.VISIBLE);
-
 			vh.send.setVisibility(View.INVISIBLE);
 		}
 		if (claims.get(position).getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
@@ -274,7 +279,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(claims.get(position).getStatus() + " " + progress
+			vh.status.setText(getContext().getResources().getString(R.string.upload_incomplete) + " " + progress
 					+ " %");
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.VISIBLE);
@@ -296,7 +301,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(claims.get(position).getStatus() + " " + progress
+			vh.status.setText(getContext().getResources().getString(R.string.update_incomplete) + " " + progress
 					+ " %");
 			vh.status.setVisibility(View.VISIBLE);
 

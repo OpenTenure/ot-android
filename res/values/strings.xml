@@ -320,10 +320,13 @@
     <string name="south_west">South-West</string>
     <string name="created">created</string>
     <string name="uploading">uploading</string>
+    <string name="updating">updating</string>
     <string name="uploaded">uploaded</string>
     <string name="deleted">deleted</string>
     <string name="upload_incomplete">upload incomplete</string>
+    <string name="update_incomplete">update incomplete</string>
     <string name="upload_error">upload error</string>
+    <string name="update_error">update error</string>
     <string name="download_incomplete">download incomplete</string>
     <string name="download_failed">download failed</string>
     <string name="downloading">downloading</string>

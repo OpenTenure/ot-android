@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
@@ -41,73 +42,106 @@ import android.os.Environment;
 
 public class ZipUtilities {
 
-	public static boolean AddFilesWithAESEncryption(String password, String claimID) {
+	public static boolean AddFilesWithAESEncryption(String password,
+			String claimID) {
 
 		try {
 
-			Context context = OpenTenureApplication.getContext();			
+			Context context = OpenTenureApplication.getContext();
 
-			File download = Environment.getExternalStoragePublicDirectory(
-					Environment.DIRECTORY_ALARMS);	
+			File download = Environment
+					.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS);
 
-			ZipFile zipFile = new ZipFile(FileSystemUtilities.getOpentenureFolder().getAbsolutePath()+File.separator+"Claim_"+claimID+".zip");			
-
+			ZipFile zipFile = new ZipFile(FileSystemUtilities
+					.getOpentenureFolder().getAbsolutePath()
+					+ File.separator
+					+ "Claim_" + claimID + ".zip");
 
 			// Build the list of files to be added in the array list
 			// Objects of type File have to be added to the ArrayList
-			//ArrayList filesToAdd = new ArrayList();
-			//filesToAdd.add(new File("c:\\ZipTest\\sample.txt"));
-			//filesToAdd.add(files[0]);
-			//filesToAdd.add(new File("c:\\ZipTest\\pippo.pdf"));
-			//filesToAdd.add(new File("c:\\ZipTest\\setup.docx"));
+			// ArrayList filesToAdd = new ArrayList();
+			// filesToAdd.add(new File("c:\\ZipTest\\sample.txt"));
+			// filesToAdd.add(files[0]);
+			// filesToAdd.add(new File("c:\\ZipTest\\pippo.pdf"));
+			// filesToAdd.add(new File("c:\\ZipTest\\setup.docx"));
 
 			// Initiate Zip Parameters which define various properties such
-			// as compression method, etc. More parameters are explained in other
+			// as compression method, etc. More parameters are explained in
+			// other
 			// examples
 			ZipParameters parameters = new ZipParameters();
-			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE); // set compression method to deflate compression
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE); // set
+																			// compression
+																			// method
+																			// to
+																			// deflate
+																			// compression
 
 			// Set the compression level. This value has to be in between 0 to 9
 			// Several predefined compression levels are available
-			// DEFLATE_LEVEL_FASTEST - Lowest compression level but higher speed of compression
-			// DEFLATE_LEVEL_FAST - Low compression level but higher speed of compression
-			// DEFLATE_LEVEL_NORMAL - Optimal balance between compression level/speed
-			// DEFLATE_LEVEL_MAXIMUM - High compression level with a compromise of speed
+			// DEFLATE_LEVEL_FASTEST - Lowest compression level but higher speed
+			// of compression
+			// DEFLATE_LEVEL_FAST - Low compression level but higher speed of
+			// compression
+			// DEFLATE_LEVEL_NORMAL - Optimal balance between compression
+			// level/speed
+			// DEFLATE_LEVEL_MAXIMUM - High compression level with a compromise
+			// of speed
 			// DEFLATE_LEVEL_ULTRA - Highest compression level but low speed
-			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_FASTEST); 
+			parameters
+					.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_FASTEST);
 
 			// Set the encryption flag to true
-			// If this is set to false, then the rest of encryption properties are ignored
-			if(password != null && !password.equals(""))				
+			// If this is set to false, then the rest of encryption properties
+			// are ignored
+			if (password != null && !password.equals(""))
 				parameters.setEncryptFiles(true);
-			else parameters.setEncryptFiles(false);
+			else
+				parameters.setEncryptFiles(false);
 
 			// Set the encryption method to AES Zip Encryption
 			parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
 
-			// Set AES Key strength. Key strengths available for AES encryption are:
+			// Set AES Key strength. Key strengths available for AES encryption
+			// are:
 			// AES_STRENGTH_128 - For both encryption and decryption
 			// AES_STRENGTH_192 - For decryption only
 			// AES_STRENGTH_256 - For both encryption and decryption
-			// Key strength 192 cannot be used for encryption. But if a zip file already has a
-			// file encrypted with key strength of 192, then Zip4j can decrypt this file
+			// Key strength 192 cannot be used for encryption. But if a zip file
+			// already has a
+			// file encrypted with key strength of 192, then Zip4j can decrypt
+			// this file
 			parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
 
 			// Set password
-			if(password != null && !password.equals(""))	
+			if (password != null && !password.equals(""))
 				parameters.setPassword(password);
 
 			// Now add files to the zip file
 			// Note: To add a single file, the method addFile can be used
-			// Note: If the zip file already exists and if this zip file is a split file
-			// then this method throws an exception as Zip Format Specification does not 
+			// Note: If the zip file already exists and if this zip file is a
+			// split file
+			// then this method throws an exception as Zip Format Specification
+			// does not
 			// allow updating split zip files
 
+			String personId = Claim.getClaim(claimID).getPerson().getPersonId();
+			File claimantFolder = FileSystemUtilities
+					.getClaimantFolder(personId);
+			File image = new File(claimantFolder, personId + ".jpg");
 
-			//zipFile.addFiles(filesToAdd, parameters);
-			zipFile.addFolder(FileSystemUtilities.getClaimFolder(claimID), parameters);
+			if (image.exists()) {
 
-			MediaScannerConnection.scanFile(context, new String[] { zipFile.getFile().getAbsolutePath() }, null, null);
+				FileSystemUtilities.copyFileInAttachFolder(claimID, image);
+
+			}
+
+			// zipFile.addFiles(filesToAdd, parameters);
+			zipFile.addFolder(FileSystemUtilities.getClaimFolder(claimID),
+					parameters);
+
+			MediaScannerConnection.scanFile(context, new String[] { zipFile
+					.getFile().getAbsolutePath() }, null, null);
 
 			return true;
 		} catch (Exception e) {
@@ -116,8 +150,5 @@ public class ZipUtilities {
 
 		}
 	}
-
-
-
 
 }

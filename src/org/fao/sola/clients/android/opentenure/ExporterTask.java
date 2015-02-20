@@ -90,11 +90,15 @@ public class ExporterTask extends AsyncTask<String, Void, String[] >{
 		if (Boolean.parseBoolean(params[0])) {
 			
 			Toast toast;
-
-			String message = String.format(OpenTenureApplication.getContext()
+			String message = "";
+			if(!OpenTenureApplication.isKhmer()){
+			message = String.format(OpenTenureApplication.getContext()
 					.getString(R.string.message_claim_exported,params[1]
-							));
-
+							));}
+			else{
+			message = OpenTenureApplication.getContext().getString(R.string.message_claim_exported) + " "+params[1];
+			
+			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();

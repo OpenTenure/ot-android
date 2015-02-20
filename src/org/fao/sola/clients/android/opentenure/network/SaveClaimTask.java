@@ -45,12 +45,15 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Attachment;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
+import org.fao.sola.clients.android.opentenure.network.response.UploadChunksResponse;
 import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
 import android.view.View;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -59,7 +62,7 @@ import android.widget.Toast;
  * that claim ,
  * 
  * **/
-public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
+public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
@@ -78,12 +81,6 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 	}
 
-	// @Override
-	// protected SaveClaimResponse doInBackground(ViewHolder... params) {
-	//
-
-	// }
-
 	protected void onPostExecute(final ViewHolderResponse vhr) {
 
 		Toast toast;
@@ -99,13 +96,14 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
 			}
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+				
 				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 				claim.update();
 			}
@@ -136,10 +134,10 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		case 105: {
 			/* IOException: */
-
+			
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
 			}
@@ -166,7 +164,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		}
 		case 110: {
-
+			
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
 					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
@@ -199,7 +197,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 		case 200: {
 
 			/* OK */
-
+			
 			try {
 
 				TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -253,7 +251,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 		case 403: {
 			/* Error Login */
-
+			
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -282,7 +280,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			break;
 		}
 		case 404: {
-
+			
 			/* Error Login */
 
 			Log.d("CommunityServerAPI",
@@ -307,7 +305,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
 			}
@@ -328,15 +326,16 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 		}
 
 		case 452: {
-
+			
 			/* Missing Attachments */
 
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE) ||
+					 claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
 			}
+			
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
@@ -374,13 +373,13 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
 
 			vh.getStatus().setText(claim.getStatus() + ": " + progress + " %");
+			
 			vh.getStatus().setVisibility(View.VISIBLE);
 
 			List<Attachment> list = res.getAttachments();
-
 			for (Iterator<Attachment> iterator = list.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
-
+				
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
 				saveAttachmentTask.executeOnExecutor(
 						AsyncTask.THREAD_POOL_EXECUTOR, attachment.getId(),
@@ -391,7 +390,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			break;
 		}
 		case 450: {
-
+			
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -421,7 +420,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			break;
 		}
 		case 400: {
-
+			
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -451,7 +450,7 @@ public class SaveClaimTask extends AsyncTask<Object, Void, ViewHolderResponse> {
 			break;
 			
 		case 500:
-
+			
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 

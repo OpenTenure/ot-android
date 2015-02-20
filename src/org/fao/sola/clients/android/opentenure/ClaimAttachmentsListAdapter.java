@@ -148,8 +148,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		final Attachment att = Attachment.getAttachment(attachmentId);
 
 		if (att.getStatus().equals(AttachmentStatus._UPLOADED)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.uploaded));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.uploaded));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_unmoderated));
 			vh.barAttachment.setVisibility(View.GONE);
@@ -164,112 +164,30 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			int progress = (int) (factor * 100);
 			vh.barAttachment.setProgress(progress);
 
-			vh.attachmentStatus
-					.setText(OpenTenureApplication.getContext().getResources()
-							.getString(R.string.uploading) + " :" + progress + "%");
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.uploading)
+					+ " :" + progress + "%");
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 		} else if (att.getStatus().equals(AttachmentStatus._CREATED)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.created));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.created));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.removeIcon.setVisibility(View.VISIBLE);
 			vh.saveIcon.setVisibility(View.VISIBLE);
-			vh.clickableArea.setVisibility(View.VISIBLE);
-			vh.clickableArea2.setVisibility(View.VISIBLE);
-
-			vh.clickableArea.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					try {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setDataAndType(Uri.parse("file://" + att.getPath()),
-								att.getMimeType());
-						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						OpenTenureApplication.getDocumentsFragment().startActivity(intent);
-					} catch (ActivityNotFoundException e) {
-
-						Log.d(this.getClass().getName(),
-								"No Activity Found Exception to handle :"
-										+ att.getFileName());
-
-						Toast.makeText(
-								OpenTenureApplication.getContext(),
-								OpenTenureApplication.getContext().getResources()
-										.getString(R.string.message_no_application)
-										+ " " + att.getFileName(), Toast.LENGTH_LONG)
-								.show();
-
-						e.getMessage();
-					}
-
-					catch (Throwable t) {
-
-						Log.d(this.getClass().getName(),
-								"Error opening :" + att.getFileName());
-
-						Toast.makeText(
-								OpenTenureApplication.getContext(),
-								OpenTenureApplication.getContext().getResources()
-										.getString(R.string.message_error_opening_file),
-								Toast.LENGTH_LONG).show();
-					}
-				}
-			});
-
-			vh.clickableArea2.setOnClickListener(new OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					try {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setDataAndType(Uri.parse("file://" + att.getPath()),
-								att.getMimeType());
-						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-						OpenTenureApplication.getDocumentsFragment().startActivity(intent);
-					} catch (ActivityNotFoundException e) {
-
-						Log.d(this.getClass().getName(),
-								"No Activity Found Exception to handle :"
-										+ att.getFileName());
-
-						Toast.makeText(
-								OpenTenureApplication.getContext(),
-								OpenTenureApplication.getContext().getResources()
-										.getString(R.string.message_no_application)
-										+ " " + att.getFileName(), Toast.LENGTH_LONG)
-								.show();
-
-						e.getMessage();
-					}
-
-					catch (Throwable t) {
-
-						Log.d(this.getClass().getName(),
-								"Error opening :" + att.getFileName());
-
-						Toast.makeText(
-								OpenTenureApplication.getContext(),
-								OpenTenureApplication.getContext().getResources()
-										.getString(R.string.message_error_opening_file),
-								Toast.LENGTH_LONG).show();
-					}
-				}
-			});
 
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.download_failed));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.download_failed));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._DOWNLOADING)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.downloading));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.downloading));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.VISIBLE);
@@ -283,28 +201,133 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.barAttachment.setProgress(progress);
 		} else if (att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.download_incomplete));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.download_incomplete));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.getSendIcon().setVisibility(View.INVISIBLE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.upload_incomplete));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.upload_incomplete));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 			vh.barAttachment.setVisibility(View.GONE);
 		} else if (att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
-			vh.attachmentStatus.setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.upload_error));
+			vh.attachmentStatus.setText(OpenTenureApplication.getContext()
+					.getResources().getString(R.string.upload_error));
 			vh.attachmentStatus.setTextColor(context.getResources().getColor(
 					R.color.status_challenged));
 			vh.barAttachment.setVisibility(View.GONE);
 			vh.saveIcon.setVisibility(View.VISIBLE);
 		}
+
+		if (!readOnly || att.getStatus().equals(AttachmentStatus._CREATED)
+				|| att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)
+				|| att.getStatus().equals(AttachmentStatus._UPLOADED)) {
+			vh.clickableArea.setVisibility(View.VISIBLE);
+			vh.clickableArea2.setVisibility(View.VISIBLE);
+
+			vh.clickableArea.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setDataAndType(
+								Uri.parse("file://" + att.getPath()),
+								att.getMimeType());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						OpenTenureApplication.getDocumentsFragment()
+								.startActivity(intent);
+					} catch (ActivityNotFoundException e) {
+
+						Log.d(this.getClass().getName(),
+								"No Activity Found Exception to handle :"
+										+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication
+										.getContext()
+										.getResources()
+										.getString(
+												R.string.message_no_application)
+										+ " " + att.getFileName(),
+								Toast.LENGTH_LONG).show();
+
+						e.getMessage();
+					}
+
+					catch (Throwable t) {
+
+						Log.d(this.getClass().getName(), "Error opening :"
+								+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication
+										.getContext()
+										.getResources()
+										.getString(
+												R.string.message_error_opening_file),
+								Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+
+			vh.clickableArea2.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					try {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setDataAndType(
+								Uri.parse("file://" + att.getPath()),
+								att.getMimeType());
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						OpenTenureApplication.getDocumentsFragment()
+								.startActivity(intent);
+					} catch (ActivityNotFoundException e) {
+
+						Log.d(this.getClass().getName(),
+								"No Activity Found Exception to handle :"
+										+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication
+										.getContext()
+										.getResources()
+										.getString(
+												R.string.message_no_application)
+										+ " " + att.getFileName(),
+								Toast.LENGTH_LONG).show();
+
+						e.getMessage();
+					}
+
+					catch (Throwable t) {
+
+						Log.d(this.getClass().getName(), "Error opening :"
+								+ att.getFileName());
+
+						Toast.makeText(
+								OpenTenureApplication.getContext(),
+								OpenTenureApplication
+										.getContext()
+										.getResources()
+										.getString(
+												R.string.message_error_opening_file),
+								Toast.LENGTH_LONG).show();
+					}
+				}
+			});
+		}
 		if (!readOnly || att.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)
-				|| att.getStatus().equals(AttachmentStatus._CREATED)) {
+				|| att.getStatus().equals(AttachmentStatus._CREATED)
+				|| att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)
+				|| att.getStatus().equals(AttachmentStatus._UPLOADED)) {
 
 			vh.removeIcon.setOnClickListener(new OnClickListener() {
 

@@ -40,6 +40,7 @@ public class ViewHolder {
 	TextView challengeExpiryDate;
 	ImageView picture;
 	ImageView send;
+	ImageView export;
 	ImageView remove;
 	ImageView iconLocal;
 	ImageView iconModerated;
