@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:textSize="20sp"
-    android:textAppearance="@android:attr/textAppearanceMedium" 
     android:background="@color/light_background_opentenure"
     android:orientation="horizontal"
-    android:padding="10dp" >
+    android:padding="10dp"
+    android:textAppearance="@android:attr/textAppearanceMedium"
+    android:textSize="20sp" >
 
     <LinearLayout
         android:layout_width="100dp"
@@ -20,38 +20,33 @@
             android:id="@+id/claim_id"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-	        android:layout_weight="1"
+            android:layout_weight="1"
             android:background="@drawable/item_color"
-            android:gravity="left|center"
-            android:text="@string/title_item" 
-            android:visibility="gone"/>
+            android:text="@string/title_item"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/claim_slogan"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-	        android:layout_weight="4"
+            android:layout_weight="4"
             android:background="@drawable/item_color"
-            android:gravity="left|center"
             android:text="@string/title_item" />
 
-        
         <TextView
             android:id="@+id/claim_status"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-	        android:layout_weight="1"
+            android:layout_weight="1"
             android:background="@drawable/item_color"
-            android:gravity="left|bottom"                       
             android:text="@string/title_item" />
 
         <TextView
             android:id="@+id/cardinal_direction"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-	        android:layout_weight="1"
+            android:layout_weight="1"
             android:background="@drawable/item_color"
-            android:gravity="left|center"
             android:text="@string/title_item" />
     </LinearLayout>
 

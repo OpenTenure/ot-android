@@ -330,6 +330,10 @@
     <string name="download_incomplete">download incomplete</string>
     <string name="download_failed">download failed</string>
     <string name="downloading">downloading</string>
+    <string name="moderated">moderated</string>
+    <string name="unmoderated">unmoderated</string>
+    <string name="rejected">rejected</string>
+    <string name="reviewed">reviewed</string>
     <string name="language">Language</string>
     <string name="map_sources">Map sources</string>
     <string name="general">General</string>

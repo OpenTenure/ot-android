@@ -12,8 +12,8 @@
 	    android:background="@color/light_background_opentenure"
 	    android:baselineAligned="false"
 	    android:orientation="vertical"
-	    android:paddingLeft="16dp"
-	    android:paddingRight="16dp" >
+	    android:paddingStart="16dp"
+	    android:paddingEnd="16dp" >
 	
 	</LinearLayout>
 </ScrollView>

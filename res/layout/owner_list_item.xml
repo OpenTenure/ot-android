@@ -12,7 +12,7 @@
         android:layout_weight="9"
         android:background="@color/light_background_opentenure"
         android:orientation="vertical"
-        android:padding="0dp" >
+        android:padding="15dp" >
 
         <TextView
             android:id="@+id/person_id"
@@ -22,7 +22,8 @@
             android:background="@drawable/item_color"
             android:gravity="left|center"
             android:textColor="@android:color/darker_gray"
-            android:text="@string/title_item" />
+            android:text="@string/title_item"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/person_slogan"
@@ -32,7 +33,8 @@
             android:background="@drawable/item_color"
             android:textColor="@android:color/black"
             android:gravity="left|center"
-            android:text="@string/title_item" />
+            android:text="@string/title_item" 
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
     </LinearLayout>
 
     <ImageView

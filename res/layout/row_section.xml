@@ -5,7 +5,7 @@
     android:background="@color/dark_background_opentenure"
     android:orientation="horizontal"
     android:paddingBottom="2dp"
-    android:paddingLeft="10dp"
+    android:paddingStart="10dp"
     android:paddingTop="2dp" >
 
     <TextView

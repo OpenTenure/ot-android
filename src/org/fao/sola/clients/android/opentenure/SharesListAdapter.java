@@ -78,7 +78,7 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 	}
 
 	static class ViewHolder {
-		TextView id;
+
 		TextView slogan;
 		TextView owners_num;
 		Spinner shares;
@@ -95,7 +95,7 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 					false);
 			vh = new ViewHolder();
 			vh.slogan = (TextView) convertView.findViewById(R.id.share_slogan);
-			vh.id = (TextView) convertView.findViewById(R.id.share_id);
+			
 			vh.shares = (Spinner) convertView.findViewById(R.id.share_shares);
 			vh.owners_num = (TextView) convertView
 					.findViewById(R.id.share_owners_num);
@@ -109,7 +109,8 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 		int numb = Owner.getOwners(shares.get(position).getId()).size();
 
 		vh.owners_num.setText(OpenTenureApplication.getContext().getString(
-				R.string.owners)+ " : " + numb);
+				R.string.owners)
+				+ " : " + numb);
 
 		vh.slogan.setText(shares.get(position).getSlogan());
 		convertView.setOnClickListener(new OnClickListener() {
@@ -184,8 +185,6 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 			}
 		});
 
-		vh.id.setTextSize(8);
-		vh.id.setText(shareId);
 
 		if (!readOnly) {
 			vh.removeIcon.setOnClickListener(new OnClickListener() {

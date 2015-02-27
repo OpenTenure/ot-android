@@ -30,16 +30,6 @@ package org.fao.sola.clients.android.opentenure;
 import java.io.File;
 import java.util.List;
 
-
-
-
-
-
-
-
-
-
-
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
@@ -56,8 +46,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class OwnersListAdapter extends ArrayAdapter<String>{
-	
+public class OwnersListAdapter extends ArrayAdapter<String> {
+
 	private static int resource;
 	private final Context context;
 	private List<String> owners;
@@ -66,8 +56,9 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 	private static final int PERSON_RESULT = 100;
 	private static Activity activity;
 	private ModeDispatcher mainActivity;
-	
-	public OwnersListAdapter(Context context, List<String> owners, String claimId, Activity shareDetailsActivity) {
+
+	public OwnersListAdapter(Context context, List<String> owners,
+			String claimId, Activity shareDetailsActivity) {
 		super(context, resource, owners);
 		// TODO Auto-generated constructor stub
 		this.context = context;
@@ -75,8 +66,8 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 		this.inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.claim = Claim.getClaim(claimId);
-		this.activity =  shareDetailsActivity;
-		
+		this.activity = shareDetailsActivity;
+
 		try {
 			mainActivity = (ModeDispatcher) activity;
 		} catch (ClassCastException e) {
@@ -84,27 +75,23 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 					+ " must implement ModeDispatcher");
 		}
 	}
-	
-	
+
 	static class ViewHolder {
-		
+		TextView id;
 		TextView slogan;
-		TextView id;		
 		ImageView picture;
 		ImageView removeIcon;
 	}
-	
-	
+
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
 		ViewHolder vh;
-		
 
 		if (convertView == null) {
-			convertView = inflater.inflate(R.layout.owner_list_item,
-					parent, false);
+			convertView = inflater.inflate(R.layout.owner_list_item, parent,
+					false);
 			vh = new ViewHolder();
-			vh.slogan = (TextView) convertView.findViewById(R.id.person_slogan);			
+			vh.slogan = (TextView) convertView.findViewById(R.id.person_slogan);
 			vh.id = (TextView) convertView.findViewById(R.id.person_id);
 			vh.removeIcon = (ImageView) convertView
 					.findViewById(R.id.remove_person);
@@ -114,22 +101,21 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 		} else {
 			vh = (ViewHolder) convertView.getTag();
 		}
-		
-		
+
 		Person person = Person.getPerson(owners.get(position));
-		vh.slogan.setText(person.getFirstName() + " "+ person.getLastName() );
+		vh.slogan.setText(person.getFirstName() + " " + person.getLastName());
 		vh.id.setText(owners.get(position));
-		
+
 		vh.removeIcon.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				
+
 				owners.remove(position);
-				notifyDataSetChanged();			
-			}});
-		
-		
+				notifyDataSetChanged();
+			}
+		});
+
 		convertView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -144,24 +130,21 @@ public class OwnersListAdapter extends ArrayAdapter<String>{
 			}
 
 		});
-		
-		
-		
-		//File file = Person.getPersonPictureFile(person.getPersonId());
-		vh.picture.setImageBitmap(Person.getPersonPicture(context,person.getPersonId() , 128));
-		
+
+		// File file = Person.getPersonPictureFile(person.getPersonId());
+		vh.picture.setImageBitmap(Person.getPersonPicture(context,
+				person.getPersonId(), 128));
+
 		if (!claim.getStatus().equals(ClaimStatus._CREATED)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
-			
+
 			vh.removeIcon.setVisibility(View.INVISIBLE);
-			
+
 		}
-	
-	
-	return convertView;
-	
+
+		return convertView;
+
 	}
-	
 
 }

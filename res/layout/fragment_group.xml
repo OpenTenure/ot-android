@@ -7,8 +7,8 @@
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
     >
 
     <LinearLayout
@@ -157,8 +157,8 @@
         android:layout_weight="0.27"
         android:background="@color/light_background_opentenure"
         android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:paddingTop="10dp" >
 
         <ImageView

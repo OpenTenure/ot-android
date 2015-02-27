@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.content.Context;
@@ -83,7 +84,33 @@ public class AdjacentClaimsListAdapter extends
 			vh = (ViewHolder) convertView.getTag();
 		}
 		vh.slogan.setText(claims.get(position).getSlogan());
-		vh.status.setText(claims.get(position).getStatus());
+		if(claims.get(position).getStatus().equals(ClaimStatus._CHALLENGED))
+		vh.status.setText(ClaimStatus._CHALLENGED);
+		if(claims.get(position).getStatus().equals(ClaimStatus._CREATED))
+			vh.status.setText(R.string.created);
+		if(claims.get(position).getStatus().equals(ClaimStatus._MODERATED))
+			vh.status.setText(R.string.moderated);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UNMODERATED))
+			vh.status.setText(R.string.unmoderated);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPDATE_ERROR))
+			vh.status.setText(R.string.update_error);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPDATE_ERROR))
+			vh.status.setText(R.string.update_error);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE))
+			vh.status.setText(R.string.update_incomplete);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPDATING))
+			vh.status.setText(R.string.updating);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPLOAD_ERROR))
+			vh.status.setText(R.string.upload_error);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE))
+			vh.status.setText(R.string.upload_incomplete);
+		if(claims.get(position).getStatus().equals(ClaimStatus._UPLOADING))
+			vh.status.setText(R.string.uploading);
+		if(claims.get(position).getStatus().equals(ClaimStatus._REJECTED))
+			vh.status.setText(R.string.rejected);
+		if(claims.get(position).getStatus().equals(ClaimStatus._REVIEWED))
+			vh.status.setText(R.string.reviewed);
+		
 		vh.id.setTextSize(8);
 		vh.id.setText(claims.get(position).getId());
 		vh.cardinalDirection.setText(claims.get(position)

@@ -305,6 +305,41 @@
     <string name="south_west">Sudoeste</string>
     <string name="hint_type_to_filter">Digite alguns caracteres para filtrar a lista</string>
     <string name="shares_prompt">Selecione parcelas</string>
+    <string name="updating">atualização</string>
+    <string name="update_incomplete">atualização incompleta</string>
+    <string name="update_error">erro de atualização</string>
+    <string name="map_sources">Fontes do mapa</string>
+    <string name="general">Geral</string>
+    <string name="dynamic_form">Formulário Dinâmico</string>
+    <string name="information">Informação</string>
+    <string name="geoserver_tiles_provider_key">GeoServer</string>
+    <string name="tiles_provider">Provedor de Partes</string>
+    <string name="tms_tiles_provider">Provedor de Partes TMS</string>
+    <string name="geoserver_tiles_provider">Provedor de Partes GeoServer</string>
+    <string name="tms_url_pref_title">URL TMS</string>
+    <string name="tms_url_pref_summary">URL base do Servidor de Partes do Mapa</string>
+    <string name="tms_url_pref_dialog_title">Digite a URL do Servidor de Partes do Mapa</string>
+    <string name="tiles_provider_dialog_title">Selecione o tipo de provedor de mapas off-line</string>
+
+    <string-array name="tiles_provider_values">
+        <item>TMS</item>
+        <item>GeoServer</item>
+    </string-array>
+
+    <string name="albanian_language">Albanês</string>
+    <string name="default_language">Padrão</string>
+    <string name="language">Idioma</string>
+    <string name="created">criado</string>
+    <string name="uploading">uploading</string>
+    <string name="uploaded">uploaded</string>
+    <string name="deleted">deletado</string>
+    <string name="upload_incomplete">upload incompleto</string>
+    <string name="upload_error">erro ao realizar upload</string>
+    <string name="download_incomplete">download incompleto</string>
+    <string name="download_failed">falha no download</string>
+    <string name="downloading">downloading</string>
+    <string name="claim_area_label">Área</string>
+    <string name="square_meters">m2</string>
 
     <string-array name="claim_statuses">
         <item>Não moderado</item>
