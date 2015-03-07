@@ -888,13 +888,13 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			.title(description)
 			.draggable(true)
 			.icon(BitmapDescriptorFactory
-					.fromResource(R.drawable.ot_blue_marker)));
+					.fromResource(R.drawable.ot_orange_marker)));
 		}else{
 			marker = map.addMarker(new MarkerOptions()
 			.position(position)
 			.title(description)
 			.icon(BitmapDescriptorFactory
-					.fromResource(R.drawable.ot_blue_marker)));
+					.fromResource(R.drawable.ot_orange_marker)));
 		}
 		marker.setClusterGroup(Constants.BASE_PROPERTY_LOCATION_MARKERS_GROUP + propertyLocationsMap.size());
 		return marker;
