@@ -98,12 +98,14 @@
     <string name="claim_name">Nombre de la demanda</string>
     <string name="claim_name_label">Nombre de la demanda *</string>
     <string name="claim_type">Tipo de Demanda *</string>
+    <string name="claim_type_no_star">Tipo de Demanda</string>
     <string name="default_claim_name">Nueva Demanda</string>
     <string name="first_name">Nombre</string>
     <string name="first_name_label">Nombre *</string>
     <string name="last_name">Apellido</string>
     <string name="last_name_label">Apellido *</string>
     <string name="date_of_birth">Fecha de Nacimiento (AAAA-MM-DD)</string>
+    <string name="date_of_birth_simple">Fecha de Nacimiento</string>
     <string name="date_of_birth_label">Fecha de Nacimiento * (AAAA-MM-DD)</string>
     <string name="date_of_start">AAAA-MM-DD</string>
     <string name="date_of_start_label">Fecha de Demanda aplica desde (AAAA-MM-DD)</string>
@@ -260,6 +262,7 @@
     <string name="sticky_marker">Marcador pegajoso</string>
     <string name="claimant_picture">Imagen Demandante</string>
     <string name="claimant">Demandante *</string>
+    <string name="claimant_no_star">Demandante</string>
     <string name="delete_locally">Borrar localmente</string>
     <string name="owner">Propietario</string>
     <string name="challenge_to">Desafío a</string>

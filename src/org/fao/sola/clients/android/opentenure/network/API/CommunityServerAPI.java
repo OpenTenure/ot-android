@@ -42,6 +42,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
@@ -71,6 +72,7 @@ import android.net.http.AndroidHttpClient;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceActivity.Header;
 import android.util.Log;
+import android.widget.Toast;
 
 public class CommunityServerAPI {
 
@@ -277,7 +279,13 @@ public class CommunityServerAPI {
 
 		try {
 
-			HttpResponse response = client.execute(request);
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			/* Calling the Server.... */
+			HttpResponse response = client.execute(request, context);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -344,7 +352,13 @@ public class CommunityServerAPI {
 			Log.d("CommunityServerAPI",
 					"GET ALL CLAIMS BY BOX JSON REQUEST " + url);
 
-			HttpResponse response = client.execute(request);
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			/* Calling the Server.... */
+			HttpResponse response = client.execute(request, context);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -534,6 +548,8 @@ public class CommunityServerAPI {
 		 * Creating the url to call
 		 */
 
+
+		
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 
@@ -559,7 +575,15 @@ public class CommunityServerAPI {
 
 		/* Calling the Server.... */
 		try {
-			HttpResponse response = client.execute(request);
+			
+			CookieStore CS = OpenTenureApplication.getCoockieStore();
+
+			HttpContext context = new BasicHttpContext();
+			context.setAttribute(ClientContext.COOKIE_STORE, CS);
+
+			/* Calling the Server.... */
+			HttpResponse response = client.execute(request, context);
+			
 
 			Log.d("CommunityServerAPI", "GET Attachment status line "
 					+ response.getStatusLine());
@@ -577,8 +601,17 @@ public class CommunityServerAPI {
 						.getStatusCode());
 				methodResponse.setMessage(response.getStatusLine()
 						.getReasonPhrase());
+				
+				org.apache.http.Header[] headers = response.getAllHeaders();
+				for (int i = 0; i < headers.length; i++) {
+					System.out.println("Head "+ i + ": "+headers[i]);
+				}
+				
+								
+				if(response.getHeaders("ETag").length != 0)
 				methodResponse
 						.setMd5(response.getHeaders("ETag")[0].getValue());
+				else System.out.println("There's no ETag !!!!");
 
 				return methodResponse;
 

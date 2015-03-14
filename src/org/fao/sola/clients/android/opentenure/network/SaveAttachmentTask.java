@@ -296,14 +296,11 @@ public class SaveAttachmentTask extends
 				vh.getBarAttachment().setProgress(progress);
 
 			if (vh.getBar() != null) {
-				System.out
-						.println("Qui dovrei fare il gioco di avanzamento della barra ");
+				
 				progress = FileSystemUtilities.getUploadProgress(
 						claim.getClaimId(), claim.getStatus());
 				vh.getBar().setProgress(progress);
-				System.out
-						.println("Qui dovrei fare il gioco di avanzamento della barra progress"
-								+ progress);
+				
 				vh.getStatus().setText(
 						OpenTenureApplication.getContext().getResources()
 								.getString(R.string.uploading)

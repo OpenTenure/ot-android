@@ -384,7 +384,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		case 7:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
-			sv.setContentTitle(getString(R.string.title_claim_owners)
+			sv.setContentTitle(getString(R.string.owners)
 					.toUpperCase(Locale.getDefault()));
 			sv.setContentText(getString(R.string.showcase_claim_shares_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
@@ -600,7 +600,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				return getString(R.string.title_claim_challenges)
 						.toUpperCase(l);
 			case 5:
-				return getString(R.string.title_claim_owners).toUpperCase(l);
+				return getString(R.string.owners).toUpperCase(l);
 			default:
 				return getSectionTitle(sectionPosition);
 			}

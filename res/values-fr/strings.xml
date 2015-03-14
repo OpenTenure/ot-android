@@ -96,12 +96,14 @@
     <string name="claim_name">Nom de la déclaration</string>
     <string name="claim_name_label">Date de la déclaration *</string>
     <string name="claim_type">Type de déclaration *</string>
+    <string name="claim_type_no_star">Type de déclaration</string>
     <string name="default_claim_name">Nouvelle déclaration</string>    
     <string name="first_name">Prénom</string>
     <string name="first_name_label">Prénom *</string>
     <string name="last_name">Nom</string>
     <string name="last_name_label">Nom *</string>    
     <string name="date_of_birth">Date de naissance (AAAA-MM-JJ)</string>
+    <string name="date_of_birth_simple">Date de naissance</string>
     <string name="date_of_birth_label">Date de naissance * (AAAA-MM-JJ)</string>
     <string name="date_of_start_label">La date de la déclaration s\'applique à partir du (AAAA-MM-JJ)</string>
     <string name="place_of_birth">Lieu de naissance</string>
@@ -237,6 +239,7 @@
     <string name="sticky_marker">Repère static</string>
     <string name="claimant_picture">Photo du déclarant</string>
     <string name="claimant">Déclarant *</string>
+    <string name="claimant_no_star">Déclarant</string>
     <string name="delete_locally">Effacer localement</string>
     <string name="owner">Propriétaire</string>
     <string name="challenge_to">Contestation de</string>

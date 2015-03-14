@@ -104,6 +104,7 @@
     <string name="claim_name">Nome della richiesta</string>
     <string name="claim_name_label">Nome della richiesta *</string>
     <string name="claim_type">Tipo della richiesta *</string>
+    <string name="claim_type_no_star">Tipo della richiesta</string>
     <string name="default_claim_name">Nuova richiesta</string>
     <string name="claim_notes">Annotazioni</string>
     <string name="insert_claim_notes">Inserisci le annotazioni</string>
@@ -113,6 +114,7 @@
     <string name="last_name">Cognome</string>
     <string name="last_name_label">Cognome *</string>
     <string name="date_of_birth">Data di nascita (AAAA-MM-GG)</string>
+    <string name="date_of_birth_simple">Data di nascita</string>
     <string name="date_of_birth_label">Data di nascita * (AAAA-MM-GG)</string>
     <string name="date_of_start">AAAA-MM-GG</string>
     <string name="date_of_start_label">Data di applicabilita\' del diritto (YYYY-MM-DD)</string>
@@ -258,6 +260,7 @@
     <string name="delete_locally">Cancella localmente</string>
     <string name="claimant_picture">Immagine del richiedente</string>
     <string name="claimant">Richiedente *</string>
+    <string name="claimant_no_star">Richiedente</string>
     <string name="owner">Proprietario</string>
     <string name="owners">Proprietari</string>
     <string name="challenge_to">Opposizione a</string>

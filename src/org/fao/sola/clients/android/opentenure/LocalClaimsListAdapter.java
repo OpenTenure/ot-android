@@ -147,8 +147,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					.findViewById(R.id.action_export_to_server);
 			vh.remove = (ImageView) convertView
 					.findViewById(R.id.action_remove_claim);
-			
-			
+
 			convertView.setTag(vh);
 		} else {
 			vh = (ViewHolder) convertView.getTag();
@@ -165,9 +164,9 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				position).getId(), vh));
 		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
 				.getId(), vh));
-		
-		vh.export.setOnClickListener(new ExportClaimListener(claims.get(position)
-				.getId()));
+
+		vh.export.setOnClickListener(new ExportClaimListener(claims.get(
+				position).getId()));
 
 		if (claims.get(position).getStatus().equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
@@ -192,15 +191,18 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(
+					claims.get(position).getId(), claims.get(position)
+							.getStatus());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(getContext().getResources().getString(R.string.uploading) + " " + progress
-					+ " %");
+			vh.status.setText(getContext().getResources().getString(
+					R.string.uploading)
+					+ " " + progress + " %");
 
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.VISIBLE);
@@ -216,15 +218,18 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(
+					claims.get(position).getId(), claims.get(position)
+							.getStatus());
 
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(getContext().getResources().getString(R.string.updating) + " " + progress
-					+ " %");
+			vh.status.setText(getContext().getResources().getString(
+					R.string.updating)
+					+ " " + progress + " %");
 
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.INVISIBLE);
@@ -237,7 +242,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-			vh.status.setText(getContext().getResources().getString(R.string.upload_error));
+			vh.status.setText(getContext().getResources().getString(
+					R.string.upload_error));
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 
@@ -257,14 +263,16 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.number.setText(claims.get(position).getNumber());
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
-			vh.status.setText(getContext().getResources().getString(R.string.update_error));
+			vh.status.setText(getContext().getResources().getString(
+					R.string.update_error));
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.INVISIBLE);
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+		if (claims.get(position).getStatus()
+				.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -273,19 +281,23 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(
+					claims.get(position).getId(), claims.get(position)
+							.getStatus());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(getContext().getResources().getString(R.string.upload_incomplete) + " " + progress
-					+ " %");
+			vh.status.setText(getContext().getResources().getString(
+					R.string.upload_incomplete)
+					+ " " + progress + " %");
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.VISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+		if (claims.get(position).getStatus()
+				.equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 
 			vh.iconLocal.setVisibility(View.GONE);
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
@@ -295,14 +307,17 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setTextColor(context.getResources().getColor(
 					R.color.status_created));
 
-			int progress = FileSystemUtilities.getUploadProgress(claims.get(position).getId(), claims.get(position).getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(
+					claims.get(position).getId(), claims.get(position)
+							.getStatus());
 			// Setting the update value in the progress bar
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.VISIBLE);
 			vh.bar.setProgress(progress);
 
-			vh.status.setText(getContext().getResources().getString(R.string.update_incomplete) + " " + progress
-					+ " %");
+			vh.status.setText(getContext().getResources().getString(
+					R.string.update_incomplete)
+					+ " " + progress + " %");
 			vh.status.setVisibility(View.VISIBLE);
 
 			vh.send.setVisibility(View.INVISIBLE);
@@ -355,7 +370,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		
+
 		if (claims.get(position).getStatus().equals(ClaimStatus._REVIEWED)) {
 
 			vh.iconReviewed.setVisibility(View.VISIBLE);
@@ -379,9 +394,15 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.position = position;
 
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
-				claims.get(position).getPersonId(),
-				96));
+				claims.get(position).getPersonId(), 96));
 
+		System.out.println("Locale : " + OpenTenureApplication.getLocale());
+		if (OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+			vh.slogan.setGravity(View.TEXT_DIRECTION_LOCALE);
+			vh.number.setGravity(View.TEXT_DIRECTION_LOCALE);
+			vh.id.setGravity(View.TEXT_DIRECTION_LOCALE);
+			vh.challengeExpiryDate.setGravity(View.TEXT_DIRECTION_LOCALE);
+		}
 		return convertView;
 	}
 }

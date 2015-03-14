@@ -58,6 +58,7 @@ public class DownloadAttachmentListener implements OnClickListener {
 		if(OpenTenureApplication.getInstance().isConnectedWifi(v.getContext())){
 			downloadAttachment(v);
 		}else{
+
 			// Avoid to automatically download claims over mobile data
 			AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
 					v.getContext());
@@ -95,8 +96,19 @@ public class DownloadAttachmentListener implements OnClickListener {
 		params[0] = attachment;
 		params[1] = vh;
 		
+		
+		if (!OpenTenureApplication.isLoggedin()) {
+
+			Toast toast = Toast.makeText(v.getContext(),
+					R.string.message_login_before, Toast.LENGTH_SHORT);
+			toast.show();
+			return ;
+
+		}
+		
 		vh.getBarAttachment().setVisibility(View.VISIBLE);
 		vh.getAttachmentStatus().setVisibility(View.GONE);
+		
 
 		GetAttachmentTask task = new GetAttachmentTask();
 		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);

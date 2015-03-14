@@ -107,6 +107,7 @@
     <string name="by">By</string>
     <string name="type">Type</string>
     <string name="na">N.A.</string>
+    <string name="generated_on">Generated on</string>
     <string name="group_name">Name</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Software Version</string>
@@ -115,15 +116,18 @@
     <string name="claim_name">Claim name</string>
     <string name="claim_name_label">Claim name *</string>
     <string name="claim_type">Claim type *</string>
+    <string name="claim_type_no_star">Claim type</string>
     <string name="default_claim_name">New claim</string>    
     <string name="first_name">First name</string>
     <string name="first_name_label">First name *</string>
     <string name="last_name">Last name</string>
     <string name="last_name_label">Last name *</string>    
     <string name="date_of_birth">Date of birth (YYYY-MM-DD)</string>
+    <string name="date_of_birth_simple">Date of birth</string>
     <string name="date_of_birth_label">Date of birth * (YYYY-MM-DD)</string>
     <string name="date_of_start">YYYY-MM-DD</string>
     <string name="date_of_start_label">Date claim applies from (YYYY-MM-DD)</string>
+    <string name="date_of_start_label_print">Date claim applies from</string>
     <string name="place_of_birth">Place of birth</string>
     <string name="place_of_birth_label">Place of birth *</string>
     <string name="date_of_establishment_label">Date of Establishment</string>
@@ -168,6 +172,7 @@
     <string name="message_submission_error">Error during submission of the claim</string>
     <string name="message_save_claim_before_submit">The claim must be saved before submission</string>
     <string name="message_save_snapshot_before_printing">Attach a map snapshot before printing</string>
+    <string name="message_download_snapshot_before_printing">Download the map snapshot from server before printing</string>
     <string name="message_save_claim_before_adding_content">The claim must be saved before adding content</string>
     <string name="message_save_person_before_adding_content">The person must be saved before adding content</string>
     <string name="message_export">Exporting</string>
@@ -267,11 +272,13 @@
     <string name="sticky_marker">Sticky marker</string>
     <string name="claimant_picture">Claimant picture</string>
     <string name="claimant">Claimant *</string>
+    <string name="claimant_no_star">Claimant</string>    
     <string name="delete_locally">Delete locally</string>
     <string name="owner">Owner</string>
     <string name="challenge_to">Challenge to</string>
     <string name="challenged_by">Challenged by</string>
     <string name="owners">Owners</string>
+    <string name="parcel">Parcel</string>
     <string name="claim_notes">Notes</string>
     <string name="insert_claim_notes">Insert Claim\'s notes</string>
     <string name="person_picture">Person picture</string>
@@ -323,6 +330,7 @@
     <string name="updating">updating</string>
     <string name="uploaded">uploaded</string>
     <string name="deleted">deleted</string>
+    <string name="description">Description</string> 
     <string name="upload_incomplete">upload incomplete</string>
     <string name="update_incomplete">update incomplete</string>
     <string name="upload_error">upload error</string>

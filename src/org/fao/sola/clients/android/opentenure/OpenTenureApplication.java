@@ -218,6 +218,7 @@ public class OpenTenureApplication extends Application {
 		FileSystemUtilities.createClaimsFolder();
 		FileSystemUtilities.createClaimantsFolder();
 		FileSystemUtilities.createOpenTenureFolder();
+		FileSystemUtilities.createCertificatesFolder();
 
 	}
 

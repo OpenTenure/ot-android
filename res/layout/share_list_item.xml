@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/dark_background_opentenure"
-            android:gravity="left|center"
+            android:background="@color/dark_background_opentenure"            
             android:text="@string/message_claim_modified" />
 
         <TextView
@@ -30,7 +29,6 @@
             android:layout_height="0dp"
             android:layout_weight="4"
             android:background="@drawable/item_color"
-            android:gravity="left|center"
             android:text="@string/title_item" />
     </LinearLayout>
     

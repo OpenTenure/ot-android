@@ -67,6 +67,7 @@ public class FileSystemUtilities {
 	private static String _CLAIMANT_PREFIX = "claimant_";
 	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
+	private static String _CERTIFICATES = "Certificates";
 	private static String _MULTIPAGE = "multipage";
 	private static String _MULTIPAGE_TMP = "multipageTmp.txt";
 
@@ -120,6 +121,33 @@ public class FileSystemUtilities {
 			if (ot.mkdir() && ot.isDirectory()) {
 
 				Log.d("FileSystemUtilities", "Created Open Tenure Folder");
+				return true;
+			}
+			return false;
+		}
+
+		else
+			return false;
+
+	}
+	
+	/**
+	 * 
+	 * Create the Certificates folder under the the public file system Here will
+	 * be exported the compressed claim
+	 * 
+	 * **/
+
+	public static boolean createCertificatesFolder() {
+
+		if (isExternalStorageWritable()) {
+
+			
+			File ot = new File(getOpentenureFolder(), _CERTIFICATES);
+
+			if (ot.mkdir() && ot.isDirectory()) {
+
+				Log.d("FileSystemUtilities", "Created Certificates Folder");
 				return true;
 			}
 			return false;
@@ -507,6 +535,11 @@ public class FileSystemUtilities {
 		File path = Environment
 				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		return new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
+	}
+	
+	public static File getCertificatesFolder() {
+		
+		return new File(getOpentenureFolder(), _CERTIFICATES);
 	}
 
 	public static File copyFileInAttachFolder(String claimID, File source) {

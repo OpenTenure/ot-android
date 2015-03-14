@@ -211,7 +211,6 @@
                     android:layout_width="350dp"
                     android:layout_height="wrap_content"
                     android:background="@color/dark_background_opentenure"
-                    
                     android:hint="@string/message_touch_to_select_a_person"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:visibility="invisible" />

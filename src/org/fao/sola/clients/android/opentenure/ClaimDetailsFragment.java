@@ -246,6 +246,10 @@ public class ClaimDetailsFragment extends Fragment {
 		String claimantId = ((TextView) rootView.findViewById(R.id.claimant_id))
 				.getText().toString();
 
+		if (OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+			((View) rootView.findViewById(R.id.claimant_slogan))
+					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
+		}
 		if (claimantId != null && !claimantId.trim().equals(""))
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setVisibility(View.VISIBLE);
@@ -566,6 +570,9 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadClaimant(Person claimant) {
 
 		if (claimant != null) {
+			if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+				((View) rootView.findViewById(R.id.claimant_slogan))
+						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
 			((TextView) rootView.findViewById(R.id.claimant_button))
 					.setText(getResources().getText(
@@ -600,29 +607,32 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	
-	
-	public void reloadArea(Claim claim){
-		
-		((TextView) rootView.findViewById(R.id.claim_area_label))
-		.setText(R.string.claim_area_label );
+	public void reloadArea(Claim claim) {
 
 		((TextView) rootView.findViewById(R.id.claim_area_label))
-			.setVisibility(View.VISIBLE);
+				.setText(R.string.claim_area_label);
+
+		((TextView) rootView.findViewById(R.id.claim_area_label))
+				.setVisibility(View.VISIBLE);
+
+		((TextView) rootView.findViewById(R.id.claim_area)).setText(claim
+				.getClaimArea()
+				+ " "
+				+ OpenTenureApplication.getContext().getString(
+						R.string.square_meters));
 
 		((TextView) rootView.findViewById(R.id.claim_area))
-			.setText(claim.getClaimArea() + " "+ OpenTenureApplication.getContext()
-					.getString(R.string.square_meters));
+				.setVisibility(View.VISIBLE);
 
-		((TextView) rootView.findViewById(R.id.claim_area))
-		 .setVisibility(View.VISIBLE);
-		
-		
 	}
-	
+
 	public void load(Claim claim) {
 
 		if (claim != null) {
+
+			if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+				((EditText) rootView.findViewById(R.id.claim_name_input_field))
+						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
 					.setText(claim.getName());
@@ -639,20 +649,20 @@ public class ClaimDetailsFragment extends Fragment {
 
 			if (claim.getClaimArea() > 0) {
 
-				
-				
 				((TextView) rootView.findViewById(R.id.claim_area_label))
-				.setText(R.string.claim_area_label );
+						.setText(R.string.claim_area_label);
 
 				((TextView) rootView.findViewById(R.id.claim_area_label))
-					.setVisibility(View.VISIBLE);
+						.setVisibility(View.VISIBLE);
 
 				((TextView) rootView.findViewById(R.id.claim_area))
-					.setText(claim.getClaimArea() + " "+ OpenTenureApplication.getContext()
-							.getString(R.string.square_meters));
+						.setText(claim.getClaimArea()
+								+ " "
+								+ OpenTenureApplication.getContext().getString(
+										R.string.square_meters));
 
 				((TextView) rootView.findViewById(R.id.claim_area))
-				 .setVisibility(View.VISIBLE);
+						.setVisibility(View.VISIBLE);
 			}
 
 			if (claim.getDateOfStart() != null) {
@@ -706,7 +716,6 @@ public class ClaimDetailsFragment extends Fragment {
 		}
 	}
 
-	
 	public int saveClaim() {
 
 		Person person = Person.getPerson(((TextView) rootView
@@ -779,7 +788,7 @@ public class ClaimDetailsFragment extends Fragment {
 				copyVerticesFromChallengedClaim(challengedClaim.getClaimId(),
 						claim.getClaimId());
 			}
-			
+
 			OpenTenureApplication.setClaimId(claim.getClaimId());
 
 			FileSystemUtilities.createClaimFileSystem(claim.getClaimId());
@@ -820,6 +829,10 @@ public class ClaimDetailsFragment extends Fragment {
 
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
+
+		if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+			((View) rootView.findViewById(R.id.claimant_slogan))
+					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
 		if (person != null)
 			((View) rootView.findViewById(R.id.claimant_slogan))
@@ -1018,11 +1031,13 @@ public class ClaimDetailsFragment extends Fragment {
 		case R.id.action_print:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
 			boolean mapPresent = false;
+			boolean mapToDownload = false;
+			String path = null;
 
 			if (claim == null) {
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_save_snapshot_before_printing,
-						Toast.LENGTH_SHORT);
+						Toast.LENGTH_LONG);
 				toast.show();
 				return true;
 			}
@@ -1035,21 +1050,33 @@ public class ClaimDetailsFragment extends Fragment {
 						&& EditablePropertyBoundary.DEFAULT_MAP_MIME_TYPE
 								.equalsIgnoreCase(attachment.getMimeType())) {
 					mapPresent = true;
+					path = attachment.getPath();
+					mapToDownload = !(new File(path).exists());
 				}
 			}
 			if (!mapPresent) {
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_save_snapshot_before_printing,
-						Toast.LENGTH_SHORT);
+						Toast.LENGTH_LONG);
+				toast.show();
+				return true;
+			}
+			if (mapToDownload) {
+
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_download_snapshot_before_printing,
+						Toast.LENGTH_LONG);
 				toast.show();
 				return true;
 			}
 			try {
 				PDFClaimExporter pdf = new PDFClaimExporter(
 						rootView.getContext(), claimActivity.getClaimId());
+
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
 						"application/pdf");
+				System.out.println("PDF " + pdf.getFileName());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 				startActivity(intent);

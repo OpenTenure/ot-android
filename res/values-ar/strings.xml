@@ -104,15 +104,18 @@
     <string name="claim_name">إسم الأدعاء</string>
     <string name="claim_name_label">إسم الأدعاء *</string>
     <string name="claim_type">نوع الأدعاء *</string>
+    <string name="claim_type_no_star">نوع الأدعاء</string>
     <string name="default_claim_name">إدعاء جديد</string>
     <string name="first_name">الأسم الاول</string>
     <string name="first_name_label">الأسم الأول *</string>
     <string name="last_name">الأسم الأخير</string>
     <string name="last_name_label">الأسم الأحير*</string>
     <string name="date_of_birth">تاريخ الميلاد (DD-MM-YYYY)</string>
+    <string name="date_of_birth_simple">تاريخ الميلاد </string>
     <string name="date_of_birth_label">تاريخ الميلاد (DD-MM-YYYY)*</string>
     <string name="date_of_start">تاريخ الأدعاء فعال من (DD-MM-YYYY) </string>
     <string name="date_of_start_label">تاريخ الأدعاء فعال من  (DD-MM-YYYY) </string>
+    <string name="date_of_start_label_print">تاريخ الأدعاء فعال من </string>
     <string name="place_of_birth">مكان الولادة</string>
     <string name="place_of_birth_label">مكان الولادة *</string>
     <string name="date_of_establishment_label">تاريخ التأسيس</string>
@@ -121,6 +124,7 @@
     <string name="contact_phone_number">رقم تلفون شخص الاتصال</string>
     <string name="password">كلمة المرور</string>
     <string name="attachment_removed">تم إزالة المرفق</string>
+    <string name="attachment_updated">تم تعديل المرفق</string>
     <string name="owner_removed">تم إزالة المالك</string>
     <string name="section_element_removed">تم إزالة العنصر</string>
     <string name="additional_info_removed">تم إزالة المعلومات</string>
@@ -234,6 +238,7 @@
     <string name="message_db_backed_up">تم إنشاء نسخة إحتياطية من قاعدة البيانات المحلية</string>
     <string name="title_initialization_process">إجراء التهيئة</string>
     <string name="message_initialize_before"> قم أولا بعملية التهيئة</string>
+    <string name="message_download_snapshot_before_printing">نزل  لقطة الخارطة الفوتوغرافية من الخادم قبل الطباعة</string>
     <string name="message_default_initialization">أنت على وشك تهيئة البرنامج بالقيم الإفتراضية لخادم المجتمع. القيم الإفتراضية لخادم المجتمع تستخدم فقط لأغراض العرض فقط. هل تريد الأستمرار؟غير ذلك إضغط على إلغاء وأدخل عنوان الوب لخادم المجتمع  </string>
     <string name="action_backup_db">إعمل نسخة إحتياطية للبيانات المحلية</string>
     <string name="message_db_backed_up">لقد تم عمل نسخة إحتياطية من قاعدة البيانات المحلية</string>
@@ -274,7 +279,8 @@
     <string name="draggable_marker">علامة قابلة للسحب</string>
     <string name="sticky_marker">علامة  ملتصقة</string>
     <string name="claimant_picture">صورة المدعي</string>
-    <string name="claimant">المدعي *</string>
+    <string name="claimant">المدعي</string>
+    <string name="claimant_no_star">المدعي</string>
     <string name="delete_locally">حذف محلي</string>
     <string name="owner">المالك</string>
     <string name="challenge_to">تحدي ل</string>
@@ -357,8 +363,20 @@
     <string name="download_incomplete">التنزيل لم يكتمل</string>
     <string name="download_failed">التنزيل فشل</string>
     <string name="downloading">جاري التنزيل</string>
+    <string name="unmoderated">غير معدل</string>
+    <string name="rejected">مرفوض</string>
+    <string name="reviewed">روجع</string>
+    <string name="moderated">معدل</string>
+    
     <string name="claim_area_label">المساحة</string>
     <string name="square_meters">م2</string>
+    
+    <string name="parcel">القطعة</string>
+    <string name="description">الوصف</string>
+    <string name="generated_on">انشئت في</string>
+    
+    
+    
 
     <string-array name="claim_statuses">
         <item>غير معدل</item>

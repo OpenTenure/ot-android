@@ -83,6 +83,8 @@ public class AdjacentClaimsListAdapter extends
 		} else {
 			vh = (ViewHolder) convertView.getTag();
 		}
+		
+		
 		vh.slogan.setText(claims.get(position).getSlogan());
 		if(claims.get(position).getStatus().equals(ClaimStatus._CHALLENGED))
 		vh.status.setText(ClaimStatus._CHALLENGED);
@@ -118,7 +120,13 @@ public class AdjacentClaimsListAdapter extends
 		vh.picture.setImageBitmap(Person.getPersonPicture(context, Claim
 				.getClaim(claims.get(position).getId()).getPerson()
 				.getPersonId(), 96));
-
+		
+		if(OpenTenureApplication.getLocale().toString().startsWith("ar")){
+		vh.slogan.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
+		vh.id.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
+		vh.status.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
+		vh.cardinalDirection.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
+		}
 		return convertView;
 	}
 }

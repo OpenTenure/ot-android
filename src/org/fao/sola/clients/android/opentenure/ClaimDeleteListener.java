@@ -127,6 +127,7 @@ public class ClaimDeleteListener implements OnClickListener {
 
 				// Delete locally Button
 
+				
 				final Button deleteLocally = (Button) dialog
 						.findViewById(R.id.ClaimDeleteLocally);
 				deleteLocally.setText(R.string.delete_locally);

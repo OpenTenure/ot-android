@@ -106,12 +106,14 @@
     <string name="claim_name">ឈ្មោះអ្នកទាមទា</string>
     <string name="claim_name_label">ឈ្មោះអ្នកទាមទា*</string>
     <string name="claim_type">ប្រភេទទាមទា *</string>
+    <string name="claim_type_no_star">ប្រភេទទាមទា </string>
     <string name="default_claim_name">ការទាមទាថ្មី</string>
     <string name="first_name">ត្រកូល</string>
     <string name="first_name_label">ត្រកូល *</string>
     <string name="last_name">ឈ្មោះបុគ្គល</string>
     <string name="last_name_label">ឈ្មោះបុគ្គល *</string>
     <string name="date_of_birth">ថ្ងៃខែឆ្នាំកំណើត (ឆ្នាំ-ខែ-ថ្ងៃ)</string>
+    <string name="date_of_birth_simple">ថ្ងៃខែឆ្នាំកំណើត </string>
     <string name="date_of_birth_label">ថ្ងៃខែឆ្នាំកំណើត * (ឆ្នាំ-ខែ-ថ្ងៃ)</string>
     <string name="date_of_start">ឆ្នាំ-ខែ-ថ្ងៃ</string>
     <string name="date_of_start_label">ការបរិច្ឆេទនៃការទាមទាដែលគិចពី(ឆ្នាំ-ខែ-ថ្ងៃ)</string>
@@ -133,6 +135,7 @@
     <string name="message_service_not_available">មិនទាន់មានសេវា</string>
     <string name="message_connection_error">ការតភ្ជាប់នៅមិនទាន់មាន</string>
     <string name="message_attachment_downloaded">ទាញយកសារដែលបានភ្ជាប់%s</string>
+    <string name="message_download_snapshot_before_printing">សូមទាញយករូបភាពផែនទីចេញពីប្រព័ន្ធផ្ទុកពត៌មានមុនពេលព្រីនឯកសារចេញ</string>
     <string name="message_attachment_downloading">ឯកសាភ្ជាប់%sបានទាញយកតួចហើយ</string>
     <string name="message_attachment_download_failed">ការទាញយកឯកសារដែលជូនភ្ជាប់%sមិនបានសម្រេច</string>
     <string name="message_attachment_download_not_complete">ការទាញយកឯកសារដែលជូនភ្ជាប់%sនៅមិនទាន់បានបញ្ជប់</string>
@@ -253,6 +256,7 @@
     <string name="sticky_marker">បិទរូបចំណាំ</string>
     <string name="claimant_picture">រូបភាពអ្នកទាមទា</string>
     <string name="claimant">អ្នកទាមទា *</string>
+    <string name="claimant_no_star">អ្នកទាមទា </string>
     <string name="delete_locally">លុបព័ត៌មានខាងក្នុង</string>
     <string name="owner">ម្ចាស់កម្មសិទ្ធិ</string>
     <string name="challenge_to">បង្កជំលោះទៅកាន់</string>
