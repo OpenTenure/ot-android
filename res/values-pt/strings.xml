@@ -343,6 +343,18 @@
     <string name="downloading">downloading</string>
     <string name="claim_area_label">Área</string>
     <string name="square_meters">m2</string>
+    <string name="khmer_language">Khmer</string>
+    <string name="generated_on">Gerado em</string>
+    <string name="claim_type_no_star">Tipo de Requerimento</string>
+    <string name="date_of_start_label_print">O requerimento aplica-se a partir da data</string>
+    <string name="attachment_updated">O anexo foi atualizado</string>
+    <string name="message_download_snapshot_before_printing">Baixar a imagem do mapa do servidor, antes de imprimir</string>
+    <string name="parcel">Parcela</string>
+    <string name="description">Descrição</string>
+    <string name="moderated">moderado</string>
+    <string name="unmoderated">não moderado</string>
+    <string name="rejected">rejeitado</string>
+    <string name="reviewed">revisado</string>
 
     <string-array name="claim_statuses">
         <item>Não moderado</item>

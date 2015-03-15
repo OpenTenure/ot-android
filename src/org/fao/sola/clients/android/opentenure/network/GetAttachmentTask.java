@@ -60,6 +60,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 		// TODO Auto-generated method stub
 
 		GetAttachmentResponse res = null;
+
 		int lenght = 1000; /* Should be setted by property */
 		long offSet = 0;
 		Object[] result = new Object[2];
@@ -101,7 +102,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			while (file.length() < att.getSize()) {
 
 				if ((att.getSize() - file.length()) < lenght) {
-
+					
 					/* Here to set the size of the chunk smaller than default */
 					lenght = (int) (att.getSize() - file.length());
 				}
@@ -122,7 +123,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 					Log.d("CommunityServerAPI", "ATTACHMENT RETRIEVED  : "
 							+ res.getMessage());
-					
+
 					FileOutputStream fos = new FileOutputStream(file);
 					fos.write(res.getArray());
 					fos.close();
@@ -186,7 +187,7 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 			}
 
-			if (file != null && att.getSize() == file.length()
+			if (file != null && att.getSize() == file.length() && res != null
 					&& MD5.checkMD5(res.getMd5(), file)) {
 
 				att.setPath(file.getAbsolutePath());
@@ -233,6 +234,9 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 	@Override
 	protected void onPostExecute(Object[] result) {
 
+		if (result == null)
+			return;
+
 		AttachmentViewHolder vh = (AttachmentViewHolder) result[1];
 		Attachment att = (Attachment) result[0];
 
@@ -240,8 +244,9 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 
 			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 			vh.getAttachmentStatus().setText(AttachmentStatus._UPLOADED);
-			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
-					R.color.status_unmoderated));
+			vh.getAttachmentStatus().setTextColor(
+					OpenTenureApplication.getContext().getResources()
+							.getColor(R.color.status_unmoderated));
 			vh.getBarAttachment().setVisibility(View.GONE);
 			vh.getDownloadIcon().setVisibility(View.GONE);
 
@@ -256,10 +261,11 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 			toast.show();
 			OpenTenureApplication.getDocumentsFragment().update();
 		} else if ((att.getStatus().equals(AttachmentStatus._DOWNLOAD_FAILED))) {
-			
+
 			vh.getAttachmentStatus().setText(AttachmentStatus._DOWNLOAD_FAILED);
-			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
-					R.color.status_challenged));
+			vh.getAttachmentStatus().setTextColor(
+					OpenTenureApplication.getContext().getResources()
+							.getColor(R.color.status_challenged));
 			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 			vh.getBarAttachment().setVisibility(View.GONE);
 
@@ -276,9 +282,11 @@ public class GetAttachmentTask extends AsyncTask<Object, Void, Object[]> {
 		} else if ((att.getStatus()
 				.equals(AttachmentStatus._DOWNLOAD_INCOMPLETE))) {
 
-			vh.getAttachmentStatus().setText(AttachmentStatus._DOWNLOAD_INCOMPLETE);
-			vh.getAttachmentStatus().setTextColor(OpenTenureApplication.getContext().getResources().getColor(
-					R.color.status_created));
+			vh.getAttachmentStatus().setText(
+					AttachmentStatus._DOWNLOAD_INCOMPLETE);
+			vh.getAttachmentStatus().setTextColor(
+					OpenTenureApplication.getContext().getResources()
+							.getColor(R.color.status_created));
 			vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 			vh.getBarAttachment().setVisibility(View.GONE);
 
