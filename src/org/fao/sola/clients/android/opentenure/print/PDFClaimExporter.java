@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
+import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -48,6 +49,7 @@ import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
+import org.h2.constant.SysProperties;
 
 import android.R.integer;
 import android.annotation.SuppressLint;
@@ -111,129 +113,306 @@ public class PDFClaimExporter {
 
 			addPage(document, context, claimId);
 
-			drawBitmap(bitmapFromResource(context, R.drawable.open_tenure_logo,
-					128, 85));
-
-			moveX(15);
-			moveY(15);
-
-			if (claim.getClaimNumber() != null) {
-				writeBoldText(context.getResources().getString(R.string.claim)
-						+ " #" + claim.getClaimNumber(), 25);
-			} else {
-				writeBoldText(context.getResources().getString(R.string.claim)
-						+ ": " + claim.getName(), 25);
-			}
-
-			moveX(45);
-			moveY(30);
-
-			Date date = new Date();
-
 			SimpleDateFormat sdf = new SimpleDateFormat();
 			sdf.applyPattern("dd/MM/yyyy HH:MM");
-			String dataStr = sdf.format(new Date());
 
-			int x = currentX;
-			int y = currentY;
+			/*------------------------------------------- HEADER -------------------------------------*/
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+				drawBitmap(bitmapFromResource(context,
+						R.drawable.open_tenure_logo,
 
-			moveX(10);
-			writeText(context.getResources().getString(R.string.generated_on)
-					+ " :");
-			currentX = x;
-			moveY(20);
-			writeText(dataStr);
-			moveY(-60);
+						128, 85));
 
+				moveX(15);
+				moveY(15);
+
+				if (claim.getClaimNumber() != null) {
+					writeBoldText(
+							context.getResources().getString(R.string.claim)
+									+ " #" + claim.getClaimNumber(), 25);
+				} else {
+					writeBoldText(
+							context.getResources().getString(R.string.claim)
+									+ ": " + claim.getName(), 25);
+				}
+
+				moveX(45);
+				moveY(30);
+
+				Date date = new Date();
+
+				String dataStr = sdf.format(new Date());
+
+				int x = currentX;
+				int y = currentY;
+
+				setX(450);
+				writeText(context.getResources().getString(
+						R.string.generated_on)
+						+ " :");
+				currentX = x;
+				moveY(20);
+				setX(430);
+				writeText(dataStr);
+				moveY(-60);
+			} else {
+
+				System.out.println("currentX; " + currentX);
+				System.out.println("currentY; " + currentY);
+
+				setFont(FONT_SANS_SERIF, Typeface.NORMAL, 15);
+				moveY(60);
+
+				writeText(context.getResources().getString(
+						R.string.generated_on)
+						+ " :");
+
+				System.out.println("currentX; " + currentX);
+				System.out.println("currentY; " + currentY);
+
+				setX(40);
+				moveY(25);
+
+				Date date = new Date();
+				String dataStr = sdf.format(new Date());
+				writeText(dataStr);
+
+				moveX(15);
+				moveY(-80);
+
+				System.out.println("currentX; " + currentX);
+				System.out.println("currentY; " + currentY);
+
+				if (claim.getClaimNumber() != null) {
+					writeBoldText(
+							context.getResources().getString(R.string.claim)
+									+ " #" + claim.getClaimNumber(), 25);
+				} else {
+					writeBoldText(
+							context.getResources().getString(R.string.claim)
+									+ ": " + claim.getName(), 25);
+				}
+
+				setX(420);
+				moveY(40);
+
+				System.out.println("currentX; " + currentX);
+				System.out.println("currentY; " + currentY);
+
+				drawBitmap(bitmapFromResource(context,
+						R.drawable.open_tenure_logo,
+
+						128, 85));
+
+			}
+
+			/*
+			 * ----------------------------------------- CLAIMANT
+			 * -----------------------------
+			 */
 			newLine();
 			drawHorizontalLine();
 			newLine();
-			writeBoldText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.claimant_no_star), 18);
 
-			moveY(5);
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
 
-			if (claim.getPerson().getPersonType().equals(Person._PHYSICAL)) {
+				writeBoldText(OpenTenureApplication.getContext().getResources()
+						.getString(R.string.claimant_no_star), 18);
+
+				moveY(5);
+
+				if (claim.getPerson().getPersonType().equals(Person._PHYSICAL)) {
+					newLine();
+					writeBoldText(
+							context.getResources().getString(
+									R.string.first_name)
+									+ " :", 16);
+					setX(200);
+					writeBoldText(
+							context.getResources()
+									.getString(R.string.last_name) + " :", 16);
+					setX(400);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.date_of_birth_simple)
+									+ ": ", 16);
+				} else {
+					newLine();
+					writeBoldText(
+							context.getResources().getString(
+									R.string.group_name)
+									+ " :", 16);
+					setX(300);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.date_of_establishment_label)
+									+ " :", 16);
+				}
+
+				newLine();
+				newLine();
+
+				if (claim.getPerson().getPersonType().equals(Person._GROUP)) {
+					writeText(claim.getPerson().getFirstName());
+					setX(300);
+					if (claim.getPerson().getDateOfBirth() != null)
+						writeText(sdf
+								.format(claim.getPerson().getDateOfBirth()));
+				} else {
+					writeText(claim.getPerson().getFirstName());
+					setX(200);
+					writeText(claim.getPerson().getLastName());
+					setX(400);
+					if (claim.getPerson().getDateOfBirth() != null)
+						writeText(sdf
+								.format(claim.getPerson().getDateOfBirth()));
+
+				}
+				newLine();
 				newLine();
 				writeBoldText(
-						context.getResources().getString(R.string.first_name)
-								+ " :", 16);
-				setX(200);
-				writeBoldText(
-						context.getResources().getString(R.string.last_name)
-								+ " :", 16);
-				setX(400);
-				writeBoldText(
 						context.getResources().getString(
-								R.string.date_of_birth_simple)
+								R.string.postal_address)
 								+ ": ", 16);
-			} else {
-				newLine();
-				writeBoldText(
-						context.getResources().getString(R.string.group_name)
-								+ " :", 16);
 				setX(300);
 				writeBoldText(
 						context.getResources().getString(
-								R.string.date_of_establishment_label)
-								+ " :", 16);
-			}
-
-			newLine();
-
-			if (claim.getPerson().getPersonType().equals(Person._GROUP)) {
-				writeText(claim.getPerson().getFirstName());
+								R.string.contact_phone_number)
+								+ ": ", 16);
+				newLine();
+				if (claim.getPerson().getPostalAddress() != null)
+					writeText(claim.getPerson().getPostalAddress());
 				setX(300);
-				if (claim.getPerson().getDateOfBirth() != null)
-					writeText(sdf.format(claim.getPerson().getDateOfBirth()));
+				if (claim.getPerson().getContactPhoneNumber() != null)
+					writeText(" " + claim.getPerson().getContactPhoneNumber());
+				newLine();
+				newLine();
+
+				writeBoldText(context.getResources()
+						.getString(R.string.id_type) + ": ", 16);
+				setX(300);
+
+				writeBoldText(
+						context.getResources().getString(R.string.id_number)
+								+ ": ", 16);
+				newLine();
+				if (claim.getPerson().getIdType() != null)
+					writeText(new IdType().getDisplayValueByType(claim
+							.getPerson().getIdType()));
+				setX(300);
+				if (claim.getPerson().getIdNumber() != null)
+					writeText(claim.getPerson().getIdNumber());
+				newLine();
+				newLine();
+				drawHorizontalLine();
+				newLine();
 			} else {
-				writeText(claim.getPerson().getFirstName());
-				setX(200);
-				writeText(claim.getPerson().getLastName());
-				setX(400);
-				if (claim.getPerson().getDateOfBirth() != null)
-					writeText(sdf.format(claim.getPerson().getDateOfBirth()));
+				setX(430);
+				writeBoldText(OpenTenureApplication.getContext().getResources()
+						.getString(R.string.claimant_no_star), 18);
+
+				newLine();
+
+				if (claim.getPerson().getPersonType().equals(Person._PHYSICAL)) {
+					newLine();
+					setX(430);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.first_name)
+									+ " :", 16);
+					setX(250);
+					writeBoldText(
+							context.getResources()
+									.getString(R.string.last_name) + " :", 16);
+					setX(70);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.date_of_birth_simple)
+									+ ": ", 16);
+				} else {
+					newLine();
+					setX(430);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.group_name)
+									+ " :", 16);
+					setX(130);
+					writeBoldText(
+							context.getResources().getString(
+									R.string.date_of_establishment_label)
+									+ " :", 16);
+				}
+
+				newLine();
+
+				if (claim.getPerson().getPersonType().equals(Person._GROUP)) {
+					setX(430);
+					writeText(claim.getPerson().getFirstName());
+					setX(130);
+					if (claim.getPerson().getDateOfBirth() != null)
+						writeText(sdf
+								.format(claim.getPerson().getDateOfBirth()));
+				} else {
+					setX(430);
+					writeText(claim.getPerson().getFirstName());
+					setX(250);
+					writeText(claim.getPerson().getLastName());
+					setX(70);
+					if (claim.getPerson().getDateOfBirth() != null)
+						writeText(sdf
+								.format(claim.getPerson().getDateOfBirth()));
+
+				}
+
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.postal_address)
+								+ ": ", 16);
+				setX(130);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.contact_phone_number)
+								+ ": ", 16);
+				newLine();
+				newLine();
+				setX(430);
+				if (claim.getPerson().getPostalAddress() != null)
+					writeText(claim.getPerson().getPostalAddress());
+				setX(130);
+				if (claim.getPerson().getContactPhoneNumber() != null)
+					writeText(" " + claim.getPerson().getContactPhoneNumber());
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(context.getResources()
+						.getString(R.string.id_type) + ": ", 16);
+				setX(130);
+
+				writeBoldText(
+						context.getResources().getString(R.string.id_number)
+								+ ": ", 16);
+				newLine();
+				newLine();
+				setX(430);
+				if (claim.getPerson().getIdType() != null)
+					writeText(new IdType().getDisplayValueByType(claim
+							.getPerson().getIdType()));
+				setX(130);
+				if (claim.getPerson().getIdNumber() != null)
+					writeText(claim.getPerson().getIdNumber());
+				newLine();
+				newLine();
+				drawHorizontalLine();
+				newLine();
 
 			}
-			newLine();
-			newLine();
-			writeBoldText(
-					context.getResources().getString(R.string.postal_address)
-							+ ": ", 16);
-			setX(300);
-			writeBoldText(
-					context.getResources().getString(
-							R.string.contact_phone_number)
-							+ ": ", 16);
-			newLine();
-			if (claim.getPerson().getPostalAddress() != null)
-				writeText(claim.getPerson().getPostalAddress());
-			setX(300);
-			if (claim.getPerson().getContactPhoneNumber() != null)
-				writeText(" " + claim.getPerson().getContactPhoneNumber());
-			newLine();
-			newLine();
-
-			writeBoldText(context.getResources().getString(R.string.id_type)
-					+ ": ", 16);
-			setX(300);
-
-			writeBoldText(context.getResources().getString(R.string.id_number)
-					+ ": ", 16);
-			newLine();
-			if (claim.getPerson().getIdType() != null)
-				writeText(new IdType().getDisplayValueByType(claim.getPerson()
-						.getIdType()));
-			setX(300);
-			if (claim.getPerson().getIdNumber() != null)
-				writeText(claim.getPerson().getIdNumber());
-			newLine();
-			newLine();
-			drawHorizontalLine();
-			newLine();
-
 			/*---------------------------------------------- OWNERS ------------------------------------------------------ */
 
+			if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+				setX(430);
 			writeBoldText(context.getResources().getString(R.string.owners), 16);
 
 			List<ShareProperty> shares = claim.getShares();
@@ -249,145 +428,320 @@ public class PDFClaimExporter {
 				newLine();
 				drawHorizontalLine();
 				newLine();
+				if (!OpenTenureApplication.getLocale().toString()
+						.startsWith("ar")) {
+					ShareProperty shareProperty = (ShareProperty) iterator
+							.next();
 
-				ShareProperty shareProperty = (ShareProperty) iterator.next();
+					writeBoldText(
+							context.getResources().getString(
+									R.string.title_share)
+									+ " "
+									+ i
+									+ " :"
+									+ shareProperty.getShares() + " %", 16);
+					newLine();
+					List<Owner> owners = Owner.getOwners(shareProperty.getId());
+					for (Iterator iterator2 = owners.iterator(); iterator2
+							.hasNext();) {
 
-				writeBoldText(
-						context.getResources().getString(R.string.title_share)
-								+ " " + i + " :" + shareProperty.getShares() + " %",
-						16);
-				newLine();
-				List<Owner> owners = Owner.getOwners(shareProperty.getId());
-				for (Iterator iterator2 = owners.iterator(); iterator2
-						.hasNext();) {
-					
-					if (isPageEnding())
-						addPage(document, context, claimId);
-					
-					Owner owner = (Owner) iterator2.next();
-					Person person = Person.getPerson(owner.getPersonId());
+						if (isPageEnding())
+							addPage(document, context, claimId);
 
-					if (person.getPersonType().equals(Person._PHYSICAL)) {
+						Owner owner = (Owner) iterator2.next();
+						Person person = Person.getPerson(owner.getPersonId());
+
+						if (person.getPersonType().equals(Person._PHYSICAL)) {
+							newLine();
+							writeBoldText(
+									context.getResources().getString(
+											R.string.first_name)
+											+ " :", 16);
+							setX(200);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.last_name)
+											+ " :", 16);
+							setX(400);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.date_of_birth_simple)
+											+ ": ", 16);
+						} else {
+							newLine();
+							writeBoldText(
+									context.getResources().getString(
+											R.string.group_name)
+											+ " :", 16);
+							setX(300);
+							writeBoldText(
+									context.getResources()
+											.getString(
+													R.string.date_of_establishment_label)
+											+ " :", 16);
+						}
+
+						newLine();
+
+						if (person.getPersonType().equals(Person._GROUP)) {
+
+							writeText(person.getFirstName());
+							setX(300);
+							if (person.getDateOfBirth() != null)
+								writeText(sdf.format(claim.getPerson()
+										.getDateOfBirth()));
+						} else {
+							writeText(person.getFirstName());
+							setX(200);
+							writeText(person.getLastName());
+							setX(400);
+							if (person.getDateOfBirth() != null)
+								writeText(sdf.format(claim.getPerson()
+										.getDateOfBirth()));
+
+						}
+						newLine();
 						newLine();
 						writeBoldText(
 								context.getResources().getString(
-										R.string.first_name)
-										+ " :", 16);
-						setX(200);
-						writeBoldText(
-								context.getResources().getString(
-										R.string.last_name)
-										+ " :", 16);
-						setX(400);
-						writeBoldText(
-								context.getResources().getString(
-										R.string.date_of_birth_simple)
+										R.string.postal_address)
 										+ ": ", 16);
-					} else {
+						setX(300);
+						writeBoldText(
+								context.getResources().getString(
+										R.string.contact_phone_number)
+										+ ": ", 16);
 						newLine();
+						if (person.getPostalAddress() != null)
+							writeText(claim.getPerson().getPostalAddress());
+						setX(300);
+
+						if (person.getContactPhoneNumber() != null)
+							writeText(" "
+									+ claim.getPerson().getContactPhoneNumber());
+						newLine();
+						newLine();
+
 						writeBoldText(
 								context.getResources().getString(
-										R.string.group_name)
-										+ " :", 16);
+										R.string.id_type)
+										+ ": ", 16);
 						setX(300);
+
 						writeBoldText(
 								context.getResources().getString(
-										R.string.date_of_establishment_label)
-										+ " :", 16);
-					}
-
-					newLine();
-
-					if (person.getPersonType().equals(Person._GROUP)) {
-
-						writeText(person.getFirstName());
+										R.string.id_number)
+										+ ": ", 16);
+						newLine();
+						if (person.getIdType() != null)
+							writeText(new IdType().getDisplayValueByType(claim
+									.getPerson().getIdType()));
 						setX(300);
-						if (person.getDateOfBirth() != null)
-							writeText(sdf.format(claim.getPerson()
-									.getDateOfBirth()));
-					} else {
-						writeText(person.getFirstName());
-						setX(200);
-						writeText(person.getLastName());
-						setX(400);
-						if (person.getDateOfBirth() != null)
-							writeText(sdf.format(claim.getPerson()
-									.getDateOfBirth()));
+						if (person.getIdNumber() != null)
+							writeText(claim.getPerson().getIdNumber());
+						newLine();
+						newLine();
 
 					}
-					newLine();
-					newLine();
+				} else {
+
+					ShareProperty shareProperty = (ShareProperty) iterator
+							.next();
+					setX(430);
 					writeBoldText(
 							context.getResources().getString(
-									R.string.postal_address)
-									+ ": ", 16);
-					setX(300);
-					writeBoldText(
-							context.getResources().getString(
-									R.string.contact_phone_number)
-									+ ": ", 16);
+									R.string.title_share)
+									+ " "
+									+ i
+									+ " :"
+									+ shareProperty.getShares() + " %", 16);
 					newLine();
-					if (person.getPostalAddress() != null)
-						writeText(claim.getPerson().getPostalAddress());
-					setX(300);
+					setX(430);
+					List<Owner> owners = Owner.getOwners(shareProperty.getId());
+					for (Iterator iterator2 = owners.iterator(); iterator2
+							.hasNext();) {
 
-					
-					if (person.getContactPhoneNumber() != null)
-						writeText(" "
-								+ claim.getPerson().getContactPhoneNumber());
-					newLine();
-					newLine();
+						if (isPageEnding())
+							addPage(document, context, claimId);
 
-					writeBoldText(
-							context.getResources().getString(R.string.id_type)
-									+ ": ", 16);
-					setX(300);
+						Owner owner = (Owner) iterator2.next();
+						Person person = Person.getPerson(owner.getPersonId());
 
-					writeBoldText(
-							context.getResources()
-									.getString(R.string.id_number) + ": ", 16);
-					newLine();
-					if (person.getIdType() != null)
-						writeText(new IdType().getDisplayValueByType(claim
-								.getPerson().getIdType()));
-					setX(300);
-					if (person.getIdNumber() != null)
-						writeText(claim.getPerson().getIdNumber());
-					newLine();
-					newLine();
+						if (person.getPersonType().equals(Person._PHYSICAL)) {
+							newLine();
+							setX(430);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.first_name)
+											+ " :", 16);
+							setX(250);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.last_name)
+											+ " :", 16);
+							setX(70);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.date_of_birth_simple)
+											+ ": ", 16);
+						} else {
+							newLine();
+							setX(430);
+							writeBoldText(
+									context.getResources().getString(
+											R.string.group_name)
+											+ " :", 16);
+							setX(130);
+							writeBoldText(
+									context.getResources()
+											.getString(
+													R.string.date_of_establishment_label)
+											+ " :", 16);
+						}
 
+						newLine();
+						setX(430);
+						if (person.getPersonType().equals(Person._GROUP)) {
+
+							writeText(person.getFirstName());
+							setX(130);
+							if (person.getDateOfBirth() != null)
+								writeText(sdf.format(claim.getPerson()
+										.getDateOfBirth()));
+						} else {
+							writeText(person.getFirstName());
+							setX(250);
+							writeText(person.getLastName());
+							setX(70);
+							if (person.getDateOfBirth() != null)
+								writeText(sdf.format(claim.getPerson()
+										.getDateOfBirth()));
+
+						}
+						newLine();
+						newLine();
+						setX(430);
+						writeBoldText(
+								context.getResources().getString(
+										R.string.postal_address)
+										+ ": ", 16);
+						setX(130);
+						writeBoldText(
+								context.getResources().getString(
+										R.string.contact_phone_number)
+										+ ": ", 16);
+						newLine();
+						setX(430);
+						if (person.getPostalAddress() != null)
+							writeText(claim.getPerson().getPostalAddress());
+						setX(130);
+
+						if (person.getContactPhoneNumber() != null)
+							writeText(" "
+									+ claim.getPerson().getContactPhoneNumber());
+						newLine();
+						newLine();
+						setX(430);
+
+						writeBoldText(
+								context.getResources().getString(
+										R.string.id_type)
+										+ ": ", 16);
+						setX(130);
+
+						writeBoldText(
+								context.getResources().getString(
+										R.string.id_number)
+										+ ": ", 16);
+						newLine();
+						setX(430);
+						if (person.getIdType() != null)
+							writeText(new IdType().getDisplayValueByType(claim
+									.getPerson().getIdType()));
+						setX(130);
+						if (person.getIdNumber() != null)
+							writeText(claim.getPerson().getIdNumber());
+						newLine();
+						newLine();
+
+					}
 				}
-
 			}
 
 			/*------------------     DOCUMENTS -------------------------------------*/
-			newLine();
-			if (isPageEnding())
-				addPage(document, context, claimId);
-			drawHorizontalLine();
-			newLine();
-			newLine();
-			writeBoldText(
-					context.getResources().getString(
-							R.string.title_claim_documents), 18);
-			newLine();
-			writeBoldText(context.getResources().getString(R.string.type), 16);
-			setX(300);
-			writeBoldText(context.getResources()
-					.getString(R.string.description), 16);
-			newLine();
-			List<Attachment> attachments = claim.getAttachments();
-
-			for (Iterator iterator = attachments.iterator(); iterator.hasNext();) {
-				Attachment attachment = (Attachment) iterator.next();
-
-				writeText((new DocumentType()).getDisplayVauebyType(attachment
-						.getFileType()));
-
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+				newLine();
+				if (isPageEnding())
+					addPage(document, context, claimId);
+				drawHorizontalLine();
+				newLine();
+				newLine();
+				writeBoldText(
+						context.getResources().getString(
+								R.string.title_claim_documents), 18);
+				newLine();
+				writeBoldText(context.getResources().getString(R.string.type),
+						16);
 				setX(300);
-				writeText(attachment.getDescription());
+				writeBoldText(
+						context.getResources().getString(R.string.description),
+						16);
+				newLine();
+				List<Attachment> attachments = claim.getAttachments();
+
+				for (Iterator iterator = attachments.iterator(); iterator
+						.hasNext();) {
+					Attachment attachment = (Attachment) iterator.next();
+
+					writeText((new DocumentType())
+							.getDisplayVauebyType(attachment.getFileType()));
+
+					setX(300);
+					writeText(attachment.getDescription());
+					newLine();
+					newLine();
+				}
+			} else {
+
+				newLine();
+
+				if (isPageEnding())
+					addPage(document, context, claimId);
+				drawHorizontalLine();
 				newLine();
 				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.title_claim_documents), 18);
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(context.getResources().getString(R.string.type),
+						16);
+				setX(130);
+				writeBoldText(
+						context.getResources().getString(R.string.description),
+						16);
+				newLine();
+				setX(430);
+				List<Attachment> attachments = claim.getAttachments();
+
+				for (Iterator iterator = attachments.iterator(); iterator
+						.hasNext();) {
+					Attachment attachment = (Attachment) iterator.next();
+
+					writeText((new DocumentType())
+							.getDisplayVauebyType(attachment.getFileType()));
+
+					setX(130);
+					writeText(attachment.getDescription());
+					newLine();
+					newLine();
+					setX(430);
+
+				}
+
 			}
 
 			/*------------------ ADDITIONAL INFO -------------------------------------*/
@@ -395,56 +749,128 @@ public class PDFClaimExporter {
 			drawHorizontalLine();
 			if (isPageEnding())
 				addPage(document, context, claimId);
-			newLine();
-			newLine();
-			writeBoldText(context.getResources()
-					.getString(R.string.claim_notes), 18);
-			newLine();
-			newLine();
-			newLine();
-			writeText(claim.getNotes());
-			if (isPageEnding())
-				addPage(document, context, claimId);
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
 
+				newLine();
+				newLine();
+				newLine();
+				writeBoldText(
+						context.getResources().getString(R.string.claim_notes),
+						18);
+				newLine();
+				newLine();
+				newLine();
+				writeText(claim.getNotes());
+				if (isPageEnding())
+					addPage(document, context, claimId);
+			} else {
+
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(R.string.claim_notes),
+						18);
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+				writeText(claim.getNotes());
+				if (isPageEnding())
+					addPage(document, context, claimId);
+			}
 			/*------------------ PARCEL -------------------------------------*/
 			newLine();
 			drawHorizontalLine();
-			
+
 			if (isPageEnding())
 				addPage(document, context, claimId);
-			
-			newLine();
-			newLine();
-			newLine();
-			writeBoldText(context.getResources().getString(R.string.parcel), 18);
-			newLine();
-			newLine();
-			writeBoldText(
-					context.getResources().getString(R.string.claim_area_label),
-					16);
-			setX(130);
-			writeBoldText(
-					context.getResources().getString(
-							R.string.claim_type_no_star), 16);
-			setX(260);
-			writeBoldText(context.getResources().getString(R.string.land_use),
-					16);
-			setX(390);
-			writeBoldText(
-					context.getResources().getString(
-							R.string.date_of_start_label_print), 16);
-			newLine();
-			writeText(claim.getClaimArea() + " "
-					+ context.getResources().getString(R.string.square_meters));
-			setX(130);
-			writeText(new ClaimType().getDisplayValueByType(claim.getType()));
-			setX(260);
-			
-			writeText(new LandUse().getDisplayValueByType(claim.getLandUse()));
-			setX(390);
-			sdf.applyPattern("dd/MM/yyyy");
-			if (claim.getDateOfStart() != null)
-				writeText(sdf.format(claim.getDateOfStart()));
+
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+				newLine();
+				newLine();
+				newLine();
+				writeBoldText(
+						context.getResources().getString(R.string.parcel), 18);
+				newLine();
+				newLine();
+				writeBoldText(
+						context.getResources().getString(
+								R.string.claim_area_label), 16);
+				setX(300);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.claim_type_no_star), 16);
+				newLine();
+				writeText(claim.getClaimArea()
+						+ " "
+						+ context.getResources().getString(
+								R.string.square_meters));
+				setX(300);
+				writeText(new ClaimType()
+						.getDisplayValueByType(claim.getType()));
+				newLine();
+				writeBoldText(
+						context.getResources().getString(R.string.land_use), 16);
+				setX(300);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.date_of_start_label_print), 16);
+
+				newLine();
+				writeText(new LandUse().getDisplayValueByType(claim
+						.getLandUse()));
+				setX(300);
+				sdf.applyPattern("dd/MM/yyyy");
+				if (claim.getDateOfStart() != null)
+					writeText(sdf.format(claim.getDateOfStart()));
+			} else {
+
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(R.string.parcel), 18);
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.claim_area_label), 16);
+				setX(130);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.claim_type_no_star), 16);
+				newLine();
+				setX(430);
+				writeText(claim.getClaimArea()
+						+ " "
+						+ context.getResources().getString(
+								R.string.square_meters));
+				setX(130);
+				writeText(new ClaimType()
+						.getDisplayValueByType(claim.getType()));
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(R.string.land_use), 16);
+				setX(130);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.date_of_start_label_print), 16);
+
+				newLine();
+				setX(430);
+				writeText(new LandUse().getDisplayValueByType(claim
+						.getLandUse()));
+				setX(130);
+				sdf.applyPattern("dd/MM/yyyy");
+				if (claim.getDateOfStart() != null)
+					writeText(sdf.format(claim.getDateOfStart()));
+
+			}
 			newLine();
 			newLine();
 			drawHorizontalLine();
@@ -454,85 +880,191 @@ public class PDFClaimExporter {
 			newLine();
 			newLine();
 			newLine();
-			
+
 			if (isPageEnding())
 				addPage(document, context, claimId);
 			
-			writeBoldText(
-					context.getResources().getString(R.string.adjacent_claims),
-					18);
-			newLine();
-			List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
-			for (Adjacency adj : adjList) {
-				Claim adjacentClaim;
-				String direction;
-				if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
-					adjacentClaim = Claim.getClaim(adj.getDestClaimId());
-					direction = Adjacency.getCardinalDirection(context,
-							adj.getCardinalDirection());
-				} else {
-					adjacentClaim = Claim.getClaim(adj.getSourceClaimId());
-					direction = Adjacency.getCardinalDirection(context,
-							Adjacency.getReverseCardinalDirection(adj
-									.getCardinalDirection()));
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+				writeBoldText(
+						context.getResources().getString(
+								R.string.adjacent_claims), 18);
+				newLine();
+				List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
+				for (Adjacency adj : adjList) {
+					Claim adjacentClaim;
+					String direction;
+					if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
+						adjacentClaim = Claim.getClaim(adj.getDestClaimId());
+						direction = Adjacency.getCardinalDirection(context,
+								adj.getCardinalDirection());
+					} else {
+						adjacentClaim = Claim.getClaim(adj.getSourceClaimId());
+						direction = Adjacency.getCardinalDirection(context,
+								Adjacency.getReverseCardinalDirection(adj
+										.getCardinalDirection()));
+					}
+					newLine();
+					newLine();
+					writeText(context.getResources().getString(
+							R.string.cardinal_direction)
+							+ ": "
+							+ direction
+							+ ", "
+							+ context.getResources().getString(
+									R.string.property)
+							+ ": "
+							+ adjacentClaim.getName()
+							+ ", "
+							+ context.getResources().getString(R.string.by)
+							+ ": "
+							+ adjacentClaim.getPerson().getFirstName()
+							+ " " + adjacentClaim.getPerson().getLastName());
 				}
 				newLine();
 				newLine();
-				writeText(context.getResources().getString(
-						R.string.cardinal_direction)
-						+ ": "
-						+ direction
-						+ ", "
-						+ context.getResources().getString(R.string.property)
-						+ ": "
-						+ adjacentClaim.getName()
-						+ ", "
-						+ context.getResources().getString(R.string.by)
-						+ ": "
-						+ adjacentClaim.getPerson().getFirstName()
-						+ " "
-						+ adjacentClaim.getPerson().getLastName());
-			}
-			newLine();
-			newLine();
-			newLine();
-			drawHorizontalLine();
-			if (isPageEnding())
-				addPage(document, context, claimId);
-			newLine();
-			newLine();
-			newLine();
-			newLine();
-			writeBoldText(
-					context.getResources().getString(
-							R.string.adjacent_properties), 18);
-			newLine();
-			newLine();
-			newLine();
-			writeBoldText(context.getResources().getString(R.string.north), 16);
-			setX(300);
-			writeBoldText(context.getResources().getString(R.string.south), 16);
-			newLine();
-			newLine();
-			newLine();
-			if (claim.getAdjacenciesNotes() != null) {
-				writeText(claim.getAdjacenciesNotes().getNorthAdjacency());
+				newLine();
+				drawHorizontalLine();
+				if (isPageEnding())
+					addPage(document, context, claimId);
+				newLine();
+				newLine();
+				newLine();
+				newLine();
+				writeBoldText(
+						context.getResources().getString(
+								R.string.adjacent_properties), 18);
+				newLine();
+				newLine();
+				newLine();
+				writeBoldText(context.getResources().getString(R.string.north),
+						16);
 				setX(300);
-				writeText(claim.getAdjacenciesNotes().getSouthAdjacency());
-			}
-			newLine();
-			newLine();
-			newLine();
-			writeBoldText(context.getResources().getString(R.string.east), 16);
-			setX(300);
-			writeBoldText(context.getResources().getString(R.string.west), 16);
-			newLine();
-			if (claim.getAdjacenciesNotes() != null) {
-				writeText(claim.getAdjacenciesNotes().getEastAdjacency());
-				setX(300);
-				writeText(claim.getAdjacenciesNotes().getWestAdjacency());
-			}
+				writeBoldText(context.getResources().getString(R.string.south),
+						16);
+				newLine();
+				newLine();
 
+				AdjacenciesNotes adNotes = AdjacenciesNotes
+						.getAdjacenciesNotes(claim.getClaimId());
+
+				if (adNotes != null) {
+					writeText(adNotes.getNorthAdjacency());
+					setX(300);
+					writeText(adNotes.getSouthAdjacency());
+				}
+				newLine();
+				newLine();
+				newLine();
+
+				writeBoldText(context.getResources().getString(R.string.east),
+						16);
+				setX(300);
+				writeBoldText(context.getResources().getString(R.string.west),
+						16);
+				newLine();
+				newLine();
+				if (adNotes != null) {
+					writeText(adNotes.getEastAdjacency());
+					setX(300);
+					writeText(adNotes.getWestAdjacency());
+				}
+			} else {
+				
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.adjacent_claims), 18);
+				newLine();
+				setX(430);
+				
+				List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
+				for (Adjacency adj : adjList) {
+					Claim adjacentClaim;
+					String direction;
+					if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
+						adjacentClaim = Claim.getClaim(adj.getDestClaimId());
+						direction = Adjacency.getCardinalDirection(context,
+								adj.getCardinalDirection());
+					} else {
+						adjacentClaim = Claim.getClaim(adj.getSourceClaimId());
+						direction = Adjacency.getCardinalDirection(context,
+								Adjacency.getReverseCardinalDirection(adj
+										.getCardinalDirection()));
+					}
+					newLine();
+					newLine();
+					setX(130);
+					writeText(context.getResources().getString(
+							R.string.cardinal_direction)
+							+ ": "
+							+ direction
+							+ ", "
+							+ context.getResources().getString(
+									R.string.property)
+							+ ": "
+							+ adjacentClaim.getName()
+							+ ", "
+							+ context.getResources().getString(R.string.by)
+							+ ": "
+							+ adjacentClaim.getPerson().getFirstName()
+							+ " " + adjacentClaim.getPerson().getLastName());
+				}
+				newLine();
+				newLine();
+				newLine();
+				
+				drawHorizontalLine();
+				if (isPageEnding())
+					addPage(document, context, claimId);
+				newLine();
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(
+						context.getResources().getString(
+								R.string.adjacent_properties), 18);
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+				writeBoldText(context.getResources().getString(R.string.north),
+						16);
+				setX(130);
+				writeBoldText(context.getResources().getString(R.string.south),
+						16);
+				newLine();
+				newLine();
+				setX(430);
+
+				AdjacenciesNotes adNotes = AdjacenciesNotes
+						.getAdjacenciesNotes(claim.getClaimId());
+
+				if (adNotes != null) {
+					writeText(adNotes.getNorthAdjacency());
+					setX(130);
+					writeText(adNotes.getSouthAdjacency());
+				}
+				newLine();
+				newLine();
+				newLine();
+				setX(430);
+
+				writeBoldText(context.getResources().getString(R.string.east),
+						16);
+				setX(130);
+				writeBoldText(context.getResources().getString(R.string.west),
+						16);
+				newLine();
+				newLine();
+				setX(430);
+				if (adNotes != null) {
+					writeText(adNotes.getEastAdjacency());
+					setX(130);
+					writeText(adNotes.getWestAdjacency());
+				}
+				
+			}
 			// ---------------------------------------------------------------------------------------------
 			// MAP screenshot section
 			addPage(document, context, claimId);
@@ -540,6 +1072,7 @@ public class PDFClaimExporter {
 			drawBitmap(getMapPicture(mapFileName, 515));
 
 			/*------------------ SIGNATURE -------------------------------------*/
+			if (!OpenTenureApplication.getLocale().toString().startsWith("ar")) {
 			drawHorizontalLine(pageWidth / 2);
 			newLine();
 			moveY(80);
@@ -548,7 +1081,29 @@ public class PDFClaimExporter {
 			writeBoldText(context.getResources().getString(R.string.signature),
 					18);
 			drawHorizontalLine(pageWidth - horizontalMargin);
-
+			} else {
+				newLine();
+				newLine();
+				newLine();
+				drawHorizontalLine(pageWidth - horizontalMargin);
+				moveY(100);
+				newLine();
+				setX(500);
+				writeBoldText(context.getResources().getString(R.string.signature),
+						18);
+				setX(500);
+				drawHorizontalLine(380);
+				setX(pageWidth / 2);	
+				writeBoldText(context.getResources().getString(R.string.date), 18);
+				setX(40);
+				//drawHorizontalLine(pageWidth - horizontalMargin);
+				
+				drawHorizontalLine(pageWidth / 2);
+				
+				
+				
+				
+			}
 			if (currentPage != null) {
 				document.finishPage(currentPage);
 			}
@@ -583,6 +1138,7 @@ public class PDFClaimExporter {
 	private void writeText(String text) {
 		if (text != null) {
 			Rect bounds = new Rect();
+
 			typeface.getTextBounds(text, 0, text.length(), bounds);
 			currentPage.getCanvas().drawText(text, currentX,
 					currentY + (bounds.height() - bounds.bottom), typeface);

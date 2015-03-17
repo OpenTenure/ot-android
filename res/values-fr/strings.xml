@@ -69,7 +69,7 @@
     <string name="title_save_group_dialog">Le groupe a été modifié</string>
     <string name="choose_file">Choisir une application pour sélectionner un fichier</string>
     <string name="person_name">Nom de la personne</string>
-    <string name="community_recorder_name">Archiviste de la commauté</string>
+    <string name="community_recorder_name">Collecteur de la commauté</string>
     <string name="postal_address">Adresse postale</string>
     <string name="email_address">Adresses Email</string>
     <string name="gender_masculine">Homme</string>
@@ -92,16 +92,16 @@
     <string name="group_name">Nom</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Version du Logiciel</string>
-    <string name="claim_date">Date de la déclaration</string>    
+    <string name="claim_date">Date de la déclaration</string>
     <string name="claim_name">Nom de la déclaration</string>
     <string name="claim_name_label">Date de la déclaration *</string>
     <string name="claim_type">Type de déclaration *</string>
     <string name="claim_type_no_star">Type de déclaration</string>
-    <string name="default_claim_name">Nouvelle déclaration</string>    
+    <string name="default_claim_name">Nouvelle déclaration</string>
     <string name="first_name">Prénom</string>
     <string name="first_name_label">Prénom *</string>
     <string name="last_name">Nom</string>
-    <string name="last_name_label">Nom *</string>    
+    <string name="last_name_label">Nom *</string>
     <string name="date_of_birth">Date de naissance (AAAA-MM-JJ)</string>
     <string name="date_of_birth_simple">Date de naissance</string>
     <string name="date_of_birth_label">Date de naissance * (AAAA-MM-JJ)</string>
@@ -125,7 +125,7 @@
     <string name="message_connection_error">Connexion non disponible</string>
     <string name="message_attachment_downloaded">Télécharger l\'attachement %s</string>
     <string name="message_attachment_downloading">Attachement %s déjà téléchargé</string>
-    <string name="message_attachment_download_failed">Le télécharger de l\'attachment %s a échoué </string>    
+    <string name="message_attachment_download_failed">Le télécharger de l\'attachment %s a échoué </string>
     <string name="message_attachment_download_not_complete">Le télécharger de l\'attachment %s n\'est pas terminé</string>
     <string name="message_remove_person">Personne %s supprimée</string>
     <string name="message_remove_person_dialog">Voulez-vous vraiment supprimer %s?</string>
@@ -182,13 +182,13 @@
     <string name="message_no_available_shares_adding_new">Libérez des parts dans cette déclaration avant d\'ajouter une nouvelle part</string>
     <string name="message_share_saved">Sauvegarder la part</string>
     <string name="message_share_not_saved">Une erreur s\'est produite en sauvegardant la part</string>
-	<string name="message_already_owner">La personne sélectionnée partage déjà cette déclaration</string>
+    <string name="message_already_owner">La personne sélectionnée partage déjà cette déclaration</string>
     <string name="message_touch_to_select_a_person">Toucher pour sélectionner une personne</string>
     <string name="message_touch_to_select_a_claim">Toucher pour sélectionner une déclaration</string>
     <string name="message_error_mandatory_fields">Remplir tous les champs obligatoires avant de suavegarder</string>
     <string name="message_error_mandatory_field_first_name">Remplir le champs obligatoire Prénom avant de sauvegarder</string>
     <string name="message_error_mandatory_field_last_name">Remplir le champs obligatoire Nom avant de sauvegarder</string>
-    <string name="message_error_mandatory_field_gender">Remplir le champs obligatoire Genre avant de sauvegarder</string>    
+    <string name="message_error_mandatory_field_gender">Remplir le champs obligatoire Genre avant de sauvegarder</string>
     <string name="message_error_mandatory_birthdate">La date de naissance n\'est pas au bon format ou vide</string>
     <string name="message_error_startdate">La date du début du droit n\'est pas au bon format ou vide</string>
     <string name="message_remove_quest">Voulez-vous vraiment retirer la déclaration?</string>
@@ -210,13 +210,13 @@
     <string name="message_title_app_initialized">L\'application est initialisée</string>
     <string name="message_app_initialized_default">L\'application est prète à fonctionner et à communiquer avec le Serveur Communautaire Open Tenure par défaut</string>
     <string name="message_app_initialized">L\'application est prète à fonctionner et à communiquer avec le Serveur Communautaire Open Tenure</string>
-	<string name="check_location_service">Information de positionnement indisponible. Vérifier que le service de positionnement est actif dans les paramètres</string>
-	<string name="tiles_queued">Il y a %d images du mosaiquage dans la liste de téléchargement</string>
-	<string name="too_many_tiles_queued">Il y a %d images du mosaiquage dans la liste des téléchargement. Merci d\'attendre avant de télécharger d\'autres images du mosaiquage.</string>
-	<string name="all_tiles_downloaded">Toutes les images du mosaiquage de la liste de téléchargement ont été téléchargées.</string>
-	<string name="not_all_tiles_downloaded">%d images du mosaiquage pour ce plan ont été téléchargées. Vérifier que ce mosaiquage vous convienne ou recommencer le téléchargement.</string>
-	<string name="zoom_level_too_low">L\'étendue du plan est trop large. Augmenter le niveau de zoom avant de télécharger des données locales pour la plan</string>
-	<string name="yes">Oui</string>
+    <string name="check_location_service">Information de positionnement indisponible. Vérifier que le service de positionnement est actif dans les paramètres</string>
+    <string name="tiles_queued">Il y a %d images du mosaiquage dans la liste de téléchargement</string>
+    <string name="too_many_tiles_queued">Il y a %d images du mosaiquage dans la liste des téléchargement. Merci d\'attendre avant de télécharger d\'autres images du mosaiquage.</string>
+    <string name="all_tiles_downloaded">Toutes les images du mosaiquage de la liste de téléchargement ont été téléchargées.</string>
+    <string name="not_all_tiles_downloaded">%d images du mosaiquage pour ce plan ont été téléchargées. Vérifier que ce mosaiquage vous convienne ou recommencer le téléchargement.</string>
+    <string name="zoom_level_too_low">L\'étendue du plan est trop large. Augmenter le niveau de zoom avant de télécharger des données locales pour la plan</string>
+    <string name="yes">Oui</string>
     <string name="person">Personne</string>
     <string name="group">Groupe</string>
     <string name="no">Non</string>
@@ -287,127 +287,175 @@
     <string name="north_west">Nord-Ouest</string>
     <string name="south_east">Sud-Est</string>
     <string name="south_west">Sud-Ouest</string>
-	<string name="action_view_community_area">Voir l’étendue de la communauté</string>
-	<string name="title_initialization_process">Initialisation</string>
-	<string name="message_initialize_before"> Procéder d’abord à l’initialisation </string>
-	<string name="message_default_initialization">Vous êtes sur le point d’initialiser l’application avec le Serveur Communautaire par défaut. Ce serveur doit être utilise uniquement pour les démonstration. Voulez-vous continuer? Autrement appuyez sur annuler et ajouter un URL pour le serveur communautaire dans les paramètres.  </string>
-	<string name="title_no_connection">Pas de connexion</string>
-	<string name="message_no_connection_at_startup">Aucune connexion internet n’est disponible. La configuration ne reflète peut-être pas les récents changements et il vous sera impossible de télécharger ou vider les informations. Connectez-vous à internet si vous prévoyez de transférer des données en utilisant OpenTenure</string>
-	<string name="action_modify_claimant">Modifier le déclarant</string>
-	<string name="action_add_claimant">Ajouter un déclarant</string>
-	<string name="action_select_challenge">Sélectionner la declaration à contester</string>
-	<string name="date_of_start">AAAA-MM-JJ</string> 
-	<string name="status">statut : </string>
-	<string name="add_owner">Ajouter le propriétaire </string>
-    
+    <string name="action_view_community_area">Voir l’étendue de la communauté</string>
+    <string name="title_initialization_process">Initialisation</string>
+    <string name="message_initialize_before"> Procéder d’abord à l’initialisation </string>
+    <string name="message_default_initialization">Vous êtes sur le point d’initialiser l’application avec le Serveur Communautaire par défaut. Ce serveur doit être utilise uniquement pour les démonstration. Voulez-vous continuer? Autrement appuyez sur annuler et ajouter un URL pour le serveur communautaire dans les paramètres.  </string>
+    <string name="title_no_connection">Pas de connexion</string>
+    <string name="message_no_connection_at_startup">Aucune connexion internet n’est disponible. La configuration ne reflète peut-être pas les récents changements et il vous sera impossible de télécharger ou vider les informations. Connectez-vous à internet si vous prévoyez de transférer des données en utilisant OpenTenure</string>
+    <string name="action_modify_claimant">Modifier le déclarant</string>
+    <string name="action_add_claimant">Ajouter un déclarant</string>
+    <string name="action_select_challenge">Sélectionner la declaration à contester</string>
+    <string name="date_of_start">AAAA-MM-JJ</string>
+    <string name="status">statut : </string>
+    <string name="add_owner">Ajouter le propriétaire </string>
+    <string name="khmer_language">Khmer</string>
+    <string name="albanian_language">Albanais</string>
+    <string name="default_language">Default</string>
+    <string name="tiles_provider">Fournisseur du mosaïquage</string>
+    <string name="tms_tiles_provider">Fournisseur du mosaïquage TMS</string>
+    <string name="geoserver_tiles_provider">Fournisseur du mosaïquage du GeoServer</string>
+    <string name="geoserver_tiles_provider_key">GeoServer</string>
+    <string name="action_backup_db">Backup des données locales</string>
+    <string name="title_challenged_claim">Déclaration contestée : </string>
+    <string name="title_confirm_data_transfer">Confirmer le transfert de données</string>
+    <string name="generated_on">Généré</string>
+    <string name="date_of_start_label_print">La date de validité de la déclaration s’applique à partir du</string>
+    <string name="attachment_updated">L’attachement a été mis à jour</string>
+    <string name="message_claim_exported_error">La déclaration %s n’a pas été exportée</string>
+    <string name="message_claim_exported">La déclaration %s a été exportée</string>
+    <string name="message_download_snapshot_before_printing">Télécharger la capture de la carte depuis le serveur avant d’imprimer</string>
+    <string name="message_data_over_mobile">Vous êtes sur le point de transférer un gros volume de données au moyen d’une connexion internet mobile. Le coût associé peut être élevé; ce coût dépend de votre abonnement.</string>
+    <string name="message_db_backed_up">Une copie de la base de données locale a été créée</string>
+    <string name="claim_area_label">Surface</string>
+    <string name="square_meters">m2</string>
+    <string name="parcel">Parcelle</string>
+    <string name="tms_url_pref_title">TMS URL</string>
+    <string name="tms_url_pref_summary">URL de base de votre serveur de mosaïquage</string>
+    <string name="tms_url_pref_dialog_title">Entrer l’URL de votre serveur de mosaïquage</string>
+    <string name="created">créé</string>
+    <string name="uploading">chargement</string>
+    <string name="updating">mise à jour</string>
+    <string name="uploaded">chargé</string>
+    <string name="deleted">supprimé</string>
+    <string name="description">Description</string>
+    <string name="upload_incomplete">chargement incomplet</string>
+    <string name="update_incomplete">update incomplete</string>
+    <string name="upload_error">erreur de chargement</string>
+    <string name="update_error">erreur de mise à jour</string>
+    <string name="download_incomplete">téléchargement incomplet</string>
+    <string name="download_failed">erreur de téléchargement</string>
+    <string name="downloading">téléchargement</string>
+    <string name="moderated">modéré</string>
+    <string name="unmoderated">non modéré</string>
+    <string name="rejected">rejeté</string>
+    <string name="reviewed">revu</string>
+    <string name="language">Langue</string>
+    <string name="map_sources">Sources des plans</string>
+    <string name="general">Général</string>
+    <string name="dynamic_form">Formulaire dynamique</string>
+    <string name="information">Information</string>
+    <string name="tiles_provider_dialog_title">Select the type of your offline map tiles provider</string>
     <string name="hint_type_to_filter">Entrer des caractères pour filtrer la liste</string>
     <string name="shares_prompt">Sélectionner les parts</string>
+
     <string-array name="claim_statuses">
-        <item >Non modérée</item>
-        <item >Modérée</item>
-        <item >Rejetée</item>
-        <item >Locale</item>
-        </string-array>
+        <item>Non modérée</item>
+        <item>Modérée</item>
+        <item>Rejetée</item>
+        <item>Locale</item>
+    </string-array>
     <string-array name="share_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >11</item>
-        <item >12</item>
-        <item >13</item>
-        <item >14</item>
-        <item >15</item>
-        <item >16</item>
-        <item >17</item>
-        <item >18</item>
-        <item >19</item>
-        <item >20</item>
-        <item >21</item>
-        <item >22</item>
-        <item >23</item>
-        <item >24</item>
-        <item >25</item>
-        <item >26</item>
-        <item >27</item>
-        <item >28</item>
-        <item >29</item>
-        <item >30</item>
-        <item >31</item>
-        <item >32</item>
-        <item >33</item>
-        <item >34</item>
-        <item >35</item>
-        <item >36</item>
-        <item >37</item>
-        <item >38</item>
-        <item >39</item>
-        <item >40</item>
-        <item >41</item>
-        <item >42</item>
-        <item >43</item>
-        <item >44</item>
-        <item >45</item>
-        <item >46</item>
-        <item >47</item>
-        <item >48</item>
-        <item >49</item>
-        <item >50</item>
-        <item >51</item>
-        <item >52</item>
-        <item >53</item>
-        <item >54</item>
-        <item >55</item>
-        <item >56</item>
-        <item >57</item>
-        <item >58</item>
-        <item >59</item>
-        <item >60</item>
-        <item >61</item>
-        <item >62</item>
-        <item >63</item>
-        <item >64</item>
-        <item >65</item>
-        <item >66</item>
-        <item >67</item>
-        <item >68</item>
-        <item >69</item>
-        <item >70</item>
-        <item >71</item>
-        <item >72</item>
-        <item >73</item>
-        <item >74</item>
-        <item >75</item>
-        <item >76</item>
-        <item >77</item>
-        <item >78</item>
-        <item >79</item>
-        <item >80</item>
-        <item >81</item>
-        <item >82</item>
-        <item >83</item>
-        <item >84</item>
-        <item >85</item>
-        <item >86</item>
-        <item >87</item>
-        <item >88</item>
-        <item >89</item>
-        <item >90</item>
-        <item >91</item>
-        <item >92</item>
-        <item >93</item>
-        <item >94</item>
-        <item >95</item>
-        <item >96</item>
-        <item >97</item>
-        <item >98</item>
-        <item >99</item>
-        <item >100</item>
-        </string-array>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+        <item>91</item>
+        <item>92</item>
+        <item>93</item>
+        <item>94</item>
+        <item>95</item>
+        <item>96</item>
+        <item>97</item>
+        <item>98</item>
+        <item>99</item>
+        <item>100</item>
+    </string-array>
+
 </resources>
