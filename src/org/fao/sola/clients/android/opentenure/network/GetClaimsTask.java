@@ -156,8 +156,7 @@ public class GetClaimsTask extends
 				}
 
 				// input.setDownloaded(input.getDownloaded() + 1);
-				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
-						.getDownloadedClaims() + 1);
+				OpenTenureApplication.decrementClaimsToDownload();
 				publishProgress(input);
 
 			}
@@ -176,8 +175,7 @@ public class GetClaimsTask extends
 				 * stage the client does not have to retrieve it
 				 */
 
-				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
-						.getDownloadedClaims() + 1);
+				OpenTenureApplication.decrementClaimsToDownload();
 				publishProgress(input);
 
 			} else if ((claim == null)
@@ -203,9 +201,7 @@ public class GetClaimsTask extends
 
 				} else {
 
-					OpenTenureApplication
-							.setDownloadedClaims(OpenTenureApplication
-									.getDownloadedClaims() + 1);
+					OpenTenureApplication.decrementClaimsToDownload();
 					publishProgress(input);
 
 				}
@@ -216,8 +212,7 @@ public class GetClaimsTask extends
 				Log.d(this.getClass().getName(), "The claim  "
 						+ claimToDownload.getId() + " shall not be downloaded");
 
-				OpenTenureApplication.setDownloadedClaims(OpenTenureApplication
-						.getDownloadedClaims() + 1);
+				OpenTenureApplication.decrementClaimsToDownload();
 				publishProgress(input);
 			}
 			
@@ -245,9 +240,7 @@ public class GetClaimsTask extends
 					.findViewById(R.id.download_claim_label);
 			label.setVisibility(View.VISIBLE);
 
-			bar.setProgress(calculateProgress(
-					OpenTenureApplication.getDownloadedClaims(),
-					OpenTenureApplication.getTotalClaimsToDownload()));
+			bar.setProgress(OpenTenureApplication.getDownloadCompletion());
 		}
 
 	}
@@ -258,8 +251,7 @@ public class GetClaimsTask extends
 
 		Toast toast;
 
-		if ((OpenTenureApplication.getDownloadedClaims() == OpenTenureApplication
-				.getTotalClaimsToDownload())) {
+		if (OpenTenureApplication.getClaimsToDownload() <= 0) {
 			if (input.isResult()) {
 
 				toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -342,17 +334,4 @@ public class GetClaimsTask extends
 		}
 
 	}
-
-	private int calculateProgress(int downloaded, int total) {
-
-		
-		int progress;
-
-		float factor = (float) downloaded / total;
-
-		progress = (int) (factor * 100);
-
-		return progress;
-	}
-
 }

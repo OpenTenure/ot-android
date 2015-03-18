@@ -137,8 +137,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		
 		// Before to start downloading claims the input is divided in two and assigned to two thread. 
 		
-		OpenTenureApplication.setDownloadedClaims(0);
-		OpenTenureApplication.setTotalClaimsToDownload(input.getClaims().size());
+		OpenTenureApplication.setClaimsToDownload(input.getClaims().size());
 		
 		
 		

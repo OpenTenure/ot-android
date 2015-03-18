@@ -66,6 +66,7 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedCommunityArea = false;
 	private boolean checkedForm = false;
 	private boolean initialized = false;
+	private static final String SEMAPHORE="semaphore";
 
 	private static String localization;
 	private static Locale locale;
@@ -91,8 +92,8 @@ public class OpenTenureApplication extends Application {
 	private static FragmentActivity newsFragmentActivity;
 	public static String _DEFAULT_COMMUNITY_SERVER = "https://ot.flossola.org";
 
-	private static int downloadedClaims = 0;
-	private static int TotalClaimsToDownload = 0;
+	private static volatile int claimsToDownload = 0;
+	private static volatile int initialClaimsToDownload = 0;
 
 	public static OpenTenureApplication getInstance() {
 		return sInstance;
@@ -157,6 +158,8 @@ public class OpenTenureApplication extends Application {
 				return "TYPE_HSPA"; // ~ 700-1700 kbps
 			case TelephonyManager.NETWORK_TYPE_HSUPA:
 				return "TYPE_HSUPA"; // ~ 1-23 Mbps
+			case TelephonyManager.NETWORK_TYPE_LTE:
+				return "TYPE_LTE"; // ~ 50-1000 Mbps
 			case TelephonyManager.NETWORK_TYPE_UMTS:
 				return "TYPE_UMTS"; // ~ 400-7000 kbps
 			case TelephonyManager.NETWORK_TYPE_IDEN: // API level 8
@@ -188,7 +191,7 @@ public class OpenTenureApplication extends Application {
 			Locale locale = new Locale("km");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
-			this.locale = locale;
+			OpenTenureApplication.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
 			setLocalization(locale);
@@ -196,7 +199,7 @@ public class OpenTenureApplication extends Application {
 			Locale locale = new Locale("sq");
 			Locale.setDefault(locale);
 			android.content.res.Configuration config = new android.content.res.Configuration();
-			this.locale = locale;
+			OpenTenureApplication.locale = locale;
 			getBaseContext().getResources().updateConfiguration(config,
 					getBaseContext().getResources().getDisplayMetrics());
 			setLocalization(locale);
@@ -397,22 +400,37 @@ public class OpenTenureApplication extends Application {
 		OpenTenureApplication.newsFragmentActivity = newsFragment;
 	}
 
-	public static int getDownloadedClaims() {
-		return downloadedClaims;
-	}
-
-	public static void setDownloadedClaims(int downloadedClaims) {
-		synchronized (ACCESSIBILITY_SERVICE) {
-			OpenTenureApplication.downloadedClaims = downloadedClaims;
+	public static int getClaimsToDownload() {
+		synchronized (SEMAPHORE) {
+			return claimsToDownload;
 		}
 	}
 
-	public static int getTotalClaimsToDownload() {
-		return TotalClaimsToDownload;
+	public static int getInitialClaimsToDownload() {
+		synchronized (SEMAPHORE) {
+			return initialClaimsToDownload;
+		}
 	}
 
-	public static void setTotalClaimsToDownload(int totalClaimsToDownload) {
-		TotalClaimsToDownload = totalClaimsToDownload;
+	public static void decrementClaimsToDownload() {
+		synchronized (SEMAPHORE) {
+			claimsToDownload--;
+		}
+	}
+
+	public static void setClaimsToDownload(int initialClaimsToDownload) {
+		synchronized (SEMAPHORE) {
+			claimsToDownload = initialClaimsToDownload;
+			OpenTenureApplication.initialClaimsToDownload = initialClaimsToDownload;
+		}
+	}
+
+	public static int getDownloadCompletion() {
+
+		synchronized (SEMAPHORE) {
+			return (int) (( ((float)(initialClaimsToDownload - claimsToDownload) / (float)initialClaimsToDownload)) * 100.0);
+		}
+		
 	}
 
 	public static String getLocalization() {
@@ -475,17 +493,17 @@ public class OpenTenureApplication extends Application {
 
 			OpenTenureApplication.localization = OpenTenureApplication._ALBANIAN_LOCALIZATION;
 
-		} else if (locale.getLanguage().toLowerCase().equals("ar")) {
+		} else if (locale.getLanguage().toLowerCase(locale).equals("ar")) {
 			
 			OpenTenureApplication.localization = _ARABIC_LOCALIZATION;
 						
 		} else {
 
 			OpenTenureApplication.localization = locale.getLanguage()
-					.toLowerCase() + "-" + locale.getCountry();
+					.toLowerCase(locale) + "-" + locale.getCountry();
 		}
 		
-		System.out.println("LOCALE ::::: " + locale.getLanguage().toLowerCase());
+		System.out.println("LOCALE ::::: " + locale.getLanguage().toLowerCase(locale));
 
 	}
 
