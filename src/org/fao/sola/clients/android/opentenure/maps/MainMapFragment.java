@@ -243,6 +243,7 @@ public class MainMapFragment extends SupportMapFragment implements
 				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
 		MapsInitializer.initialize(this.getActivity());
+		map.setInfoWindowAdapter(new PopupAdapter(inflater));
 		map.setOnCameraChangeListener(this);
 
 		if (savedInstanceState != null

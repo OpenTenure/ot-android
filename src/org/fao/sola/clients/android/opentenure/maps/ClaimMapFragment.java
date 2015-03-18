@@ -305,6 +305,7 @@ public class ClaimMapFragment extends Fragment implements
 		lh.start();
 
 		MapsInitializer.initialize(this.getActivity());
+		this.map.setInfoWindowAdapter(new PopupAdapter(inflater));
 		this.map.setOnCameraChangeListener(this);
 
 		if (savedInstanceState != null
