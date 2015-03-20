@@ -99,7 +99,6 @@
     <string name="group_name">الأسم</string>
     <string name="signature">التوقيع</string>
     <string name="software_version_title">نسخة البرنامج</string>
-    <string name="software_version">0.9.7</string>
     <string name="claim_date">تاريخ الأدعاء</string>
     <string name="claim_name">إسم الأدعاء</string>
     <string name="claim_name_label">إسم الأدعاء *</string>

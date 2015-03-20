@@ -339,11 +339,41 @@
     <string name="created">បង្កើត</string>
     <string name="uploading">កំពុងបញ្ចូលឯកសារ</string>
     <string name="uploaded">បានបញ្ចូលឯកសារ</string>
-    <string name="deleted">បានលុប</string>    
+    <string name="deleted">បានលុប</string>
     <string name="upload_error">បញ្ចូលឯកសារមានបញ្ហា</string>
     <string name="download_incomplete">ទាញយកឯកសារមិនបានបញ្ចប់</string>
     <string name="download_failed">ទាញយកឯកសារបានសារបរាជ័យ</string>
     <string name="downloading">កំពុងទាញយកឯកសារ</string>
+    <string name="khmer_language">ខ្មែរ</string>
+    <string name="albanian_language">អាល់បានី</string>
+    <string name="default_language">លំនាំដើម</string>
+    <string name="tiles_provider">Tiles Provider</string>
+    <string name="tms_tiles_provider">TMS Tiles Provider</string>
+    <string name="geoserver_tiles_provider">GeoServer Tiles Provider</string>
+    <string name="geoserver_tiles_provider_key">ប្រព័ន្ធផ្ទុកពត៌មានជីអូ</string>
+    <string name="generated_on">បានបង្កើតនៅលើ</string>
+    <string name="date_of_start_label_print">កាលបរិច្ឆេទការទាមទារដីគិតចាប់ពី</string>
+    <string name="attachment_updated">ឯកសារភ្ជាប់ត្រូវបានធ្វើបច្ចុប្បន្នភាព</string>
+    <string name="parcel">ក្បាលដី</string>
+    <string name="tms_url_pref_title">TMS URL</string>
+    <string name="tms_url_pref_summary">កន្លែងគោល URL នៃប្រព័ន្ធផ្ទុកពត៌មានផែនទី</string>
+    <string name="tms_url_pref_dialog_title">បញ្ចូល URL នៃប្រព័ន្ធផ្ទុកពត៌មានផែនទីរបស់អ្នក</string>
+    <string name="updating">កំពុងធ្វើបច្ចុប្បន្នភាព</string>
+    <string name="description">ការពិពណ៌នា</string>
+    <string name="upload_incomplete">ការដាក់បញ្ចូលឯកសារមិនទាន់បញ្ចប់</string>
+    <string name="update_incomplete">ការដាក់បញ្ចូលឯកសារមិនទាន់បញ្ចប់</string>
+    <string name="update_error">ការដាក់បញ្ចូលឯកសារមិនបានត្រឹមត្រូវupdate error</string>
+    <string name="moderated">បានផ្សះផ្សាររួច</string>
+    <string name="unmoderated">មិនបានផ្សះផ្សារ</string>
+    <string name="rejected">លុបចោល</string>
+    <string name="reviewed">បានពិនិត្យឡើងវិញ</string>
+    <string name="language">ភាសា</string>
+    <string name="map_sources">ប្រភពផែនទី</string>
+    <string name="general">ស្ថានភាពទូទៅ</string>
+    <string name="dynamic_form">ទម្រង់បែបបទឌីណាមិច</string>
+    <string name="information">ពត៌មាន</string>
+    <string name="tiles_provider_dialog_title">ជ្រើសរើសប្រភេទអ្នកផ្តល់ផែនទីដែលមិនភ្ជាប់ប្រព័ន្ធអិុនធើណែត</string>
+
     <string-array name="claim_statuses">
         <item>មិនល្មម</item>
         <item>ល្មម</item>

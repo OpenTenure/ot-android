@@ -739,6 +739,17 @@ public class Person {
 
 		}
 	}
+	
+	public static Bitmap getPersonPictureForPdf(Context context, String personId, int size) {
+		File file = getPersonPictureFile(personId);
+		if (file != null && file.exists()) {
+
+			return getPersonPicture(context, getPersonPictureFile(personId),
+					size);
+
+		}
+		else return null;
+	}
 
 	public static Bitmap getPersonPicture(Context context,
 			File personPictureFile, int size) {

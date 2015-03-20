@@ -39,7 +39,7 @@ import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.button.listener.SaveGroupListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SavePersonListener;
-import org.fao.sola.clients.android.opentenure.button.listener.SavePersonNegativeListenr;
+import org.fao.sola.clients.android.opentenure.button.listener.ConfirmExit;
 
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.IdType;
@@ -50,6 +50,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 
 import android.content.Intent;
 import android.content.res.Resources;
@@ -290,7 +291,6 @@ public class PersonFragment extends Fragment {
 			return rootView;
 		}
 	}
-
 
 	private void preload() {
 		// ID TYPE Spinner
@@ -911,14 +911,18 @@ public class PersonFragment extends Fragment {
 
 	public boolean checkChanges(PersonActivity personActivity) {
 
-		Person person = Person.getPerson(personActivity.getPersonId());
-		if (person != null) {
-			if (person.getPersonType().equalsIgnoreCase(Person._GROUP))
-				return checkChangesGroup(personActivity);
-			else
-				return checkChangesPerson(personActivity);
-		}
-		return false;
+		String entityType = personActivity.getEntityType();
+
+		if (entityType == null)
+
+			entityType = Person.getPerson(personActivity.getPersonId())
+					.getPersonType();
+
+		if (entityType.equalsIgnoreCase(Person._GROUP))
+			return checkChangesGroup(personActivity);
+		else
+			return checkChangesPerson(personActivity);
+
 	}
 
 	public boolean checkChangesGroup(PersonActivity personActivity) {
@@ -927,10 +931,9 @@ public class PersonFragment extends Fragment {
 
 		boolean changed = false;
 		Person person = Person.getPerson(personActivity.getPersonId());
+		rootView = OpenTenureApplication.getPersonsView();
 
 		if (person != null) {
-
-			rootView = OpenTenureApplication.getPersonsView();
 
 			if (person.getPersonType().equalsIgnoreCase(Person._GROUP)) {
 
@@ -1086,23 +1089,71 @@ public class PersonFragment extends Fragment {
 
 			}
 
+		} else {
+
+
+			String name = ((EditText) rootView
+					.findViewById(R.id.first_name_input_field)).getText()
+					.toString();
+			if (name != null && !name.trim().equals(""))
+				changed = true;
+
+			String postal_address = ((EditText) rootView
+					.findViewById(R.id.postal_address_input_field)).getText()
+					.toString();
+
+			if (postal_address != null && !postal_address.trim().equals(""))
+				changed = true;
+
+			String email = ((EditText) rootView
+					.findViewById(R.id.email_address_input_field)).getText()
+					.toString();
+			if (email != null && !email.trim().equals(""))
+				changed = true;
+
+			String numberId = ((EditText) rootView.findViewById(R.id.id_number))
+					.getText().toString();
+
+			if (numberId != null && !numberId.trim().equals(""))
+				changed = true;
+
+			String contact = ((EditText) rootView
+					.findViewById(R.id.contact_phone_number_input_field))
+					.getText().toString();
+			if (contact != null && !contact.trim().equals(""))
+				changed = true;
+
+			String dateEstablishment = ((EditText) rootView
+					.findViewById(R.id.date_of_establishment_input_field))
+					.getText().toString();
+			if (dateEstablishment != null
+					&& !dateEstablishment.trim().equals(""))
+				changed = true;
+
 		}
 
 		if (changed) {
 
 			AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 					rootView.getContext());
-			saveChangesDialog.setTitle(R.string.title_save_group_dialog);
+			saveChangesDialog.setTitle(R.string.title_save_person_dialog);
 			String dialogMessage = OpenTenureApplication.getContext()
-					.getString(R.string.message_save_changes);
+					.getString(R.string.message_discard_changes);
 
 			saveChangesDialog.setMessage(dialogMessage);
 
 			saveChangesDialog.setPositiveButton(R.string.confirm,
-					new SaveGroupListener(this, personActivity));
+					new ConfirmExit(personActivity));
 
 			saveChangesDialog.setNegativeButton(R.string.cancel,
-					new SavePersonNegativeListenr(personActivity));
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
 			saveChangesDialog.show();
 
 		}
@@ -1113,14 +1164,14 @@ public class PersonFragment extends Fragment {
 
 	public boolean checkChangesPerson(PersonActivity personActivity) {
 
+		
 		View rootView = null;
 
 		boolean changed = false;
 		Person person = Person.getPerson(personActivity.getPersonId());
+		rootView = OpenTenureApplication.getPersonsView();
 
 		if (person != null) {
-
-			rootView = OpenTenureApplication.getPersonsView();
 
 			String name = ((EditText) rootView
 					.findViewById(R.id.first_name_input_field)).getText()
@@ -1296,6 +1347,52 @@ public class PersonFragment extends Fragment {
 
 			}
 
+		} else {
+
+
+			String name = ((EditText) rootView
+					.findViewById(R.id.first_name_input_field)).getText()
+					.toString();
+			if (name != null && !name.trim().equals(""))
+				changed = true;
+
+			String lastName = ((EditText) rootView
+					.findViewById(R.id.last_name_input_field)).getText()
+					.toString();
+			if (lastName != null && !lastName.trim().equals(""))
+				changed = true;
+
+			String postal_address = ((EditText) rootView
+					.findViewById(R.id.postal_address_input_field)).getText()
+					.toString();
+
+			if (postal_address != null && !postal_address.trim().equals(""))
+				changed = true;
+
+			String email = ((EditText) rootView
+					.findViewById(R.id.email_address_input_field)).getText()
+					.toString();
+			if (email != null && !email.trim().equals(""))
+				changed = true;
+
+			String numberId = ((EditText) rootView.findViewById(R.id.id_number))
+					.getText().toString();
+
+			if (numberId != null && !numberId.trim().equals(""))
+				changed = true;
+
+			String contact = ((EditText) rootView
+					.findViewById(R.id.contact_phone_number_input_field))
+					.getText().toString();
+			if (contact != null && !contact.trim().equals(""))
+				changed = true;
+
+			String dateOfBirth = ((EditText) rootView
+					.findViewById(R.id.date_of_birth_input_field)).getText()
+					.toString();
+			if (dateOfBirth != null && !dateOfBirth.trim().equals(""))
+				changed = true;
+
 		}
 
 		if (changed) {
@@ -1304,15 +1401,23 @@ public class PersonFragment extends Fragment {
 					rootView.getContext());
 			saveChangesDialog.setTitle(R.string.title_save_person_dialog);
 			String dialogMessage = OpenTenureApplication.getContext()
-					.getString(R.string.message_save_changes);
+					.getString(R.string.message_discard_changes);
 
 			saveChangesDialog.setMessage(dialogMessage);
 
 			saveChangesDialog.setPositiveButton(R.string.confirm,
-					new SavePersonListener(this, personActivity));
+					new ConfirmExit(personActivity));
 
 			saveChangesDialog.setNegativeButton(R.string.cancel,
-					new SavePersonNegativeListenr(personActivity));
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							// TODO Auto-generated method stub
+							return;
+						}
+					});
+
 			saveChangesDialog.show();
 
 		}

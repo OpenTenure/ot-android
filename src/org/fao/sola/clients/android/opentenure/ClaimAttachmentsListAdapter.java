@@ -222,9 +222,9 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.saveIcon.setVisibility(View.VISIBLE);
 		}
 
-		if (!readOnly || att.getStatus().equals(AttachmentStatus._CREATED)
+		if ((!readOnly || att.getStatus().equals(AttachmentStatus._CREATED)
 				|| att.getStatus().equals(AttachmentStatus._UPLOAD_INCOMPLETE)
-				|| att.getStatus().equals(AttachmentStatus._UPLOADED)) {
+				|| att.getStatus().equals(AttachmentStatus._UPLOADED) && new File(att.getPath()).exists())) {
 			vh.clickableArea.setVisibility(View.VISIBLE);
 			vh.clickableArea2.setVisibility(View.VISIBLE);
 

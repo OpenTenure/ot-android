@@ -776,8 +776,7 @@ public class FileSystemUtilities {
 			float factor = (float) uploadedSize / totalSize;
 
 			progress = (int) (factor * 100);
-			System.out.println("attachments.size  "+attachments.size());
-			System.out.println("Progress "+ progress);
+
 		}
 
 		return progress;

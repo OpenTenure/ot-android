@@ -193,7 +193,7 @@
     <string name="message_error_mandatory_birthdate">Data de nascimento não está no formato correto ou não foi preenchida</string>
     <string name="message_error_startdate">Data do inicio do direito não está no formato correto ou não foi preenchida</string>
     <string name="message_remove_quest">Deseja realmente retirar o Requerimento?</string>
-    <string name="message_remove_claim">Deseja realmente remover o Requerimento?</string>
+    <string name="message_remove_claim">Deseja realmente remover localmente o Requerimento?</string>
     <string name="message_error_withdraw_claim">Falha ao retirar o Requerimento: </string>
     <string name="message_withdrawn_claim">Requerimento corretamente retirado</string>
     <string name="message_deleted_claim">Requerimento corretamente exluido localmente</string>

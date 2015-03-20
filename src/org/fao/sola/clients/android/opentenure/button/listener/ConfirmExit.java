@@ -36,13 +36,13 @@ import org.fao.sola.clients.android.opentenure.PersonFragment;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-public class SavePersonNegativeListenr implements
+public class ConfirmExit implements
 DialogInterface.OnClickListener {
 
 
 	PersonActivity activity;
 
-	public SavePersonNegativeListenr(PersonActivity activity) {
+	public ConfirmExit(PersonActivity activity) {
 
 		this.activity = activity;
 

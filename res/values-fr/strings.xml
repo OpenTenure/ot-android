@@ -192,7 +192,7 @@
     <string name="message_error_mandatory_birthdate">La date de naissance n\'est pas au bon format ou vide</string>
     <string name="message_error_startdate">La date du début du droit n\'est pas au bon format ou vide</string>
     <string name="message_remove_quest">Voulez-vous vraiment retirer la déclaration?</string>
-    <string name="message_remove_claim">Voulze-vous vraiment supprimer la déclaration?</string>
+    <string name="message_remove_claim">Voulze-vous vraiment supprimer localement la déclaration?</string>
     <string name="message_error_withdraw_claim">Une erreur s\'est produite en retirant la déclaration : </string>
     <string name="message_withdrawn_claim">Déclaration correctement retirée</string>
     <string name="message_deleted_claim">Déclaration correctement supprimée localement</string>

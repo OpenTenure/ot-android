@@ -170,7 +170,7 @@ public class GetClaimantPhotoTask extends
 
 			}
 
-			if (file != null && att.getSize() == file.length()
+			if (file != null && att.getSize() == file.length() && res != null
 					&& MD5.checkMD5(res.getMd5(), file)) {
 
 				att.setPath(file.getAbsolutePath());
