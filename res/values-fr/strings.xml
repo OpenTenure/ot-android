@@ -31,7 +31,7 @@
     <string name="action_rotate">Faire pivoter le plan selon boussole</string>
     <string name="action_stop_rotating">Arrêter de faire pivoter le plan</string>
     <string name="action_claim_map_snapshot">Attacher une capture d\'écran du plan de cette déclaration</string>
-    <string name="title_news">Nouvelles</string>
+    <string name="title_news">Actualités</string>
     <string name="title_map">Plan de la Communauté</string>
     <string name="title_claims">Liste des déclarations</string>
     <string name="title_persons">Personnes</string>
