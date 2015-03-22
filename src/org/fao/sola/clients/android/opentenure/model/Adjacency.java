@@ -215,13 +215,32 @@ public class Adjacency {
 	public static int deleteAdjacencies(String claimId) {
 		int result = 0;
 		Connection localConnection = null;
-		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			statement = localConnection
+			result = deleteAdjacencies(claimId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int deleteAdjacencies(String claimId, Connection connection) {
+		int result = 0;
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = connection
 					.prepareStatement("DELETE ADJACENCY WHERE SOURCE_CLAIM_ID=? OR DEST_CLAIM_ID=?");
 			statement.setString(1, claimId);
 			statement.setString(2, claimId);
@@ -235,12 +254,6 @@ public class Adjacency {
 			if (statement != null) {
 				try {
 					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
 				} catch (SQLException e) {
 				}
 			}

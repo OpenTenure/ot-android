@@ -30,24 +30,27 @@ package org.fao.sola.clients.android.opentenure.model;
 import java.io.StringReader;
 import java.sql.Clob;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import android.content.Context;
 import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
 
 public class Claim {
 	
@@ -742,6 +745,38 @@ public class Claim {
 		return allClaims;
 	}
 
+	public static Map<String, Claim> getSimplifiedClaimsForDownload(Connection externalConnection) {
+		HashMap<String, Claim> allClaims = new HashMap<String, Claim>();
+		PreparedStatement statement = null;
+		try {
+
+			statement = externalConnection
+					.prepareStatement("SELECT CLAIM_ID, VERSION FROM CLAIM");
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String claimId = rs.getString(1);
+				Claim claim = new Claim();
+				claim.setClaimId(claimId);
+				claim.setVersion(rs.getString(2));
+				allClaims.put(claimId, claim);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					// also closes current result set if any
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
 	public static List<Claim> getSimplifiedClaimsForMap(Connection externalConnection) {
 		// Only loads what's needed to draw properties on the maps
 		List<Claim> allClaims = new ArrayList<Claim>();
@@ -1110,6 +1145,27 @@ public class Claim {
 		return allClaims;
 	}
 
+	public static Map<String, Claim> getSimplifiedClaimsForDownload() {
+		Connection localConnection = null;
+		Map<String, Claim> allClaims = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			allClaims = getSimplifiedClaimsForDownload(localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return allClaims;
+	}
+
 	public static int getNumberOfClaims() {
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -1153,7 +1209,7 @@ public class Claim {
 		return result;
 	}
 
-	public int delete() {
+	public static int deleteCascade(String claimId) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -1162,11 +1218,20 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
+			
+			ShareProperty.deleteShares(claimId, localConnection);
+			Vertex.deleteVertices(claimId, localConnection);
+			Attachment.deleteAttachments(claimId, localConnection);
+			PropertyLocation.deletePropertyLocations(claimId, localConnection);
+			Adjacency.deleteAdjacencies(claimId, localConnection);
+			AdjacenciesNotes.deleteAdjacenciesNotes(claimId, localConnection);
+
 			statement = localConnection
 					.prepareStatement("DELETE CLAIM WHERE CLAIM_ID=?");
-			statement.setString(1, getClaimId());
+			statement.setString(1, claimId);
 
 			result = statement.executeUpdate();
+			FileSystemUtilities.deleteClaim(claimId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 

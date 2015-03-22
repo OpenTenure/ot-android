@@ -226,12 +226,30 @@ public class PropertyLocation {
 	public static int deletePropertyLocations(String claimId) {
 		int result = 0;
 		Connection localConnection = null;
-		PreparedStatement statement = null;
 
 		try {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			statement = localConnection
+			result = deletePropertyLocations(claimId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int deletePropertyLocations(String claimId, Connection connection) {
+		int result = 0;
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection
 					.prepareStatement("DELETE FROM PROPERTY_LOCATION WHERE CLAIM_ID=?");
 			statement.setString(1, claimId);
 			result = statement.executeUpdate();
@@ -243,12 +261,6 @@ public class PropertyLocation {
 			if (statement != null) {
 				try {
 					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
 				} catch (SQLException e) {
 				}
 			}

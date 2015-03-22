@@ -27,14 +27,12 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
@@ -177,13 +175,32 @@ public class Owner {
 	public int delete() {
 		int result = 0;
 		Connection localConnection = null;
-		PreparedStatement statement = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			statement = localConnection
+			result = deleteOwner(shareId, personId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int deleteOwner(String shareId, String personId, Connection connection) {
+		int result = 0;
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = connection
 					.prepareStatement("DELETE OWNER WHERE SHARE_ID=? AND PERSON_ID=? ");
 			statement.setString(1, shareId);
 			statement.setString(2, personId);
@@ -200,27 +217,18 @@ public class Owner {
 				} catch (SQLException e) {
 				}
 			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
 		}
 		return result;
 	}
 
-	public static List<Owner> getOwners(String shareId) {
+	public static List<Owner> getOwners(String shareId, Connection connection) {
 		List<Owner> ownersList = new ArrayList<Owner>();
-		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
-			statement = localConnection
+			statement = connection
 					.prepareStatement("SELECT OWNER.PERSON_ID FROM OWNER WHERE OWNER.SHARE_ID=? ORDER BY SHARE_ID");
 			statement.setString(1, shareId);
 			rs = statement.executeQuery();
@@ -248,6 +256,21 @@ public class Owner {
 				} catch (SQLException e) {
 				}
 			}
+		}
+		return ownersList;
+	}
+
+	public static List<Owner> getOwners(String shareId) {
+		List<Owner> ownersList = new ArrayList<Owner>();
+		Connection localConnection = null;
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			ownersList = getOwners(shareId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
 			if (localConnection != null) {
 				try {
 					localConnection.close();

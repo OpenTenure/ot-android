@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
@@ -38,7 +39,6 @@ import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.os.AsyncTask;
-
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -52,7 +52,6 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 
 	@Override
 	protected GetClaimsInput doInBackground(Object... params) {
-		// TODO Auto-generated method stub
 
 		if (params[0] == null) {
 			List<Claim> listClaim = (List<Claim>) CommunityServerAPI
@@ -142,6 +141,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		
 		
 		List<Claim> inputList = input.getClaims();
+		Map<String, org.fao.sola.clients.android.opentenure.model.Claim> claimsMap = org.fao.sola.clients.android.opentenure.model.Claim.getSimplifiedClaimsForDownload();
 		
 		List<Claim> inputList1 = inputList.subList(0, (inputList.size()/2)/2);
 		List<Claim> inputList2 = inputList.subList((inputList.size()/2)/2, (inputList.size()/2));
@@ -184,17 +184,21 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		input.setClaims(inputList1);
 		input.setFirst(true);
 		
-		GetClaimsTask task = new GetClaimsTask();
-		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input);		
+		GetClaimsTask task1 = new GetClaimsTask();
+		task1.setClaimsMap(claimsMap);
+		task1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input);		
 		
 		
 		GetClaimsTask task2 = new GetClaimsTask();
+		task2.setClaimsMap(claimsMap);
 		task2.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input2);
 		
 		GetClaimsTask task3 = new GetClaimsTask();
+		task3.setClaimsMap(claimsMap);
 		task3.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input3);
 		
 		GetClaimsTask task4 = new GetClaimsTask();
+		task4.setClaimsMap(claimsMap);
 		task4.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input4);
 
 		return;

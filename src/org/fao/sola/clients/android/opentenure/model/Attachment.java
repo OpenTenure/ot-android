@@ -355,6 +355,33 @@ public class Attachment {
 		return result;
 	}
 
+	public static int deleteAttachments(String claimId, Connection connection) {
+
+		int result = 0;
+		PreparedStatement statement = null;
+
+		try {
+
+			statement = connection
+					.prepareStatement("DELETE ATTACHMENT WHERE CLAIM_ID=?");
+			statement.setString(1, claimId);
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
 	public static Attachment getAttachment(String attachmentId) {
 
 		Attachment attachment = null;

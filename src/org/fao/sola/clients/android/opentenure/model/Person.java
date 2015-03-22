@@ -28,7 +28,6 @@
 package org.fao.sola.clients.android.opentenure.model;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,14 +35,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import javax.imageio.plugins.bmp.BMPImageWriteParam;
-
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
@@ -410,15 +404,34 @@ public class Person {
 	public int delete() {
 		int result = 0;
 		Connection localConnection = null;
-		PreparedStatement statement = null;
 
 		try {
 			localConnection = db.getConnection();
-			statement = localConnection
-					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
-			statement.setString(1, getPersonId());
-			result = statement.executeUpdate();
+			result = deletePerson(getPersonId(), localConnection);
 			FileSystemUtilities.removeClaimantFolder(getPersonId());
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
+	public static int deletePerson(String personId, Connection connection) {
+		int result = 0;
+		PreparedStatement statement = null;
+
+		try {
+			statement = connection
+					.prepareStatement("DELETE FROM PERSON WHERE PERSON_ID=?");
+			statement.setString(1, personId);
+			result = statement.executeUpdate();
+			FileSystemUtilities.removeClaimantFolder(personId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -427,12 +440,6 @@ public class Person {
 			if (statement != null) {
 				try {
 					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
 				} catch (SQLException e) {
 				}
 			}
@@ -537,14 +544,33 @@ public class Person {
 	public static Person getPerson(String personId) {
 		Person person = null;
 		Connection localConnection = null;
-		PreparedStatement statement = null;
-		ResultSet rs = null;
 
 		try {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			statement = localConnection
+			person = getPerson(personId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return person;
+	}
+
+	public static Person getPerson(String personId, Connection connection) {
+		Person person = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			statement = connection
 					.prepareStatement("SELECT FIRST_NAME, LAST_NAME, DATE_OF_BIRTH, PLACE_OF_BIRTH, EMAIL_ADDRESS, POSTAL_ADDRESS, MOBILE_PHONE_NUMBER, CONTACT_PHONE_NUMBER, GENDER, ID_TYPE, ID_NUMBER, PERSON_TYPE FROM PERSON PER WHERE PER.PERSON_ID=?");
 			statement.setString(1, personId);
 			rs = statement.executeQuery();
@@ -578,12 +604,6 @@ public class Person {
 			if (statement != null) {
 				try {
 					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
 				} catch (SQLException e) {
 				}
 			}
@@ -706,8 +726,7 @@ public class Person {
 		
 		File image = getPersonPictureFile(personId);
 		if(image != null && image.exists()){
-		Claim claim = Claim.getClaim(claimId);
-		
+
 		Attachment att = new Attachment();
 		att.setAttachmentId(personId);
 		att.setClaimId(claimId);
@@ -774,7 +793,6 @@ public class Person {
 						.getAttribute(ExifInterface.TAG_ORIENTATION);
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			save = true;
@@ -784,7 +802,6 @@ public class Person {
 					orientation = Integer.parseInt(exifOrientation);
 
 				} catch (Exception e) {
-					// TODO: handle exception
 					System.out
 							.println("Exception parsing position. orientation is "
 									+ exifOrientation);
@@ -852,7 +869,7 @@ public class Person {
 					}
 				}
 			} catch (Exception e) {
-				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 
@@ -873,7 +890,6 @@ public class Person {
 
 				icon.compress(Bitmap.CompressFormat.PNG, 100, fos);
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -29,20 +29,13 @@ package org.fao.sola.clients.android.opentenure.network;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.SaveDownloadedClaim;
-import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
-import org.fao.sola.clients.android.opentenure.model.Adjacency;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.model.Owner;
-import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
-import org.fao.sola.clients.android.opentenure.model.ShareProperty;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import org.fao.sola.clients.android.opentenure.network.response.Claim;
 import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
@@ -62,6 +55,16 @@ import android.widget.Toast;
  * */
 public class GetClaimsTask extends
 		AsyncTask<GetClaimsInput, GetClaimsInput, GetClaimsInput> {
+	Map<String, org.fao.sola.clients.android.opentenure.model.Claim> claimsMap;
+
+	public Map<String, org.fao.sola.clients.android.opentenure.model.Claim> getClaimsMap() {
+		return claimsMap;
+	}
+
+	public void setClaimsMap(
+			Map<String, org.fao.sola.clients.android.opentenure.model.Claim> claimsMap) {
+		this.claimsMap = claimsMap;
+	}
 
 	@Override
 	protected GetClaimsInput doInBackground(GetClaimsInput... params) {
@@ -78,8 +81,7 @@ public class GetClaimsTask extends
 
 			/* For each claim downloadable check the status and the version */
 
-			org.fao.sola.clients.android.opentenure.model.Claim claim = org.fao.sola.clients.android.opentenure.model.Claim
-					.getClaim(claimToDownload.getId());
+			org.fao.sola.clients.android.opentenure.model.Claim claim = claimsMap.get(claimToDownload.getId());
 
 			if (claim != null
 					&& (claimToDownload.getStatusCode().equals(
@@ -90,69 +92,9 @@ public class GetClaimsTask extends
 				Log.d(this.getClass().getName(), "The claim  "
 						+ claimToDownload.getId() + " should be deleted");
 
-				List<ShareProperty> list = ShareProperty.getShares(claim
-						.getClaimId());
+				if (org.fao.sola.clients.android.opentenure.model.Claim.deleteCascade(claimToDownload.getId()) != 0) {
 
-				for (Iterator<ShareProperty> iterator2 = list.iterator(); iterator2
-						.hasNext();) {
-					ShareProperty share = (ShareProperty) iterator2.next();
-					share.deleteShare();
-					List<Owner> OwnersTBD = Owner.getOwners(share.getId());
-					for (Iterator<Owner> iteratorT = OwnersTBD.iterator(); iteratorT
-							.hasNext();) {
-						Owner owner = (Owner) iteratorT.next();
-						Person personTBD = Person
-								.getPerson(owner.getPersonId());
-						owner.delete();
-						personTBD.delete();
-
-					}
-				}
-
-				List<Vertex> vertexList = claim.getVertices();
-				for (Iterator<Vertex> iterator2 = vertexList.iterator(); iterator2
-						.hasNext();) {
-					Vertex vertex = (Vertex) iterator2.next();
-					vertex.delete();
-				}
-				
-				List<Attachment> attachments = claim.getAttachments();
-
-				for (Iterator<Attachment> iterator2 = attachments.iterator(); iterator2
-						.hasNext();) {
-					Attachment attachment = (Attachment) iterator2.next();
-
-					attachment.delete();
-
-				}
-
-				List<PropertyLocation> locations = claim.getPropertyLocations();
-				for (Iterator<PropertyLocation> iterator2 = locations
-						.iterator(); iterator2.hasNext();) {
-					PropertyLocation location = (PropertyLocation) iterator2
-							.next();
-					location.delete();
-				}
-				
-
-				List<Adjacency> adjacencies = Adjacency.getAdjacencies(claim
-						.getClaimId());
-				for (Iterator<Adjacency> iterator2 = adjacencies.iterator(); iterator2
-						.hasNext();) {
-					Adjacency adjacency = (Adjacency) iterator2.next();
-
-					adjacency.delete();
-
-				}
-
-				AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
-						.getAdjacenciesNotes(claim.getClaimId());
-				if (adjacenciesNotes != null)
-					adjacenciesNotes.delete();
-
-				if (claim.delete() != 0) {
-
-					FileSystemUtilities.deleteClaim(claim.getClaimId());
+					FileSystemUtilities.deleteClaim(claimToDownload.getId());
 				}
 
 				// input.setDownloaded(input.getDownloaded() + 1);

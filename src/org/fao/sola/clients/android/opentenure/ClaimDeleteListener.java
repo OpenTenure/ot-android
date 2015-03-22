@@ -28,20 +28,9 @@
 
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
-import org.fao.sola.clients.android.opentenure.model.Adjacency;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
-import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.ShareProperty;
-import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.WithdrawClaimTask;
 
 import android.app.AlertDialog;
@@ -66,7 +55,6 @@ public class ClaimDeleteListener implements OnClickListener {
 
 	@Override
 	public void onClick(final View v) {
-		// TODO Auto-generated method stub
 
 		final Claim claim = Claim.getClaim(claimId);
 		boolean onlyLocal = true;
@@ -113,8 +101,6 @@ public class ClaimDeleteListener implements OnClickListener {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
-
 						// Here the community server call
 
 						WithdrawClaimTask wdc = new WithdrawClaimTask();
@@ -136,87 +122,10 @@ public class ClaimDeleteListener implements OnClickListener {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
 
 						Person claimant = claim.getPerson();
 
-						List<ShareProperty> list = ShareProperty
-								.getShares(claimId);
-						for (Iterator iterator = list.iterator(); iterator
-								.hasNext();) {
-							ShareProperty share = (ShareProperty) iterator
-									.next();
-
-							List<Owner> owners = Owner.getOwners(share.getId());
-
-							share.deleteShare();
-
-							if (!claim.getStatus().equals(ClaimStatus._CREATED)
-									&& !claim.getStatus().equals(
-											ClaimStatus._UPLOAD_INCOMPLETE)
-									&& !claim.getStatus().equals(
-											ClaimStatus._UPLOAD_ERROR)) {
-
-								for (Iterator iteratorO = owners.iterator(); iteratorO
-										.hasNext();) {
-									Owner owner = (Owner) iteratorO.next();
-
-									Person person = Person.getPerson(owner
-											.getPersonId());
-									owner.delete();
-									person.delete();
-
-								}
-
-							}
-
-						}
-
-						List<Vertex> vertexList = claim.getVertices();
-						for (Iterator iterator = vertexList.iterator(); iterator
-								.hasNext();) {
-							Vertex vertex = (Vertex) iterator.next();
-							vertex.delete();
-						}
-
-						List<Attachment> attachments = claim.getAttachments();
-
-						for (Iterator iterator = attachments.iterator(); iterator
-								.hasNext();) {
-							Attachment attachment = (Attachment) iterator
-									.next();
-
-							attachment.delete();
-
-						}
-
-						List<PropertyLocation> locations = claim
-								.getPropertyLocations();
-						for (Iterator iterator = locations.iterator(); iterator
-								.hasNext();) {
-							PropertyLocation location = (PropertyLocation) iterator
-									.next();
-							location.delete();
-						}
-
-						List<Adjacency> adjacencies = Adjacency
-								.getAdjacencies(claimId);
-						for (Iterator iterator = adjacencies.iterator(); iterator
-								.hasNext();) {
-							Adjacency adjacency = (Adjacency) iterator.next();
-
-							adjacency.delete();
-
-						}
-
-						AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
-								.getAdjacenciesNotes(claimId);
-						if (adjacenciesNotes != null)
-							adjacenciesNotes.delete();
-
-						if (claim.delete() != 0) {
-
-							FileSystemUtilities.deleteClaim(claimId);
+						if (Claim.deleteCascade(claim.getClaimId()) != 0) {
 
 							dialog.dismiss();
 
@@ -273,10 +182,7 @@ public class ClaimDeleteListener implements OnClickListener {
 
 					@Override
 					public void onClick(View v) {
-						// TODO Auto-generated method stub
-
 						dialog.dismiss();
-
 					}
 				});
 
@@ -302,90 +208,9 @@ public class ClaimDeleteListener implements OnClickListener {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
-
-							List<ShareProperty> list = ShareProperty
-									.getShares(claimId);
-							
-							for (Iterator iterator = list.iterator(); iterator
-									.hasNext();) {
-								ShareProperty share = (ShareProperty) iterator
-										.next();
-
-								List<Owner> owners = Owner.getOwners(share.getId());
-
-								share.deleteShare();
-
-								if (!claim.getStatus().equals(ClaimStatus._CREATED)
-										&& !claim.getStatus().equals(
-												ClaimStatus._UPLOAD_INCOMPLETE)
-										&& !claim.getStatus().equals(
-												ClaimStatus._UPLOAD_ERROR)) {
-
-									for (Iterator iteratorO = owners.iterator(); iteratorO
-											.hasNext();) {
-										Owner owner = (Owner) iteratorO.next();
-
-										Person person = Person.getPerson(owner
-												.getPersonId());
-										owner.delete();
-										person.delete();
-
-									}
-
-								}
-
-							}
-
-							List<Vertex> vertexList = claim.getVertices();
-							for (Iterator iterator = vertexList.iterator(); iterator
-									.hasNext();) {
-								Vertex vertex = (Vertex) iterator.next();
-								vertex.delete();
-							}
-
-							List<PropertyLocation> locations = claim
-									.getPropertyLocations();
-							for (Iterator iterator = locations.iterator(); iterator
-									.hasNext();) {
-								PropertyLocation location = (PropertyLocation) iterator
-										.next();
-								location.delete();
-							}
-
-							List<Attachment> attachments = claim
-									.getAttachments();
-
-							for (Iterator iterator = attachments.iterator(); iterator
-									.hasNext();) {
-								Attachment attachment = (Attachment) iterator
-										.next();
-
-								attachment.delete();
-
-							}
-
-							List<Adjacency> adjacencies = Adjacency
-									.getAdjacencies(claimId);
-							for (Iterator iterator = adjacencies.iterator(); iterator
-									.hasNext();) {
-								Adjacency adjacency = (Adjacency) iterator
-										.next();
-
-								adjacency.delete();
-
-							}
-
-							AdjacenciesNotes adjacenciesNotes = AdjacenciesNotes
-									.getAdjacenciesNotes(claimId);
-							if (adjacenciesNotes != null)
-								adjacenciesNotes.delete();
-
 							Person claimant = claim.getPerson();
 
-							if (claim.delete() != 0) {
-
-								FileSystemUtilities.deleteClaim(claimId);
+							if (Claim.deleteCascade(claim.getClaimId()) != 0) {
 
 								dialog.dismiss();
 
@@ -434,7 +259,6 @@ public class ClaimDeleteListener implements OnClickListener {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 
 						}
 					});

@@ -224,18 +224,15 @@ public class ShareProperty {
 		return result;
 	}
 
-	public static int deleteShare(ShareProperty share) {
+	public static int deleteShare(String shareId, Connection connection) {
 		int result = 0;
-		Connection localConnection = null;
 		PreparedStatement statement = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
-			statement = localConnection
+			statement = connection
 					.prepareStatement("DELETE SHARE WHERE ID=? ");
-			statement.setString(1, share.getId());
+			statement.setString(1, shareId);
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -249,6 +246,35 @@ public class ShareProperty {
 				} catch (SQLException e) {
 				}
 			}
+		}
+		return result;
+	}
+
+	public static int deleteShares(String claimId, Connection connection) {
+		int result = 0;
+		for (ShareProperty share : ShareProperty.getShares(claimId, connection)) {
+
+			for (Owner owner: Owner.getOwners(share.getId(), connection)) {
+				Owner.deleteOwner(share.getId(), owner.getPersonId(), connection);
+				Person.deletePerson(owner.getPersonId(), connection);
+			}
+			result += ShareProperty.deleteShare(share.getId(), connection);
+		}
+		return result;
+	}
+
+	public static int deleteShare(String shareId) {
+		int result = 0;
+		Connection localConnection = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			result = deleteShare(shareId, localConnection);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
 			if (localConnection != null) {
 				try {
 					localConnection.close();
