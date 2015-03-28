@@ -30,27 +30,20 @@ package org.fao.sola.clients.android.opentenure.network;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.ViewHolder;
-import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
-import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
-import org.fao.sola.clients.android.opentenure.network.response.ViewHolderResponse;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 public class AlertInitializationTask extends
-		AsyncTask<GetClaimsInput, GetClaimsInput, GetClaimsInput> {
+		AsyncTask<View, View, View> {
 
 	private ProgressDialog dialog;
 
@@ -72,10 +65,9 @@ public class AlertInitializationTask extends
 	}
 
 	@Override
-	protected GetClaimsInput doInBackground(GetClaimsInput... params) {
-		// TODO Auto-generated method stub
+	protected View doInBackground(View... params) {
 
-		GetClaimsInput input = (GetClaimsInput) params[0];
+		View input = (View) params[0];
 
 		int i = 0;
 		while (i <= 80) {
@@ -83,7 +75,7 @@ public class AlertInitializationTask extends
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+
 				e.printStackTrace();
 			}
 
@@ -93,12 +85,12 @@ public class AlertInitializationTask extends
 		return input;
 	}
 
-	protected void onPostExecute(final GetClaimsInput input) {
+	protected void onPostExecute(final View input) {
 
 		dialog.dismiss();
 
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(input
-				.getMapView().getContext());
+				.getContext());
 		if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
 				"isInitialized").getValue())
 				&& OpenTenureApplication.getInstance().isOnline()) {
@@ -140,9 +132,6 @@ public class AlertInitializationTask extends
 		alertDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				AlertDialog.Builder newPasswordDialog = new AlertDialog.Builder(
-						input.getMapView().getContext());
-
 				return;
 
 			}

@@ -43,12 +43,11 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -650,12 +649,9 @@ public class NewsFragment extends ListFragment {
 			formRetriever.execute();
 		}
 
-		GetClaimsInput input = new GetClaimsInput();
-		input.setMapView(rootView);
-
 		AlertInitializationTask fakeTask = new AlertInitializationTask(
 				this.getActivity());
-		fakeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, input);
+		fakeTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootView);
 
 	}
 }
