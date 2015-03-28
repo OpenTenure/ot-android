@@ -28,6 +28,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
@@ -42,11 +43,8 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -522,10 +520,16 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new OwnersFragment();
 				break;
 			default:
-				SectionTemplate sectionTemplate = formTemplate
-						.getSectionTemplateList().get(sectionPosition);
+				List<SectionTemplate> sectionTemplateList = formTemplate
+						.getSectionTemplateList();
+				if (sectionTemplateList == null || sectionTemplateList.size() <= 0) {
+					return new SectionElementFragment(new SectionElementPayload(),
+							new SectionTemplate(), mode);
+				}
+				SectionTemplate sectionTemplate = sectionTemplateList.get(sectionPosition);
 				if (sectionTemplate == null) {
-					return null;
+					return new SectionElementFragment(new SectionElementPayload(),
+							new SectionTemplate(), mode);
 				}
 				if (sectionTemplate.getMaxOccurrences() > 1) {
 					fragment = new SectionFragment(editedFormPayload
