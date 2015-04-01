@@ -30,9 +30,13 @@ package org.fao.sola.clients.android.opentenure.maps;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.print.attribute.standard.Finishings;
+
 import org.fao.sola.clients.android.opentenure.MapLabel;
+import org.fao.sola.clients.android.opentenure.OpenTenure;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.SplashScreen;
 import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
@@ -43,6 +47,7 @@ import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -75,6 +80,8 @@ import com.androidmapsextensions.MarkerOptions;
 import com.androidmapsextensions.SupportMapFragment;
 import com.androidmapsextensions.TileOverlay;
 import com.androidmapsextensions.TileOverlayOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -236,7 +243,37 @@ public class MainMapFragment extends SupportMapFragment implements
 		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(
 				getResources()));
 		settings.addMarkersDynamically(true);
-		map.setClustering(settings);
+		try {
+			map.setClustering(settings);
+		} catch (Throwable i) {
+			// TODO: handle exception
+			
+//			System.out.println("Non e' aggiornato google play :"  + e.getMessage());
+//			Toast.makeText(getActivity().getBaseContext(),
+//					R.string.check_location_service, Toast.LENGTH_LONG)
+//					.show();
+//			
+//			
+//			System.exit(1);
+			
+			final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(OpenTenureApplication.getContext());
+			if (status != ConnectionResult.SUCCESS) {
+	            Log.d(this.getClass().getName(), GooglePlayServicesUtil.getErrorString(status));
+
+	            // ask user to update google play services.
+	            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, getActivity(), 1);
+	            dialog.show();
+	            
+	            try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            System.exit(0);
+			}
+			
+		}
 		reloadVisibleProperties();
 
 		lh = new LocationHelper((LocationManager) getActivity()

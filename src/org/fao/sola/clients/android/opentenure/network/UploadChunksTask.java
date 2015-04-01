@@ -447,6 +447,7 @@ public class UploadChunksTask extends
 									.getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
+					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(),claim.getStatus());
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_incomplete) + ": " + progress
 									+ " %");

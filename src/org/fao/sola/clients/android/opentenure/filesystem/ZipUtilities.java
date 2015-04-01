@@ -32,6 +32,7 @@ import java.util.ArrayList;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
@@ -124,17 +125,6 @@ public class ZipUtilities {
 			// then this method throws an exception as Zip Format Specification
 			// does not
 			// allow updating split zip files
-
-			String personId = Claim.getClaim(claimID).getPerson().getPersonId();
-			File claimantFolder = FileSystemUtilities
-					.getClaimantFolder(personId);
-			File image = new File(claimantFolder, personId + ".jpg");
-
-			if (image.exists()) {
-
-				FileSystemUtilities.copyFileInAttachFolder(claimID, image);
-
-			}
 
 			// zipFile.addFiles(filesToAdd, parameters);
 			zipFile.addFolder(FileSystemUtilities.getClaimFolder(claimID),

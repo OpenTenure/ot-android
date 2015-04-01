@@ -244,6 +244,9 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 					R.color.status_created));
 			vh.status.setText(getContext().getResources().getString(
 					R.string.upload_error));
+			vh.status.setTextColor(context.getResources().getColor(
+					R.color.status_challenged)
+					);
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 

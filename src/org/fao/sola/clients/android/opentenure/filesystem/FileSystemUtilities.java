@@ -559,8 +559,9 @@ public class FileSystemUtilities {
 
 			BufferedInputStream br = new BufferedInputStream(reader);
 
-			while ((br.read(buffer)) != -1) {
-				writer.write(buffer);
+			int i =0;
+			while (( i = br.read(buffer)) != -1) {
+				writer.write(buffer, 0, i);
 			}
 
 			reader.close();
@@ -591,8 +592,9 @@ public class FileSystemUtilities {
 
 			BufferedInputStream br = new BufferedInputStream(reader);
 
-			while ((br.read(buffer)) != -1) {
-				writer.write(buffer);
+			int i =0;
+			while (( i = br.read(buffer)) != -1) {
+				writer.write(buffer, 0, i);
 			}
 
 			reader.close();

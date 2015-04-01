@@ -27,109 +27,118 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
+
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.ZipUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
-
-
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;	
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-
-public class ExporterTask extends AsyncTask<String, Void, String[] >{
-
+public class ExporterTask extends AsyncTask<String, Void, String[]> {
 
 	protected ProgressDialog progressDialog;
 	private Context mContext;
 
-	public ExporterTask(Context context){
+	public ExporterTask(Context context) {
 		super();
 		mContext = context;
 
 	}
 
 	@Override
-	protected void onPreExecute()
-	{
-		super.onPreExecute();	
+	protected void onPreExecute() {
+		super.onPreExecute();
 
-		progressDialog = ProgressDialog.show(mContext,mContext.getString(R.string.title_export),
-				mContext.getString(R.string.message_export),
-				true, false);
+		progressDialog = ProgressDialog.show(mContext,
+				mContext.getString(R.string.title_export),
+				mContext.getString(R.string.message_export), true, false);
 	}
 
 	@Override
 	protected String[] doInBackground(String... params) {
 
+		try {
+			String claimId = (String) params[1];
 
-		try {				
-			JsonUtilities.createClaimJson((String) params[1]);				
 			FileSystemUtilities.deleteCompressedClaim((String) params[1]);
 
-			ZipUtilities.AddFilesWithAESEncryption((String)params[0],(String) params[1]);
+			Person person = Claim.getClaim(claimId).getPerson();
+
+			// Here the claimant picture is added as attachment just before to
+			// submit claim
+
+			person.addPersonPictureAsAttachment(claimId);
+			File claimantFolder = FileSystemUtilities.getClaimantFolder(person
+					.getPersonId());
+			File image = new File(claimantFolder, person.getPersonId() + ".jpg");
+
+			if (image.exists()) {
+
+				FileSystemUtilities.copyFileInAttachFolder(claimId, image);
+
+			}
+
+			// Json file creation
+			JsonUtilities.createClaimJson(claimId);
+
+			// Creation of zi file from Claim folder
+			ZipUtilities.AddFilesWithAESEncryption((String) params[0],
+					(String) params[1]);
 
 			progressDialog.dismiss();
 			params[0] = "true";
 
-			return params;				
+			return params;
 		} catch (Exception e) {
-			Log.d("ExporterTask","And error has occured creating the compressed claim ");
+			Log.d("ExporterTask",
+					"And error has occured creating the compressed claim ");
 			params[0] = "false";
 			return params;
 		}
 
 	}
-	
+
 	@Override
-	protected void onPostExecute(String[] params){
-		
+	protected void onPostExecute(String[] params) {
+
 		if (Boolean.parseBoolean(params[0])) {
-			
+
 			Toast toast;
 			String message = "";
-			if(!OpenTenureApplication.isKhmer()){
-			message = String.format(OpenTenureApplication.getContext()
-					.getString(R.string.message_claim_exported,params[1]
-							));}
-			else{
-			message = OpenTenureApplication.getContext().getString(R.string.message_claim_exported) + " "+params[1];
-			
+			if (!OpenTenureApplication.isKhmer()) {
+				message = String.format(OpenTenureApplication.getContext()
+						.getString(R.string.message_claim_exported, params[1]));
+			} else {
+				message = OpenTenureApplication.getContext().getString(
+						R.string.message_claim_exported)
+						+ " " + params[1];
+
 			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
 			toast.show();
-			
-		}
-		else{
-			
+
+		} else {
+
 			Toast toast;
 
-			String message = String.format(OpenTenureApplication.getContext()
-					.getString(R.string.message_claim_exported_error,params[1]
-							));
+			String message = String
+					.format(OpenTenureApplication.getContext().getString(
+							R.string.message_claim_exported_error, params[1]));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);
-			toast.show();			
-			
+			toast.show();
+
 		}
-		
-		
-		
-		
+
 	}
-	
-	
-
-
-
 
 }
-
-
-
-
