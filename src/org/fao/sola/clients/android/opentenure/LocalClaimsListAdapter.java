@@ -34,6 +34,7 @@ import java.util.Locale;
 import org.fao.sola.clients.android.opentenure.button.listener.ExportClaimListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SubmitClaimListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
@@ -168,7 +169,16 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.export.setOnClickListener(new ExportClaimListener(claims.get(
 				position).getId()));
 
-		if (claims.get(position).getStatus().equals(ClaimStatus._CREATED)) {
+		String realStatus = "";
+		if (OpenTenureApplication.getInstance().getChangingClaims()
+				.contains(claims.get(position).getId())) {
+			realStatus = Claim.getClaim(claims.get(position).getId())
+					.getStatus();
+
+		} else
+			realStatus = claims.get(position).getStatus();
+
+		if (realStatus.equals(ClaimStatus._CREATED)) {
 			vh.number.setVisibility(View.GONE);
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.iconUnmoderated.setVisibility(View.GONE);
@@ -182,7 +192,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPLOADING)) {
+		if (realStatus.equals(ClaimStatus._UPLOADING)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -203,12 +213,12 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setText(getContext().getResources().getString(
 					R.string.uploading)
 					+ " " + progress + " %");
-
+			
 			vh.status.setVisibility(View.VISIBLE);
-			vh.send.setVisibility(View.VISIBLE);
+			vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPDATING)) {
+		if (realStatus.equals(ClaimStatus._UPDATING)) {
 
 			vh.iconLocal.setVisibility(View.GONE);
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
@@ -234,7 +244,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.INVISIBLE);
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+		if (realStatus.equals(ClaimStatus._UPLOAD_ERROR)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -245,8 +255,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setText(getContext().getResources().getString(
 					R.string.upload_error));
 			vh.status.setTextColor(context.getResources().getColor(
-					R.color.status_challenged)
-					);
+					R.color.status_challenged));
 			vh.bar = (ProgressBar) convertView.findViewById(R.id.progress_bar);
 			vh.bar.setVisibility(View.GONE);
 
@@ -257,7 +266,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 				vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UPDATE_ERROR)) {
+		if (realStatus.equals(ClaimStatus._UPDATE_ERROR)) {
 
 			vh.iconLocal.setVisibility(View.GONE);
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
@@ -274,8 +283,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.status.setVisibility(View.VISIBLE);
 			vh.send.setVisibility(View.INVISIBLE);
 		}
-		if (claims.get(position).getStatus()
-				.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+		if (realStatus.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
 			vh.iconLocal.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -299,8 +307,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.send.setVisibility(View.VISIBLE);
 
 		}
-		if (claims.get(position).getStatus()
-				.equals(ClaimStatus._UPDATE_INCOMPLETE)) {
+		if (realStatus.equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 
 			vh.iconLocal.setVisibility(View.GONE);
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
@@ -326,7 +333,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._UNMODERATED)) {
+		if (realStatus.equals(ClaimStatus._UNMODERATED)) {
 
 			vh.iconUnmoderated.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -339,7 +346,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 
 		}
 
-		if (claims.get(position).getStatus().equals(ClaimStatus._MODERATED)) {
+		if (realStatus.equals(ClaimStatus._MODERATED)) {
 
 			vh.iconModerated.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -350,7 +357,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 			vh.send.setVisibility(View.INVISIBLE);
 
 		}
-		if (claims.get(position).getStatus().equals(ClaimStatus._CHALLENGED)) {
+		if (realStatus.equals(ClaimStatus._CHALLENGED)) {
 
 			vh.iconChallenged.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -362,7 +369,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 
 		}
 
-		if (claims.get(position).getStatus().equals(ClaimStatus._WITHDRAWN)) {
+		if (realStatus.equals(ClaimStatus._WITHDRAWN)) {
 
 			vh.iconWithdrawn.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);
@@ -374,7 +381,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 
 		}
 
-		if (claims.get(position).getStatus().equals(ClaimStatus._REVIEWED)) {
+		if (realStatus.equals(ClaimStatus._REVIEWED)) {
 
 			vh.iconReviewed.setVisibility(View.VISIBLE);
 			vh.number.setTextSize(8);

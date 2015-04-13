@@ -68,6 +68,7 @@ public class LocalClaimsFragment extends ListFragment {
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 	private String filter = null;
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -358,6 +359,7 @@ public class LocalClaimsFragment extends ListFragment {
 				cto.setModifiable(claim.isModifiable());
 				cto.setPersonId(claim.getPerson().getPersonId());
 				cto.setAttachments(claim.getAttachments());
+				
 
 				if (claim.getClaimNumber() != null)
 					cto.setNumber(claim.getClaimNumber());
@@ -365,7 +367,7 @@ public class LocalClaimsFragment extends ListFragment {
 					cto.setNumber("");
 
 				cto.setStatus(claim.getStatus());
-
+				
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());
 
@@ -379,6 +381,9 @@ public class LocalClaimsFragment extends ListFragment {
 				claimListTOs.add(cto);
 			}
 		}
+		
+		OpenTenureApplication.getInstance().clearClaimsList();
+		
 		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(
 				rootView.getContext(), claimListTOs, mainActivity.getMode());
 		setListAdapter(adapter);
@@ -393,6 +398,7 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	public void refresh() {
+		//the list of changing claims is no more necessary. before rendering the list of claims is cleaned 
 
 		update();
 	}
