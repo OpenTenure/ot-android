@@ -35,6 +35,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -119,14 +120,22 @@ public class InitializationActivity extends Activity {
 		// attach the default path to the configured community server
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-		String defaultFormUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-		if (!defaultFormUrl.equalsIgnoreCase("")) {
-			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+//		String defaultFormUrl = OpenTenurePreferences.getString(
+//				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+//		if (!defaultFormUrl.equalsIgnoreCase("")) {
+//			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+//		}
+		
+		String formUrlServer = OpenTenurePreferences.getString(
+				OpenTenurePreferencesActivity.FORM_URL_PREF,
+				OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+		String formUrl = "" ;
+		if (!formUrlServer.equalsIgnoreCase("")) {
+			formUrl = String.format(
+					CommunityServerAPIUtilities.HTTPS_GETFORM, formUrlServer,
+					OpenTenureApplication.getLocalization());
 		}
-		String formUrl = OpenTenurePreferences
-				.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-						defaultFormUrl);
+		
 		return formUrl;
 	}
 	
@@ -240,6 +249,7 @@ public class InitializationActivity extends Activity {
 
 					FormRetriever formRetriever = new FormRetriever();
 					formRetriever.setFormUrl(formUrl);
+					
 					formRetriever
 							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
