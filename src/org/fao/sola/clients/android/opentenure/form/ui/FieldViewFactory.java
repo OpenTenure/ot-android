@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraintType;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.constraint.DateTimeFormatConstraint;
@@ -77,12 +78,37 @@ public class FieldViewFactory {
 		final List<String> names = new ArrayList<String>();
 		int selected = -1;
 
+		boolean isOptional = true;
+		
+		for(FieldConstraint constraint:field.getFieldConstraintList()){
+			if(constraint!=null && FieldConstraintType.NOT_NULL == constraint.getFieldConstraintType()){
+				isOptional = false;
+			}
+		}
+
 		for (FieldConstraintOption option : options) {
 			if(payload.getStringPayload() != null && payload.getStringPayload().equals(option.getName())){
+				// Previous selection: select it in the list
 				selected = names.size();
 			}
 			names.add(option.getName());
 			displayNames.add(option.getDisplayName());
+		}
+		
+		if(isOptional){
+			if(selected == -1){
+				// No previous selection: select the null value if available
+				selected = names.size();
+			}
+			String nullDisplayName = activity.getBaseContext().getString(R.string.null_label);
+			options.add(new FieldConstraintOption(null,nullDisplayName));
+			names.add(null);
+			displayNames.add(nullDisplayName);
+		}
+
+		if(names.size() > 0 && selected == -1){
+			// No previous selection, not null constraint and at least one option: select the first option in the list
+			selected = 0;
 		}
 
 		final Spinner spinner = new Spinner(activity);

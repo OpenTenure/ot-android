@@ -71,7 +71,11 @@ public class OptionConstraint extends FieldConstraint {
 	public boolean check(String externalDisplayName, FieldPayload fieldPayload) {
 		displayErrorMsg = null;
 		for(FieldConstraintOption fieldConstraintOption:fieldConstraintOptionList){
-			if(fieldConstraintOption.getName().equalsIgnoreCase(fieldPayload.getStringPayload())){
+			if((fieldConstraintOption.getName() == null
+					&& fieldPayload.getStringPayload() == null)
+					|| (fieldConstraintOption.getName() != null
+						&& fieldPayload.getStringPayload() != null
+						&& fieldConstraintOption.getName().equalsIgnoreCase(fieldPayload.getStringPayload()))){
 				return true;
 			}
 		}

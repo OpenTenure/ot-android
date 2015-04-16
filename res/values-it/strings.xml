@@ -306,12 +306,13 @@
     <string name="south_east">Sud-Est</string>
     <string name="south_west">Sud-Ovest</string>
     <string name="hint_type_to_filter">Inserisci qualche carattere per filtrare la lista</string>
-    <string name="shares_prompt">Seleziona le quote</string>
     <string name="language">Lingua</string>
     <string name="map_sources">Sorgenti mappe</string>
     <string name="general">Generale</string>
     <string name="dynamic_form">Form dinamico</string>
     <string name="information">Informazioni</string>
+    <string name="shares_prompt">Seleziona le quote</string>
+    <string name="null_label">Niente</string>
     <string name="tiles_provider_dialog_title">Inserisci il tipo di provider di mappe offline</string>
      
     <string-array name="claim_statuses">
