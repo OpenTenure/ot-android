@@ -115,6 +115,12 @@ public class SubmitClaimListener implements OnClickListener {
 		if (claimId != null) {
 			
 			Person person = Claim.getClaim(claimId).getPerson();
+			Claim claim = Claim.getClaim(claimId);
+			
+			//Check is claim is already in uploading status(double click on send issue)
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)){
+				return;
+			}
 			
 			//Here the claimant picture is added as attachment just before to submit claim
 			person.addPersonPictureAsAttachment(claimId);
@@ -137,7 +143,7 @@ public class SubmitClaimListener implements OnClickListener {
 			Log.d(this.getClass().getName(),
 					"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
 			
-			Claim claim = Claim.getClaim(claimId);
+			
 			
 			FormPayload payload = claim.getDynamicForm();
 

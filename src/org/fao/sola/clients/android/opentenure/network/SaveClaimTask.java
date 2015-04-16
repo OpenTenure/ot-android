@@ -62,7 +62,8 @@ import android.widget.Toast;
  * that claim ,
  * 
  * **/
-public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
+public class SaveClaimTask extends
+		AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
@@ -93,22 +94,22 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 		case 100: {
 			/* UnknownHostException: */
-			
+
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
+
 			}
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
-				
+
 				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 				claim.update();
-			}
 
-			
+			}
 
 			toast = Toast.makeText(
 					OpenTenureApplication.getContext(),
@@ -124,11 +125,11 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
-			
-			vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.update_incomplete));
+
+			vh.getStatus().setText(
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.update_incomplete));
 			vh.getStatus().setVisibility(View.VISIBLE);
-			
 
 			break;
 
@@ -136,18 +137,20 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 		case 105: {
 			/* IOException: */
-			
+
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+
 			}
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -158,8 +161,9 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 			ViewHolder vh = vhr.getVh();
 
-			vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.update_error));
+			vh.getStatus().setText(
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.update_error));
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
 
@@ -167,18 +171,20 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 		}
 		case 110: {
-			
+
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
 					&& claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+
 			}
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -189,8 +195,9 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 			ViewHolder vh = vhr.getVh();
 
-			vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.update_error));
+			vh.getStatus().setText(
+					OpenTenureApplication.getContext().getResources()
+							.getString(R.string.update_error));
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
 
@@ -201,7 +208,7 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 		case 200: {
 
 			/* OK */
-			
+
 			try {
 
 				TimeZone tz = TimeZone.getTimeZone("UTC");
@@ -255,23 +262,31 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 		case 403: {
 			/* Error Login */
-			
+
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
-			toast = Toast.makeText(
-					OpenTenureApplication.getContext(),
-					OpenTenureApplication.getContext().getResources()
-							.getString(R.string.message_submission_error)
-							+ " "
-							+ res.getHttpStatusCode()
-							+ "  "
-							+ OpenTenureApplication.getContext().getResources()
-							.getString(R.string.message_login_no_more_valid), Toast.LENGTH_LONG);
+			toast = Toast
+					.makeText(
+							OpenTenureApplication.getContext(),
+							OpenTenureApplication
+									.getContext()
+									.getResources()
+									.getString(
+											R.string.message_submission_error)
+									+ " "
+									+ res.getHttpStatusCode()
+									+ "  "
+									+ OpenTenureApplication
+											.getContext()
+											.getResources()
+											.getString(
+													R.string.message_login_no_more_valid),
+							Toast.LENGTH_LONG);
 			toast.show();
 
 			OpenTenureApplication.setLoggedin(false);
-			
+
 			FragmentActivity fa = (FragmentActivity) OpenTenureApplication
 					.getActivity();
 			fa.invalidateOptionsMenu();
@@ -284,7 +299,7 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			break;
 		}
 		case 404: {
-			
+
 			/* Error Not Found */
 
 			Log.d("CommunityServerAPI",
@@ -308,15 +323,16 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
-			
+
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
-				
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.upload_error));
+
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.upload_error));
 				vh.getStatus().setVisibility(View.VISIBLE);
 				vh.getBar().setVisibility(View.GONE);
 
@@ -326,37 +342,36 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
-				
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.update_error));
+
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.update_error));
 				vh.getStatus().setVisibility(View.VISIBLE);
 				vh.getBar().setVisibility(View.GONE);
 
 			}
 
-			
-
-			
-
 			break;
 		}
 
 		case 452: {
-			
+
 			/* Missing Attachments */
 
 			if (claim.getStatus().equals(ClaimStatus._CREATED)
-					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE) ||
-					 claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
+
 			}
-			
+
 			if (claim.getStatus().equals(ClaimStatus._UNMODERATED)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_ERROR)
 					|| claim.getStatus().equals(ClaimStatus._UPDATE_INCOMPLETE)) {
 				claim.setStatus(ClaimStatus._UPDATING);
 				claim.update();
+
 			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
@@ -365,8 +380,10 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			toast.show();
 
 			ViewHolder vh = vhr.getVh();
+			vh.getSend().setVisibility(View.INVISIBLE);
+
 			AttachmentViewHolder avh = new AttachmentViewHolder();
-			
+
 			avh.setBar(vh.getBar());
 			avh.setChallengeExpiryDate(vh.getChallengeExpiryDate());
 			avh.setIconChallenged(vh.getIconChallenged());
@@ -375,7 +392,7 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			avh.setIconReviewed(vh.getIconReviewed());
 			avh.setIconUnmoderated(vh.getIconUnmoderated());
 			avh.setIconWithdrawn(vh.getIconWithdrawn());
-			
+
 			avh.setId(vh.getId());
 			avh.setNumber(vh.getNumber());
 			avh.setPicture(vh.getPicture());
@@ -384,32 +401,37 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 			avh.setSend(vh.getSend());
 			avh.setSlogan(vh.getSlogan());
 			avh.setStatus(vh.getStatus());
-			
 
-			int progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
-			
-			if(claim.getStatus().equals(ClaimStatus._UNMODERATED))
-			vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-					.getString(R.string.updating) + ": " + progress + " %");
+			int progress = FileSystemUtilities.getUploadProgress(
+					claim.getClaimId(), claim.getStatus());
+
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED))
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.updating)
+								+ ": " + progress + " %");
 			else
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.uploading) + ": " + progress + " %");
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.uploading)
+								+ ": " + progress + " %");
 
 			List<Attachment> list = res.getAttachments();
-			for (Iterator<Attachment> iterator = list.iterator(); iterator.hasNext();) {
+			for (Iterator<Attachment> iterator = list.iterator(); iterator
+					.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
-				
+
 				SaveAttachmentTask saveAttachmentTask = new SaveAttachmentTask();
-				saveAttachmentTask.executeOnExecutor(
-						AsyncTask.THREAD_POOL_EXECUTOR, attachment.getId(),
-						avh);
+				saveAttachmentTask
+						.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+								attachment.getId(), avh);
 
 			}
 
 			break;
 		}
 		case 450: {
-			
+
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -419,9 +441,11 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -432,20 +456,22 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 			ViewHolder vh = vhr.getVh();
 
-			if(claim.getStatus().equals(ClaimStatus._UNMODERATED))
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.update_error) );
-				else
-					vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-							.getString(R.string.upload_error));
-			
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED))
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.update_error));
+			else
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.upload_error));
+
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
 
 			break;
 		}
 		case 400: {
-			
+
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -455,12 +481,12 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+
 			}
-			
-			
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
 					OpenTenureApplication.getContext().getResources()
@@ -470,19 +496,21 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 			ViewHolder vh = vhr.getVh();
 
-			if(claim.getStatus().equals(ClaimStatus._UNMODERATED))
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.update_error));
-				else
-					vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-							.getString(R.string.upload_error));
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED))
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.update_error));
+			else
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.upload_error));
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
 		}
 			break;
-			
+
 		case 500:
-			
+
 			Log.d("CommunityServerAPI",
 					"SAVE CLAIM JSON RESPONSE " + res.getMessage());
 
@@ -492,9 +520,11 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 					|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+
 			}
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(),
@@ -505,16 +535,17 @@ public class SaveClaimTask extends AsyncTask<Object, ViewHolderResponse, ViewHol
 
 			ViewHolder vh = vhr.getVh();
 
-			if(claim.getStatus().equals(ClaimStatus._UNMODERATED))
-				vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-						.getString(R.string.update_error));
-				else
-					vh.getStatus().setText(OpenTenureApplication.getContext().getResources()
-							.getString(R.string.upload_error));
-			
+			if (claim.getStatus().equals(ClaimStatus._UNMODERATED))
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.update_error));
+			else
+				vh.getStatus().setText(
+						OpenTenureApplication.getContext().getResources()
+								.getString(R.string.upload_error));
+
 			vh.getStatus().setVisibility(View.VISIBLE);
 			vh.getBar().setVisibility(View.GONE);
-
 
 		default:
 			break;

@@ -27,6 +27,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -94,6 +95,7 @@ public class OpenTenureApplication extends Application {
 	private static ClaimDocumentsFragment documentsFragment;
 	private static ClaimDetailsFragment detailsFragment;
 	private static String claimId;
+	private List<String> changingClaims = null;
 
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
@@ -185,7 +187,6 @@ public class OpenTenureApplication extends Application {
 	@Override
 	public void onCreate() {
 
-		
 		context = getApplicationContext();
 
 		SharedPreferences OpenTenurePreferences = PreferenceManager
@@ -225,18 +226,16 @@ public class OpenTenureApplication extends Application {
 
 		sInstance = this;
 		sInstance.initializeInstance();
-		
+
 		try {
-			if(OpenTenureApplication.getInstance().isOnline()){
-			updateDB();
+			if (OpenTenureApplication.getInstance().isOnline()) {
+				updateDB();
 			}
 		} catch (Throwable e) {
 			// TODO: handle exception
-			System.out.println("Error :  "
-					+ e.getMessage());
+			System.out.println("Error :  " + e.getMessage());
 		}
 
-		
 		FileSystemUtilities.createClaimsFolder();
 		FileSystemUtilities.createClaimantsFolder();
 		FileSystemUtilities.createOpenTenureFolder();
@@ -604,4 +603,34 @@ public class OpenTenureApplication extends Application {
 		return formUrl;
 	}
 
+	// This set of methods is for handling the rendering of claims currently
+	// changing status
+	public void addClaimtoList(String id) {
+		synchronized (this) {
+
+			if (changingClaims == null)
+				changingClaims = new ArrayList<String>();
+			changingClaims.add(id);
+		}
+
+	}
+
+	public void clearClaimsList() {
+		synchronized (this) {
+
+			if (changingClaims == null)
+				changingClaims = new ArrayList<String>();
+			changingClaims.clear();
+
+		}
+	}
+
+	public List<String> getChangingClaims() {
+		synchronized (this) {
+			if (changingClaims == null)
+				changingClaims = new ArrayList<String>();
+			return this.changingClaims;
+
+		}
+	}
 }

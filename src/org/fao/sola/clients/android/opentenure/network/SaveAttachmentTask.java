@@ -97,6 +97,8 @@ public class SaveAttachmentTask extends
 
 			claim.setStatus(ClaimStatus._UPDATING);
 			claim.update();
+			OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+			
 
 		}
 		
@@ -147,11 +149,15 @@ public class SaveAttachmentTask extends
 			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			}
 			if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 
 				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			}
 
 			if (vh.getAttachmentStatus() != null) {
@@ -221,11 +227,15 @@ public class SaveAttachmentTask extends
 			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			}
 			if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 
 				claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			}
 
 			if (vh.getAttachmentStatus() != null) {
@@ -343,6 +353,8 @@ public class SaveAttachmentTask extends
 			 * Now check the list of attachment for that Claim . If all the
 			 * attachments are uploaded I can call saveClaim.
 			 */
+			
+			
 
 			if ((claim.getStatus().equals(ClaimStatus._UPDATING))) {
 
@@ -383,11 +395,13 @@ public class SaveAttachmentTask extends
 					if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 						claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 						claim.update();
+						OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 
 					}
 					if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 						claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 						claim.update();
+						OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 
 					}
 
@@ -470,9 +484,11 @@ public class SaveAttachmentTask extends
 					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 			}
 			factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
 			progress = (int) (factor * 100);
@@ -536,9 +552,11 @@ public class SaveAttachmentTask extends
 					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 			}
 
 			toast = Toast
@@ -612,9 +630,13 @@ public class SaveAttachmentTask extends
 					&& !claim.getStatus().equals(ClaimStatus._UPDATING)) {
 				claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			} else {
 				claim.setStatus(ClaimStatus._UPDATE_ERROR);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 			}
 
 			factor = (float) toUpdate.getUploadedBytes() / toUpdate.getSize();
@@ -699,10 +721,13 @@ public class SaveAttachmentTask extends
 					|| claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				claim.setStatus(ClaimStatus._UPLOADING);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
+				
 
 			} else {
 				claim.setStatus(ClaimStatus._UPDATING);
 				claim.update();
+				OpenTenureApplication.getInstance().addClaimtoList(claim.getClaimId());
 			}
 
 			UploadChunksTask uploadTask = new UploadChunksTask();
