@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.app.AlertDialog;
@@ -625,6 +626,14 @@ public class NewsFragment extends ListFragment {
 			UpdateCommunityArea updateArea = new UpdateCommunityArea();
 			updateArea.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
+		if (!OpenTenureApplication.getInstance().isCheckedLanguages()) {
+			Log.d(this.getClass().getName(),
+					"starting tasks for languages download");
+
+			UpdateLanguagesTask updateLanguages = new UpdateLanguagesTask();
+			updateLanguages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		
 		if (!OpenTenureApplication.getInstance().isCheckedForm()) {
 			Log.d(this.getClass().getName(),
 					"starting tasks for form retrieval");
