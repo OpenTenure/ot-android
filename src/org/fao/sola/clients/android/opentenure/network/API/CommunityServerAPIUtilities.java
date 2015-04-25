@@ -34,8 +34,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
-import android.util.Log;
-
 public class CommunityServerAPIUtilities {
 
 	public static final String HTTPS_LOGIN = "%s/ws/%s/auth/login?username=%s&password=%s";
@@ -65,20 +63,20 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETALLCLAIMSBYBOX = "%s/ws/%s/claim/getClaimsByBox?minx=%s&miny=%s&maxx=%s&maxy=%s&limit=%s";
 	public static final String HTTP_GETALLCLAIMSBYBOX = "%s/ws/%s/claim/getAllClaims";
 	
-	public static final String HTTPS_GETCLAIMTYPES = "%s/ws/%s/ref/getclaimtypes";
-	public static final String HTTP_GETCLAIMTYPES = "%s/ws/%s/ref/getclaimtypes";
+	public static final String HTTPS_GETCLAIMTYPES = "%s/ws/ref/getclaimtypes";
+	public static final String HTTP_GETCLAIMTYPES = "%s/ws/ref/getclaimtypes";
 	
-	public static final String HTTPS_GETDOCUMENTYPES = "%s/ws/%s/ref/getdocumenttypes";
-	public static final String HTTP_GETDOCUMENTYPES = "%s/ws/%s/ref/getdocumenttypes";
+	public static final String HTTPS_GETDOCUMENTYPES = "%s/ws/ref/getdocumenttypes";
+	public static final String HTTP_GETDOCUMENTYPES = "%s/ws/ref/getdocumenttypes";
 	
-	public static final String HTTPS_GETIDTYPES = "%s/ws/%s/ref/getidtypes";
-	public static final String HTTP_GETIDTYPES = "%s/ws/%s/ref/getidtypes";
+	public static final String HTTPS_GETIDTYPES = "%s/ws/ref/getidtypes";
+	public static final String HTTP_GETIDTYPES = "%s/ws/ref/getidtypes";
 	
-	public static final String HTTPS_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
-	public static final String HTTP_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
+	public static final String HTTPS_GETLANDUSE = "%s/ws/ref/getlanduses";
+	public static final String HTTP_GETLANDUSE = "%s/ws/ref/getlanduses";
 	
-	public static final String HTTPS_GETLANGUAGES = "%s/ws/%s/ref/getlanguages";
-	public static final String HTTP_GETLANGUAGES = "%s/ws/%s/ref/getlanguages";
+	public static final String HTTPS_GETLANGUAGES = "%s/ws/ref/getlanguages";
+	public static final String HTTP_GETLANGUAGES = "%s/ws/ref/getlanguages";
 	
 	public static final String HTTPS_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	public static final String HTTP_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
@@ -89,7 +87,7 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 	public static final String HTTP_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 	
-	public static final String HTTPS_GETFORM = "%s/ws/%s/claim/getDefaultFormTemplate";
+	public static final String HTTPS_GETFORM = "%s/ws/claim/getDefaultFormTemplate";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];
