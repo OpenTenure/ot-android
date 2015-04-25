@@ -640,19 +640,20 @@ public class NewsFragment extends ListFragment {
 
 			SharedPreferences OpenTenurePreferences = PreferenceManager
 					.getDefaultSharedPreferences(getActivity());
-			String formUrlServer = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.FORM_URL_PREF,
-					OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-			String formUrl = "" ;
-			if (!formUrlServer.equalsIgnoreCase("")) {
+
+			String formUrl = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
+
+			if (formUrl.equalsIgnoreCase("")) {
+				// I no explicit URL is set for the dynamic form
+				// use the default one for the explicitly configured server
+				// or the default one
 				formUrl = String.format(
-						CommunityServerAPIUtilities.HTTPS_GETFORM, formUrlServer,
+						CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
+								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER),
 						OpenTenureApplication.getLocalization());
 			}
 			
-//			formUrl = OpenTenurePreferences
-//					.getString(OpenTenurePreferencesActivity.FORM_URL_PREF,
-//							formUrl);
 			FormRetriever formRetriever = new FormRetriever();
 			formRetriever.setFormUrl(formUrl);
 			formRetriever.execute();

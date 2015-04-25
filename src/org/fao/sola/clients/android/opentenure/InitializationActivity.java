@@ -118,26 +118,21 @@ public class InitializationActivity extends Activity {
 	}
 	
 	private String getFormUrl(){
-		// Unless someone has explicitly configured a form URL for testing purposes
-		// attach the default path to the configured community server
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
-//		String defaultFormUrl = OpenTenurePreferences.getString(
-//				OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-//		if (!defaultFormUrl.equalsIgnoreCase("")) {
-//			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
-//		}
-		
-		String formUrlServer = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.FORM_URL_PREF,
-				OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-		String formUrl = "" ;
-		if (!formUrlServer.equalsIgnoreCase("")) {
+
+		String formUrl = OpenTenurePreferences.getString(
+				OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
+
+		if (formUrl.equalsIgnoreCase("")) {
+			// I no explicit URL is set for the dynamic form
+			// use the default one for the explicitly configured server
+			// or the default one
 			formUrl = String.format(
-					CommunityServerAPIUtilities.HTTPS_GETFORM, formUrlServer,
+					CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
+							OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER),
 					OpenTenureApplication.getLocalization());
 		}
-		
 		return formUrl;
 	}
 	

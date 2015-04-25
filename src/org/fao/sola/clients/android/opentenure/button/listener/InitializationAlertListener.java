@@ -29,7 +29,6 @@ package org.fao.sola.clients.android.opentenure.button.listener;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
