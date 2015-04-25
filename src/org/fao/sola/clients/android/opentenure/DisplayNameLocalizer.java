@@ -36,7 +36,10 @@ public class DisplayNameLocalizer {
 	 */
 	private static String separator = "::::";
 
-	public static String getLocalizedDisplayName(String unlocalizedDisplayName, int langCode, int defaultLangCode){
+	public static String getLocalizedDisplayName(String unlocalizedDisplayName, int langItemOrder, int defaultLangItemOrder){
+		
+		int langOrder = langItemOrder -1;
+		int defaultLangOrder = defaultLangItemOrder -1;
 		
 		/*
 		 * try to return requested language, then default language, then first, then the string itself
@@ -51,14 +54,14 @@ public class DisplayNameLocalizer {
 
 		String[] tokens = unlocalizedDisplayName.split(separator);
 
-		if(tokens.length == 1){
+		if(tokens.length == 1 || langOrder < 0 || defaultLangOrder < 0){
 			return tokens[0];
 		}
-		if(tokens.length > langCode && tokens[langCode] != null && !"".equalsIgnoreCase(tokens[langCode])){
-			return tokens[langCode];
+		if(tokens.length > langOrder && tokens[langOrder] != null && !"".equalsIgnoreCase(tokens[langOrder])){
+			return tokens[langOrder];
 		}
-		if(tokens.length > defaultLangCode && tokens[defaultLangCode] != null && !"".equalsIgnoreCase(tokens[defaultLangCode])){
-			return tokens[defaultLangCode];
+		if(tokens.length > defaultLangOrder && tokens[defaultLangOrder] != null && !"".equalsIgnoreCase(tokens[defaultLangOrder])){
+			return tokens[defaultLangOrder];
 		}
 		return tokens[0];
 	}

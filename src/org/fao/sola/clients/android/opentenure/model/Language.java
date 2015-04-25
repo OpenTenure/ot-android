@@ -104,27 +104,29 @@ public class Language {
 	}
 
 	public static Language getLanguage(String code) {
+		// Returns the requested language
+		// If no such language exists, returns the default one
 		ResultSet result = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
-		Language language = new Language();
+		Language language = null;
 		try {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE WHERE CODE=?");
+					.prepareStatement("SELECT DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE WHERE CODE=?");
 			statement.setString(1, code);
 
 			result = statement.executeQuery();
 
 			if (result.next()) {
-
-				language.setCode(result.getString(1));
-				language.setDisplayValue(result.getString(2));
-				language.setActive(result.getBoolean(3));
-				language.setIsDefault(result.getBoolean(4));
-				language.setLtr(result.getBoolean(5));
-				language.setItemOrder(result.getInt(6));
+				language = new Language();
+				language.setCode(code);
+				language.setDisplayValue(result.getString(1));
+				language.setActive(result.getBoolean(2));
+				language.setIsDefault(result.getBoolean(3));
+				language.setLtr(result.getBoolean(4));
+				language.setItemOrder(result.getInt(5));
 				return language;
 			}
 		} catch (SQLException e) {
@@ -145,29 +147,31 @@ public class Language {
 				}
 			}
 		}
-		return null;
+		return getDefaultLanguage();
 	}
 
 	public static Language getDefaultLanguage() {
+		// Returns the default language or the first available if no default is set
+		// or null if no language has been defined
 		ResultSet result = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
-		Language language = new Language();
+		Language language = null;
 		try {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE WHERE IS_DEFAULT=TRUE");
+					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, LTR, ITEM_ORDER FROM LANGUAGE WHERE IS_DEFAULT=TRUE");
 			result = statement.executeQuery();
 
 			if (result.next()) {
-
+				language = new Language();
 				language.setCode(result.getString(1));
 				language.setDisplayValue(result.getString(2));
 				language.setActive(result.getBoolean(3));
-				language.setIsDefault(result.getBoolean(4));
-				language.setLtr(result.getBoolean(5));
-				language.setItemOrder(result.getInt(6));
+				language.setIsDefault(true);
+				language.setLtr(result.getBoolean(4));
+				language.setItemOrder(result.getInt(5));
 				return language;
 			}
 		} catch (SQLException e) {
@@ -188,7 +192,12 @@ public class Language {
 				}
 			}
 		}
-		return null;
+		List<Language> languages = getLanguages();
+		if(languages != null && languages.size()>0){
+			return languages.get(0);
+		}else{
+			return null;
+		}
 	}
 
 	public static int addLanguage(Language lang) {
@@ -248,7 +257,7 @@ public class Language {
 			statement.setString(2, getDisplayValue());
 			statement.setBoolean(3, isActive());
 			statement.setBoolean(4, isIsDefault());
-			statement.setBoolean(5, isIsDefault());
+			statement.setBoolean(5, isLtr());
 			statement.setInt(6, getItemOrder());
 
 			result = statement.executeUpdate();
