@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class LandUse {
@@ -213,17 +214,19 @@ public class LandUse {
 
 	}
 
-	public List<String> getDisplayValues() {
+	public List<String> getDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
+		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
+		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
 
 		List<String> displayList = new ArrayList<String>();
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.LandUse> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
-			displayList.add(landUse.getDisplayValue());
+			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(landUse.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
 
 		}
 		return displayList;
@@ -235,7 +238,7 @@ public class LandUse {
 
 		int i = 0;
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.LandUse> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 

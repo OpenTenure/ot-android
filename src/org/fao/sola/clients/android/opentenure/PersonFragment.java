@@ -31,19 +31,13 @@ import java.io.File;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.button.listener.SaveGroupListener;
-import org.fao.sola.clients.android.opentenure.button.listener.SavePersonListener;
 import org.fao.sola.clients.android.opentenure.button.listener.ConfirmExit;
-
-import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.IdType;
-
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
@@ -51,21 +45,17 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -73,9 +63,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.Spinner;
-
 import android.widget.Toast;
 
 public class PersonFragment extends Fragment {
@@ -301,7 +289,7 @@ public class PersonFragment extends Fragment {
 
 		IdType it = new IdType();
 
-		List<String> idTypelist = it.getDisplayValues();
+		List<String> idTypelist = it.getDisplayValues(OpenTenureApplication.getLocalization());
 
 		List<String> genderList = new ArrayList<String>();
 
@@ -1150,7 +1138,6 @@ public class PersonFragment extends Fragment {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 							return;
 						}
 					});
@@ -1413,7 +1400,6 @@ public class PersonFragment extends Fragment {
 
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
-							// TODO Auto-generated method stub
 							return;
 						}
 					});

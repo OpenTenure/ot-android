@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class IdType {
@@ -213,17 +214,19 @@ public class IdType {
 
 	}
 
-	public List<String> getDisplayValues() {
+	public List<String> getDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.IdType> list = getIdTypes();
+		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
+		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
 
 		List<String> displayList = new ArrayList<String>();
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.IdType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.IdType idType = (org.fao.sola.clients.android.opentenure.model.IdType) iterator
 					.next();
 
-			displayList.add(idType.getDisplayValue());
+			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(idType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
 		}
 		return displayList;
 	}
@@ -234,7 +237,7 @@ public class IdType {
 
 		int i = 0;
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.IdType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.IdType idType = (org.fao.sola.clients.android.opentenure.model.IdType) iterator
 					.next();
 

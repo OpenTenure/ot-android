@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class ClaimType {
@@ -205,17 +206,19 @@ public class ClaimType {
 
 	}
 
-	public List<String> getClaimsTypesDispalyValues() {
+	public List<String> getClaimsTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
+		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
+		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
 
 		List<String> displayList = new ArrayList<String>();
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 
-			displayList.add(claimType.getDisplayValue());
+			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(claimType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
 		}
 		return displayList;
 	}
@@ -226,7 +229,7 @@ public class ClaimType {
 
 		int i = 0;
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 

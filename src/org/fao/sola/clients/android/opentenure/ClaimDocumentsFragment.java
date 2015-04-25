@@ -185,7 +185,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				DocumentType dt = new DocumentType();
 
-				List<String> list = dt.getDocumentTypesDispalyValues();
+				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -278,7 +278,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				DocumentType dt = new DocumentType();
 
-				List<String> list = dt.getDocumentTypesDispalyValues();
+				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),

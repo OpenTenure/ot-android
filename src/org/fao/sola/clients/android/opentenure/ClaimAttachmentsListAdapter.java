@@ -103,7 +103,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 			// Attachment Type Spinner set up
 			DocumentType dt = new DocumentType();
-			List<String> list = dt.getDocumentTypesDispalyValues();
+			List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
 
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 					OpenTenureApplication.getContext(), R.layout.my_spinner,

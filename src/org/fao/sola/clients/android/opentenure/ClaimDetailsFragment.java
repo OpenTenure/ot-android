@@ -407,7 +407,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		ClaimType ct = new ClaimType();
 
-		List<String> list = ct.getClaimsTypesDispalyValues();
+		List<String> list = ct.getClaimsTypesDisplayValues(OpenTenureApplication.getLocalization());
 
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner, list) {
@@ -422,7 +422,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		LandUse lu = new LandUse();
 
-		List<String> landUseslist = lu.getDisplayValues();
+		List<String> landUseslist = lu.getDisplayValues(OpenTenureApplication.getLocalization());
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner,

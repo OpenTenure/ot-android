@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
@@ -71,6 +72,8 @@ public class FieldViewFactory {
 	private static final long MIN_TIME_BETWEEN_TOAST = 500;
 
 	public static View getSpinner(final Activity activity,
+			final int currentLanguageItemOrder,
+			final int defaultLanguageItemOrder,
 			List<FieldConstraintOption> options, final FieldTemplate field,
 			final FieldPayload payload, Mode mode) {
 
@@ -79,45 +82,53 @@ public class FieldViewFactory {
 		int selected = -1;
 
 		boolean isOptional = true;
-		
-		for(FieldConstraint constraint:field.getFieldConstraintList()){
-			if(constraint!=null && FieldConstraintType.NOT_NULL == constraint.getFieldConstraintType()){
+
+		for (FieldConstraint constraint : field.getFieldConstraintList()) {
+			if (constraint != null
+					&& FieldConstraintType.NOT_NULL == constraint
+							.getFieldConstraintType()) {
 				isOptional = false;
 			}
 		}
 
 		for (FieldConstraintOption option : options) {
-			if(payload.getStringPayload() != null && payload.getStringPayload().equals(option.getName())){
+			if (payload.getStringPayload() != null
+					&& payload.getStringPayload().equals(option.getName())) {
 				// Previous selection: select it in the list
 				selected = names.size();
 			}
 			names.add(option.getName());
-			displayNames.add(option.getDisplayName());
+			displayNames.add(DisplayNameLocalizer.getLocalizedDisplayName(
+					option.getDisplayName(), currentLanguageItemOrder,
+					defaultLanguageItemOrder));
 		}
-		
-		if(isOptional){
-			if(selected == -1){
+
+		if (isOptional) {
+			if (selected == -1) {
 				// No previous selection: select the null value if available
 				selected = names.size();
 			}
-			String nullDisplayName = activity.getBaseContext().getString(R.string.null_label);
-			options.add(new FieldConstraintOption(null,nullDisplayName));
+			String nullDisplayName = activity.getBaseContext().getString(
+					R.string.null_label);
+			options.add(new FieldConstraintOption(null, nullDisplayName));
 			names.add(null);
 			displayNames.add(nullDisplayName);
 		}
 
-		if(names.size() > 0 && selected == -1){
-			// No previous selection, not null constraint and at least one option: select the first option in the list
+		if (names.size() > 0 && selected == -1) {
+			// No previous selection, not null constraint and at least one
+			// option: select the first option in the list
 			selected = 0;
 		}
 
 		final Spinner spinner = new Spinner(activity);
 		spinner.setPadding(0, 10, 0, 8);
-		spinner.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
-		
-		if(mode == Mode.MODE_RO){
-			spinner.setEnabled(false);   
-			spinner.setClickable(false); 
+		spinner.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
+
+		if (mode == Mode.MODE_RO) {
+			spinner.setEnabled(false);
+			spinner.setClickable(false);
 			spinner.setLongClickable(false);
 		}
 
@@ -131,7 +142,11 @@ public class FieldViewFactory {
 					int arg2, long arg3) {
 				payload.setStringPayload(names.get(arg2));
 				FieldConstraint constraint;
-				if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+				if ((constraint = field.getFailedConstraint(
+						DisplayNameLocalizer.getLocalizedDisplayName(
+								field.getDisplayName(),
+								currentLanguageItemOrder,
+								defaultLanguageItemOrder), payload)) != null) {
 					((TextView) arg0.getChildAt(0)).setTextColor(Color.RED);
 					Toast.makeText(activity.getBaseContext(),
 							constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
@@ -146,7 +161,7 @@ public class FieldViewFactory {
 			}
 		});
 		spinner.setAdapter(spinnerArrayAdapter);
-		if(selected != -1){
+		if (selected != -1) {
 			spinner.setSelection(selected);
 		}
 
@@ -154,11 +169,15 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForTextField(final Activity activity,
-			final FieldTemplate field, final FieldPayload payload, Mode mode) {
+			final int currentLanguageItemOrder,
+			final int defaultLanguageItemOrder, final FieldTemplate field,
+			final FieldPayload payload, Mode mode) {
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
 			if (constraint instanceof OptionConstraint) {
-				return getSpinner(activity,
-						((OptionConstraint) constraint).getFieldConstraintOptionList(), field,
+				return getSpinner(activity, currentLanguageItemOrder,
+						defaultLanguageItemOrder,
+						((OptionConstraint) constraint)
+								.getFieldConstraintOptionList(), field,
 						payload, mode);
 			}
 		}
@@ -167,18 +186,20 @@ public class FieldViewFactory {
 		text.setPadding(0, 10, 0, 8);
 		text.setTextSize(20);
 		text.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
-		text.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
+		text.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
 		text.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		text.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-		if(payload.getStringPayload()!=null){
+		text.setInputType(InputType.TYPE_CLASS_TEXT
+				| InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+		if (payload.getStringPayload() != null) {
 			text.setText(payload.getStringPayload());
 		}
-		if(mode == Mode.MODE_RO){
-			text.setEnabled(false);   
-			text.setClickable(false); 
+		if (mode == Mode.MODE_RO) {
+			text.setEnabled(false);
+			text.setClickable(false);
 			text.setLongClickable(false);
-		}else{
+		} else {
 			text.setHint(field.getHint());
 			text.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -193,7 +214,11 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+					if ((constraint = field.getFailedConstraint(
+							DisplayNameLocalizer.getLocalizedDisplayName(
+									field.getDisplayName(),
+									currentLanguageItemOrder,
+									defaultLanguageItemOrder), payload)) != null) {
 						text.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -209,13 +234,13 @@ public class FieldViewFactory {
 				}
 
 				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
 				}
 
 				@Override
-				public void onTextChanged(CharSequence s, int start, int before,
-						int count) {
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
 
 				}
 			});
@@ -224,6 +249,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForNumberField(final Activity activity,
+			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
@@ -232,16 +258,17 @@ public class FieldViewFactory {
 		number.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		number.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
+		number.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
-		if(payload.getStringPayload()!=null){
+		if (payload.getStringPayload() != null) {
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
-		if(mode == Mode.MODE_RO){
-			number.setEnabled(false);   
-			number.setClickable(false); 
+		if (mode == Mode.MODE_RO) {
+			number.setEnabled(false);
+			number.setClickable(false);
 			number.setLongClickable(false);
-		}else{
+		} else {
 			number.setHint(field.getHint());
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -251,12 +278,16 @@ public class FieldViewFactory {
 					if ("".toString().equalsIgnoreCase(s.toString())) {
 						payload.setBigDecimalPayload(null);
 					} else {
-						payload.setBigDecimalPayload(
-								new BigDecimal(Double.parseDouble(s.toString())));
+						payload.setBigDecimalPayload(new BigDecimal(Double
+								.parseDouble(s.toString())));
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+					if ((constraint = field.getFailedConstraint(
+							DisplayNameLocalizer.getLocalizedDisplayName(
+									field.getDisplayName(),
+									currentLanguageItemOrder,
+									defaultLanguageItemOrder), payload)) != null) {
 						number.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -271,13 +302,13 @@ public class FieldViewFactory {
 				}
 
 				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
 				}
 
 				@Override
-				public void onTextChanged(CharSequence s, int start, int before,
-						int count) {
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
 
 				}
 			});
@@ -286,6 +317,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForDecimalField(final Activity activity,
+			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
@@ -294,16 +326,18 @@ public class FieldViewFactory {
 		number.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
 		number.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
-		number.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		number.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
-		if(payload.getStringPayload()!=null){
+		number.setInputType(InputType.TYPE_CLASS_NUMBER
+				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		number.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
+		if (payload.getStringPayload() != null) {
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
-		if(mode == Mode.MODE_RO){
-			number.setEnabled(false);   
-			number.setClickable(false); 
+		if (mode == Mode.MODE_RO) {
+			number.setEnabled(false);
+			number.setClickable(false);
 			number.setLongClickable(false);
-		}else{
+		} else {
 			number.setHint(field.getHint());
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
@@ -313,12 +347,16 @@ public class FieldViewFactory {
 					if ("".toString().equalsIgnoreCase(s.toString())) {
 						payload.setBigDecimalPayload(null);
 					} else {
-						payload.setBigDecimalPayload(
-								new BigDecimal(Double.parseDouble(s.toString())));
+						payload.setBigDecimalPayload(new BigDecimal(Double
+								.parseDouble(s.toString())));
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+					if ((constraint = field.getFailedConstraint(
+							DisplayNameLocalizer.getLocalizedDisplayName(
+									field.getDisplayName(),
+									currentLanguageItemOrder,
+									defaultLanguageItemOrder), payload)) != null) {
 						number.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -333,13 +371,13 @@ public class FieldViewFactory {
 				}
 
 				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
 				}
 
 				@Override
-				public void onTextChanged(CharSequence s, int start, int before,
-						int count) {
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
 
 				}
 			});
@@ -348,6 +386,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForBooleanField(final Activity activity,
+			int currentLanguageItemOrder, int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final Switch bool;
 		bool = new Switch(activity);
@@ -358,17 +397,17 @@ public class FieldViewFactory {
 				LayoutParams.WRAP_CONTENT));
 		bool.setTextOn(activity.getResources().getString(R.string.yes));
 		bool.setTextOff(activity.getResources().getString(R.string.no));
-		if(payload.getBooleanPayload()!=null){
+		if (payload.getBooleanPayload() != null) {
 			bool.setChecked(payload.getBooleanPayload().booleanValue());
-		}else{
+		} else {
 			payload.setBooleanPayload(Boolean.valueOf(false));
 			bool.setChecked(false);
 		}
-		if(mode == Mode.MODE_RO){
-			bool.setEnabled(false);   
+		if (mode == Mode.MODE_RO) {
+			bool.setEnabled(false);
 			bool.setClickable(false);
 			bool.setLongClickable(false);
-		}else{
+		} else {
 			bool.setHint(field.getHint());
 			bool.setOnClickListener(new OnClickListener() {
 
@@ -376,7 +415,7 @@ public class FieldViewFactory {
 				public void onClick(View v) {
 					if (((Switch) v).isChecked()) {
 						payload.setBooleanPayload(Boolean.valueOf(true));
-					}else{
+					} else {
 						payload.setBooleanPayload(Boolean.valueOf(false));
 					}
 				}
@@ -387,6 +426,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForDateField(final Activity activity,
+			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
@@ -395,8 +435,8 @@ public class FieldViewFactory {
 				tmpFormat = constraint.getFormat();
 			}
 		}
-		
-		if(tmpFormat == null){
+
+		if (tmpFormat == null) {
 			tmpFormat = "yyyy-MM-dd";
 		}
 
@@ -406,25 +446,27 @@ public class FieldViewFactory {
 		datetime = new EditText(activity);
 		datetime.setPadding(0, 10, 0, 8);
 		datetime.setTextSize(20);
-		datetime.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
-		datetime.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
+		datetime.setTextAppearance(activity,
+				android.R.attr.textAppearanceMedium);
+		datetime.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
-		if(payload.getStringPayload()!=null){
+		if (payload.getStringPayload() != null) {
 			datetime.setText(payload.getStringPayload());
 		}
-		if(mode == Mode.MODE_RO){
-			datetime.setEnabled(false);   
-			datetime.setClickable(false); 
+		if (mode == Mode.MODE_RO) {
+			datetime.setEnabled(false);
+			datetime.setClickable(false);
 			datetime.setLongClickable(false);
-		}else{
+		} else {
 			datetime.setHint(field.getHint());
 			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
 				@Override
-				public void onDateSet(DatePicker view, int year, int monthOfYear,
-						int dayOfMonth) {
+				public void onDateSet(DatePicker view, int year,
+						int monthOfYear, int dayOfMonth) {
 					localCalendar.set(Calendar.YEAR, year);
 					localCalendar.set(Calendar.MONTH, monthOfYear);
 					localCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -443,13 +485,15 @@ public class FieldViewFactory {
 				@Override
 				public boolean onLongClick(View v) {
 					new DatePickerDialog(activity, date, localCalendar
-							.get(Calendar.YEAR), localCalendar.get(Calendar.MONTH),
-							localCalendar.get(Calendar.DAY_OF_MONTH)).show();
+							.get(Calendar.YEAR), localCalendar
+							.get(Calendar.MONTH), localCalendar
+							.get(Calendar.DAY_OF_MONTH)).show();
 					return true;
 				}
 			});
 			datetime.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
+
 				@Override
 				public void afterTextChanged(Editable s) {
 
@@ -460,13 +504,17 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+					if ((constraint = field.getFailedConstraint(
+							DisplayNameLocalizer.getLocalizedDisplayName(
+									field.getDisplayName(),
+									currentLanguageItemOrder,
+									defaultLanguageItemOrder), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-						Toast.makeText(activity.getBaseContext(),
-								constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
-								.show();
-						lastTime = System.currentTimeMillis();
+							Toast.makeText(activity.getBaseContext(),
+									constraint.displayErrorMsg(),
+									Toast.LENGTH_SHORT).show();
+							lastTime = System.currentTimeMillis();
 						}
 					} else {
 						datetime.setTextColor(Color.BLACK);
@@ -475,13 +523,13 @@ public class FieldViewFactory {
 				}
 
 				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
 				}
 
 				@Override
-				public void onTextChanged(CharSequence s, int start, int before,
-						int count) {
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
 
 				}
 			});
@@ -490,6 +538,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForTimeField(final Activity activity,
+			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
@@ -499,7 +548,7 @@ public class FieldViewFactory {
 			}
 		}
 
-		if(tmpFormat == null){
+		if (tmpFormat == null) {
 			tmpFormat = "HH:mm";
 		}
 
@@ -509,19 +558,21 @@ public class FieldViewFactory {
 		datetime = new EditText(activity);
 		datetime.setPadding(0, 10, 0, 8);
 		datetime.setTextSize(20);
-		datetime.setTextAppearance(activity, android.R.attr.textAppearanceMedium);
-		datetime.setBackgroundColor(activity.getResources().getColor(android.R.color.white));
+		datetime.setTextAppearance(activity,
+				android.R.attr.textAppearanceMedium);
+		datetime.setBackgroundColor(activity.getResources().getColor(
+				android.R.color.white));
 		datetime.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT));
 		datetime.setInputType(InputType.TYPE_CLASS_DATETIME);
-		if(payload.getStringPayload()!=null){
+		if (payload.getStringPayload() != null) {
 			datetime.setText(payload.getStringPayload());
 		}
-		if(mode == Mode.MODE_RO){
-			datetime.setEnabled(false);   
-			datetime.setClickable(false); 
+		if (mode == Mode.MODE_RO) {
+			datetime.setEnabled(false);
+			datetime.setClickable(false);
 			datetime.setLongClickable(false);
-		}else{
+		} else {
 			datetime.setHint(field.getHint());
 			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
@@ -551,6 +602,7 @@ public class FieldViewFactory {
 			});
 			datetime.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
+
 				@Override
 				public void afterTextChanged(Editable s) {
 
@@ -561,13 +613,17 @@ public class FieldViewFactory {
 					}
 
 					FieldConstraint constraint;
-					if ((constraint = field.getFailedConstraint(field.getDisplayName(), payload)) != null) {
+					if ((constraint = field.getFailedConstraint(
+							DisplayNameLocalizer.getLocalizedDisplayName(
+									field.getDisplayName(),
+									currentLanguageItemOrder,
+									defaultLanguageItemOrder), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
-						Toast.makeText(activity.getBaseContext(),
-								constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
-								.show();
-						lastTime = System.currentTimeMillis();
+							Toast.makeText(activity.getBaseContext(),
+									constraint.displayErrorMsg(),
+									Toast.LENGTH_SHORT).show();
+							lastTime = System.currentTimeMillis();
 						}
 					} else {
 						datetime.setTextColor(Color.BLACK);
@@ -576,13 +632,13 @@ public class FieldViewFactory {
 				}
 
 				@Override
-				public void beforeTextChanged(CharSequence s, int start, int count,
-						int after) {
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
 				}
 
 				@Override
-				public void onTextChanged(CharSequence s, int start, int before,
-						int count) {
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
 
 				}
 			});

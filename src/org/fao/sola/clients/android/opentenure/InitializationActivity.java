@@ -82,6 +82,7 @@ public class InitializationActivity extends Activity {
 							db.setPassword(dbPasswordInput.getText().toString());
 							db.open();
 							if (db.isOpen()) {
+								checkPerformDbUpgrades();
 								createInitializationConfig();
 								Log.d(this.getClass().getName(), "db opened");
 								StartOpenTenure start = new StartOpenTenure();
@@ -235,7 +236,7 @@ public class InitializationActivity extends Activity {
 					UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
 					updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
-				if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
+				if (!OpenTenureApplication.getInstance().isCheckedLanguages()) {
 					Log.d(this.getClass().getName(),
 							"starting tasks for languages download");
 

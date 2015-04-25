@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class DocumentType {
@@ -285,17 +286,19 @@ public class DocumentType {
 
 	}
 
-	public List<String> getDocumentTypesDispalyValues() {
+	public List<String> getDocumentTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
+		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
+		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
 
 		List<String> displayList = new ArrayList<String>();
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
-			displayList.add(docType.getDisplayValue());
+			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(docType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
 		}
 		return displayList;
 	}
@@ -306,7 +309,7 @@ public class DocumentType {
 
 		int i = 0;
 
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
