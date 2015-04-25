@@ -71,13 +71,13 @@ public class Language {
 	}
 
 
-	public boolean isAsDefault() {
-		return asDefault;
+	public boolean isIsDefault() {
+		return isDefault;
 	}
 
 
-	public void setAsDefault(boolean asDefault) {
-		this.asDefault = asDefault;
+	public void setIsDefault(boolean isDefault) {
+		this.isDefault = isDefault;
 	}
 
 
@@ -97,14 +97,14 @@ public class Language {
 	String displayValue;
 	int itemOrder;
 	boolean active;
-	boolean asDefault;
+	boolean isDefault;
 	boolean ltr;
 	
 
 	@Override
 	public String toString() {
 		return "DocumentType [code=" + code +
-				", displayValue=" + displayValue + ", itemOrder=" + itemOrder +", active=" + active +", isDefault=" + asDefault +", ltr=" + ltr + "]";
+				", displayValue=" + displayValue + ", itemOrder=" + itemOrder +", active=" + active +", isDefault=" + isDefault +", ltr=" + ltr + "]";
 		
 	}
 

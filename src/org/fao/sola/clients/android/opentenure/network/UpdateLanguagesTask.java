@@ -60,6 +60,8 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 				org.fao.sola.clients.android.opentenure.model.Language lang= new org.fao.sola.clients.android.opentenure.model.Language();
 
 				lang.setActive(language.isActive());
+				lang.setIsDefault(language.isIsDefault());
+				lang.setLtr(language.isLtr());
 				lang.setCode(language.getCode());
 				lang.setDisplayValue(language.getDisplayValue());
 				lang.setItemOrder(language.getItemOrder());

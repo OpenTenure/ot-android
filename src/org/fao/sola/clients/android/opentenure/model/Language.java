@@ -32,96 +32,78 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Language {
-	
+
 	String code;
 	String displayValue;
 	int itemOrder;
 	boolean active;
-	boolean asDefault;
+	boolean isDefault;
 	boolean ltr;
-	
+
 	static Database db = OpenTenureApplication.getInstance().getDatabase();
-	
+
 	@Override
 	public String toString() {
-		return "DocumentType [code=" + code +
-				", displayValue=" + displayValue + ", itemOrder=" + itemOrder +", active=" + active +", isDefault=" + asDefault +", ltr=" + ltr + "]";
-		
+		return "DocumentType [code=" + code + ", displayValue=" + displayValue
+				+ ", itemOrder=" + itemOrder + ", active=" + active
+				+ ", isDefault=" + isDefault + ", ltr=" + ltr + "]";
+
 	}
-	
-	
+
 	public String getCode() {
 		return code;
 	}
-
 
 	public void setCode(String code) {
 		this.code = code;
 	}
 
-
 	public String getDisplayValue() {
 		return displayValue;
 	}
-
 
 	public void setDisplayValue(String displayValue) {
 		this.displayValue = displayValue;
 	}
 
-
 	public int getItemOrder() {
 		return itemOrder;
 	}
-
 
 	public void setItemOrder(int itemOrder) {
 		this.itemOrder = itemOrder;
 	}
 
-
-
-
-
-
-
-	
 	public boolean isActive() {
 		return active;
 	}
-
 
 	public void setActive(boolean active) {
 		this.active = active;
 	}
 
-
-	public boolean isAsDefault() {
-		return asDefault;
+	public boolean isIsDefault() {
+		return isDefault;
 	}
 
-
-	public void setAsDefault(boolean asDefault) {
-		this.asDefault = asDefault;
+	public void setIsDefault(boolean isDefault) {
+		this.isDefault = isDefault;
 	}
-
 
 	public boolean isLtr() {
 		return ltr;
 	}
 
-
 	public void setLtr(boolean ltr) {
 		this.ltr = ltr;
 	}
-	
-	public static Language getLanguage(String type) {
+
+	public static Language getLanguage(String code) {
 		ResultSet result = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -130,17 +112,19 @@ public class Language {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, ITEM_ORDER FROM LANGUAGE WHERE CODE=?");
-			statement.setString(1, type);
+					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE WHERE CODE=?");
+			statement.setString(1, code);
 
 			result = statement.executeQuery();
 
 			if (result.next()) {
 
 				language.setCode(result.getString(1));
-				
 				language.setDisplayValue(result.getString(2));
 				language.setActive(result.getBoolean(3));
+				language.setIsDefault(result.getBoolean(4));
+				language.setLtr(result.getBoolean(5));
+				language.setItemOrder(result.getInt(6));
 				return language;
 			}
 		} catch (SQLException e) {
@@ -164,6 +148,48 @@ public class Language {
 		return null;
 	}
 
+	public static Language getDefaultLanguage() {
+		ResultSet result = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		Language language = new Language();
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE WHERE IS_DEFAULT=TRUE");
+			result = statement.executeQuery();
+
+			if (result.next()) {
+
+				language.setCode(result.getString(1));
+				language.setDisplayValue(result.getString(2));
+				language.setActive(result.getBoolean(3));
+				language.setIsDefault(result.getBoolean(4));
+				language.setLtr(result.getBoolean(5));
+				language.setItemOrder(result.getInt(6));
+				return language;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return null;
+	}
 
 	public static int addLanguage(Language lang) {
 
@@ -175,12 +201,14 @@ public class Language {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LANGUAGE(CODE, DISPLAY_VALUE, ACTIVE, ITEM_ORDER) VALUES (?,?,?,?)");
+					.prepareStatement("INSERT INTO LANGUAGE(CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER) VALUES (?,?,?,?,?,?)");
 
 			statement.setString(1, lang.getCode());
 			statement.setString(2, lang.getDisplayValue());
 			statement.setBoolean(3, lang.isActive());
-			statement.setInt(4, lang.getItemOrder());
+			statement.setBoolean(4, lang.isIsDefault());
+			statement.setBoolean(5, lang.isLtr());
+			statement.setInt(6, lang.getItemOrder());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -203,9 +231,7 @@ public class Language {
 		}
 		return result;
 	}
-	
-	
-	
+
 	public int add() {
 
 		int result = 0;
@@ -216,12 +242,14 @@ public class Language {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LANGUAGE(CODE, DISPLAY_VALUE, ACTIVE, ITEM_ORDER) VALUES (?,?,?,?)");
+					.prepareStatement("INSERT INTO LANGUAGE(CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER) VALUES (?,?,?,?,?,?)");
 
 			statement.setString(1, getCode());
 			statement.setString(2, getDisplayValue());
 			statement.setBoolean(3, isActive());
-			statement.setInt(4, getItemOrder());
+			statement.setBoolean(4, isIsDefault());
+			statement.setBoolean(5, isIsDefault());
+			statement.setInt(6, getItemOrder());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -244,7 +272,7 @@ public class Language {
 		}
 		return result;
 	}
-	
+
 	public int updateLanguage() {
 
 		int result = 0;
@@ -254,14 +282,15 @@ public class Language {
 		try {
 
 			localConnection = db.getConnection();
-			statement = localConnection					
-					.prepareStatement("UPDATE LANGUAGE SET DISPLAY_VALUE=?, ACTIVE=?, ITEM_ORDER=? WHERE CODE = ?");
+			statement = localConnection
+					.prepareStatement("UPDATE LANGUAGE SET DISPLAY_VALUE=?, ACTIVE=?, IS_DEFAULT=?, LTR=?, ITEM_ORDER=? WHERE CODE = ?");
 
-			
 			statement.setString(1, getDisplayValue());
 			statement.setBoolean(2, isActive());
-			statement.setInt(3, getItemOrder());
-			statement.setString(4, getCode());
+			statement.setBoolean(3, isIsDefault());
+			statement.setBoolean(4, isLtr());
+			statement.setInt(5, getItemOrder());
+			statement.setString(6, getCode());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -283,8 +312,7 @@ public class Language {
 		}
 		return result;
 	}
-	
-	
+
 	public static List<Language> getLanguages() {
 
 		List<Language> languages = new ArrayList<Language>();
@@ -296,7 +324,7 @@ public class Language {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, ITEM_ORDER FROM LANGUAGE LANG ");
+					.prepareStatement("SELECT CODE, DISPLAY_VALUE, ACTIVE, IS_DEFAULT, LTR, ITEM_ORDER FROM LANGUAGE LANG ");
 			rs = statement.executeQuery();
 
 			while (rs.next()) {
@@ -304,8 +332,10 @@ public class Language {
 				language.setCode(rs.getString(1));
 				language.setDisplayValue(rs.getString(2));
 				language.setActive(rs.getBoolean(3));
-				language.setItemOrder(rs.getInt(4));
-				
+				language.setIsDefault(rs.getBoolean(4));
+				language.setLtr(rs.getBoolean(5));
+				language.setItemOrder(rs.getInt(6));
+
 				languages.add(language);
 
 			}
@@ -338,26 +368,4 @@ public class Language {
 		return languages;
 
 	}
-	
-	public static int getItemOrderByCodeType(String code) {
-
-		List<Language> list = getLanguages();
-
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			org.fao.sola.clients.android.opentenure.model.Language language = (org.fao.sola.clients.android.opentenure.model.Language) iterator
-					.next();
-
-			if (language.getCode().equals(code)) {
-
-				return language.getItemOrder();
-
-			}
-		}
-		return 0;
-
-	}
-	
-	
-
-	
 }

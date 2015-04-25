@@ -42,7 +42,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
-
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
@@ -55,16 +56,14 @@ import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentRes
 import org.fao.sola.clients.android.opentenure.network.response.GetCommunityAreaResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import android.content.SharedPreferences;
 import android.net.http.AndroidHttpClient;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 public class CommunityServerAPI {
@@ -781,7 +780,7 @@ public class CommunityServerAPI {
 						.fromJson(json, listType);
 
 				if (languageList != null)
-					Log.d("CommunityServerAPI", "RETRIEVED LAND USE LIST"
+					Log.d("CommunityServerAPI", "RETRIEVED LANGUAGES LIST"
 							+ languageList.size());
 
 				return languageList;
