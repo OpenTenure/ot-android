@@ -77,6 +77,9 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
 	public static final String HTTP_GETLANDUSE = "%s/ws/%s/ref/getlanduses";
 	
+	public static final String HTTPS_GETLANGUAGES = "%s/ws/%s/ref/getlanguages";
+	public static final String HTTP_GETLANGUAGES = "%s/ws/%s/ref/getlanguages";
+	
 	public static final String HTTPS_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	public static final String HTTP_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	

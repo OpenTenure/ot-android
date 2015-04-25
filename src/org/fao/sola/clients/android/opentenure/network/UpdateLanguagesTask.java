@@ -31,52 +31,51 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
-import org.fao.sola.clients.android.opentenure.network.response.LandUse;
+import org.fao.sola.clients.android.opentenure.network.response.Language;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
 
-public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
-
+public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>> {
+	
 	@Override
-	protected List<LandUse> doInBackground(String... params) {
-		List<LandUse> types = CommunityServerAPI.getLandUses();
+	protected List<Language> doInBackground(String... params) {
+		List<Language> types = CommunityServerAPI.getLanguages();
 
 		// TODO Auto-generated method stub
 		return types;
 	}
-
+	
 	@Override
-	protected void onPostExecute(List<LandUse> types) {
+	protected void onPostExecute(List<Language> languages) {
 
-		if (types != null && (types.size() > 0)) {
+		if (languages != null && (languages.size() > 0)) {
 
-			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
-				LandUse use = (LandUse) iterator.next();
+			for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
+				Language language = (Language) iterator.next();
+				
+				org.fao.sola.clients.android.opentenure.model.Language lang= new org.fao.sola.clients.android.opentenure.model.Language();
 
-				org.fao.sola.clients.android.opentenure.model.LandUse landUse = new org.fao.sola.clients.android.opentenure.model.LandUse();
-
-				landUse.setDescription(use.getDescription());
-				landUse.setCode(use.getCode());
-				landUse.setDisplayValue(use.getDisplayValue());
-				if (org.fao.sola.clients.android.opentenure.model.LandUse
-						.getLandUse(use.getCode()) == null) {
-					landUse.add();
+				lang.setActive(language.isActive());
+				lang.setCode(language.getCode());
+				lang.setDisplayValue(language.getDisplayValue());
+				lang.setItemOrder(language.getItemOrder());
+				if (org.fao.sola.clients.android.opentenure.model.Language
+						.getLanguage((language.getCode())) == null) {
+					lang.add();
 
 				}
 
 				else {
-					landUse.updadateLandUse();
+					lang.updateLanguage();
 				}
 
 			}
 
-			OpenTenureApplication.getInstance().setCheckedLandUses(true);
+			OpenTenureApplication.getInstance().setCheckedLanguages(true);
 
 			synchronized (OpenTenureApplication.getLocale()) {
 
@@ -87,8 +86,10 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 								.isCheckedIdTypes()
 						&& OpenTenureApplication.getInstance()
 								.isCheckedDocTypes()
+					    && OpenTenureApplication.getInstance()
+								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()
+								.isCheckedLanguages()		
 						&& OpenTenureApplication.getInstance()
 								.isCheckedForm()
 

@@ -42,26 +42,20 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.params.HttpParams;
+
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.response.ApiResponse;
 import org.fao.sola.clients.android.opentenure.network.response.GetAttachmentResponse;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimTypesResponse;
-import org.fao.sola.clients.android.opentenure.network.response.GetClaimsInput;
 import org.fao.sola.clients.android.opentenure.network.response.GetCommunityAreaResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
 import org.fao.sola.clients.android.opentenure.network.response.SaveClaimResponse;
-import org.fao.sola.clients.android.opentenure.network.response.UploadChunkPayload;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 
 import com.google.gson.Gson;
@@ -70,9 +64,8 @@ import com.google.gson.reflect.TypeToken;
 import android.content.SharedPreferences;
 import android.net.http.AndroidHttpClient;
 import android.preference.PreferenceManager;
-import android.preference.PreferenceActivity.Header;
 import android.util.Log;
-import android.widget.Toast;
+
 
 public class CommunityServerAPI {
 
@@ -744,6 +737,71 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI",
 					"GET LAND USES ERROR " + ex.getMessage());
+			ex.printStackTrace();
+			return null;
+
+		}
+
+	}
+	
+	public static List<org.fao.sola.clients.android.opentenure.network.response.Language> getLanguages() {
+
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+
+		String csUrl = OpenTenurePreferences.getString(
+				OpenTenurePreferencesActivity.CS_URL_PREF,
+				OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+		
+		if(csUrl.trim().equals(""))
+			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
+
+		String url = String.format(
+				CommunityServerAPIUtilities.HTTPS_GETLANGUAGES, csUrl,
+				OpenTenureApplication.getLocalization());
+		HttpGet request = new HttpGet(url);
+
+		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
+
+		try {
+
+			HttpResponse response = client.execute(request);
+
+			String json = CommunityServerAPIUtilities.Slurp(response
+					.getEntity().getContent(), 1024);
+
+			if (response.getStatusLine().getStatusCode() == (HttpStatus.SC_OK)) {
+
+				Log.d("CommunityServerAPI", "GET LANGUAGES JSON RESPONSE "
+						+ json);
+
+				Type listType = new TypeToken<ArrayList<org.fao.sola.clients.android.opentenure.network.response.Language>>() {
+				}.getType();
+				List<org.fao.sola.clients.android.opentenure.network.response.Language> languageList = new Gson()
+						.fromJson(json, listType);
+
+				if (languageList != null)
+					Log.d("CommunityServerAPI", "RETRIEVED LAND USE LIST"
+							+ languageList.size());
+
+				return languageList;
+
+			} else {
+
+				Log.d("CommunityServerAPI",
+						"GET LANGUGES NOT SUCCEDED : HTTP STATUS "
+								+ response.getStatusLine().getStatusCode()
+								+ "  "
+								+ response.getStatusLine().getReasonPhrase());
+
+				return null;
+
+			}
+
+		} catch (Exception ex) {
+
+			Log.d("CommunityServerAPI",
+					"GET LANGUAGES ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 

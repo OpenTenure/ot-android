@@ -86,6 +86,8 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
+								.isCheckedLanguages()		
+						&& OpenTenureApplication.getInstance()
 								.isCheckedForm()
 
 				)

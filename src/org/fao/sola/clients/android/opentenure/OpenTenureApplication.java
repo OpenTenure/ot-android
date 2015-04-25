@@ -47,6 +47,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
 
 import android.app.Activity;
 import android.app.Application;
@@ -72,6 +73,15 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedDocTypes = false;
 	private boolean checkedIdTypes = false;
 	private boolean checkedLandUses = false;
+	private boolean checkedLanguages = false;
+	public boolean isCheckedLanguages() {
+		return checkedLanguages;
+	}
+
+	public void setCheckedLanguages(boolean checkedLanguages) {
+		this.checkedLanguages = checkedLanguages;
+	}
+
 	private boolean checkedCommunityArea = false;
 	private boolean checkedForm = false;
 	private boolean initialized = false;
@@ -583,6 +593,12 @@ public class OpenTenureApplication extends Application {
 
 		UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
 		updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		
+		Log.d("OpenTenureApplication",
+				"starting tasks for languages download");
+
+		UpdateLanguagesTask updateLanguages = new UpdateLanguagesTask();
+		updateLanguages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 	}
 

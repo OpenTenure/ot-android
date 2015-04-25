@@ -145,6 +145,8 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
+								.isCheckedLanguages()		
+						&& OpenTenureApplication.getInstance()
 								.isCheckedTypes()
 
 				) {

@@ -36,6 +36,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
 
 import android.app.Dialog;
 import android.util.Log;
@@ -94,6 +95,13 @@ public class InitializationAlertListener implements OnClickListener{
 
 			UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
 			updateLu.execute();
+		}
+		if (!OpenTenureApplication.getInstance().isCheckedLandUses()) {
+			Log.d(this.getClass().getName(),
+					"starting tasks for languages download");
+
+			UpdateLanguagesTask updateLang = new UpdateLanguagesTask();
+			updateLang.execute();
 		}
 		if (!OpenTenureApplication.getInstance().isCheckedCommunityArea()) {
 			Log.d(this.getClass().getName(),
