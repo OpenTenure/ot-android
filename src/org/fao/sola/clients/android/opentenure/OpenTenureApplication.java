@@ -37,17 +37,17 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
+//import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.ClaimType;
-import org.fao.sola.clients.android.opentenure.model.Configuration;
+//import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
-import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
-import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
-import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
+//import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
+//import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
+//import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
+//import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
+//import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
+//import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
 
 import android.app.Activity;
 import android.app.Application;
@@ -57,7 +57,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
+//import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
@@ -237,14 +237,13 @@ public class OpenTenureApplication extends Application {
 		sInstance = this;
 		sInstance.initializeInstance();
 
-		try {
-			if (OpenTenureApplication.getInstance().isOnline()) {
-				updateDB();
-			}
-		} catch (Throwable e) {
-			// TODO: handle exception
-			System.out.println("Error :  " + e.getMessage());
-		}
+//		try {
+//			if (OpenTenureApplication.getInstance().isOnline()) {
+//				updateDB();
+//			}
+//		} catch (Throwable e) {
+//			System.out.println("Error :  " + e.getMessage());
+//		}
 
 		FileSystemUtilities.createClaimsFolder();
 		FileSystemUtilities.createClaimantsFolder();
@@ -567,57 +566,57 @@ public class OpenTenureApplication extends Application {
 
 	}
 
-	private static void updateDB() {
-
-		Log.d("InitializationActivity",
-				"starting tasks for static data download");
-
-		Log.d("OpenTenureApplication", "starting tasks for claim type download");
-
-		UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
-		updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-		Log.d("OpenTenureApplication",
-				"starting tasks for document type download");
-
-		UpdateDocumentTypesTask updateDT = new UpdateDocumentTypesTask();
-		updateDT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-		Log.d("OpenTenureApplication", "starting tasks for ID type download");
-
-		UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
-		updateIdType.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-		Log.d("OpenTenureApplication",
-				"starting tasks for land use type download");
-
-		UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
-		updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-		
-		Log.d("OpenTenureApplication",
-				"starting tasks for languages download");
-
-		UpdateLanguagesTask updateLanguages = new UpdateLanguagesTask();
-		updateLanguages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-	}
-
-	private static String getFormUrl() {
-		// Unless someone has explicitly configured a form URL for testing
-		// purposes
-		// attach the default path to the configured community server
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
-		String defaultFormUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.CS_URL_PREF,
-				OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
-		if (!defaultFormUrl.equalsIgnoreCase("")) {
-			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
-		}
-		String formUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.FORM_URL_PREF, defaultFormUrl);
-		return formUrl;
-	}
+//	private static void updateDB() {
+//
+//		Log.d("InitializationActivity",
+//				"starting tasks for static data download");
+//
+//		Log.d("OpenTenureApplication", "starting tasks for claim type download");
+//
+//		UpdateClaimTypesTask updateCT = new UpdateClaimTypesTask();
+//		updateCT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//
+//		Log.d("OpenTenureApplication",
+//				"starting tasks for document type download");
+//
+//		UpdateDocumentTypesTask updateDT = new UpdateDocumentTypesTask();
+//		updateDT.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//
+//		Log.d("OpenTenureApplication", "starting tasks for ID type download");
+//
+//		UpdateIdTypesTask updateIdType = new UpdateIdTypesTask();
+//		updateIdType.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//
+//		Log.d("OpenTenureApplication",
+//				"starting tasks for land use type download");
+//
+//		UpdateLandUsesTask updateLu = new UpdateLandUsesTask();
+//		updateLu.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//		
+//		Log.d("OpenTenureApplication",
+//				"starting tasks for languages download");
+//
+//		UpdateLanguagesTask updateLanguages = new UpdateLanguagesTask();
+//		updateLanguages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//
+//	}
+//
+//	private static String getFormUrl() {
+//		// Unless someone has explicitly configured a form URL for testing
+//		// purposes
+//		// attach the default path to the configured community server
+//		SharedPreferences OpenTenurePreferences = PreferenceManager
+//				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+//		String defaultFormUrl = OpenTenurePreferences.getString(
+//				OpenTenurePreferencesActivity.CS_URL_PREF,
+//				OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+//		if (!defaultFormUrl.equalsIgnoreCase("")) {
+//			defaultFormUrl += "/ws/en-us/claim/getDefaultFormTemplate";
+//		}
+//		String formUrl = OpenTenurePreferences.getString(
+//				OpenTenurePreferencesActivity.FORM_URL_PREF, defaultFormUrl);
+//		return formUrl;
+//	}
 
 	// This set of methods is for handling the rendering of claims currently
 	// changing status
