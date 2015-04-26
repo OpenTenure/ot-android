@@ -27,7 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure.network;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -38,14 +37,13 @@ import org.fao.sola.clients.android.opentenure.network.response.Language;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>> {
 	
 	@Override
 	protected List<Language> doInBackground(String... params) {
 		List<Language> types = CommunityServerAPI.getLanguages();
-
-		// TODO Auto-generated method stub
 		return types;
 	}
 	
@@ -54,8 +52,7 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 
 		if (languages != null && (languages.size() > 0)) {
 
-			for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
-				Language language = (Language) iterator.next();
+			for (Language language : languages) {
 				
 				org.fao.sola.clients.android.opentenure.model.Language lang= new org.fao.sola.clients.android.opentenure.model.Language();
 
@@ -66,12 +63,12 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 				lang.setDisplayValue(language.getDisplayValue());
 				lang.setItemOrder(language.getItemOrder());
 				if (org.fao.sola.clients.android.opentenure.model.Language
-						.getLanguage((language.getCode())) == null) {
+						.getLanguage(language.getCode()) == null) {
+					Log.d(this.getClass().getName(), "Storing language " + lang);
 					lang.add();
 
-				}
-
-				else {
+				}else {
+					Log.d(this.getClass().getName(), "Updating language " + lang);
 					lang.updateLanguage();
 				}
 

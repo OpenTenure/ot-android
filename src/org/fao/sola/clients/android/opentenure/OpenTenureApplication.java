@@ -515,8 +515,7 @@ public class OpenTenureApplication extends Application {
 					.toLowerCase(locale) + "-" + locale.getCountry();
 		}
 
-		System.out.println("LOCALE ::::: "
-				+ locale.getLanguage().toLowerCase(locale));
+		System.out.println("Localization is now: " + OpenTenureApplication.localization);
 
 	}
 

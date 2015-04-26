@@ -72,8 +72,7 @@ public class FieldViewFactory {
 	private static final long MIN_TIME_BETWEEN_TOAST = 500;
 
 	public static View getSpinner(final Activity activity,
-			final int currentLanguageItemOrder,
-			final int defaultLanguageItemOrder,
+			final DisplayNameLocalizer dnl,
 			List<FieldConstraintOption> options, final FieldTemplate field,
 			final FieldPayload payload, Mode mode) {
 
@@ -98,9 +97,7 @@ public class FieldViewFactory {
 				selected = names.size();
 			}
 			names.add(option.getName());
-			displayNames.add(DisplayNameLocalizer.getLocalizedDisplayName(
-					option.getDisplayName(), currentLanguageItemOrder,
-					defaultLanguageItemOrder));
+			displayNames.add(dnl.getLocalizedDisplayName(option.getDisplayName()));
 		}
 
 		if (isOptional) {
@@ -143,10 +140,7 @@ public class FieldViewFactory {
 				payload.setStringPayload(names.get(arg2));
 				FieldConstraint constraint;
 				if ((constraint = field.getFailedConstraint(
-						DisplayNameLocalizer.getLocalizedDisplayName(
-								field.getDisplayName(),
-								currentLanguageItemOrder,
-								defaultLanguageItemOrder), payload)) != null) {
+						dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 					((TextView) arg0.getChildAt(0)).setTextColor(Color.RED);
 					Toast.makeText(activity.getBaseContext(),
 							constraint.displayErrorMsg(), Toast.LENGTH_SHORT)
@@ -169,13 +163,12 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForTextField(final Activity activity,
-			final int currentLanguageItemOrder,
-			final int defaultLanguageItemOrder, final FieldTemplate field,
+			final DisplayNameLocalizer dnl,
+			final FieldTemplate field,
 			final FieldPayload payload, Mode mode) {
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
 			if (constraint instanceof OptionConstraint) {
-				return getSpinner(activity, currentLanguageItemOrder,
-						defaultLanguageItemOrder,
+				return getSpinner(activity, dnl,
 						((OptionConstraint) constraint)
 								.getFieldConstraintOptionList(), field,
 						payload, mode);
@@ -215,10 +208,7 @@ public class FieldViewFactory {
 
 					FieldConstraint constraint;
 					if ((constraint = field.getFailedConstraint(
-							DisplayNameLocalizer.getLocalizedDisplayName(
-									field.getDisplayName(),
-									currentLanguageItemOrder,
-									defaultLanguageItemOrder), payload)) != null) {
+							dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 						text.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -249,7 +239,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForNumberField(final Activity activity,
-			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
+			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
@@ -284,10 +274,7 @@ public class FieldViewFactory {
 
 					FieldConstraint constraint;
 					if ((constraint = field.getFailedConstraint(
-							DisplayNameLocalizer.getLocalizedDisplayName(
-									field.getDisplayName(),
-									currentLanguageItemOrder,
-									defaultLanguageItemOrder), payload)) != null) {
+							dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 						number.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -317,7 +304,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForDecimalField(final Activity activity,
-			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
+			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final EditText number;
 		number = new EditText(activity);
@@ -353,10 +340,7 @@ public class FieldViewFactory {
 
 					FieldConstraint constraint;
 					if ((constraint = field.getFailedConstraint(
-							DisplayNameLocalizer.getLocalizedDisplayName(
-									field.getDisplayName(),
-									currentLanguageItemOrder,
-									defaultLanguageItemOrder), payload)) != null) {
+							dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 						number.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -386,7 +370,6 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForBooleanField(final Activity activity,
-			int currentLanguageItemOrder, int defaultLanguageItemOrder,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final Switch bool;
 		bool = new Switch(activity);
@@ -426,7 +409,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForDateField(final Activity activity,
-			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
+			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
@@ -505,10 +488,7 @@ public class FieldViewFactory {
 
 					FieldConstraint constraint;
 					if ((constraint = field.getFailedConstraint(
-							DisplayNameLocalizer.getLocalizedDisplayName(
-									field.getDisplayName(),
-									currentLanguageItemOrder,
-									defaultLanguageItemOrder), payload)) != null) {
+							dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),
@@ -538,7 +518,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForTimeField(final Activity activity,
-			final int currentLanguageItemOrder, final int defaultLanguageItemOrder,
+			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
 		for (FieldConstraint constraint : field.getFieldConstraintList()) {
@@ -614,10 +594,7 @@ public class FieldViewFactory {
 
 					FieldConstraint constraint;
 					if ((constraint = field.getFailedConstraint(
-							DisplayNameLocalizer.getLocalizedDisplayName(
-									field.getDisplayName(),
-									currentLanguageItemOrder,
-									defaultLanguageItemOrder), payload)) != null) {
+							dnl.getLocalizedDisplayName(field.getDisplayName()), payload)) != null) {
 						datetime.setTextColor(Color.RED);
 						if (System.currentTimeMillis() - lastTime > MIN_TIME_BETWEEN_TOAST) {
 							Toast.makeText(activity.getBaseContext(),

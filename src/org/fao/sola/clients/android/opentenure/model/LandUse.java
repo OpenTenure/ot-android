@@ -217,16 +217,14 @@ public class LandUse {
 	public List<String> getDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
-		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
-		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
-
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.LandUse> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
-			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(landUse.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
+			displayList.add(dnl.getLocalizedDisplayName(landUse.getDisplayValue()));
 
 		}
 		return displayList;

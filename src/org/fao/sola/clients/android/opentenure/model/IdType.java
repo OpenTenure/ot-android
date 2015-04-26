@@ -217,16 +217,14 @@ public class IdType {
 	public List<String> getDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.IdType> list = getIdTypes();
-		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
-		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
-
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.IdType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.IdType idType = (org.fao.sola.clients.android.opentenure.model.IdType) iterator
 					.next();
 
-			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(idType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
+			displayList.add(dnl.getLocalizedDisplayName(idType.getDisplayValue()));
 		}
 		return displayList;
 	}

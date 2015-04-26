@@ -289,16 +289,14 @@ public class DocumentType {
 	public List<String> getDocumentTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
-		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
-		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
-
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
-			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(docType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
+			displayList.add(dnl.getLocalizedDisplayName(docType.getDisplayValue()));
 		}
 		return displayList;
 	}

@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.form.ui;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
@@ -106,8 +107,8 @@ public class SectionElementFragment extends Fragment {
 	private void update(){
 		LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.fragment_field_group);
 		int i = 0;
-		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(OpenTenureApplication.getLocalization()).getItemOrder();
-		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
+		
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
 			FieldPayload fieldPayload = null;
 			if(elementPayload.getFieldPayloadList().size() > i){
@@ -128,32 +129,33 @@ public class SectionElementFragment extends Fragment {
 			label.setTextAppearance(getActivity(), android.R.attr.textAppearanceMedium);
 			label.setLayoutParams(new LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-
-			label.setText(Html.fromHtml(field.getDisplayName()));
+			String labelText = dnl.getLocalizedDisplayName(
+					field.getDisplayName());
+			label.setText(Html.fromHtml(labelText));
 			ll.addView(label);
 			// Add input field
 
 			switch(field.getFieldType()){
 			case DATE:
-				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case TIME:
-				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case SNAPSHOT:
 			case DOCUMENT:
 			case GEOMETRY:
 			case TEXT:
-				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case DECIMAL:
-				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case INTEGER:
-				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), currentLanguageItemOrder, defaultLanguageItemOrder, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, fieldPayload, mode));
 				break;
 			default:
 				break;

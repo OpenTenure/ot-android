@@ -64,19 +64,14 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTP_GETALLCLAIMSBYBOX = "%s/ws/%s/claim/getAllClaims";
 	
 	public static final String HTTPS_GETCLAIMTYPES = "%s/ws/ref/getclaimtypes";
-	public static final String HTTP_GETCLAIMTYPES = "%s/ws/ref/getclaimtypes";
 	
 	public static final String HTTPS_GETDOCUMENTYPES = "%s/ws/ref/getdocumenttypes";
-	public static final String HTTP_GETDOCUMENTYPES = "%s/ws/ref/getdocumenttypes";
 	
 	public static final String HTTPS_GETIDTYPES = "%s/ws/ref/getidtypes";
-	public static final String HTTP_GETIDTYPES = "%s/ws/ref/getidtypes";
 	
 	public static final String HTTPS_GETLANDUSE = "%s/ws/ref/getlanduses";
-	public static final String HTTP_GETLANDUSE = "%s/ws/ref/getlanduses";
 	
 	public static final String HTTPS_GETLANGUAGES = "%s/ws/ref/getlanguages";
-	public static final String HTTP_GETLANGUAGES = "%s/ws/ref/getlanguages";
 	
 	public static final String HTTPS_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	public static final String HTTP_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";

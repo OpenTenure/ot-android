@@ -691,8 +691,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(
-				CommunityServerAPIUtilities.HTTPS_GETLANDUSE, csUrl,
-				OpenTenureApplication.getLocalization());
+				CommunityServerAPIUtilities.HTTPS_GETLANDUSE, csUrl);
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -756,8 +755,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(
-				CommunityServerAPIUtilities.HTTPS_GETLANGUAGES, csUrl,
-				OpenTenureApplication.getLocalization());
+				CommunityServerAPIUtilities.HTTPS_GETLANGUAGES, csUrl);
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -821,8 +819,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(
-				CommunityServerAPIUtilities.HTTPS_GETIDTYPES, csUrl,
-				OpenTenureApplication.getLocalization());
+				CommunityServerAPIUtilities.HTTPS_GETIDTYPES, csUrl);
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -949,8 +946,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(
-				CommunityServerAPIUtilities.HTTPS_GETCLAIMTYPES, csUrl,
-				OpenTenureApplication.getLocalization());
+				CommunityServerAPIUtilities.HTTPS_GETCLAIMTYPES, csUrl);
 		HttpGet request = new HttpGet(url);
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
 
@@ -1015,8 +1011,7 @@ public class CommunityServerAPI {
 		System.out.println("Localization " + OpenTenureApplication.getLocalization());
 		
 		String url = String.format(
-				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl,
-				OpenTenureApplication.getLocalization());
+				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl);
 		
 		System.out.println("URL " + url);
 		HttpGet request = new HttpGet(url);

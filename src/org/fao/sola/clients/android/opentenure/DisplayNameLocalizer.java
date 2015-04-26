@@ -34,12 +34,32 @@ public class DisplayNameLocalizer {
 	 * current application language is coded as an integer identifying the place of the label
 	 * localized according to that language in the concatenated string
 	 */
-	private static String separator = "::::";
+	private static final String separator = "::::";
+	private int currentLanguageItemOrder;
+	private int defaultLanguageItemOrder;
+	
+	public DisplayNameLocalizer(String localization){
+		currentLanguageItemOrder = 1;
+		defaultLanguageItemOrder = 1;
 
-	public static String getLocalizedDisplayName(String unlocalizedDisplayName, int langItemOrder, int defaultLangItemOrder){
+		org.fao.sola.clients.android.opentenure.model.Language defaultLanguage = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage();
 		
-		int langOrder = langItemOrder -1;
-		int defaultLangOrder = defaultLangItemOrder -1;
+		if(defaultLanguage != null){
+			defaultLanguageItemOrder = defaultLanguage.getItemOrder();
+		}
+		
+		org.fao.sola.clients.android.opentenure.model.Language currentLanguage = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(OpenTenureApplication.getLocalization());
+		
+		if(currentLanguage != null){
+			currentLanguageItemOrder = currentLanguage.getItemOrder();
+		}
+		
+	}
+	
+	public String getLocalizedDisplayName(String unlocalizedDisplayName){
+		
+		int langOrder = currentLanguageItemOrder -1;
+		int defaultLangOrder = defaultLanguageItemOrder -1;
 		
 		/*
 		 * try to return requested language, then default language, then first, then the string itself

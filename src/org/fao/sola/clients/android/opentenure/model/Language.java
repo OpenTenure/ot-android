@@ -104,8 +104,6 @@ public class Language {
 	}
 
 	public static Language getLanguage(String code) {
-		// Returns the requested language
-		// If no such language exists, returns the default one
 		ResultSet result = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -147,7 +145,7 @@ public class Language {
 				}
 			}
 		}
-		return getDefaultLanguage();
+		return null;
 	}
 
 	public static Language getDefaultLanguage() {
@@ -192,12 +190,7 @@ public class Language {
 				}
 			}
 		}
-		List<Language> languages = getLanguages();
-		if(languages != null && languages.size()>0){
-			return languages.get(0);
-		}else{
-			return null;
-		}
+		return null;
 	}
 
 	public static int addLanguage(Language lang) {

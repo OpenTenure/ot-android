@@ -130,8 +130,7 @@ public class InitializationActivity extends Activity {
 			// or the default one
 			formUrl = String.format(
 					CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
-							OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER),
-					OpenTenureApplication.getLocalization());
+							OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
 		}
 		return formUrl;
 	}

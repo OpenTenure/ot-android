@@ -209,16 +209,14 @@ public class ClaimType {
 	public List<String> getClaimsTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
-		int currentLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(localization).getItemOrder();
-		int defaultLanguageItemOrder = org.fao.sola.clients.android.opentenure.model.Language.getDefaultLanguage().getItemOrder();
-
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 
-			displayList.add(DisplayNameLocalizer.getLocalizedDisplayName(claimType.getDisplayValue(), currentLanguageItemOrder, defaultLanguageItemOrder));
+			displayList.add(dnl.getLocalizedDisplayName(claimType.getDisplayValue()));
 		}
 		return displayList;
 	}

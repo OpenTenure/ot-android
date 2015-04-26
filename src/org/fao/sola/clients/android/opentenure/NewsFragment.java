@@ -650,8 +650,7 @@ public class NewsFragment extends ListFragment {
 				// or the default one
 				formUrl = String.format(
 						CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
-								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER),
-						OpenTenureApplication.getLocalization());
+								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
 			}
 			
 			FormRetriever formRetriever = new FormRetriever();
