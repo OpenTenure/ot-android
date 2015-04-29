@@ -253,7 +253,7 @@ public class ClaimType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT TYPE FROM CLAIM_TYPE CT WHERE DISPLAY_VALUE = ?");
+					.prepareStatement("SELECT TYPE FROM CLAIM_TYPE CT WHERE DISPLAY_VALUE LIKE  '%' || ? || '%' ");
 			statement.setString(1, value);
 			rs = statement.executeQuery();
 

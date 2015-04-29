@@ -68,7 +68,6 @@ public class LocalClaimsFragment extends ListFragment {
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 	private String filter = null;
-	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -146,11 +145,11 @@ public class LocalClaimsFragment extends ListFragment {
 		case R.id.action_backup_db:
 			OpenTenureApplication.getInstance().getDatabase().exportDB();
 			String backupMessage = String.format(OpenTenureApplication
-					.getContext().getString(
-							R.string.message_db_backed_up));
+					.getContext().getString(R.string.message_db_backed_up));
 
-			Toast backupToast = Toast.makeText(OpenTenureApplication.getContext(),
-					backupMessage, Toast.LENGTH_LONG);
+			Toast backupToast = Toast.makeText(
+					OpenTenureApplication.getContext(), backupMessage,
+					Toast.LENGTH_LONG);
 			backupToast.show();
 			return true;
 		case R.id.action_new:
@@ -161,8 +160,9 @@ public class LocalClaimsFragment extends ListFragment {
 						.getContext().getString(
 								R.string.message_app_not_yet_initialized));
 
-				Toast newToast = Toast.makeText(OpenTenureApplication.getContext(),
-						newMessage, Toast.LENGTH_LONG);
+				Toast newToast = Toast.makeText(
+						OpenTenureApplication.getContext(), newMessage,
+						Toast.LENGTH_LONG);
 				newToast.show();
 
 				return true;
@@ -178,7 +178,7 @@ public class LocalClaimsFragment extends ListFragment {
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
 		case R.id.action_login:
-			
+
 			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
 					"isInitialized").getValue())) {
 				Toast toast;
@@ -323,6 +323,8 @@ public class LocalClaimsFragment extends ListFragment {
 	protected void update() {
 		List<Claim> claims = Claim.getSimplifiedClaimsForList();
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getLocalization());
 
 		for (Claim claim : claims) {
 			if (excludeClaimIds != null
@@ -344,8 +346,8 @@ public class LocalClaimsFragment extends ListFragment {
 						+ OpenTenureApplication.getContext().getResources()
 								.getString(R.string.type)
 						+ ": "
-						+ new ClaimType()
-								.getDisplayValueByType(claim.getType());
+						+ dnl.getLocalizedDisplayName(new ClaimType()
+								.getDisplayValueByType(claim.getType()));
 
 				if (claim.getRecorderName() != null)
 					slogan = slogan
@@ -359,7 +361,6 @@ public class LocalClaimsFragment extends ListFragment {
 				cto.setModifiable(claim.isModifiable());
 				cto.setPersonId(claim.getPerson().getPersonId());
 				cto.setAttachments(claim.getAttachments());
-				
 
 				if (claim.getClaimNumber() != null)
 					cto.setNumber(claim.getClaimNumber());
@@ -367,7 +368,7 @@ public class LocalClaimsFragment extends ListFragment {
 					cto.setNumber("");
 
 				cto.setStatus(claim.getStatus());
-				
+
 				int days = JsonUtilities.remainingDays(claim
 						.getChallengeExpiryDate());
 
@@ -381,9 +382,9 @@ public class LocalClaimsFragment extends ListFragment {
 				claimListTOs.add(cto);
 			}
 		}
-		
+
 		OpenTenureApplication.getInstance().clearClaimsList();
-		
+
 		ArrayAdapter<ClaimListTO> adapter = new LocalClaimsListAdapter(
 				rootView.getContext(), claimListTOs, mainActivity.getMode());
 		setListAdapter(adapter);
@@ -398,7 +399,8 @@ public class LocalClaimsFragment extends ListFragment {
 	}
 
 	public void refresh() {
-		//the list of changing claims is no more necessary. before rendering the list of claims is cleaned 
+		// the list of changing claims is no more necessary. before rendering
+		// the list of claims is cleaned
 
 		update();
 	}

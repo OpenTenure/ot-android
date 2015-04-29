@@ -331,7 +331,7 @@ public class DocumentType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE FROM DOCUMENT_TYPE CT WHERE DISPLAY_VALUE = ?");
+					.prepareStatement("SELECT CODE FROM DOCUMENT_TYPE CT WHERE DISPLAY_VALUE LIKE  '%' || ? || '%' ");
 			statement.setString(1, value);
 			rs = statement.executeQuery();
 

@@ -261,7 +261,7 @@ public class IdType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT TYPE FROM ID_TYPE CT WHERE DISPLAY_VALUE = ?");
+					.prepareStatement("SELECT TYPE FROM ID_TYPE CT WHERE DISPLAY_VALUE LIKE  '%' || ? || '%' ");
 			statement.setString(1, value);
 			rs = statement.executeQuery();
 
