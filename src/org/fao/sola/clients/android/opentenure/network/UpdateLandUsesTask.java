@@ -58,7 +58,7 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 				org.fao.sola.clients.android.opentenure.model.LandUse landUse = new org.fao.sola.clients.android.opentenure.model.LandUse();
 
 				landUse.setDescription(use.getDescription());
-				landUse.setCode(use.getCode());
+				landUse.setType(use.getCode());
 				landUse.setDisplayValue(use.getDisplayValue());
 				if (org.fao.sola.clients.android.opentenure.model.LandUse
 						.getLandUse(use.getCode()) == null) {

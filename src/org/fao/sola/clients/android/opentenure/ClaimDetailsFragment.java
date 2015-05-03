@@ -36,6 +36,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsNegativeListener;
@@ -94,6 +95,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private ModeDispatcher modeActivity;
 	private FormDispatcher formDispatcher;
 	private ClaimListener claimListener;
+	private Map<String, String> keyValueMap;
 	private boolean challengedJustLoaded = false;
 	private final Calendar localCalendar = Calendar.getInstance();
 	private static final int PERSON_RESULT = 100;
@@ -421,8 +423,8 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.landUseSpinner);
 
 		LandUse lu = new LandUse();
-
-		List<String> landUseslist = lu.getDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+		keyValueMap = lu.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
+		List<String> landUseslist = new ArrayList<String>(keyValueMap.keySet());
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner,
@@ -740,7 +742,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
-		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+		claim.setLandUse(keyValueMap.get(landUseDispValue));
 
 		String notes = ((EditText) rootView
 				.findViewById(R.id.claim_notes_input_field)).getText()
@@ -859,7 +861,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
-		claim.setLandUse(new LandUse().getTypebyDisplayValue(landUseDispValue));
+		claim.setLandUse(keyValueMap.get(landUseDispValue));
 
 		String notes = ((EditText) rootView
 				.findViewById(R.id.claim_notes_input_field)).getText()
@@ -1190,13 +1192,11 @@ public class ClaimDetailsFragment extends Fragment {
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
 							if (claim.getLandUse() == null
-									&& new LandUse()
-											.getTypebyDisplayValue(landUseDispValue) != null)
+									&& keyValueMap.get(landUseDispValue) != null)
 								changed = true;
 							else if (!claim
 									.getLandUse()
-									.equals(new LandUse()
-											.getTypebyDisplayValue(landUseDispValue)))
+									.equals(keyValueMap.get(landUseDispValue)))
 								changed = true;
 							else {
 

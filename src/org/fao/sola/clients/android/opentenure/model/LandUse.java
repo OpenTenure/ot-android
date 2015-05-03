@@ -32,8 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -42,23 +44,23 @@ public class LandUse {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	String code;
+	String type;
 	String displayValue;
 	String description;
 	String status;
 
 	@Override
 	public String toString() {
-		return "DocumentType [code=" + code + ", description=" + description
+		return "DocumentType [type=" + type + ", description=" + description
 				+ ", displayValue=" + displayValue + ", status=" + status + "]";
 	}
 
-	public String getCode() {
-		return code;
+	public String getType() {
+		return type;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getDisplayValue() {
@@ -97,7 +99,7 @@ public class LandUse {
 			statement = localConnection
 					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
 
@@ -135,7 +137,7 @@ public class LandUse {
 			statement = localConnection
 					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, use.getCode());
+			statement.setString(1, use.getType());
 			statement.setString(2, use.getDescription());
 			statement.setString(3, use.getDisplayValue());
 
@@ -177,7 +179,7 @@ public class LandUse {
 
 			while (rs.next()) {
 				LandUse landUse = new LandUse();
-				landUse.setCode(rs.getString(1));
+				landUse.setType(rs.getString(1));
 				landUse.setDescription(rs.getString(2));
 				landUse.setDisplayValue(rs.getString(3));
 
@@ -214,20 +216,20 @@ public class LandUse {
 
 	}
 
-	public List<String> getDisplayValues(String localization) {
+	public Map<String,String> getKeyValueMap(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
-		List<String> displayList = new ArrayList<String>();
+		Map<String,String> keyValueMap = new HashMap<String,String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.LandUse> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
-			displayList.add(dnl.getLocalizedDisplayName(landUse.getDisplayValue()));
+			keyValueMap.put(dnl.getLocalizedDisplayName(landUse.getDisplayValue()),landUse.getType());
 
 		}
-		return displayList;
+		return keyValueMap;
 	}
 
 	public int getIndexByCodeType(String code) {
@@ -240,7 +242,7 @@ public class LandUse {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
-			if (landUse.getCode().equals(code)) {
+			if (landUse.getType().equals(code)) {
 
 				return i;
 
@@ -249,53 +251,6 @@ public class LandUse {
 			i++;
 		}
 		return 0;
-
-	}
-
-	public String getTypebyDisplayValue(String value) {
-
-		ResultSet rs = null;
-		Connection localConnection = null;
-		PreparedStatement statement = null;
-
-		try {
-
-			localConnection = db.getConnection();
-			statement = localConnection
-					.prepareStatement("SELECT TYPE FROM LAND_USE CT WHERE DISPLAY_VALUE LIKE  '%' || ? || '%' ");
-			statement.setString(1, value);
-			rs = statement.executeQuery();
-
-			while (rs.next()) {
-				return rs.getString(1);
-			}
-			return null;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return null;
 
 	}
 
@@ -362,7 +317,7 @@ public class LandUse {
 
 			if (result.next()) {
 
-				landUse.setCode(result.getString(1));
+				landUse.setType(result.getString(1));
 				landUse.setDescription(result.getString(2));
 				landUse.setDisplayValue(result.getString(3));
 				
@@ -399,10 +354,10 @@ public class LandUse {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE LAND_USE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
-			statement.setString(4, getCode());
+			statement.setString(4, getType());
 
 			result = statement.executeUpdate();
 			
