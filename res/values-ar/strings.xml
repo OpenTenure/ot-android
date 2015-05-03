@@ -15,13 +15,10 @@
     <string name="action_camera">كاميرا</string>
     <string name="action_map">الخارطة</string>
     <string name="action_login">تسجيل الدخول</string>
-    <string name="action_download_tiles">تنزيل صور الخرائط على البيانات المحلية من أجل الأستخدام بدون إتصال</string>
     <string name="action_logout">تسجيل الخروج</string>
-    <string name="action_backup_db">عمل نسخة إحتياطية للبيانات المحلية</string>
     <string name="action_print">طباعة</string>
     <string name="action_save">حفظ</string>
     <string name="action_center">المركز</string>
-    <string name="action_view_community_area">معاينة  منطقة المجتمع</string>
     <string name="action_submit">إرسال</string>
     <string name="action_download_file">تنزيل ملف</string>
     <string name="action_download_claims">تنزيل إدعاء</string>
@@ -33,15 +30,11 @@
     <string name="action_rotate">تدوير الخارطة باستخدام بوصلة الجهاز</string>
     <string name="action_stop_rotating">أوقف تدوير الخارطة</string>
     <string name="action_claim_map_snapshot">إرفاق لقطة عن خريطة هذا الادعاء</string>
-    <string name="action_modify_claimant">تعديل المدعي</string>
-    <string name="action_add_claimant">إضافة مدعي</string>
-    <string name="action_select_challenge">إختر إدعاء للتحدي</string>
     <string name="title_news">الأخبار</string>
     <string name="title_map"> خارطة المجتمع</string>
     <string name="title_claims">قائمة الادعاءات</string>
     <string name="title_persons">الأشخاص</string>
     <string name="title_challenged_claims">الأدعاءات المتحداة</string>
-    <string name="title_challenged_claim">الأدعاء المتحدى : </string>
     <string name="title_claim">الأدعاء</string>
     <string name="title_person_details">تفاصيل الشخص</string>
     <string name="title_group_details">تفاصيل المجموعة</string>
@@ -67,7 +60,6 @@
     <string name="title_activity_share_details">الحيازة المفتوح: تفاصيل الحصص</string>
     <string name="title_activity_file_chooser">إختر ملف</string>
     <string name="title_lock_db">شفر البيانات المحلية</string>
-    <string name="title_confirm_data_transfer">أكد نقل البيانات</string>
     <string name="title_add_non_boundary">أضف موقع بدون حدود</string>
     <string name="title_exit_dialog">خروج</string>
     <string name="title_remove_person_dialog">إزالة شخص</string>
@@ -90,7 +82,6 @@
     <string name="share_value">نسبة القيمة: </string>
     <string name="additional_info">معلومات إضافية</string>
     <string name="adjacency">المجاورة</string>
-    <string name="adjacencies">المجاورات</string>
     <string name="cardinal_direction">الاتجاهات السماوية</string>
     <string name="new_entity">كائن جديد</string>
     <string name="by">بواسطة</string>
@@ -220,21 +211,14 @@
     <string name="adjacencies">الأملاك المجاورة</string>
     <string name="message_claim_exported_error">الأدعاء %s لم يتم تصديره</string>
     <string name="message_claim_exported">تم تصدير الأدعاء  %s</string>
-    <string name="north_adjacency">صف الملكية الواقعة شمال ادعائك</string>
-    <string name="south_adjacency">صف الملكية الواقعة جنوب إدعائك</string>
-    <string name="east_adjacency">صف الملكية الواقعة شرق إدعائك</string>
-    <string name="west_adjacency">صف الملكية الواقعة غرب إدعائك</string>
     <string name="add_owner">إضافة مالك </string>
     <string name="action_modify_claimant">عدل المدعي</string>
     <string name="action_add_claimant">إضافة مدعي</string>
     <string name="action_select_challenge">إختر إدعاء للتحدي:</string>
     <string name="title_challenged_claim">الأدعاء المتحدى: </string>
-    <string name="date_of_start">YYYY-MM-DD</string>
     <string name="status">الحالة : </string>
     <string name="title_no_connection">لا يوجد إتصال</string>
     <string name="message_no_connection_at_startup">شبكة الأنترنت غير متوفرة. قد لا  تعكس الأعدادت التغييرات النهائية وقد لا تستطيع تحميل او تنزيل  المعلومات. إتصل بالأنترنت  إذا كنت ترغب بنقل البيانات باستخدام  نظام الحيازة المفتوح</string>
-    <string name="action_backup_db">نسخة إحتياطية من البيانات المحلية</string>
-    <string name="message_db_backed_up">تم إنشاء نسخة إحتياطية من قاعدة البيانات المحلية</string>
     <string name="title_initialization_process">إجراء التهيئة</string>
     <string name="message_initialize_before"> قم أولا بعملية التهيئة</string>
     <string name="message_download_snapshot_before_printing">نزل  لقطة الخارطة الفوتوغرافية من الخادم قبل الطباعة</string>
@@ -255,7 +239,6 @@
     <string name="all_tiles_downloaded">جميع القطع في قائمة التنزيل تم تنزيلها</string>
     <string name="not_all_tiles_downloaded">%d قطع لم يتم تنزيلها لهذه المنطقة. إفحص اذا كنت  سعيدا بالنتائج او محاولة التنزيل</string>
     <string name="zoom_level_too_low">مساحة المنطقة كبيرة. زد مستوى التكبير قبل تنزيل البيانات المحلية للخارطة </string>
-    <string name="claim_area_label">منطقة</string>
     <string name="yes">نعم</string>
     <string name="person">شخص</string>
     <string name="group">مجموعة</string>
@@ -374,6 +357,16 @@
     <string name="description">الوصف</string>
     <string name="generated_on">انشئت في</string>
     
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanian</item>
+        <item >Default</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
     
     
 

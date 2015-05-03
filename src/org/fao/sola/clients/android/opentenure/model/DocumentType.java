@@ -289,7 +289,7 @@ public class DocumentType {
 	public List<String> getDocumentTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {

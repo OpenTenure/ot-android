@@ -349,6 +349,17 @@
     <string name="hint_type_to_filter">Наберите несколько символов для фильтрации списка заявлений</string>
     <string name="shares_prompt">Выберите доли</string>
     <string name="tiles_provider_dialog_title">Выбрите своего провайдера тайлов для работы в оффлайн</string>
+    <string-array name="language_keys">
+        <item >Хмерский</item>
+        <item >Албанский</item>
+        <item >По умолчанию</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
+    
     <string-array name="tiles_provider_keys">
         <item >TMS</item>
         <item >GeoServer</item>

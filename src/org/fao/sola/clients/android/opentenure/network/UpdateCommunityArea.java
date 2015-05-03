@@ -28,7 +28,6 @@
 package org.fao.sola.clients.android.opentenure.network;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -36,17 +35,12 @@ import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
 
 public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected String doInBackground(String... arg0) {
-		// TODO Auto-generated method stub
-
 		String polygon = CommunityServerAPI.getCommunityArea();
-
-		// TODO Auto-generated method stub
 		return polygon;
 
 	}
@@ -77,7 +71,7 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 				OpenTenureApplication.getInstance().setCheckedCommunityArea(
 						true);
 
-				synchronized (OpenTenureApplication.getLocale()) {
+				synchronized (OpenTenureApplication.getInstance()) {
 
 					if (OpenTenureApplication.getInstance()
 							.isCheckedCommunityArea()
@@ -119,8 +113,6 @@ public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
 				}
 
 			} catch (Exception e) {
-				// TODO: handle exception
-
 				Log.d("OpenTenure", this.getClass().getName() + e.getMessage());
 			}
 

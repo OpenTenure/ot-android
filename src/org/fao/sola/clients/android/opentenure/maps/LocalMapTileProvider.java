@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.fao.sola.clients.android.opentenure.OpenTenure;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
 
@@ -52,7 +53,7 @@ public class LocalMapTileProvider implements TileProvider {
 	public LocalMapTileProvider() {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
-		if(prefs.getString("tiles_provider", TilesProviderType.GeoServer.toString()).equals(TilesProviderType.GeoServer.toString())){
+		if(prefs.getString(OpenTenure.tiles_provider, TilesProviderType.GeoServer.toString()).equals(TilesProviderType.GeoServer.toString())){
 			tilesProvider = new OfflineWmsMapTileProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
 		}else{
 			tilesProvider = new OfflineTmsMapTilesProvider(TILE_WIDTH, TILE_HEIGHT, prefs);

@@ -112,7 +112,7 @@ public class ExporterTask extends AsyncTask<String, Void, String[]> {
 
 			Toast toast;
 			String message = "";
-			if (!OpenTenureApplication.isKhmer()) {
+			if (!OpenTenureApplication.getInstance().isKhmer()) {
 				message = String.format(OpenTenureApplication.getContext()
 						.getString(R.string.message_claim_exported, params[1]));
 			} else {

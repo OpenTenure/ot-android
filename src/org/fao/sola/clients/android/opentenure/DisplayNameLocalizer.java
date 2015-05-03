@@ -48,7 +48,7 @@ public class DisplayNameLocalizer {
 			defaultLanguageItemOrder = defaultLanguage.getItemOrder();
 		}
 		
-		org.fao.sola.clients.android.opentenure.model.Language currentLanguage = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(OpenTenureApplication.getLocalization());
+		org.fao.sola.clients.android.opentenure.model.Language currentLanguage = org.fao.sola.clients.android.opentenure.model.Language.getLanguage(OpenTenureApplication.getInstance().getLocalization());
 		
 		if(currentLanguage != null){
 			currentLanguageItemOrder = currentLanguage.getItemOrder();

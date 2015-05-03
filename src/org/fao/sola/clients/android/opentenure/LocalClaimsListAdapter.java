@@ -406,8 +406,8 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.picture.setImageBitmap(Person.getPersonPicture(context,
 				claims.get(position).getPersonId(), 96));
 
-		System.out.println("Locale : " + OpenTenureApplication.getLocale());
-		if (OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+		System.out.println("Locale : " + OpenTenureApplication.getInstance().getLocale());
+		if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
 			vh.slogan.setGravity(View.TEXT_DIRECTION_LOCALE);
 			vh.number.setGravity(View.TEXT_DIRECTION_LOCALE);
 			vh.id.setGravity(View.TEXT_DIRECTION_LOCALE);

@@ -289,7 +289,7 @@ public class PersonFragment extends Fragment {
 
 		IdType it = new IdType();
 
-		List<String> idTypelist = it.getDisplayValues(OpenTenureApplication.getLocalization());
+		List<String> idTypelist = it.getDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 		List<String> genderList = new ArrayList<String>();
 

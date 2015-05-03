@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -39,15 +38,12 @@ import org.fao.sola.clients.android.opentenure.network.response.LandUse;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
 
 public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 
 	@Override
 	protected List<LandUse> doInBackground(String... params) {
 		List<LandUse> types = CommunityServerAPI.getLandUses();
-
-		// TODO Auto-generated method stub
 		return types;
 	}
 
@@ -56,7 +52,7 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<LandUse> iterator = types.iterator(); iterator.hasNext();) {
 				LandUse use = (LandUse) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.LandUse landUse = new org.fao.sola.clients.android.opentenure.model.LandUse();
@@ -78,7 +74,7 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 
 			OpenTenureApplication.getInstance().setCheckedLandUses(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

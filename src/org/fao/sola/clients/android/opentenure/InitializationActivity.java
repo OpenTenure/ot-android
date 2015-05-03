@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.Locale;
+
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
@@ -40,10 +42,12 @@ import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUti
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -58,6 +62,7 @@ public class InitializationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.initialization_activity);
+		OpenTenure.setLocale(this);
 		final Database db = OpenTenureApplication.getInstance().getDatabase();
 		// Create it, if it doesn't exist
 		db.init();

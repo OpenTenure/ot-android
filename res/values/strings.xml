@@ -351,6 +351,20 @@
     <string name="shares_prompt">Select shares</string>
     <string name="null_label">None</string>
     <string name="tiles_provider_dialog_title">Select the type of your offline map tiles provider</string>
+    <string name="language_dialog_title">Select a language</string>
+	<string name="title_restart_dialog">Restart required</string>
+	<string name="message_restart_dialog">A change in OpenTenure configuration requires a restart to become effective. Would you like to restart OpenTenure now?</string>
+	
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanian</item>
+        <item >Default</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
     <string-array name="tiles_provider_keys">
         <item >TMS</item>
         <item >GeoServer</item>

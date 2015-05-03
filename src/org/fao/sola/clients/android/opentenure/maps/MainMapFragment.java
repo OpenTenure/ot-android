@@ -169,8 +169,9 @@ public class MainMapFragment extends SupportMapFragment implements
 		if(map != null){
 			boolean isInCommunityArea = false;
 
-			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
+			Configuration cfg = Configuration.getConfigurationByName(
+					"isInitialized");
+			if (cfg != null && Boolean.parseBoolean(cfg.getValue())) {
 				GeometryFactory gf = new GeometryFactory();
 
 				// Get a geometry for the community area
@@ -318,9 +319,9 @@ public class MainMapFragment extends SupportMapFragment implements
 			} catch (Exception e) {
 			}
 		} else {
-
-			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
+			Configuration cfg = Configuration.getConfigurationByName(
+					"isInitialized");
+			if (cfg != null && Boolean.parseBoolean(cfg.getValue())) {
 
 				LatLngBounds.Builder bounds;
 				// setup map
@@ -807,7 +808,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			List<Tile> tiles = null;
 			OfflineTilesProvider provider = null;
-			if(sharedPrefs.getString("tiles_provider", OfflineTilesProvider.TilesProviderType.GeoServer.toString()).equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
+			if(sharedPrefs.getString(OpenTenure.tiles_provider, OfflineTilesProvider.TilesProviderType.GeoServer.toString()).equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
 				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
 			}else{
 				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);

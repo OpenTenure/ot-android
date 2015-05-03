@@ -31,24 +31,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
-import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 import org.fao.sola.clients.android.opentenure.network.response.IdType;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
 
 public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 
 	@Override
 	protected List<IdType> doInBackground(String... params) {
 		List<IdType> types = CommunityServerAPI.getIdTypes();
-
-		// TODO Auto-generated method stub
 		return types;
 	}
 
@@ -57,7 +52,7 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<IdType> iterator = types.iterator(); iterator.hasNext();) {
 				IdType idType = (IdType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.IdType type = new org.fao.sola.clients.android.opentenure.model.IdType();
@@ -76,7 +71,7 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 
 			OpenTenureApplication.getInstance().setCheckedIdTypes(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

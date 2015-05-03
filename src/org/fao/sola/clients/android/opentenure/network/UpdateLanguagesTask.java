@@ -76,7 +76,7 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 
 			OpenTenureApplication.getInstance().setCheckedLanguages(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

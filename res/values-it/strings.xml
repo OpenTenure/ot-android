@@ -313,8 +313,22 @@
     <string name="information">Informazioni</string>
     <string name="shares_prompt">Seleziona le quote</string>
     <string name="null_label">Niente</string>
-    <string name="tiles_provider_dialog_title">Inserisci il tipo di provider di mappe offline</string>
-     
+    <string name="tiles_provider_dialog_title">Scegli un tipo di provider di mappe offline</string>
+    <string name="language_dialog_title">Scegli una lingua</string>
+	<string name="title_restart_dialog">Riavvio necessario</string>
+	<string name="message_restart_dialog">Un cambiamento della configurazione di OpenTenure richiede un riavvio per avere effetto. Vuoi riavviare OpenTenure adesso?</string>
+    
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanese</item>
+        <item >Sistema Android</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
+    
     <string-array name="claim_statuses">
         <item>Da moderare</item>
         <item>Moderati</item>

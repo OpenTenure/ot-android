@@ -246,7 +246,7 @@ public class ClaimDetailsFragment extends Fragment {
 		String claimantId = ((TextView) rootView.findViewById(R.id.claimant_id))
 				.getText().toString();
 
-		if (OpenTenureApplication.getLocale().toString().startsWith("ar")) {
+		if (OpenTenureApplication.getInstance().getLocalization().startsWith("ar")) {
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 		}
@@ -407,7 +407,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		ClaimType ct = new ClaimType();
 
-		List<String> list = ct.getClaimsTypesDisplayValues(OpenTenureApplication.getLocalization());
+		List<String> list = ct.getClaimsTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner, list) {
@@ -422,7 +422,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		LandUse lu = new LandUse();
 
-		List<String> landUseslist = lu.getDisplayValues(OpenTenureApplication.getLocalization());
+		List<String> landUseslist = lu.getDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner,
@@ -570,7 +570,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadClaimant(Person claimant) {
 
 		if (claimant != null) {
-			if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
 				((View) rootView.findViewById(R.id.claimant_slogan))
 						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -630,7 +630,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 		if (claim != null) {
 
-			if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -830,7 +830,7 @@ public class ClaimDetailsFragment extends Fragment {
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
 
-		if (OpenTenureApplication.getLocale().toString().startsWith("ar"))
+		if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -1343,7 +1343,6 @@ public class ClaimDetailsFragment extends Fragment {
 							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
-								// TODO Auto-generated method stub
 								return;
 							}
 						});

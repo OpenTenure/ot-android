@@ -121,7 +121,7 @@ public class AdjacentClaimsListAdapter extends
 				.getClaim(claims.get(position).getId()).getPerson()
 				.getPersonId(), 96));
 		
-		if(OpenTenureApplication.getLocale().toString().startsWith("ar")){
+		if(OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")){
 		vh.slogan.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 		vh.id.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 		vh.status.setTextAlignment(View.TEXT_DIRECTION_LOCALE);

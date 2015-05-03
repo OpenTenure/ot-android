@@ -94,13 +94,14 @@ public class NewsFragment extends ListFragment {
 
 		OpenTenureApplication.setNewsFragment(getActivity());
 
-		if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
-				"isInitialized").getValue())) {
-			alert.setVisible(true);
-		} else {
+		Configuration cfg = Configuration.getConfigurationByName(
+				"isInitialized");
+		if (cfg != null && Boolean.parseBoolean(cfg.getValue())) {
 			alert.setVisible(false);
-
+		} else {
+			alert.setVisible(true);
 		}
+
 		if (OpenTenureApplication.isLoggedin()) {
 			itemIn = menu.findItem(R.id.action_login);
 			itemIn.setVisible(false);

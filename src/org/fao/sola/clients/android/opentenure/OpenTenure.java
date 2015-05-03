@@ -27,21 +27,21 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
 import android.app.ActivityManager;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
-import android.content.res.Resources;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -75,7 +75,13 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	int numberOfClaims = 0;
 	private final ApiUtils apiUtils = new ApiUtils();
 	public static final String FIRST_RUN_OT_ACTIVITY = "__FIRST_RUN_OT_ACTIVITY__";
-
+	public static final String language = "language";
+	public static final String albanian_language = "albanian_language";
+	public static final String default_language = "default_language";
+	public static final String khmer_language = "khmer_language";
+	public static final String tiles_provider = "tiles_provider";
+	public static final String tms_tiles_provider = "tms_tiles_provider";
+	public static final String geoserver_tiles_provider = "geoserver_tiles_provider";
 	// END SHOW CASE
 
 	@Override
@@ -83,50 +89,42 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		OpenTenureApplication.getInstance().getDatabase().sync();
 		super.onPause();
 	};
+	
+	private static void setLocale(Context context, Locale locale){
+		Locale.setDefault(locale);
+		android.content.res.Configuration config = new android.content.res.Configuration();
+		config.locale = locale;
+
+		context.getResources().updateConfiguration(config,
+				context.getResources().getDisplayMetrics());
+
+		OpenTenureApplication.getInstance().setLocalization(locale);
+	}
+
+	public static void setLocale(Context context){
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		
+		String language = OpenTenurePreferences.getString(OpenTenure.language, OpenTenure.default_language);
+		
+		Log.d(OpenTenure.class.getName(), "Setting locale for language: " + language);
+		
+		OpenTenureApplication.getInstance().setKhmer(language.equals(OpenTenure.khmer_language));
+		OpenTenureApplication.getInstance().setAlbanian(language.equals(OpenTenure.albanian_language));
+		if (OpenTenureApplication.getInstance().isKhmer()) {
+			setLocale(context, new Locale("km"));
+		} else if (OpenTenureApplication.getInstance().isAlbanian()) {
+			setLocale(context, new Locale("sq"));
+		}else{
+			setLocale(context, Locale.getDefault());
+		}
+	}
 
 	@Override
 	public void onResume() {
 		OpenTenureApplication.getInstance().getDatabase().open();
+		setLocale(this);
 		super.onResume();
-
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-
-		OpenTenureApplication.setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
-		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
-		
-		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			
-			
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-
-			OpenTenureApplication.setLocalization(locale);
-		} else if (OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-
-			OpenTenureApplication.setLocalization(locale);
-		} else {
-			
-			
-			Locale locale = Resources.getSystem().getConfiguration().locale;
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-			OpenTenureApplication.setLocalization(locale);
-		}
-
 	};
 
 	@Override
@@ -158,7 +156,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		exitDialog.show();
 	}
 
-	private void cleanup() {
+	public void cleanup() {
 		OpenTenureApplication.getInstance().getDatabase().close();
 		OpenTenureApplication.getInstance().setCheckedCommunityArea(false);
 		OpenTenureApplication.getInstance().setCheckedDocTypes(false);
@@ -191,42 +189,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-
-		OpenTenureApplication.setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
-		OpenTenureApplication.setAlbanian(OpenTenurePreferences.getBoolean("albanian_language", false));
-
-		if (OpenTenureApplication.isKhmer()) {
-			Locale locale = new Locale("km");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-			OpenTenureApplication.setLocalization(locale);
-		}
-		else if (OpenTenureApplication.isAlbanian()) {
-			Locale locale = new Locale("sq");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-			OpenTenureApplication.setLocalization(locale);
-		} else {
-		
-		Locale locale = Resources.getSystem().getConfiguration().locale;
-		Locale.setDefault(locale);
-		android.content.res.Configuration config = new android.content.res.Configuration();
-		config.locale = locale;
-		getBaseContext().getResources().updateConfiguration(config,
-				getBaseContext().getResources().getDisplayMetrics());
-			
-		OpenTenureApplication.setLocalization(locale);
-		}
-
+		setLocale(this);
 		setContentView(R.layout.activity_open_tenure);
 		ActivityManager activityManager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 
@@ -492,7 +455,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			Intent intent = new Intent();
 			intent.setClass(OpenTenure.this,
 					OpenTenurePreferencesActivity.class);
-			startActivityForResult(intent, 0);
+			startActivityForResult(intent, OpenTenurePreferencesActivity.REQUEST_CODE);
 			return true;
 		case R.id.action_showcase:
 
@@ -513,6 +476,56 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	public void restart(){
+		Context context = OpenTenureApplication
+				.getContext();
+		Intent mStartActivity = OpenTenureApplication
+				.getContext()
+				.getPackageManager()
+				.getLaunchIntentForPackage(
+						OpenTenureApplication
+								.getContext()
+								.getPackageName());
+		mStartActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		int mPendingIntentId = 123456;
+		PendingIntent mPendingIntent = PendingIntent.getActivity(context, mPendingIntentId,    mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+		AlarmManager mgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+		// setWindow is not used for compatibility with API level 17
+		mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, mPendingIntent);
+		cleanup();
+		finish();
+		System.exit(0);
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if(resultCode == OpenTenurePreferencesActivity.RESULT_CODE_RESTART
+				&& requestCode == OpenTenurePreferencesActivity.REQUEST_CODE){
+			
+			AlertDialog.Builder restartDialog = new AlertDialog.Builder(this);
+			restartDialog.setTitle(R.string.title_restart_dialog);
+			restartDialog.setMessage(getResources().getString(
+					R.string.message_restart_dialog));
+			restartDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					restart();
+				}
+			});
+			restartDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+				}
+			});
+			restartDialog.show();
+		}else{
+			super.onActivityResult(requestCode, resultCode, data);
 		}
 	}
 

@@ -217,7 +217,7 @@ public class IdType {
 	public List<String> getDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.IdType> list = getIdTypes();
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.IdType> iterator = list.iterator(); iterator.hasNext();) {

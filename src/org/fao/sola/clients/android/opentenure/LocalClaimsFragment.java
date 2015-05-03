@@ -324,7 +324,7 @@ public class LocalClaimsFragment extends ListFragment {
 		List<Claim> claims = Claim.getSimplifiedClaimsForList();
 		List<ClaimListTO> claimListTOs = new ArrayList<ClaimListTO>();
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
-				OpenTenureApplication.getLocalization());
+				OpenTenureApplication.getInstance().getLocalization());
 
 		for (Claim claim : claims) {
 			if (excludeClaimIds != null

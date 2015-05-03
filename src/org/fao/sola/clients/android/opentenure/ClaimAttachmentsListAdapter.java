@@ -38,7 +38,6 @@ import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
-import org.fao.sola.clients.android.opentenure.network.GetAttachmentTask;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -46,7 +45,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,7 +101,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 			// Attachment Type Spinner set up
 			DocumentType dt = new DocumentType();
-			List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
+			List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 					OpenTenureApplication.getContext(), R.layout.my_spinner,

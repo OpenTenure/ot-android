@@ -349,6 +349,16 @@
     <string name="hint_type_to_filter">Entrer des caractères pour filtrer la liste</string>
     <string name="shares_prompt">Sélectionner les parts</string>
 
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanais</item>
+        <item >Default</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
     <string-array name="claim_statuses">
         <item>Non modérée</item>
         <item>Modérée</item>

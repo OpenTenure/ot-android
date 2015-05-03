@@ -134,7 +134,7 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 		if(result > 0){
 			OpenTenureApplication.getInstance().setCheckedForm(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

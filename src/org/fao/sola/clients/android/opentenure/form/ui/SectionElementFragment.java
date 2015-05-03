@@ -107,7 +107,7 @@ public class SectionElementFragment extends Fragment {
 	private void update(){
 		LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.fragment_field_group);
 		int i = 0;
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
 			FieldPayload fieldPayload = null;

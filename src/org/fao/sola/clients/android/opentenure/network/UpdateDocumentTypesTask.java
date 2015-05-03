@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
@@ -40,8 +39,6 @@ import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.View;
 
 public class UpdateDocumentTypesTask extends
 		AsyncTask<String, Void, List<ClaimType>> {
@@ -49,8 +46,6 @@ public class UpdateDocumentTypesTask extends
 	@Override
 	protected List<ClaimType> doInBackground(String... params) {
 		List<ClaimType> types = CommunityServerAPI.getdocumentTypes();
-
-		// TODO Auto-generated method stub
 		return types;
 	}
 
@@ -59,7 +54,7 @@ public class UpdateDocumentTypesTask extends
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<ClaimType> iterator = types.iterator(); iterator.hasNext();) {
 				ClaimType documentType = (ClaimType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.DocumentType type = new org.fao.sola.clients.android.opentenure.model.DocumentType();
@@ -77,7 +72,7 @@ public class UpdateDocumentTypesTask extends
 
 			OpenTenureApplication.getInstance().setCheckedDocTypes(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

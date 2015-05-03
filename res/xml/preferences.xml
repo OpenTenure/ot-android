@@ -13,11 +13,11 @@
     <PreferenceCategory android:title="@string/map_sources" >
     <ListPreference
         android:defaultValue="GeoServer"
-        android:dialogTitle="@string/tiles_provider"
+        android:dialogTitle="@string/tiles_provider_dialog_title"
         android:entries="@array/tiles_provider_keys"
         android:entryValues="@array/tiles_provider_values"
         android:key="tiles_provider"
-        android:title="@string/tiles_provider_dialog_title" />
+        android:title="@string/tiles_provider" />
     <EditTextPreference
         android:defaultValue="http://demo.flossola.org/geoserver/sola"
         android:dialogTitle="@string/geoserver_url_pref_dialog_title"
@@ -47,21 +47,14 @@
 	        android:title="@string/form_template_url_pref_title" />
 	</PreferenceCategory>
     
-    <PreferenceCategory android:title="@string/language" >
-        <CheckBoxPreference
-            android:defaultValue="true"
-            android:key="default_language"
-            android:title="@string/default_language" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="khmer_language"
-            android:title="@string/khmer_language" />
-        <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="albanian_language"
-            android:title="@string/albanian_language" />
-    </PreferenceCategory>
-
+    <ListPreference
+        android:defaultValue="default_language"
+        android:dialogTitle="@string/language_dialog_title"
+        android:entries="@array/language_keys"
+        android:entryValues="@array/language_values"
+        android:key="language"
+        android:title="@string/language" />
+    
     <PreferenceCategory android:title="@string/information" >
 	    <Preference
 	        android:dialogTitle="@string/software_version_title"

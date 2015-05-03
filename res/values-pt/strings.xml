@@ -96,7 +96,6 @@
     <string name="claim_name">Nome do requerimento</string>
     <string name="claim_name_label">Nome do requerimento *</string>
     <string name="claim_type">Tipo de requerimento *</string>
-    <string name="claim_type">Tipo de requerimento</string>
     <string name="default_claim_name">Novo requerimento</string>
     <string name="first_name">Primeiro nome</string>
     <string name="first_name_label">Primeiro nome *</string>
@@ -356,6 +355,17 @@
     <string name="rejected">rejeitado</string>
     <string name="reviewed">revisado</string>
 
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanês</item>
+        <item >Padrão</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
+    
     <string-array name="claim_statuses">
         <item>Não moderado</item>
         <item>Moderado</item>

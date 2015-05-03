@@ -36,12 +36,13 @@ import android.preference.PreferenceActivity;
 
 public class OpenTenurePreferencesActivity extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener {
+	public static final int REQUEST_CODE = 128;
+	public static final int RESULT_CODE_RESTART = 128;
 	public static final String CS_URL_PREF = "cs_url_pref";
 	public static final String TMS_URL_PREF = "tms_url_pref";
 	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
 	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
 	public static final String FORM_URL_PREF = "form_template_url_pref";
-	public static final String KHMER = "khmer";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +60,6 @@ public class OpenTenurePreferencesActivity extends PreferenceActivity implements
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

@@ -305,33 +305,8 @@
     <string name="north_west">ទិសពាយព្យ</string>
     <string name="south_east">ទិសទក្សិណ</string>
     <string name="south_west">ទិសនារតី</string>
-    <string name="adjacencies">របស់របបដែលនៅជិតខាង</string>
     <string name="message_claim_exported_error">បណ្តឹងតវ៉ា%គឺមិនទាន់បាននាំយកចេញ</string>
     <string name="message_claim_exported">បណ្តឹងតវ៉ា%បាននាំយកចេញ</string>
-    <string name="north_adjacency">ព័ណ៌នាពីរបស់របបនៅទិសខាងជើងនៃបណ្តឹងតវ៉ារបស់អ្នក</string>
-    <string name="south_adjacency">ព័ណ៌នាពីរបស់របបនៅទិសខាងត្បូងនៃបណ្តឹងតវ៉ារបស់អ្នក</string>
-    <string name="east_adjacency">ព័ណ៌នាពីរបស់របបនៅទិសខាងកើតនៃបណ្តឹងតវ៉ារបស់អ្នក</string>
-    <string name="west_adjacency">ព័ណ៌នាពីរបស់របបនៅទិសខាងលិចនៃបណ្តឹងតវ៉ារបស់អ្នក</string>
-    <string name="add_owner">បន្តែមម្ចាស់កម្មសិទ្ធិ </string>
-    <string name="action_modify_claimant">កែរសម្រួលអ្នកបណ្តឹងតវ៉ា</string>
-    <string name="action_add_claimant">បន្តែមអ្នកបណ្តឹងតវ៉ា</string>
-    <string name="action_select_challenge">ជ្រើសរើសបណ្តឹងតវ៉ាដើម្បីដោះស្រាយ</string>
-    <string name="title_challenged_claim">បណ្តឹងតវ៉ាដោះស្រាយរួចហើយ </string>
-    <string name="date_of_start">ឆ្នាំ-ខែ-ថ្ងៃ</string>
-    <string name="status">ស្ថានភាព: </string>
-    <string name="title_no_connection">មិនការភ្ជាប់ទាក់ទង</string>
-    <string name="message_no_connection_at_startup">មិនមានការតភ្ជាប់ប្រព័ន្ធអ៊ីនទែណេត។ ការរៀបចំមិនបង្ហាញពីការផ្លាស់ប្តូរចុងក្រោយ និងអ្នកមិនអាចបញ្ចូល ឬទាញយកព័ត៌មាន។ ភ្ជាប់ទៅអ៊ីនធឺណិតបានប្រសិនបើអ្នកចង់ផ្ទេរទិន្នន័យដោយប្រើប្រាស់ កម្មសិទ្ធិបើកចំហរ</string>
-    <string name="action_backup_db">រក្សាទុកទិន្នន័យ</string>
-    <string name="message_db_backed_up">ការថតចម្លងទិន្នន័យគ្រឹះដែលបានបង្កើត</string>
-    <string name="title_initialization_process">ដំណើការកំពង់ផ្តួចផ្តើម</string>
-    <string name="message_initialize_before">ធ្វើការផ្តួចផ្តើមពីមុន</string>
-    <string name="message_default_initialization">អ្នកនឹងចាប់ផ្តើមកម្មវិធី Community server។ Default Community Server គួតែត្រូវបានគេប្រើក្នុងគោលបំណងធ្វើការគូសបង្ហាញ។ តើអ្នកចង់បន្តរកម្មវិធីនេះទេ? បើមិនពុំនោះទេ សូមចុច Cancel (លុបចោល) និងដាក់ community server URL    </string>
-    <string name="action_backup_db">រក្សាទិន្នន័យ</string>
-    <string name="message_db_backed_up">ថតចម្លងទិន្នន័យគ្រឹះបានបង្កើតរួចហើយ</string>
-    <string name="action_download_tiles">ទាញយករូបភាពទៅទៅដាក់ក្នុងទិន្នន័យក្នុងស្រុកសម្រាប់ការប្រើប្រាស់ផែនទីដែលមិនបានភ្ជាប់ប្រព័ន្ធអ៊ីនទែណេត</string>
-    <string name="title_confirm_data_transfer">បញ្ជាក់ពីការផ្ទេរទិន្នន័យ</string>
-    <string name="message_data_over_mobile">អ្នកនឹងផ្ទេរទិន្នន័យចំនួនធំនៅក្នុងការផភ្ជាប់អ៊ីនទែណេតចល័ត។ ទាក់ទងការចំណាយអាចថ្លៃអាស្រ័យលើទិន្នន័យរបស់អ្នក</string>
-    <string name="action_view_community_area">បង្ហាញតំបន់សហគមន៍</string>
     <string name="hint_type_to_filter">សរសេរអក្សរដើម្បីបំពេញនៅក្នុងបញ្ជី</string>
     <string name="shares_prompt">ជ្រើរើសរូបរាង</string>
     <string name="claim_area_label">ផ្ទៃដី</string>
@@ -374,6 +349,17 @@
     <string name="information">ពត៌មាន</string>
     <string name="tiles_provider_dialog_title">ជ្រើសរើសប្រភេទអ្នកផ្តល់ផែនទីដែលមិនភ្ជាប់ប្រព័ន្ធអិុនធើណែត</string>
 
+    <string-array name="language_keys">
+        <item >ខ្មែរ</item>
+        <item >អាល់បានី</item>
+        <item >លំនាំដើម</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
+    
     <string-array name="claim_statuses">
         <item>មិនល្មម</item>
         <item>ល្មម</item>

@@ -39,7 +39,6 @@ import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
 import org.fao.sola.clients.android.opentenure.model.MD5;
-import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -185,7 +184,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				DocumentType dt = new DocumentType();
 
-				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
+				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -278,7 +277,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				DocumentType dt = new DocumentType();
 
-				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getLocalization());
+				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),

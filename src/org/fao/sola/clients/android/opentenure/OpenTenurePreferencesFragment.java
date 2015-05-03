@@ -27,177 +27,47 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 public class OpenTenurePreferencesFragment extends PreferenceFragment {
+	
+	private class PrefChangeListener implements SharedPreferences.OnSharedPreferenceChangeListener{
+
+		@Override
+		public void onSharedPreferenceChanged(
+				SharedPreferences sharedPreferences, String key) {
+
+			// LANGUAGE SELECTION REQUIRES RESTARTING THE APPLICATION
+
+			if (key.equals(OpenTenure.language)) {
+				getActivity()
+						.setResult(
+								OpenTenurePreferencesActivity.RESULT_CODE_RESTART);
+			}
+		}
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+		OpenTenurePreferences
+				.registerOnSharedPreferenceChangeListener(new PrefChangeListener());
+	};
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Load the preferences from an XML resource
 		addPreferencesFromResource(R.xml.preferences);
 
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
-
-		if (OpenTenurePreferences.getBoolean("albanian_language", true)) {
-
-			findPreference("default_language").setEnabled(true);
-			findPreference("khmer_language").setEnabled(true);
-			findPreference("albanian_language").setEnabled(false);
-			findPreference("albanian_language").setSelectable(false);
-			
-		}
-		if (OpenTenurePreferences.getBoolean("default_language", true)) {
-
-			findPreference("albanian_language").setEnabled(true);
-			findPreference("khmer_language").setEnabled(true);
-			findPreference("default_language").setEnabled(false);
-			findPreference("default_language").setSelectable(false);
-			
-		}
-		if (OpenTenurePreferences.getBoolean("khmer_language", true)) {
-
-			findPreference("albanian_language").setEnabled(true);
-			findPreference("default_language").setEnabled(true);
-			findPreference("khmer_language").setEnabled(false);
-			findPreference("khmer_language").setSelectable(false);
-			
-		}
-
 		OpenTenurePreferences
-				.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-					public void onSharedPreferenceChanged(
-							SharedPreferences prefs, String key) {
-						// LANGUAGE SELECTION REQUIRES RESTARTING THE APPLICATION
-						
-						if (key.equals("default_language")) {
-							
-							// Reset other items
-
-							if (prefs.getBoolean("default_language", true)) {
-
-								SharedPreferences.Editor editor = prefs.edit();
-
-								editor.putBoolean("khmer_language", false);
-								editor.putBoolean("albanian_language", false);
-
-								editor.commit();
-
-								synchronized (this) {
-									setPreferenceScreen(null);
-									addPreferencesFromResource(R.xml.preferences);
-
-								}
-
-								Intent i = OpenTenureApplication
-										.getContext()
-										.getPackageManager()
-										.getLaunchIntentForPackage(
-												OpenTenureApplication
-														.getContext()
-														.getPackageName());
-								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								System.exit(2);
-								startActivity(i);
-
-							}
-						}
-
-						if (key.equals("khmer_language")) {
-							// Reset other items
-							
-
-							if (prefs.getBoolean("khmer_language", true)) {
-
-								SharedPreferences.Editor editor = prefs.edit();
-								editor.putBoolean("default_language", false);
-								editor.putBoolean("albanian_language", false);
-
-								editor.commit();
-
-								synchronized (this) {
-									setPreferenceScreen(null);
-									addPreferencesFromResource(R.xml.preferences);
-
-								}
-
-								Intent i = OpenTenureApplication
-										.getContext()
-										.getPackageManager()
-										.getLaunchIntentForPackage(
-												OpenTenureApplication
-														.getContext()
-														.getPackageName());
-								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-								System.exit(2);
-								startActivity(i);
-							}
-
-						}
-
-						if (key.equals("albanian_language")) {
-
-							
-							// Reset other items
-
-							if (prefs.getBoolean("albanian_language", true)) {
-
-								SharedPreferences.Editor editor = prefs.edit();
-								editor.putBoolean("default_language", false);
-								editor.putBoolean("khmer_language", false);
-
-								editor.commit();
-
-								synchronized (this) {
-									setPreferenceScreen(null);
-									addPreferencesFromResource(R.xml.preferences);
-
-								}
-
-								Intent i = OpenTenureApplication
-										.getContext()
-										.getPackageManager()
-										.getLaunchIntentForPackage(
-												OpenTenureApplication
-														.getContext()
-														.getPackageName());
-								i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-								System.exit(2);
-								startActivity(i);
-							}
-
-						}
-
-						// TILES PROVIDER SELECTION
-						
-						if (key.equals("tms_tiles_provider")) {
-
-							if (prefs.getBoolean("tms_tiles_provider", true)) {
-
-								SharedPreferences.Editor editor = prefs.edit();
-								editor.putBoolean("geoserver_tiles_provider", false);
-								editor.commit();
-							}
-						}
-
-						if (key.equals("geoserver_tiles_provider")) {
-
-							if (prefs.getBoolean("geoserver_tiles_provider", true)) {
-
-								SharedPreferences.Editor editor = prefs.edit();
-								editor.putBoolean("tms_tiles_provider", false);
-								editor.commit();
-							}
-						}
-					}
-				});
-
+				.registerOnSharedPreferenceChangeListener(new PrefChangeListener());
 	}
 }

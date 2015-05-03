@@ -288,19 +288,13 @@
     <string name="north_west">Veri-Perëndim</string>
     <string name="south_east">Jug-Lindje</string>
     <string name="south_west">Jug-Perëndim</string>
-    <string name="adjacencies">Pronat Kufitare</string>
     <string name="message_claim_exported_error">Pretendimi %s nuk u eksportua</string>
     <string name="message_claim_exported">Pretendimi %s u eksportua</string>
-    <string name="north_adjacency">Përshkruani pasurinë në veri të pretendimit tuaj</string>
-    <string name="south_adjacency"> Përshkruani pasurinë në jug të pretendimit tuaj </string>
-    <string name="east_adjacency"> Përshkruani pasurinë në lindje të pretendimit tuaj </string>
-    <string name="west_adjacency"> Përshkruani pasurinë në perëndim të pretendimit tuaj </string>
     <string name="add_owner">Shto Pronarin </string>
     <string name="action_modify_claimant">Modifiko Pretenduesin</string>
     <string name="action_add_claimant">Shto Pretenduesin</string>
     <string name="action_select_challenge">Zgjidh pretendimin për ta kundërshtuar</string>
     <string name="title_challenged_claim">Pretendimet e kundërshtuara : </string>
-    <string name="date_of_start">VVVV-MM-DD</string>
     <string name="status">status : </string>
     <string name="title_no_connection">Lidhja mungon</string>
     <string name="message_no_connection_at_startup">Lidhja me Internetin mungon. Konfigurimi mund të mos i reflektojë ndryshimet e fundit dhe nuk do jeni në gjendje të ngarkoni apo shkarkoni të dhëna. Lidhuni në internet nëse doni të transferoni të dhëna me OpenTenure</string>
@@ -309,15 +303,22 @@
     <string name="title_initialization_process">Inicializim Procesi</string>
     <string name="message_initialize_before"> Përpara, bëni Inicializimin </string>
     <string name="message_default_initialization">Aplikacioni po hapet me të dhënat aktuale të Komunitetit Server. Të dhënat aktuale të Komunitetit Server duhet të përdoren vetëm për qëllime demonstrimi. A doni të vazhdoni? Përndryshe shtypni Anulo dhe vendosni të dhënat e Komunitetit Server tek konfigurimi</string>
-    <string name="action_backup_db">Backup të dhënat lokale</string>
-    <string name="message_db_backed_up">Një kopje e bazës së të dhënave lokale u krijua</string>
-    <string name="action_download_tiles">Shkarko imazhet tek memoria lokale për të mundësuar përdorimin e hartës kur të jeni shkëputur nga interneti</string>
     <string name="title_confirm_data_transfer">Konfirmo transferimin e të dhënave</string>
     <string name="message_data_over_mobile">Ju jeni duke transferuar një sasi të madhe të dhënash nëpërmjet lidhjes së internetit me celular. Kostoja e internetit mund të jetë e lartë në varësi të planit tarifor të internetit që ju keni</string>
     <string name="action_view_community_area">Shiko Zonën e Komunitetit</string>
     <string name="hint_type_to_filter">Shtypni disa karaktere të filtroni nga lista</string>
     <string name="shares_prompt">Zgjidhni pjesët</string>
-
+    <string-array name="language_keys">
+        <item >Khmer</item>
+        <item >Albanian</item>
+        <item >Default</item>
+        </string-array>
+    <string-array name="language_values">
+        <item >khmer_language</item>
+        <item >albanian_language</item>
+        <item >default_language</item>
+        </string-array>
+    
     <string-array name="claim_statuses">
         <item>I pa moderuar</item>
         <item>I moderuar</item>

@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
-import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
@@ -39,8 +38,6 @@ import org.fao.sola.clients.android.opentenure.network.response.ClaimType;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.View;
 
 /**
  * Task called to initialize the Application with the values of Types of claim
@@ -52,8 +49,6 @@ public class UpdateClaimTypesTask extends
 	@Override
 	protected List<ClaimType> doInBackground(String... params) {
 		List<ClaimType> types = CommunityServerAPI.getClaimTypes();
-
-		// TODO Auto-generated method stub
 		return types;
 	}
 
@@ -62,7 +57,7 @@ public class UpdateClaimTypesTask extends
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<ClaimType> iterator = types.iterator(); iterator.hasNext();) {
 				ClaimType claimType = (ClaimType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.ClaimType type = new org.fao.sola.clients.android.opentenure.model.ClaimType();
@@ -81,7 +76,7 @@ public class UpdateClaimTypesTask extends
 
 			OpenTenureApplication.getInstance().setCheckedTypes(true);
 
-			synchronized (OpenTenureApplication.getLocale()) {
+			synchronized (OpenTenureApplication.getInstance()) {
 
 				if (OpenTenureApplication.getInstance()
 						.isCheckedCommunityArea()

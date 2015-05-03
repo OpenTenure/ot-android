@@ -44,12 +44,10 @@ import org.fao.sola.clients.android.opentenure.model.Database;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -77,14 +75,14 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedForm = false;
 	private boolean initialized = false;
 	private static final String SEMAPHORE = "semaphore";
+	private static final String _KHMER_LOCALIZATION = "km-KH";
+	private static final String _ALBANIAN_LOCALIZATION = "sq-AL";
+	private static final String _ARABIC_LOCALIZATION = "ar-JO";
 
-	private static String localization;
-	private static Locale locale;
-	static boolean khmer = false;
-	static boolean albanian = false;
-	static String _KHMER_LOCALIZATION = "km-KH";
-	static String _ALBANIAN_LOCALIZATION = "sq-AL";
-	static String _ARABIC_LOCALIZATION = "ar-JO";
+	private String localization;
+	private Locale locale;
+	private boolean khmer = false;
+	private boolean albanian = false;
 	private static boolean loggedin;
 	private static String username;
 	private static Activity activity;
@@ -189,45 +187,10 @@ public class OpenTenureApplication extends Application {
 	public void onCreate() {
 
 		context = getApplicationContext();
-
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-
-		setKhmer(OpenTenurePreferences.getBoolean("khmer_language", false));
-		setAlbanian(OpenTenurePreferences
-				.getBoolean("albanian_language", false));
-
-		if (isKhmer()) {
-			Locale locale = new Locale("km");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			OpenTenureApplication.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-			setLocalization(locale);
-		} else if (isAlbanian()) {
-			Locale locale = new Locale("sq");
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			OpenTenureApplication.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-			setLocalization(locale);
-		} else {
-
-			locale = Resources.getSystem().getConfiguration().locale;
-			Locale.setDefault(locale);
-			android.content.res.Configuration config = new android.content.res.Configuration();
-			config.locale = locale;
-			getBaseContext().getResources().updateConfiguration(config,
-					getBaseContext().getResources().getDisplayMetrics());
-
-			setLocalization(locale);
-		}
-
 		sInstance = this;
 		sInstance.initializeInstance();
 
+		OpenTenure.setLocale(this);
 		FileSystemUtilities.createClaimsFolder();
 		FileSystemUtilities.createClaimantsFolder();
 		FileSystemUtilities.createOpenTenureFolder();
@@ -396,12 +359,12 @@ public class OpenTenureApplication extends Application {
 		return localClaimsFragment;
 	}
 
-	public static Locale getLocale() {
+	public Locale getLocale() {
 		return locale;
 	}
 
-	public static void setLocale(Locale locale) {
-		OpenTenureApplication.locale = locale;
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	public static FragmentActivity getNewsFragment() {
@@ -445,7 +408,7 @@ public class OpenTenureApplication extends Application {
 
 	}
 
-	public static String getLocalization() {
+	public String getLocalization() {
 		return localization;
 	}
 
@@ -457,8 +420,8 @@ public class OpenTenureApplication extends Application {
 		this.initialized = initialized;
 	}
 
-	public static void setLocalization(String localization) {
-		OpenTenureApplication.localization = localization;
+	public void setLocalization(String localization) {
+		this.localization = localization;
 	}
 
 	public static ClaimDetailsFragment getDetailsFragment() {
@@ -477,45 +440,47 @@ public class OpenTenureApplication extends Application {
 		OpenTenureApplication.claimId = claimId;
 	}
 
-	public static boolean isKhmer() {
+	public boolean isKhmer() {
 		return khmer;
 	}
 
-	public static void setKhmer(boolean khmer) {
-		OpenTenureApplication.khmer = khmer;
+	public void setKhmer(boolean khmer) {
+		this.khmer = khmer;
 	}
 
-	public static boolean isAlbanian() {
+	public boolean isAlbanian() {
 		return albanian;
 	}
 
-	public static void setAlbanian(boolean albanian) {
-		OpenTenureApplication.albanian = albanian;
+	public void setAlbanian(boolean albanian) {
+		this.albanian = albanian;
 	}
 
-	public static void setLocalization(Locale locale) {
+	public void setLocalization(Locale locale) {
 
 		Resources.getSystem().getConfiguration().setLocale(locale);
 
 		locale.getDisplayLanguage();
 		if (isKhmer()) {
 
-			OpenTenureApplication.localization = OpenTenureApplication._KHMER_LOCALIZATION;
+			localization = OpenTenureApplication._KHMER_LOCALIZATION;
 		} else if (isAlbanian()) {
 
-			OpenTenureApplication.localization = OpenTenureApplication._ALBANIAN_LOCALIZATION;
+			localization = OpenTenureApplication._ALBANIAN_LOCALIZATION;
 
 		} else if (locale.getLanguage().toLowerCase(locale).equals("ar")) {
 
-			OpenTenureApplication.localization = _ARABIC_LOCALIZATION;
+			localization = _ARABIC_LOCALIZATION;
 
 		} else {
 
-			OpenTenureApplication.localization = locale.getLanguage()
-					.toLowerCase(locale) + "-" + locale.getCountry();
+			localization =
+					Resources.getSystem().getConfiguration().locale.getLanguage()
+					+ "-"
+					+ Resources.getSystem().getConfiguration().locale.getCountry();
 		}
 
-		System.out.println("Localization is now: " + OpenTenureApplication.localization);
+		System.out.println("Localization is now: " + localization);
 
 	}
 

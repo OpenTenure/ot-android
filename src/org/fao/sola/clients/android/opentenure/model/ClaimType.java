@@ -209,7 +209,7 @@ public class ClaimType {
 	public List<String> getClaimsTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getLocalization());
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {

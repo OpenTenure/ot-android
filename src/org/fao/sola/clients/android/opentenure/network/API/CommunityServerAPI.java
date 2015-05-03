@@ -100,7 +100,7 @@ public class CommunityServerAPI {
 				csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 			String url = String.format(CommunityServerAPIUtilities.HTTPS_LOGIN,
-					csUrl, OpenTenureApplication.getLocalization(), username,
+					csUrl, OpenTenureApplication.getInstance().getLocalization(), username,
 					password);
 
 			HttpGet request = new HttpGet(url);
@@ -191,7 +191,7 @@ public class CommunityServerAPI {
 			
 			String url = String.format(
 					CommunityServerAPIUtilities.HTTPS_LOGOUT, csUrl,
-					OpenTenureApplication.getLocalization());
+					OpenTenureApplication.getInstance().getLocalization());
 			HttpGet request = new HttpGet(url);
 
 			/* Preparing to store coockies */
@@ -264,7 +264,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETALLCLAIMS, csUrl,
-				OpenTenureApplication.getLocalization());
+				OpenTenureApplication.getInstance().getLocalization());
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -333,7 +333,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETALLCLAIMSBYBOX, csUrl,
-				OpenTenureApplication.getLocalization(), coordinates[0],
+				OpenTenureApplication.getInstance().getLocalization(), coordinates[0],
 				coordinates[1], coordinates[2], coordinates[3], "100");
 		HttpGet request = new HttpGet(url);
 
@@ -404,7 +404,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_WITHDRAWCLAIM, csUrl,
-				OpenTenureApplication.getLocalization(), claimId);
+				OpenTenureApplication.getInstance().getLocalization(), claimId);
 		HttpGet request = new HttpGet(url);
 
 		Log.d("CommunityServerAPI",
@@ -480,7 +480,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_GETCLAIM,
-				csUrl, OpenTenureApplication.getLocalization(), claimId);
+				csUrl, OpenTenureApplication.getInstance().getLocalization(), claimId);
 		HttpGet request = new HttpGet(url);
 
 		CookieStore CS = OpenTenureApplication.getCoockieStore();
@@ -884,7 +884,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETCOMMUNITYAREA, csUrl,
-				OpenTenureApplication.getLocalization());
+				OpenTenureApplication.getInstance().getLocalization());
 		HttpGet request = new HttpGet(url);
 
 		AndroidHttpClient client = OpenTenureApplication.getHttpClient();
@@ -1008,7 +1008,7 @@ public class CommunityServerAPI {
 		if(csUrl.trim().equals(""))
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
-		System.out.println("Localization " + OpenTenureApplication.getLocalization());
+		System.out.println("Localization " + OpenTenureApplication.getInstance().getLocalization());
 		
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_GETDOCUMENTYPES, csUrl);
@@ -1077,7 +1077,7 @@ public class CommunityServerAPI {
 			csUrl = OpenTenureApplication._DEFAULT_COMMUNITY_SERVER;
 
 		String url = String.format(CommunityServerAPIUtilities.HTTPS_SAVECLAIM,
-				csUrl, OpenTenureApplication.getLocalization());
+				csUrl, OpenTenureApplication.getInstance().getLocalization());
 
 		HttpPost request = new HttpPost(url);
 
@@ -1180,7 +1180,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_SAVEATTACHMENT, csUrl,
-				OpenTenureApplication.getLocalization());
+				OpenTenureApplication.getInstance().getLocalization());
 
 		HttpPost request = new HttpPost(url);
 		SaveAttachmentResponse saveAttachmentResponse = null;
@@ -1265,7 +1265,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_UPLOADCHUNK, csUrl,
-				OpenTenureApplication.getLocalization());
+				OpenTenureApplication.getInstance().getLocalization());
 
 		HttpPost request = new HttpPost(url);
 		ApiResponse apiResponse = null;
@@ -1335,7 +1335,7 @@ public class CommunityServerAPI {
 
 		String url = String.format(
 				CommunityServerAPIUtilities.HTTPS_ADDCLAIMATTACHMENT, csUrl,
-				OpenTenureApplication.getLocalization(), claimId, attachmentId);
+				OpenTenureApplication.getInstance().getLocalization(), claimId, attachmentId);
 
 		HttpGet request = new HttpGet(url);
 
