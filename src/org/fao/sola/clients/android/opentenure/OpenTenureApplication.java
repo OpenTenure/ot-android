@@ -479,7 +479,7 @@ public class OpenTenureApplication extends Application {
 					+ "-"
 					+ Resources.getSystem().getConfiguration().locale.getCountry();
 		}
-
+		setLocale(locale);
 		System.out.println("Localization is now: " + localization);
 
 	}
