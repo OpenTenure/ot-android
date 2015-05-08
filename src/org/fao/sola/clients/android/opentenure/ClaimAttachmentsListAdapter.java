@@ -28,7 +28,10 @@
 package org.fao.sola.clients.android.opentenure;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import org.fao.sola.clients.android.opentenure.button.listener.DownloadAttachmentListener;
 import org.fao.sola.clients.android.opentenure.button.listener.UpdateAttachmentListener;
@@ -66,6 +69,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	private final List<String> ids;
 	private String claimId;
 	private boolean readOnly;
+	private Map<String, String> keyValueDocTypes;
+	private Map<String, String> valueKeyDocTypes;
 
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
 			List<String> ids, String claimId, boolean readOnly) {
@@ -101,7 +106,24 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 
 			// Attachment Type Spinner set up
 			DocumentType dt = new DocumentType();
-			List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+			
+			keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
+					.getInstance().getLocalization());
+			valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
+					.getInstance().getLocalization());
+			
+			
+			final Spinner spinner = (Spinner) convertView
+					.findViewById(R.id.documentTypesSpinner);
+			
+
+			List<String> list = new ArrayList<String>();
+			TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
+			for (String key : keys) {
+				String value = keyValueDocTypes.get(key);
+				list.add(value);
+				// do something
+			}
 
 			ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 					OpenTenureApplication.getContext(), R.layout.my_spinner,

@@ -32,8 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -206,20 +208,41 @@ public class ClaimType {
 
 	}
 
-	public List<String> getClaimsTypesDisplayValues(String localization) {
+	public Map<String,String> getKeyValueMap(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
-		List<String> displayList = new ArrayList<String>();
+		Map<String,String> keyValueMap = new HashMap<String,String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
+			
+			
+			
+			
+			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
+					.next();
+			
+			keyValueMap.put(claimType.getType(),dnl.getLocalizedDisplayName(claimType.getDisplayValue()));
+		}
+		return keyValueMap;
+	}
+	
+	public Map<String,String> getValueKeyMap(String localization) {
+
+		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
+			
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 
-			displayList.add(dnl.getLocalizedDisplayName(claimType.getDisplayValue()));
+			keyValueMap.put(dnl.getLocalizedDisplayName(claimType.getDisplayValue()),claimType.getType());
 		}
-		return displayList;
+		return keyValueMap;
 	}
+	
 
 	public int getIndexByCodeType(String code) {
 
@@ -230,7 +253,7 @@ public class ClaimType {
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
-
+			
 			if (claimType.getType().equals(code)) {
 
 				return i;
@@ -240,53 +263,6 @@ public class ClaimType {
 			i++;
 		}
 		return 0;
-
-	}
-
-	public String getTypebyDisplayValue(String value) {
-
-		ResultSet rs = null;
-		Connection localConnection = null;
-		PreparedStatement statement = null;
-
-		try {
-
-			localConnection = db.getConnection();
-			statement = localConnection
-					.prepareStatement("SELECT TYPE FROM CLAIM_TYPE CT WHERE DISPLAY_VALUE LIKE  '%' || ? || '%' ");
-			statement.setString(1, value);
-			rs = statement.executeQuery();
-
-			while (rs.next()) {
-				return rs.getString(1);
-			}
-			return null;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return null;
 
 	}
 	

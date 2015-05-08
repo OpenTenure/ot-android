@@ -35,9 +35,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.fao.sola.clients.android.opentenure.button.listener.ConfirmExit;
 import org.fao.sola.clients.android.opentenure.model.IdType;
+import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
@@ -76,6 +80,8 @@ public class PersonFragment extends Fragment {
 	private File personPictureFile;
 	private ImageView claimantImageView;
 	private boolean allowSave = true;
+	private Map<String, String> keyValueMapIdTypes;
+	private Map<String, String> valueKeyMapIdTypes;
 	boolean isPerson = true;
 
 	@Override
@@ -289,7 +295,21 @@ public class PersonFragment extends Fragment {
 
 		IdType it = new IdType();
 
-		List<String> idTypelist = it.getDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+		SortedSet<String> keys;
+
+		/* Mapping id type localization */
+		keyValueMapIdTypes = it.getKeyValueMap(OpenTenureApplication
+				.getInstance().getLocalization());
+		valueKeyMapIdTypes = it.getValueKeyMap(OpenTenureApplication
+				.getInstance().getLocalization());
+
+		List<String> idTypelist = new ArrayList<String>();
+		keys = new TreeSet<String>(keyValueMapIdTypes.keySet());
+		for (String key : keys) {
+			String value = keyValueMapIdTypes.get(key);
+			idTypelist.add(value);
+			// do something
+		}
 
 		List<String> genderList = new ArrayList<String>();
 
@@ -518,7 +538,7 @@ public class PersonFragment extends Fragment {
 
 		String idTypeDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.id_type_spinner)).getSelectedItem();
-		person.setIdType(new IdType().getTypebyDisplayValue(idTypeDispValue));
+		person.setIdType(valueKeyMapIdTypes.get(idTypeDispValue));
 
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
@@ -717,7 +737,7 @@ public class PersonFragment extends Fragment {
 
 		String idTypeDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.id_type_spinner)).getSelectedItem();
-		person.setIdType(new IdType().getTypebyDisplayValue(idTypeDispValue));
+		person.setIdType(valueKeyMapIdTypes.get(idTypeDispValue));
 
 		person.setIdNumber(((EditText) rootView.findViewById(R.id.id_number))
 				.getText().toString());
@@ -1079,7 +1099,6 @@ public class PersonFragment extends Fragment {
 
 		} else {
 
-
 			String name = ((EditText) rootView
 					.findViewById(R.id.first_name_input_field)).getText()
 					.toString();
@@ -1151,7 +1170,11 @@ public class PersonFragment extends Fragment {
 
 	public boolean checkChangesPerson(PersonActivity personActivity) {
 
-		
+		if (valueKeyMapIdTypes == null)
+			valueKeyMapIdTypes = new IdType()
+					.getValueKeyMap(OpenTenureApplication.getInstance()
+							.getLocalization());
+
 		View rootView = null;
 
 		boolean changed = false;
@@ -1246,11 +1269,11 @@ public class PersonFragment extends Fragment {
 										.findViewById(R.id.id_type_spinner))
 										.getSelectedItem();
 
+
 								if ((idType != null && person.getIdType() != null)
-										&& !person
-												.getIdType()
-												.equals(new IdType()
-														.getTypebyDisplayValue(idType)))
+										&& !person.getIdType().trim().equals(
+											valueKeyMapIdTypes
+														.get(idType).trim()))								
 									changed = true;
 
 								else {
@@ -1336,7 +1359,6 @@ public class PersonFragment extends Fragment {
 
 		} else {
 
-
 			String name = ((EditText) rootView
 					.findViewById(R.id.first_name_input_field)).getText()
 					.toString();
@@ -1411,5 +1433,4 @@ public class PersonFragment extends Fragment {
 		return false;
 
 	}
-
 }

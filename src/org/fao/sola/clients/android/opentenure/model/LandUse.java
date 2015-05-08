@@ -226,6 +226,22 @@ public class LandUse {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
+			keyValueMap.put(landUse.getType(),dnl.getLocalizedDisplayName(landUse.getDisplayValue()));
+
+		}
+		return keyValueMap;
+	}
+	
+	public Map<String,String> getValueKeyMap(String localization) {
+
+		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.LandUse> iterator = list.iterator(); iterator.hasNext();) {
+			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
+					.next();
+
 			keyValueMap.put(dnl.getLocalizedDisplayName(landUse.getDisplayValue()),landUse.getType());
 
 		}

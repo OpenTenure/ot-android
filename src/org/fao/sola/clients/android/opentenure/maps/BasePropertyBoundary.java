@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenure;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
@@ -161,6 +162,7 @@ public class BasePropertyBoundary {
 				color = context.getResources()
 						.getColor(R.color.status_reviewed);
 				break;
+				
 			case challenged:
 				color = context.getResources().getColor(
 						R.color.status_challenged);
@@ -364,6 +366,9 @@ public class BasePropertyBoundary {
 		ClaimType ct = new ClaimType();
 		String areaString = null;
 		
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
+		
 		areaString = OpenTenureApplication.getContext()
 				.getString(R.string.claim_area_label) + " " + (long)area + " " +  OpenTenureApplication.getContext()
 				.getString(R.string.square_meters); 
@@ -379,7 +384,7 @@ public class BasePropertyBoundary {
 //		}
 		propertyMarker = createPropertyMarker(center,
 				claimSlogan + ", " + context.getString(R.string.type) + ": "
-						+ ct.getDisplayValueByType(claimType) + ", " + areaString);
+						+ dnl.getLocalizedDisplayName(ct.getDisplayValueByType(claimType)) + ", " + areaString);
 
 	}
 

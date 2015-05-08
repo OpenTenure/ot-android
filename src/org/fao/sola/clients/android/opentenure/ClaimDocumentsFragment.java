@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.TreeSet;
 
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
@@ -81,6 +83,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher mainActivity;
+	
+	private Map<String, String> keyValueDocTypes;
+	private Map<String, String> valueKeyDocTypes;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -179,12 +184,29 @@ public class ClaimDocumentsFragment extends ListFragment {
 				fileDescription.setHint(R.string.add_description);
 
 				// Code Types Spinner
+				
+				/* Mapping id type localization */
+				DocumentType dt = new DocumentType();
+				
+				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
+						.getInstance().getLocalization());
+				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
+						.getInstance().getLocalization());
+				
+				
 				final Spinner spinner = (Spinner) dialog
 						.findViewById(R.id.documentTypesSpinner);
+				
 
-				DocumentType dt = new DocumentType();
+				List<String> list = new ArrayList<String>();
+				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
+				for (String key : keys) {
+					String value = keyValueDocTypes.get(key);
+					list.add(value);
+					// do something
+				}
 
-				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+				//List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -213,9 +235,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						attachment.setFileType((new DocumentType())
-								.getTypebyDisplayVaue((String) spinner
-										.getSelectedItem()));
+						attachment.setFileType((valueKeyDocTypes.get((String) spinner
+										.getSelectedItem())));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
@@ -276,8 +297,20 @@ public class ClaimDocumentsFragment extends ListFragment {
 						.findViewById(R.id.documentTypesSpinner);
 
 				DocumentType dt = new DocumentType();
+				
+				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
+						.getInstance().getLocalization());
+				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
+						.getInstance().getLocalization());
+				
 
-				List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+				List<String> list = new ArrayList<String>();
+				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
+				for (String key : keys) {
+					String value = keyValueDocTypes.get(key);
+					list.add(value);
+					// do something
+				}
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -305,8 +338,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						attachment.setFileType((new DocumentType())
-								.getTypebyDisplayVaue((String) spinner
+						System.out.println("Il valore del tipo " + valueKeyDocTypes.get((String) spinner
+										.getSelectedItem()));
+						attachment.setFileType(valueKeyDocTypes.get((String) spinner
 										.getSelectedItem()));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));

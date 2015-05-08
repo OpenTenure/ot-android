@@ -58,7 +58,7 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 				org.fao.sola.clients.android.opentenure.model.IdType type = new org.fao.sola.clients.android.opentenure.model.IdType();
 
 				type.setDescription(idType.getDescription());
-				type.setCode(idType.getCode());
+				type.setType(idType.getCode());
 				type.setDisplayValue(idType.getDisplayValue());
 				if (org.fao.sola.clients.android.opentenure.model.IdType
 						.getIdType(idType.getCode()) == null)

@@ -32,8 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -42,22 +44,22 @@ public class DocumentType {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	String code;
+	String type;
 	String description;
 	String displayValue;
 
 	@Override
 	public String toString() {
-		return "DocumentType [code=" + code + ", description=" + description
+		return "DocumentType [code=" + type + ", description=" + description
 				+ ", displayValue=" + displayValue + "]";
 	}
 
-	public String getCode() {
-		return code;
+	public String getType() {
+		return type;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getDescription() {
@@ -88,7 +90,7 @@ public class DocumentType {
 			statement = localConnection
 					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
 
@@ -126,7 +128,7 @@ public class DocumentType {
 			statement = localConnection
 					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, docType.getCode());
+			statement.setString(1, docType.getType());
 			statement.setString(2, docType.getDescription());
 			statement.setString(3, docType.getDisplayValue());
 
@@ -169,7 +171,7 @@ public class DocumentType {
 
 			if (result.next()) {
 
-				documentType.setCode(result.getString(1));
+				documentType.setType(result.getString(1));
 				documentType.setDescription(result.getString(2));
 				documentType.setDisplayValue(result.getString(3));
 
@@ -206,10 +208,10 @@ public class DocumentType {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE DOCUMENT_TYPE SET CODE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE CODE = ?");
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
-			statement.setString(4, getCode());
+			statement.setString(4, getType());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -249,7 +251,7 @@ public class DocumentType {
 
 			while (rs.next()) {
 				DocumentType documentType = new DocumentType();
-				documentType.setCode(rs.getString(1));
+				documentType.setType(rs.getString(1));
 				documentType.setDescription(rs.getString(2));
 				documentType.setDisplayValue(rs.getString(3));
 
@@ -289,14 +291,17 @@ public class DocumentType {
 	public List<String> getDocumentTypesDisplayValues(String localization) {
 
 		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
 		List<String> displayList = new ArrayList<String>();
 
-		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list
+				.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
-			displayList.add(dnl.getLocalizedDisplayName(docType.getDisplayValue()));
+			displayList.add(dnl.getLocalizedDisplayName(docType
+					.getDisplayValue()));
 		}
 		return displayList;
 	}
@@ -307,11 +312,12 @@ public class DocumentType {
 
 		int i = 0;
 
-		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list.iterator(); iterator.hasNext();) {
+		for (Iterator<org.fao.sola.clients.android.opentenure.model.DocumentType> iterator = list
+				.iterator(); iterator.hasNext();) {
 			org.fao.sola.clients.android.opentenure.model.DocumentType docType = (org.fao.sola.clients.android.opentenure.model.DocumentType) iterator
 					.next();
 
-			if (docType.getCode().equals(code)) {
+			if (docType.getType().equals(code)) {
 				return i;
 			}
 
@@ -319,6 +325,39 @@ public class DocumentType {
 		}
 		return 0;
 
+	}
+	
+	
+	public Map<String,String> getKeyValueMap(String localization) {
+
+		List<DocumentType> list = getDocumentTypes();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<DocumentType> iterator = list.iterator(); iterator.hasNext();) {
+			
+			DocumentType documentType = (DocumentType) iterator
+					.next();
+			
+			keyValueMap.put(documentType.getType(),dnl.getLocalizedDisplayName(documentType.getDisplayValue()));
+		}
+		return keyValueMap;
+	}
+	
+	public Map<String,String> getValueKeyMap(String localization) {
+
+		List<DocumentType> list = getDocumentTypes();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<DocumentType> iterator = list.iterator(); iterator.hasNext();) {
+			
+			DocumentType documentType = (DocumentType) iterator
+					.next();
+
+			keyValueMap.put(dnl.getLocalizedDisplayName(documentType.getDisplayValue()),documentType.getType());
+		}
+		return keyValueMap;
 	}
 
 	public String getTypebyDisplayVaue(String value) {

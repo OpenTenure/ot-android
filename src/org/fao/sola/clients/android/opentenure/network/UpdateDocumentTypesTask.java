@@ -60,7 +60,7 @@ public class UpdateDocumentTypesTask extends
 				org.fao.sola.clients.android.opentenure.model.DocumentType type = new org.fao.sola.clients.android.opentenure.model.DocumentType();
 
 				type.setDescription(documentType.getDescription());
-				type.setCode(documentType.getCode());
+				type.setType(documentType.getCode());
 				type.setDisplayValue(documentType.getDisplayValue());
 
 				if (DocumentType.getDocumentType(documentType.getCode()) == null)

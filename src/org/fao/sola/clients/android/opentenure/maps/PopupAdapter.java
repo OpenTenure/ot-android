@@ -49,10 +49,13 @@ class PopupAdapter implements InfoWindowAdapter {
 
 	  @Override
 	  public View getInfoContents(Marker marker) {
+		  
 	    View popup=inflater.inflate(R.layout.marker_popup, null);
 
 	    TextView tv=(TextView)popup.findViewById(R.id.title);
 	    tv.setText(marker.getTitle());
+	    
+	    System.out.println("marker.getTitle() " + marker.getTitle());
 
 	    return(popup);
 	  }

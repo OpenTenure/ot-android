@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
@@ -93,6 +94,10 @@ public class PDFClaimExporter {
 	private int currentY = 0;
 	private int pageWidth = A4_PAGE_WIDTH;
 	private int pageHeight = A4_PAGE_HEIGHT;
+	
+	
+	DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+			OpenTenureApplication.getInstance().getLocalization());
 
 	public PDFClaimExporter(Context context, String claimId) {
 
@@ -381,8 +386,8 @@ public class PDFClaimExporter {
 								+ ": ", 16);
 				newLine();
 				if (claim.getPerson().getIdType() != null)
-					writeText(new IdType().getDisplayValueByType(claim
-							.getPerson().getIdType()));
+					writeText(dnl.getLocalizedDisplayName(new IdType().getDisplayValueByType(claim
+							.getPerson().getIdType())));
 				setX(300);
 				if (claim.getPerson().getIdNumber() != null)
 					writeText(claim.getPerson().getIdNumber());
@@ -881,8 +886,8 @@ public class PDFClaimExporter {
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
-					writeText((new DocumentType())
-							.getDisplayVauebyType(attachment.getFileType()));
+					writeText(dnl.getLocalizedDisplayName((new DocumentType())
+							.getDisplayVauebyType(attachment.getFileType())));
 
 					setX(300);
 					writeText(attachment.getDescription());
@@ -996,8 +1001,8 @@ public class PDFClaimExporter {
 						+ context.getResources().getString(
 								R.string.square_meters));
 				setX(300);
-				writeText(new ClaimType()
-						.getDisplayValueByType(claim.getType()));
+				writeText(dnl.getLocalizedDisplayName(new ClaimType()
+						.getDisplayValueByType(claim.getType())));
 				newLine();
 				writeBoldText(
 						context.getResources().getString(R.string.land_use), 16);
@@ -1007,8 +1012,8 @@ public class PDFClaimExporter {
 								R.string.date_of_start_label_print), 16);
 
 				newLine();
-				writeText(new LandUse().getDisplayValueByType(claim
-						.getLandUse()));
+				writeText(dnl.getLocalizedDisplayName(new LandUse().getDisplayValueByType(claim
+						.getLandUse())));
 				setX(300);
 				sdf.applyPattern("dd/MM/yyyy");
 				if (claim.getDateOfStart() != null)

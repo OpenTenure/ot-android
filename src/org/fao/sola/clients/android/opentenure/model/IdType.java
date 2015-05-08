@@ -32,8 +32,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -42,23 +44,33 @@ public class IdType {
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	String code;
+	String type;
 	String displayValue;
 	String description;
 	String status;
 
 	@Override
 	public String toString() {
-		return "DocumentType [code=" + code + ", description=" + description
+		return "DocumentType [code=" + type + ", description=" + description
 				+ ", displayValue=" + displayValue + ", status=" + status + "]";
 	}
 
-	public String getCode() {
-		return code;
+
+
+	public Database getDb() {
+		return db;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setDb(Database db) {
+		this.db = db;
+	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getDisplayValue() {
@@ -97,7 +109,7 @@ public class IdType {
 			statement = localConnection
 					.prepareStatement("INSERT INTO ID_TYPE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
 
@@ -135,7 +147,7 @@ public class IdType {
 			statement = localConnection
 					.prepareStatement("INSERT INTO ID_TYPE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
 
-			statement.setString(1, idType.getCode());
+			statement.setString(1, idType.getType());
 			statement.setString(2, idType.getDescription());
 			statement.setString(3, idType.getDisplayValue());
 
@@ -177,7 +189,7 @@ public class IdType {
 
 			while (rs.next()) {
 				IdType idType = new IdType();
-				idType.setCode(rs.getString(1));
+				idType.setType(rs.getString(1));
 				idType.setDescription(rs.getString(2));
 				idType.setDisplayValue(rs.getString(3));
 
@@ -228,6 +240,38 @@ public class IdType {
 		}
 		return displayList;
 	}
+	
+	public Map<String,String> getKeyValueMap(String localization) {
+
+		List<IdType> list = getIdTypes();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<IdType> iterator = list.iterator(); iterator.hasNext();) {
+			
+			IdType idType = (IdType) iterator
+					.next();
+			
+			keyValueMap.put(idType.getType(),dnl.getLocalizedDisplayName(idType.getDisplayValue()));
+		}
+		return keyValueMap;
+	}
+	
+	public Map<String,String> getValueKeyMap(String localization) {
+
+		List<IdType> list = getIdTypes();
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		Map<String,String> keyValueMap = new HashMap<String,String>();
+
+		for (Iterator<IdType> iterator = list.iterator(); iterator.hasNext();) {
+			
+			IdType idType = (IdType) iterator
+					.next();
+
+			keyValueMap.put(dnl.getLocalizedDisplayName(idType.getDisplayValue()),idType.getType());
+		}
+		return keyValueMap;
+	}
 
 	public int getIndexByCodeType(String code) {
 
@@ -239,7 +283,7 @@ public class IdType {
 			org.fao.sola.clients.android.opentenure.model.IdType idType = (org.fao.sola.clients.android.opentenure.model.IdType) iterator
 					.next();
 
-			if (idType.getCode().equals(code)) {
+			if (idType.getType().equals(code)) {
 
 				return i;
 
@@ -361,7 +405,7 @@ public class IdType {
 
 			if (result.next()) {
 
-				idType.setCode(result.getString(1));
+				idType.setType(result.getString(1));
 				idType.setDescription(result.getString(2));
 				idType.setDisplayValue(result.getString(3));
 				
@@ -398,10 +442,10 @@ public class IdType {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE ID_TYPE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
-			statement.setString(1, getCode());
+			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
-			statement.setString(4, getCode());
+			statement.setString(4, getType());
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {

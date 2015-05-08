@@ -37,6 +37,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SaveDetailsNegativeListener;
@@ -95,7 +97,10 @@ public class ClaimDetailsFragment extends Fragment {
 	private ModeDispatcher modeActivity;
 	private FormDispatcher formDispatcher;
 	private ClaimListener claimListener;
-	private Map<String, String> keyValueMap;
+	private Map<String, String> keyValueMapLandUse;
+	private Map<String, String> valueKeyMapLandUse;
+	private Map<String, String> keyValueClaimTypesMap;
+	private Map<String, String> valueKeyClaimTypesMap;
 	private boolean challengedJustLoaded = false;
 	private final Calendar localCalendar = Calendar.getInstance();
 	private static final int PERSON_RESULT = 100;
@@ -409,7 +414,23 @@ public class ClaimDetailsFragment extends Fragment {
 
 		ClaimType ct = new ClaimType();
 
-		List<String> list = ct.getClaimsTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+		keyValueClaimTypesMap = ct.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
+		valueKeyClaimTypesMap = ct.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization());
+		//List<String> list = new ArrayList<String>(keyValueClaimTypesMap.keySet());
+		
+		List<String> list = new ArrayList<String>();
+		//java.util.Collections.sort(list);
+		
+		SortedSet<String> keys = new TreeSet<String>(keyValueClaimTypesMap.keySet());
+		for (String key : keys) { 
+		   String value = keyValueClaimTypesMap.get(key);
+		   list.add(value);
+		   // do something
+		}
+
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+		}
 
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner, list) {
@@ -423,8 +444,22 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.landUseSpinner);
 
 		LandUse lu = new LandUse();
-		keyValueMap = lu.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
-		List<String> landUseslist = new ArrayList<String>(keyValueMap.keySet());
+		keyValueMapLandUse = lu.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
+		valueKeyMapLandUse = lu.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization());
+		
+		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+		}
+		
+		List<String> landUseslist = new ArrayList<String>();
+		keys = new TreeSet<String>(keyValueMapLandUse.keySet());
+		for (String key : keys) { 
+		   String value = keyValueMapLandUse.get(key);
+		   landUseslist.add(value);
+		   // do something
+		}
+		
+		//java.util.Collections.sort(landUseslist);
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner,
@@ -629,7 +664,7 @@ public class ClaimDetailsFragment extends Fragment {
 	}
 
 	public void load(Claim claim) {
-
+		
 		if (claim != null) {
 
 			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
@@ -738,11 +773,11 @@ public class ClaimDetailsFragment extends Fragment {
 
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
-		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
+		claim.setType(valueKeyClaimTypesMap.get(displayValue));
 
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
-		claim.setLandUse(keyValueMap.get(landUseDispValue));
+		claim.setLandUse(valueKeyMapLandUse.get(landUseDispValue));
 
 		String notes = ((EditText) rootView
 				.findViewById(R.id.claim_notes_input_field)).getText()
@@ -857,12 +892,15 @@ public class ClaimDetailsFragment extends Fragment {
 
 		String displayValue = (String) ((Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner)).getSelectedItem();
-		claim.setType(new ClaimType().getTypebyDisplayValue(displayValue));
+		claim.setType(valueKeyClaimTypesMap.get(displayValue));
 
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
-		claim.setLandUse(keyValueMap.get(landUseDispValue));
-
+		claim.setLandUse(valueKeyMapLandUse.get(landUseDispValue));
+		
+		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+		}
 		String notes = ((EditText) rootView
 				.findViewById(R.id.claim_notes_input_field)).getText()
 				.toString();
@@ -1078,7 +1116,6 @@ public class ClaimDetailsFragment extends Fragment {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
 				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
 						"application/pdf");
-				System.out.println("PDF " + pdf.getFileName());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 				startActivity(intent);
@@ -1184,19 +1221,18 @@ public class ClaimDetailsFragment extends Fragment {
 								.getSelectedItem();
 
 						if (!claim.getType().equals(
-								new ClaimType()
-										.getTypebyDisplayValue(claimType)))
+								valueKeyClaimTypesMap.get(claimType)))
 							changed = true;
 						else {
 							String landUseDispValue = (String) ((Spinner) rootView
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
 							if (claim.getLandUse() == null
-									&& keyValueMap.get(landUseDispValue) != null)
+									&& valueKeyMapLandUse.get(landUseDispValue) != null)
 								changed = true;
 							else if (!claim
 									.getLandUse()
-									.equals(keyValueMap.get(landUseDispValue)))
+									.equals(valueKeyMapLandUse.get(landUseDispValue)))
 								changed = true;
 							else {
 
