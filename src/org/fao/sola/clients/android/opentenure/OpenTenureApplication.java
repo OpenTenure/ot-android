@@ -44,17 +44,20 @@ import org.fao.sola.clients.android.opentenure.model.Database;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 
 public class OpenTenureApplication extends Application {
-
+	private static final String VERSION_NOT_FOUND = "Not found";
 	private static OpenTenureApplication sInstance;
 	private Database database;
 	private static Context context;
@@ -63,6 +66,7 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedIdTypes = false;
 	private boolean checkedLandUses = false;
 	private boolean checkedLanguages = false;
+	
 	public boolean isCheckedLanguages() {
 		return checkedLanguages;
 	}
@@ -195,7 +199,18 @@ public class OpenTenureApplication extends Application {
 		FileSystemUtilities.createClaimantsFolder();
 		FileSystemUtilities.createOpenTenureFolder();
 		FileSystemUtilities.createCertificatesFolder();
-
+		// Get current software version from preferences and new one from package info for migration
+		String version = null;
+		try {
+			version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			version = VERSION_NOT_FOUND;
+		}
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getContext());
+		// Use new version as default for new one
+		String currentVersion = preferences.getString(OpenTenurePreferencesActivity.SOFTWARE_VERSION_PREF, VERSION_NOT_FOUND);
+		OpenTenurePreferencesMigrator.migratePreferences(preferences, currentVersion, version);
 		super.onCreate();
 
 	}

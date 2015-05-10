@@ -111,7 +111,6 @@
     <string name="group_name">Name</string>
     <string name="signature">Signature</string>
     <string name="software_version_title">Software Version</string>
-    <string name="software_version">1.1.0</string>
     <string name="claim_date">Claim date</string>    
     <string name="claim_name">Claim name</string>
     <string name="claim_name_label">Claim name *</string>
@@ -184,7 +183,6 @@
     <string name="message_db_locked">Data is password protected</string>
     <string name="message_db_password">Password to access data?</string>
     <string name="message_cant_open_db">Unable to access data</string>
-    <string name="message_check_upgrade_db">Upgrading local data</string>
     <string name="message_no_application">Can\'t find an application to open the file</string>
     <string name="message_default_initialization">You are about to initialize the application with the default Community Server. Default Community Server should be used just for demo purpose. Do you want to continue? Otherwise press Cancel and put a community server URL in settings  </string>
     <string name="message_error_opening_file">Error opening the file : </string>

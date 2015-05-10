@@ -158,7 +158,6 @@
     <string name="message_db_locked">البيانات محمية بكلمة مرور</string>
     <string name="message_db_password">كلمة المرور للوصول الى البيانات؟</string>
     <string name="message_cant_open_db">لا يمكن الوصول الى البيانات</string>
-    <string name="message_check_upgrade_db">يتم ترقية البيانات المحلية</string>
     <string name="message_no_application">لم يتم العثور على تطبيق لفتح الملف</string>
     <string name="message_error_opening_file">خطأ أثناء فتح الملف: </string>
     <string name="message_old_db_password">كلمة المرور الحالية؟</string>

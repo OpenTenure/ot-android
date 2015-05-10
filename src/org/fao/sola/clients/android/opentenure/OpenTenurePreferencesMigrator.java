@@ -28,39 +28,50 @@
 package org.fao.sola.clients.android.opentenure;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.os.Bundle;
+import android.util.Log;
 
+public class OpenTenurePreferencesMigrator {
+	
+	private static final String VERSION_1_1_0 = "1.1.0";
 
-import android.preference.PreferenceActivity;
-
-public class OpenTenurePreferencesActivity extends PreferenceActivity implements
-		OnSharedPreferenceChangeListener {
-	public static final int REQUEST_CODE = 128;
-	public static final int RESULT_CODE_RESTART = 128;
-	public static final String CS_URL_PREF = "cs_url_pref";
-	public static final String TMS_URL_PREF = "tms_url_pref";
-	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
-	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
-	public static final String FORM_URL_PREF = "form_template_url_pref";
-	public static final String SOFTWARE_VERSION_PREF = "software_version_pref";
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		// Display the fragment as the main content.
-		getFragmentManager()
-				.beginTransaction()
-				.replace(android.R.id.content,
-						new OpenTenurePreferencesFragment()).commit();
-
+	public static void migratePreferences(SharedPreferences preferences, String currentVersion, String newVersion){
 		
-	}
+		if(!VERSION_1_1_0.equalsIgnoreCase(currentVersion) && VERSION_1_1_0.equalsIgnoreCase(newVersion)){
+			migratePreferences_1_1_0(preferences);
+			Log.d(OpenTenurePreferencesMigrator.class.getName(), "Preferences migrated to version " + VERSION_1_1_0);
+		}
 
-	@Override
-	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-			String key) {
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(OpenTenurePreferencesActivity.SOFTWARE_VERSION_PREF, newVersion);
+		editor.commit();
+	}
+	
+	public static void migratePreferences_1_1_0(SharedPreferences preferences){
+
+		String language = OpenTenure.default_language;
+		
+		if(preferences.getBoolean(OpenTenure.albanian_language, false)){
+			language = OpenTenure.albanian_language;
+		}
+		if(preferences.getBoolean(OpenTenure.khmer_language, false)){
+			language = OpenTenure.khmer_language;
+		}
+		SharedPreferences.Editor editor = preferences.edit();
+		editor.putString(OpenTenure.language, language);
+		editor.commit();
+		
+		String csUrl = preferences.getString(
+				OpenTenurePreferencesActivity.CS_URL_PREF, "") ;
+		String formUrl = preferences.getString(
+				OpenTenurePreferencesActivity.FORM_URL_PREF, csUrl) ;
+
+		if(formUrl.equalsIgnoreCase(csUrl) || formUrl.equalsIgnoreCase(csUrl+"/")){
+			// There's no longer need to specify the dynamic form URL
+			// if it's the default form on CS url as of 1.1.0
+			editor = preferences.edit();
+			editor.putString(OpenTenurePreferencesActivity.FORM_URL_PREF, "");
+			editor.commit();
+		}
 	}
 
 }

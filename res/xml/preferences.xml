@@ -55,12 +55,14 @@
         android:key="language"
         android:title="@string/language" />
     
-    <PreferenceCategory android:title="@string/information" >
-	    <Preference
-	        android:dialogTitle="@string/software_version_title"
-	        android:key="software_version_pref"
-	        android:summary="@string/software_version"
-	        android:title="@string/software_version_title" />
+	<PreferenceCategory android:title="@string/information" >
+		<EditTextPreference
+		    android:key="software_version_pref"
+		    android:title="@string/software_version_title"
+		    android:enabled="false" 
+		    android:selectable="false"
+		    android:persistent="false"
+		    android:shouldDisableView="false"/>
 	</PreferenceCategory>
     
 </PreferenceScreen>

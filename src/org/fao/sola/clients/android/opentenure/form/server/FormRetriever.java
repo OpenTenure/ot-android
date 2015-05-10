@@ -35,23 +35,44 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 
 	private String formUrl;
-	public void setFormUrl(String formUrl) {
-		this.formUrl = formUrl;
-	}
 
-	public FormRetriever() {
+	private String getFormUrl(Context context){
+			SharedPreferences OpenTenurePreferences = PreferenceManager
+					.getDefaultSharedPreferences(context);
+
+			String formUrl = OpenTenurePreferences.getString(
+					OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
+
+			if (formUrl.equalsIgnoreCase("")) {
+				// If no explicit URL is set for the dynamic form or if only the server url has been specified
+				// use the default one for the explicitly configured server
+				// or the default one
+				formUrl = String.format(
+						CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
+								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
+			}
+		return formUrl;
+	}
+	
+	public FormRetriever(Context context) {
+		formUrl = getFormUrl(context);
 	}
 	
 	protected void onPreExecute() {

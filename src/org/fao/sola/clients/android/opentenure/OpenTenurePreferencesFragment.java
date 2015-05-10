@@ -28,7 +28,9 @@
 package org.fao.sola.clients.android.opentenure;
 
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
@@ -69,5 +71,13 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
 		OpenTenurePreferences
 				.registerOnSharedPreferenceChangeListener(new PrefChangeListener());
+		EditTextPreference versionPref = (EditTextPreference)findPreference(OpenTenurePreferencesActivity.SOFTWARE_VERSION_PREF);
+		String version;
+		try {
+			version = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e) {
+			version = "Not found";
+		}
+		versionPref.setTitle(getString(R.string.software_version_title) + ": " + version);
 	}
 }

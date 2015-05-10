@@ -27,8 +27,6 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
-import java.util.Locale;
-
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
@@ -38,7 +36,6 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
-import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,15 +43,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class InitializationActivity extends Activity {
 
@@ -90,12 +83,11 @@ public class InitializationActivity extends Activity {
 								checkPerformDbUpgrades();
 								createInitializationConfig();
 								Log.d(this.getClass().getName(), "db opened");
-								StartOpenTenure start = new StartOpenTenure();
-								start.setFormUrl(getFormUrl());
+								StartOpenTenure start = new StartOpenTenure(getBaseContext());
 								start.execute();
 							} else {
 								Log.d(this.getClass().getName(),
-										"db is still close");
+										"db is still closed");
 								finish();
 							}
 						}
@@ -115,29 +107,10 @@ public class InitializationActivity extends Activity {
 			Log.d(this.getClass().getName(), "db not encrypted");
 			checkPerformDbUpgrades();
 			createInitializationConfig();
-			StartOpenTenure start = new StartOpenTenure();
-			start.setFormUrl(getFormUrl());
+			StartOpenTenure start = new StartOpenTenure(this);
 			start.execute();
 		}
 
-	}
-	
-	private String getFormUrl(){
-		SharedPreferences OpenTenurePreferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
-
-		String formUrl = OpenTenurePreferences.getString(
-				OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
-
-		if (formUrl.equalsIgnoreCase("")) {
-			// I no explicit URL is set for the dynamic form
-			// use the default one for the explicitly configured server
-			// or the default one
-			formUrl = String.format(
-					CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
-							OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
-		}
-		return formUrl;
 	}
 	
 	private void createInitializationConfig(){
@@ -156,8 +129,6 @@ public class InitializationActivity extends Activity {
 		// Check for pending upgrades
 		if (OpenTenureApplication.getInstance().getDatabase().getUpgradePath()
 				.size() > 0) {
-			Toast.makeText(this, R.string.message_check_upgrade_db,
-					Toast.LENGTH_LONG).show();
 			OpenTenureApplication.getInstance().getDatabase().performUpgrade();
 			Log.d(this.getClass().getName(), "DB upgraded to version: "
 					+ Configuration.getConfigurationValue("DBVERSION"));
@@ -167,17 +138,11 @@ public class InitializationActivity extends Activity {
 
 	public class StartOpenTenure extends AsyncTask<Void, Void, Void> {
 
-		private String formUrl;
-
-		public void setFormUrl(String formUrl) {
-			this.formUrl = formUrl;
+		private Context context;
+		
+		public StartOpenTenure(Context context){
+			this.context = context;
 		}
-
-		public void setCommunityServerBaseUrl(String communityServerBaseUrl) {
-			this.communityServerBaseUrl = communityServerBaseUrl;
-		}
-
-		private String communityServerBaseUrl;
 
 		@Override
 		protected void onPreExecute() {
@@ -255,9 +220,7 @@ public class InitializationActivity extends Activity {
 					Log.d(this.getClass().getName(),
 							"starting tasks for form retrieval");
 
-					FormRetriever formRetriever = new FormRetriever();
-					formRetriever.setFormUrl(formUrl);
-					
+					FormRetriever formRetriever = new FormRetriever(context);
 					formRetriever
 							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}

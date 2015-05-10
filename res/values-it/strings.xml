@@ -168,7 +168,6 @@
     <string name="message_db_locked">Dati protetti da password</string>
     <string name="message_db_password">Password per accedere ai dati?</string>
     <string name="message_cant_open_db">Impossibile accedere ai dati</string>
-    <string name="message_check_upgrade_db">Aggiornamento dei dati locali</string>
     <string name="message_old_db_password">Password attuale?</string>
     <string name="message_data_over_mobile">Stai per trasferire una quantita\' di dati possibilmente grande usando una connessione internet mobile. Il costo associato puo\' essere elevato a secondo del tuo piano tariffario</string>
     <string name="message_no_connection_at_startup">Nessuna connessione Internet disponibile. Le informazioni di configurazione potrebbero non riflettere cambiamenti recenti e non sara\' possibile trasferire informazioni. Connettiti ad Internet se vuoi trasferire informazioni usando OpenTenure</string>

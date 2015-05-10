@@ -183,7 +183,6 @@
     <string name="message_db_locked">Данные защищены паролем</string>
     <string name="message_db_password">Пароль доступа к данным</string>
     <string name="message_cant_open_db">Не удалось получить доступ к данным</string>
-    <string name="message_check_upgrade_db">Обновление локальных данных</string>
     <string name="message_no_application">Не обнаружено приложение для открытия файла</string>
     <string name="message_default_initialization">Вы собираетесь инициализировать приложение с доступом к серверу общин, установелнному по умолчанию. Default Community Server should be used just for demo purpose. Продолжить? В противном случае нажмите Отмена и введите адрес сервера в настройках  </string>
     <string name="message_error_opening_file">Ошибка при открытии файла : </string>

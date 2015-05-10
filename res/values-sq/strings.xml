@@ -158,7 +158,6 @@
     <string name="message_db_locked">Të dhënat janë të mbrojtura me fjalëkalim</string>
     <string name="message_db_password">Fjalëkalimi për të aksesuar të dhënat</string>
     <string name="message_cant_open_db">Të dhënat nuk u aksesuan</string>
-    <string name="message_check_upgrade_db">Duke përmirësuar të dhënat lokale</string>
     <string name="message_no_application">Nuk mundi të gjejë aplikacion për ta hapur skedarin</string>
     <string name="message_error_opening_file">Gabim. Skedari nuk mund të hapet : </string>
     <string name="message_old_db_password">Fjalëkalimi ekzistues</string>

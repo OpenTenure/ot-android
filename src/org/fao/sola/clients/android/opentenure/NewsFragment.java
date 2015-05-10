@@ -43,7 +43,6 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
-import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -638,24 +637,7 @@ public class NewsFragment extends ListFragment {
 		if (!OpenTenureApplication.getInstance().isCheckedForm()) {
 			Log.d(this.getClass().getName(),
 					"starting tasks for form retrieval");
-
-			SharedPreferences OpenTenurePreferences = PreferenceManager
-					.getDefaultSharedPreferences(getActivity());
-
-			String formUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
-
-			if (formUrl.equalsIgnoreCase("")) {
-				// I no explicit URL is set for the dynamic form
-				// use the default one for the explicitly configured server
-				// or the default one
-				formUrl = String.format(
-						CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
-								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
-			}
-			
-			FormRetriever formRetriever = new FormRetriever();
-			formRetriever.setFormUrl(formUrl);
+			FormRetriever formRetriever = new FormRetriever(getActivity());
 			formRetriever.execute();
 		}
 
