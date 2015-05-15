@@ -53,28 +53,33 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 
 	private String formUrl;
 
-	private String getFormUrl(Context context){
-			SharedPreferences OpenTenurePreferences = PreferenceManager
-					.getDefaultSharedPreferences(context);
+	private String getFormUrl(Context context) {
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(context);
 
-			String formUrl = OpenTenurePreferences.getString(
-					OpenTenurePreferencesActivity.FORM_URL_PREF, "") ;
+		String formUrl = OpenTenurePreferences.getString(
+				OpenTenurePreferencesActivity.FORM_URL_PREF, "");
 
-			if (formUrl.equalsIgnoreCase("")) {
-				// If no explicit URL is set for the dynamic form or if only the server url has been specified
-				// use the default one for the explicitly configured server
-				// or the default one
-				formUrl = String.format(
-						CommunityServerAPIUtilities.HTTPS_GETFORM, OpenTenurePreferences.getString(
-								OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
-			}
+		if (formUrl.equalsIgnoreCase("")) {
+			// If no explicit URL is set for the dynamic form or if only the
+			// server url has been specified
+			// use the default one for the explicitly configured server
+			// or the default one
+			formUrl = String.format(CommunityServerAPIUtilities.HTTPS_GETFORM,
+					OpenTenurePreferences.getString(
+							OpenTenurePreferencesActivity.CS_URL_PREF,
+							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
+
+		} else
+			formUrl = String.format(CommunityServerAPIUtilities.HTTPS_GETFORM,
+					formUrl);
 		return formUrl;
 	}
-	
+
 	public FormRetriever(Context context) {
 		formUrl = getFormUrl(context);
 	}
-	
+
 	protected void onPreExecute() {
 	}
 
@@ -84,21 +89,19 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 		int result = 0;
 
 		try {
-			Log.d(this.getClass().getName()
-					, "Getting dynamic survey form from: " + formUrl);
+			Log.d(this.getClass().getName(),
+					"Getting dynamic survey form from: " + formUrl);
 
 			URL url = new URL(formUrl);
-			HttpURLConnection c = (HttpURLConnection) url
-					.openConnection();
+			HttpURLConnection c = (HttpURLConnection) url.openConnection();
 			c.connect();
 			is = c.getInputStream();
 			String body = getBody(is);
-			Log.d(this.getClass().getName()
-					, "Got dynamic survey form: " + body);
-			
-			if(body.trim().equals("{}"))
+			Log.d(this.getClass().getName(), "Got dynamic survey form: " + body);
+
+			if (body.trim().equals("{}"))
 				return 100;
-			
+
 			FormTemplate ft = FormTemplate.fromJson(body);
 			result = SurveyFormTemplate.saveDefaultFormTemplate(ft);
 			is.close();
@@ -152,7 +155,7 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 
 	protected void onPostExecute(Integer result) {
 
-		if(result > 0){
+		if (result > 0) {
 			OpenTenureApplication.getInstance().setCheckedForm(true);
 
 			synchronized (OpenTenureApplication.getInstance()) {
@@ -166,9 +169,8 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()		
-						&& OpenTenureApplication.getInstance()
-								.isCheckedTypes()
+								.isCheckedLanguages()
+						&& OpenTenureApplication.getInstance().isCheckedTypes()
 
 				) {
 
