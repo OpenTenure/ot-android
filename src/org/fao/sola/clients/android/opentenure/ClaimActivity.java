@@ -515,15 +515,20 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		}
 
 		private String getSectionTitle(int position) {
+			DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+					OpenTenureApplication.getInstance().getLocalization());
+			String sectionTitle = null;
 			if (editedFormPayload != null) {
-				return editedFormPayload.getSectionPayloadList().get(position)
+				sectionTitle = editedFormPayload.getSectionPayloadList().get(position)
 						.getDisplayName().toUpperCase(Locale.US);
 			} else if (formTemplate != null) {
-				return formTemplate.getSectionTemplateList().get(position)
+				sectionTitle = formTemplate.getSectionTemplateList().get(position)
 						.getDisplayName().toUpperCase(Locale.getDefault());
 			} else {
-				return "";
+				sectionTitle = "";
 			}
+			return dnl.getLocalizedDisplayName(sectionTitle);
+
 		}
 
 		@Override

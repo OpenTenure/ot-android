@@ -159,6 +159,7 @@
     <string name="message_downloading_attachment">Scaricando l\'allegato</string>
     <string name="message_uploading_attachment">Upload dell\'attachment in corso</string>
     <string name="message_no_application">Manca un\'applicazione per aprire il file </string>
+    <string name="message_default_initialization">Stai per inizializzare l\'applicazione usando il Community Server di prova. Il Community Server dovrebbe essere usato soltanto a scopo dimostrativo. Vuoi procedere? Altrimenti seleziona Annulla e modifica l\'URL del Community Server nelle impostazioni</string>
     <string name="message_error_opening_file">Errore aprendo il file : </string>
     <string name="message_export">Esportando</string>
     <string name="message_no_claim_to_download">Non ci sono claim da scaricare</string>

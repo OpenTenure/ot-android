@@ -70,9 +70,8 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 							OpenTenurePreferencesActivity.CS_URL_PREF,
 							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
 
-		} else
-			formUrl = String.format(CommunityServerAPIUtilities.HTTPS_GETFORM,
-					formUrl);
+		}
+		
 		return formUrl;
 	}
 
