@@ -193,7 +193,7 @@ public class FieldViewFactory {
 			text.setClickable(false);
 			text.setLongClickable(false);
 		} else {
-			text.setHint(field.getHint());
+			text.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			text.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -259,7 +259,7 @@ public class FieldViewFactory {
 			number.setClickable(false);
 			number.setLongClickable(false);
 		} else {
-			number.setHint(field.getHint());
+			number.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -325,7 +325,7 @@ public class FieldViewFactory {
 			number.setClickable(false);
 			number.setLongClickable(false);
 		} else {
-			number.setHint(field.getHint());
+			number.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			number.addTextChangedListener(new TextWatcher() {
 				long lastTime = System.currentTimeMillis();
 
@@ -370,6 +370,7 @@ public class FieldViewFactory {
 	}
 
 	public static View getViewForBooleanField(final Activity activity,
+			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		final Switch bool;
 		bool = new Switch(activity);
@@ -391,7 +392,7 @@ public class FieldViewFactory {
 			bool.setClickable(false);
 			bool.setLongClickable(false);
 		} else {
-			bool.setHint(field.getHint());
+			bool.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			bool.setOnClickListener(new OnClickListener() {
 
 				@Override
@@ -444,7 +445,7 @@ public class FieldViewFactory {
 			datetime.setClickable(false);
 			datetime.setLongClickable(false);
 		} else {
-			datetime.setHint(field.getHint());
+			datetime.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
 				@Override
@@ -553,7 +554,7 @@ public class FieldViewFactory {
 			datetime.setClickable(false);
 			datetime.setLongClickable(false);
 		} else {
-			datetime.setHint(field.getHint());
+			datetime.setHint(dnl.getLocalizedDisplayName(field.getHint()));
 			final TimePickerDialog.OnTimeSetListener time = new TimePickerDialog.OnTimeSetListener() {
 
 				@Override

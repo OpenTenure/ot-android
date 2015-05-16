@@ -155,7 +155,7 @@ public class SectionElementFragment extends Fragment {
 				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			default:
 				break;

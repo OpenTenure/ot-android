@@ -36,7 +36,8 @@ public class OpenTenurePreferencesMigrator {
 
 	public static void migratePreferences(SharedPreferences preferences, String currentVersion, String newVersion){
 		
-		if(!VERSION_1_1_0.equalsIgnoreCase(currentVersion) && VERSION_1_1_0.equalsIgnoreCase(newVersion)){
+		if(VERSION_1_1_0.compareTo(currentVersion)>0
+				&& VERSION_1_1_0.compareTo(newVersion)<=0){
 			migratePreferences_1_1_0(preferences);
 			Log.d(OpenTenurePreferencesMigrator.class.getName(), "Preferences migrated to version " + VERSION_1_1_0);
 		}
