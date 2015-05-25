@@ -1,7 +1,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/action_new"
+    <item android:id="@+id/action_change_map_mode"
+          android:icon="@android:drawable/ic_menu_manage"
+          android:title="@string/action_change_map_mode"
+          android:showAsAction="ifRoom" >
+        <menu>
+            <item android:id="@+id/action_add_boundary"
+                  android:title="@string/action_add_boundary" />
+            <item android:id="@+id/action_add_non_boundary"
+                  android:title="@string/action_add_non_boundary" />
+            <item android:id="@+id/action_measure"
+                  android:title="@string/action_measure" />
+        </menu>
+    </item>
+    <item android:id="@+id/action_add_from_gps"
           android:icon="@android:drawable/ic_input_add"
-          android:title="@string/action_new"
+          android:title="@string/action_add_from_gps"
           android:showAsAction="ifRoom" />    
     <item android:id="@+id/action_rotate"
           android:icon="@drawable/screenrotation"

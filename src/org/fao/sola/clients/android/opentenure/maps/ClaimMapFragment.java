@@ -35,6 +35,7 @@ import org.fao.sola.clients.android.opentenure.ClaimListener;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.maps.MainMapFragment.MapType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 
@@ -89,6 +90,12 @@ import com.vividsolutions.jts.geom.Polygon;
 public class ClaimMapFragment extends Fragment implements
 		OnCameraChangeListener, SensorEventListener, ClaimListener {
 
+	public enum MapMode {
+		add_boundary,
+		add_non_boundary,
+		measure
+	};
+
 	private static final int MAP_LABEL_FONT_SIZE = 16;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -96,6 +103,8 @@ public class ClaimMapFragment extends Fragment implements
 	private static int CLAIM_MAP_SIZE = 800;
 	private static int CLAIM_MAP_PADDING = 50;
 
+	private MapMode mapMode = MapMode.add_boundary;
+	private MapType mapType = MapType.map_provider_google_normal;
 	private View mapView;
 	private MapLabel label;
 	private GoogleMap map;
@@ -108,7 +117,6 @@ public class ClaimMapFragment extends Fragment implements
 	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
-	private int mapType = R.id.map_provider_google_normal;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
 	private double snapLat;
 	private double snapLon;
@@ -161,7 +169,7 @@ public class ClaimMapFragment extends Fragment implements
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		outState.putInt(MAP_TYPE, mapType);
+		outState.putString(MAP_TYPE, mapType.toString());
 		super.onSaveInstanceState(outState);
 
 	}
@@ -309,19 +317,20 @@ public class ClaimMapFragment extends Fragment implements
 		this.map.setOnCameraChangeListener(this);
 
 		if (savedInstanceState != null
-				&& savedInstanceState.getInt(MAP_TYPE) != 0) {
+				&& savedInstanceState.getString(MAP_TYPE) != null) {
 			// probably an orientation change don't move the view but
 			// restore the current type of the map
-			setMapType(savedInstanceState.getInt(MAP_TYPE));
+			mapType = MapType.valueOf(savedInstanceState.getString(MAP_TYPE));
+			setMapType();
 		} else {
 			// restore the latest map type used on the main map
-			String mapType = Configuration
-					.getConfigurationValue(MainMapFragment.MAIN_MAP_TYPE);
-
 			try {
-				setMapType(Integer.parseInt(mapType));
+				mapType = MapType.valueOf(Configuration
+						.getConfigurationValue(MainMapFragment.MAIN_MAP_TYPE));
 			} catch (Exception e) {
+				mapType = MapType.map_provider_google_normal;
 			}
+			setMapType();
 		}
 
 		hideVisibleProperties();
@@ -343,7 +352,7 @@ public class ClaimMapFragment extends Fragment implements
 				@Override
 				public void onMapLongClick(final LatLng position) {
 					
-					currentProperty.addMarker(position);
+					currentProperty.addMarker(position, mapMode);
 
 				}
 			});
@@ -389,7 +398,7 @@ public class ClaimMapFragment extends Fragment implements
 
 			@Override
 			public boolean onMarkerClick(final Marker mark) {
-				return currentProperty.handleMarkerClick(mark);
+				return currentProperty.handleMarkerClick(mark, mapMode);
 			}
 		});
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
@@ -451,71 +460,107 @@ public class ClaimMapFragment extends Fragment implements
 
 	}
 	
-	public void setMapType(int type) {
+	private void setMapLabel() {
+		
+		String mode = null;
+		
+		switch(mapMode){
+			case add_boundary:
+				mode = getResources()
+						.getString(R.string.action_add_boundary);
+				break;
+			case add_non_boundary:
+				mode = getResources()
+				.getString(R.string.action_add_non_boundary);
+				break;
+			case measure:
+				mode = getResources()
+				.getString(R.string.action_measure);
+				break;
+		}
+
+		switch (mapType) {
+			case map_provider_google_normal:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_google_normal) + ": " + mode);
+				break;
+			case map_provider_google_satellite:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_google_satellite) + ": " + mode);
+				break;
+			case map_provider_google_hybrid:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_google_hybrid) + ": " + mode);
+				break;
+			case map_provider_google_terrain:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_google_terrain) + ": " + mode);
+				break;
+			case map_provider_osm_mapnik:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_osm_mapnik) + ": " + mode);
+				break;
+			case map_provider_osm_mapquest:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_osm_mapquest) + ": " + mode);
+				break;
+			case map_provider_local_tiles:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_local_tiles) + ": " + mode);
+				break;
+			case map_provider_geoserver:
+				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
+						.getString(R.string.map_provider_geoserver) + ": " + mode);
+				break;
+			default:
+				break;
+		}
+	}
+
+	private void setMapType() {
 
 		if (tiles != null) {
 			tiles.remove();
 			tiles = null;
 		}
 
-		switch (type) {
-		case R.id.map_provider_google_normal:
-
+		switch (mapType) {
+		case map_provider_google_normal:
 			map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_google_normal));
 			break;
-		case R.id.map_provider_google_satellite:
-
+		case map_provider_google_satellite:
 			map.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_google_satellite));
 			break;
-		case R.id.map_provider_google_hybrid:
-
+		case map_provider_google_hybrid:
 			map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_google_hybrid));
 			break;
-		case R.id.map_provider_google_terrain:
-
+		case map_provider_google_terrain:
 			map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_google_terrain));
 			break;
-		case R.id.map_provider_osm_mapnik:
-
+		case map_provider_osm_mapnik:
 			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
 					OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
 			redrawProperties();
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_osm_mapnik));
 			break;
-		case R.id.map_provider_osm_mapquest:
-
+		case map_provider_osm_mapquest:
 			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
 					256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
 			redrawProperties();
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_osm_mapquest));
 			break;
-		case R.id.map_provider_local_tiles:
-
+		case map_provider_local_tiles:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
 			redrawProperties();
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_local_tiles));
 			break;
-		case R.id.map_provider_geoserver:
+		case map_provider_geoserver:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
@@ -523,13 +568,11 @@ public class ClaimMapFragment extends Fragment implements
 					.tileProvider(new WmsMapTileProvider(256, 256,
 							preferences)));
 			redrawProperties();
-			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-					.getString(R.string.map_provider_geoserver));
 			break;
 		default:
 			break;
 		}
-		mapType = type;
+		setMapLabel();
 	}
 
 	private void redrawProperties() {
@@ -574,15 +617,49 @@ public class ClaimMapFragment extends Fragment implements
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			return true;
+		case R.id.action_add_boundary:
+			mapMode=MapMode.add_boundary;
+			setMapLabel();
+			return true;
+		case R.id.action_add_non_boundary:
+			mapMode=MapMode.add_non_boundary;
+			setMapLabel();
+			return true;
+		case R.id.action_measure:
+			mapMode=MapMode.measure;
+			setMapLabel();
+			return true;
 		case R.id.map_provider_google_normal:
+			mapType=MapType.map_provider_google_normal;
+			setMapType();
+			return true;
 		case R.id.map_provider_google_satellite:
+			mapType=MapType.map_provider_google_satellite;
+			setMapType();
+			return true;
 		case R.id.map_provider_google_hybrid:
+			mapType=MapType.map_provider_google_hybrid;
+			setMapType();
+			return true;
 		case R.id.map_provider_google_terrain:
+			mapType=MapType.map_provider_google_terrain;
+			setMapType();
+			return true;
 		case R.id.map_provider_osm_mapnik:
+			mapType=MapType.map_provider_osm_mapnik;
+			setMapType();
+			return true;
 		case R.id.map_provider_osm_mapquest:
+			mapType=MapType.map_provider_osm_mapquest;
+			setMapType();
+			return true;
 		case R.id.map_provider_local_tiles:
+			mapType=MapType.map_provider_local_tiles;
+			setMapType();
+			return true;
 		case R.id.map_provider_geoserver:
-			setMapType(item.getItemId());
+			mapType=MapType.map_provider_geoserver;
+			setMapType();
 			return true;
 		case R.id.action_save:
 			saved = true;
@@ -647,7 +724,7 @@ public class ClaimMapFragment extends Fragment implements
 				}
 			}
 			return true;
-		case R.id.action_new:
+		case R.id.action_add_from_gps:
 			LatLng newLocation = lh.getLastKnownLocation();
 
 			if (newLocation != null && newLocation.latitude != 0.0
@@ -656,7 +733,7 @@ public class ClaimMapFragment extends Fragment implements
 						"onOptionsItemSelected - " + newLocation,
 						Toast.LENGTH_SHORT).show();
 
-				currentProperty.addMarker(newLocation, newLocation);
+				currentProperty.addMarker(newLocation, newLocation, mapMode);
 
 			} else {
 				Toast.makeText(getActivity().getBaseContext(),

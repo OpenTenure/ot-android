@@ -6,6 +6,11 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_search">Cerca</string>
     <string name="action_new">Aggiungi</string>
+    <string name="action_change_map_mode">Cambia modo mappa</string>
+    <string name="action_add_from_gps">Aggiungi dal GPS</string>
+    <string name="action_add_boundary">Aggiungi al perimetro</string>
+    <string name="action_add_non_boundary">Aggiungi fuori perimetro</string>
+    <string name="action_measure">Misura</string>
     <string name="action_done">Fatto</string>
     <string name="action_login">Log In</string>
     <string name="action_download_tiles">Scarica le immagini dati locali per usare le mappe quando sei offline</string>
@@ -179,7 +184,8 @@
     <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
     <string name="message_data_unencrypted">Attenzione: i tuoi dati locali non sono cifrati</string>
     <string name="message_encryption_set">I dati locali sono cifrati. Fornisci la password per decifrarli al prossimo avvio di OpenTenure</string>
-    <string name="message_add_marker">Aggiungere una posizione al perimetro?</string>
+    <string name="message_add_marker">Aggiungere un vertice al perimetro?</string>
+    <string name="message_add_non_boundary_marker">Aggiungere una posizione non perimetrica?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>

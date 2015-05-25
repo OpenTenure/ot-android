@@ -38,6 +38,7 @@ import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.maps.ClaimMapFragment.MapMode;
 import org.fao.sola.clients.android.opentenure.maps.markers.ActiveMarkerRegistrar;
 import org.fao.sola.clients.android.opentenure.maps.markers.DownMarker;
 import org.fao.sola.clients.android.opentenure.maps.markers.LeftMarker;
@@ -97,21 +98,21 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	private Marker add;
 	private Marker selectedMarker;
 
-	public boolean handleMarkerClick(final Marker mark){
-		if(handleMarkerEditClick(mark)){
+	public boolean handleMarkerClick(final Marker mark, MapMode mapMode){
+		if(handleMarkerEditClick(mark, mapMode)){
 			return true;
-		}else if(handleRelativeMarkerEditClick(mark)){
+		}else if(handleRelativeMarkerEditClick(mark, mapMode)){
 			return true;
-		}else if(handlePropertyBoundaryMarkerClick(mark)){
+		}else if(handlePropertyBoundaryMarkerClick(mark, mapMode)){
 			return true;
-		}else if(handlePropertyLocationMarkerClick(mark)){
+		}else if(handlePropertyLocationMarkerClick(mark, mapMode)){
 			return true;
 		}else{
-			return handleClick(mark);
+			return handleClick(mark, mapMode);
 		}
 	}
 	
-	private boolean handleMarkerEditClick(Marker mark){
+	private boolean handleMarkerEditClick(Marker mark, MapMode mapMode){
 		if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || remove == null || relativeEdit == null || cancel == null){
 			return false;
 		}
@@ -133,7 +134,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return false;
 	}
 
-	private boolean handleRelativeMarkerEditClick(Marker mark){
+	private boolean handleRelativeMarkerEditClick(Marker mark, MapMode mapMode){
 		if(mode.compareTo(ModeDispatcher.Mode.MODE_RO) == 0 || up == null || down == null || left == null || right == null || add == null || moveTo == null || cancel == null || target == null){
 			return false;
 		}
@@ -143,7 +144,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 				return true;
 			}else if (mark.getId().equalsIgnoreCase(add.getId())) {
 				Log.d(this.getClass().getName(),"add");
-				return addMarker();
+				return addMarker(mapMode);
 			}else if (mark.getId().equalsIgnoreCase(moveTo.getId())) {
 				Log.d(this.getClass().getName(),"moveTo");
 				return moveMarker();
@@ -163,7 +164,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return false;
 	}
 	
-	private boolean handlePropertyBoundaryMarkerClick(final Marker mark){
+	private boolean handlePropertyBoundaryMarkerClick(final Marker mark, MapMode mapMode){
 		if (verticesMap.containsKey(mark)) {
 			if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 				deselect();
@@ -181,7 +182,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		
 	}
 
-	private boolean handlePropertyLocationMarkerClick(final Marker mark){
+	private boolean handlePropertyLocationMarkerClick(final Marker mark, MapMode mapMode){
 		if (propertyLocationsMap.containsKey(mark)) {
 			if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 				deselect();
@@ -199,7 +200,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		
 	}
 
-	private boolean handleClick(Marker mark){
+	private boolean handleClick(Marker mark, MapMode mapMode){
 		try{
 			// Can only be a click on the property name, deselect and let the event flow
 
@@ -277,9 +278,9 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return true;
 	}
 	
-	private boolean addMarker(){
+	private boolean addMarker(MapMode mapMode){
 		
-		addMarker(target.getPosition());
+		addMarker(target.getPosition(), mapMode);
 		deselect();
 		return true;
 	}
@@ -733,11 +734,11 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		vertices.add(insertIndex, newVertex);
 	}
 
-	public void addMarker(final LatLng mapPosition){
-		addMarker(mapPosition, Vertex.INVALID_POSITION);
+	public void addMarker(final LatLng mapPosition, MapMode mapMode){
+		addMarker(mapPosition, Vertex.INVALID_POSITION, mapMode);
 	}
 	
-	public void addMarker(final LatLng mapPosition, final LatLng gpsPosition){
+	public void addMarker(final LatLng mapPosition, final LatLng gpsPosition, MapMode mapMode){
 
 		if (claimActivity.getClaimId() == null) {
 			// Useless to add markers without a claim
@@ -748,94 +749,113 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			toast.show();
 			return;
 		}
+		
+		if(mapMode == MapMode.add_boundary){
 
-		AlertDialog.Builder dialog = new AlertDialog.Builder(
-				context);
-		dialog.setTitle(R.string.message_add_marker);
-		dialog.setMessage("Lon: " + mapPosition.longitude + ", lat: "
-				+ mapPosition.latitude);
+			AlertDialog.Builder dialog = new AlertDialog.Builder(
+					context);
+			dialog.setTitle(R.string.message_add_marker);
+			dialog.setMessage("Lon: " + mapPosition.longitude + ", lat: "
+					+ mapPosition.latitude);
 
-		dialog.setNeutralButton(R.string.not_boundary,
-				new OnClickListener() {
+			dialog.setPositiveButton(R.string.confirm,
+					new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
-						AlertDialog.Builder locationDescriptionDialog = new AlertDialog.Builder(
-								context);
-						locationDescriptionDialog
-								.setTitle(R.string.title_add_non_boundary);
-						final EditText locationDescriptionInput = new EditText(
-								context);
-						locationDescriptionInput
-								.setInputType(InputType.TYPE_CLASS_TEXT);
-						locationDescriptionDialog
-								.setView(locationDescriptionInput);
-						locationDescriptionDialog
-								.setMessage(context.getResources()
-										.getString(
-												R.string.message_enter_description));
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
 
-						locationDescriptionDialog
-								.setPositiveButton(
-										R.string.confirm,
-										new OnClickListener() {
+							insertVertex(mapPosition, gpsPosition);
+							updateVertices();
+							redrawBoundary();
+							resetAdjacency(otherProperties);
+							calculateGeometry(Claim.getClaim(claimId), true);
+							redrawBoundary();
+						}
+					});
+			dialog.setNegativeButton(R.string.cancel,
+					new OnClickListener() {
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-												String locationDescription = locationDescriptionInput
-														.getText()
-														.toString();
-												addPropertyLocation(mapPosition, gpsPosition, locationDescription);
-											}
-										});
-						locationDescriptionDialog
-								.setNegativeButton(
-										R.string.cancel,
-										new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+						}
+					});
 
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int which) {
-											}
-										});
+			dialog.show();
+			
+		}else if(mapMode == MapMode.add_non_boundary){
+			
+			AlertDialog.Builder dialog = new AlertDialog.Builder(
+					context);
+			dialog.setTitle(R.string.message_add_non_boundary_marker);
+			dialog.setMessage("Lon: " + mapPosition.longitude + ", lat: "
+					+ mapPosition.latitude);
+			dialog.setPositiveButton(R.string.confirm,
+					new OnClickListener() {
 
-						locationDescriptionDialog.show();
+				@Override
+				public void onClick(DialogInterface dialog,
+						int which) {
+					AlertDialog.Builder locationDescriptionDialog = new AlertDialog.Builder(
+							context);
+					locationDescriptionDialog
+							.setTitle(R.string.title_add_non_boundary);
+					final EditText locationDescriptionInput = new EditText(
+							context);
+					locationDescriptionInput
+							.setInputType(InputType.TYPE_CLASS_TEXT);
+					locationDescriptionDialog
+							.setView(locationDescriptionInput);
+					locationDescriptionDialog
+							.setMessage(context.getResources()
+									.getString(
+											R.string.message_enter_description));
 
-					}
-				});
-		dialog.setPositiveButton(R.string.confirm,
-				new OnClickListener() {
+					locationDescriptionDialog
+							.setPositiveButton(
+									R.string.confirm,
+									new OnClickListener() {
 
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+											String locationDescription = locationDescriptionInput
+													.getText()
+													.toString();
+											addPropertyLocation(mapPosition, gpsPosition, locationDescription);
+										}
+									});
+					locationDescriptionDialog
+							.setNegativeButton(
+									R.string.cancel,
+									new OnClickListener() {
 
-						insertVertex(mapPosition, gpsPosition);
-						updateVertices();
-						redrawBoundary();
-						resetAdjacency(otherProperties);
-						calculateGeometry(Claim.getClaim(claimId), true);
-						redrawBoundary();
-					}
-				});
-		dialog.setNegativeButton(R.string.cancel,
-				new OnClickListener() {
+										@Override
+										public void onClick(
+												DialogInterface dialog,
+												int which) {
+										}
+									});
 
-					@Override
-					public void onClick(DialogInterface dialog,
-							int which) {
-					}
-				});
+					locationDescriptionDialog.show();
 
-		dialog.show();
+				}
+			});
+			dialog.setNegativeButton(R.string.cancel,
+					new OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+						}
+					});
+
+			dialog.show();
+		}
+
 	
-	}
-	public void addPropertyLocation(LatLng mapPosition, String description) {
-		addPropertyLocation(mapPosition, Vertex.INVALID_POSITION, description);
 	}
 
 	public void addPropertyLocation(LatLng mapPosition, LatLng gpsPosition, String description) {
