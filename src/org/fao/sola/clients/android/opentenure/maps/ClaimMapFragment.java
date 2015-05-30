@@ -182,7 +182,11 @@ public class ClaimMapFragment extends Fragment implements
 		inflater.inflate(R.menu.claim_map, menu);
 		menu.findItem(R.id.action_stop_rotating).setVisible(false);
 		if (modeActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			menu.removeItem(R.id.action_new);
+			menu.removeItem(R.id.action_add_from_gps);
+			menu.findItem(R.id.action_change_map_mode).getSubMenu().removeItem(R.id.action_add_boundary);
+			menu.findItem(R.id.action_change_map_mode).getSubMenu().removeItem(R.id.action_add_non_boundary);
+			mapMode = MapMode.measure;
+
 		}
 		this.menu = menu;
 		super.onCreateOptionsMenu(menu, inflater);
