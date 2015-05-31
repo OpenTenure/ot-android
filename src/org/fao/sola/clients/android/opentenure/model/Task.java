@@ -29,10 +29,10 @@ package org.fao.sola.clients.android.opentenure.model;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
@@ -47,11 +47,11 @@ public class Task {
 		this.taskId = taskId;
 	}
 
-	public Date getStarted() {
+	public Timestamp getStarted() {
 		return started;
 	}
 
-	public void setStarted(Date started) {
+	public void setStarted(Timestamp started) {
 		this.started = started;
 	}
 
@@ -83,7 +83,7 @@ public class Task {
 			statement = localConnection
 					.prepareStatement("INSERT INTO TASK (TASK_ID, STARTED, COMPLETION) VALUES(?,?,?)");
 			statement.setString(1, task.getTaskId());
-			statement.setDate(2, new Date(System.currentTimeMillis()));
+			statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 			statement.setBigDecimal(3, new BigDecimal(0));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -118,7 +118,7 @@ public class Task {
 			statement = localConnection
 					.prepareStatement("INSERT INTO TASK (TASK_ID, STARTED, COMPLETION) VALUES(?,?,?)");
 			statement.setString(1, getTaskId());
-			statement.setDate(2, new Date(System.currentTimeMillis()));
+			statement.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
 			statement.setBigDecimal(3, new BigDecimal(0));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -221,7 +221,7 @@ public class Task {
 			statement = localConnection
 					.prepareStatement("UPDATE TASK SET STARTED=?, COMPLETION=? WHERE TASK_ID=?");
 			statement.setString(1, task.getTaskId());
-			statement.setDate(2, task.getStarted());
+			statement.setTimestamp(2, task.getStarted());
 			statement.setBigDecimal(3, task.getCompletion());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -256,7 +256,7 @@ public class Task {
 			statement = localConnection
 					.prepareStatement("UPDATE TASK SET STARTED=?, COMPLETION=? WHERE TASK_ID=?");
 			statement.setString(1, getTaskId());
-			statement.setDate(2, getStarted());
+			statement.setTimestamp(2, getStarted());
 			statement.setBigDecimal(3, getCompletion());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
@@ -331,7 +331,7 @@ public class Task {
 			while (rs.next()) {
 				task = new Task();
 				task.setTaskId(taskId);
-				task.setStarted(rs.getDate(1));
+				task.setStarted(rs.getTimestamp(1));
 				task.setCompletion(rs.getBigDecimal(2));
 			}
 		} catch (SQLException e) {
@@ -370,7 +370,7 @@ public class Task {
 	}
 
 	String taskId;
-	Date started;
+	Timestamp started;
 	BigDecimal completion;
 
 }
