@@ -867,17 +867,40 @@ public class MainMapFragment extends SupportMapFragment implements
 						.show();
 			}
 
-			if(Task.getTask(TileDownloadTask.TASK_ID) == null){
-				TileDownloadTask task = new TileDownloadTask();
-				task.setContext(getActivity().getBaseContext());
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			Task task = Task.getTask(TileDownloadTask.TASK_ID);
+			
+			if(task != null && System.currentTimeMillis() - task.getStarted().getTime() > 900000){
+				// Cancel tasks older than 15 minutes
+				task.delete();
+				task = null;
 			}
+
+			if(task == null){
+				Marker downloadInfoMarker = createDownloadStatusMarker();
+				TileDownloadTask downloadTask = new TileDownloadTask();
+				downloadTask.setContext(getActivity().getBaseContext());
+				downloadTask.setDownloadInfoMarker(downloadInfoMarker);
+				downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
+			
 		} else {
 			Toast.makeText(getActivity().getBaseContext(),
 					R.string.zoom_level_too_low, Toast.LENGTH_LONG)
 					.show();
 		}
 
+	}
+	
+	private Marker createDownloadStatusMarker(){
+		Marker downloadStatusMarker = map
+		.addMarker(new MarkerOptions()
+				.position(map.getProjection().getVisibleRegion().latLngBounds.getCenter())
+				.anchor(0.5f, 1.0f));
+		downloadStatusMarker.setAlpha(0.0f);
+		downloadStatusMarker.setInfoWindowAnchor(.5f,1.0f);
+		downloadStatusMarker
+		.setClusterGroup(Constants.MARKER_DOWNLOAD_STATUS_GROUP);
+		return downloadStatusMarker;
 	}
 
 	private void storeCameraPosition(CameraPosition cameraPosition) {

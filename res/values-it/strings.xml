@@ -233,6 +233,7 @@
 	<string name="too_many_tiles_queued">Ci sono %d immagini nella lista di download. Attendi prima di aggiungerne altre</string>
 	<string name="all_tiles_downloaded">Tutte le immagini nella list di download sono state scaricate</string>
 	<string name="not_all_tiles_downloaded">%d immagini per quest\'area non sono state scaricate. Verificare che il risultato sia soddisfacente o ripeti l\'operazione</string>
+	<string name="tiles_download_status">Provo a scaricare la tile %1$d di %2$d, %3$d scaricate e %4$d fallite finora</string>
 	<string name="zoom_level_too_low">L\'area è troppo estesa. Aumenta il livello di zoom prima di scaricare i dati locali per la mappa</string>
     <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>

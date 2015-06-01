@@ -39,6 +39,8 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Task;
 import org.fao.sola.clients.android.opentenure.model.Tile;
 
+import com.androidmapsextensions.Marker;
+
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -50,11 +52,24 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 	public static final String TASK_ID = "TileDownloadTask";
 	private static final int TILES_PER_BATCH = 50;
 	private static final long TILE_REFRESH_TIME = 21 * 24 * 60 * 60 * 1000;
-	private static final long TIMEOUT = 8000;
+	private static final int TIMEOUT = 8000;
+	private static final int MAX_RETRY = 2;
+
+	private static final int ATTEMPTED_INDEX = 0;
+	private static final int TOTAL_INDEX = 1;
+	private static final int SUCCEEDED_INDEX = 2;
+	private static final int FAILED_INDEX = 3;
+
 	private Context context;
+	private Marker downloadStatusMarker;
+	private Integer[] downloadStatus = new Integer[4];
 
 	public void setContext(Context context) {
 		this.context = context;
+	}
+
+	public void setDownloadInfoMarker(Marker downloadInfoMarker) {
+		this.downloadStatusMarker = downloadInfoMarker;
 	}
 
 	public TileDownloadTask() {
@@ -64,89 +79,155 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 		Task.createTask(new Task(TASK_ID));
 	}
 
-	protected Integer doInBackground(Void... params) {
-		List<Tile> tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
+	private boolean needsDownloading(Tile tile) {
+
+		File tileFile = new File(tile.getFileName());
+
+		if (!tileFile.exists()) {
+			return true;
+		}
+
+		long lastModified = tileFile.lastModified();
+
+		if ((lastModified > (System.currentTimeMillis() - TILE_REFRESH_TIME))
+				|| (BitmapFactory.decodeFile(tile.getFileName()) == null)) {
+			// if it's older than the refresh time or can't be decoded as an
+			// image
+			tileFile.delete();
+			return true;
+		}
+
+		return false;
+	}
+
+	private void resetDownloadStatus() {
+		downloadStatus[ATTEMPTED_INDEX] = Integer.valueOf(0);
+		downloadStatus[SUCCEEDED_INDEX] = Integer.valueOf(0);
+		downloadStatus[FAILED_INDEX] = Integer.valueOf(0);
+
 		int tilesToDownload = Tile.getTilesToDownload();
+		downloadStatus[TOTAL_INDEX] = tilesToDownload;
+	}
+
+	private void updateDownloadStatus() {
+		int tilesToDownload = Tile.getTilesToDownload();
+
+		if (!(tilesToDownload == (downloadStatus[TOTAL_INDEX] - downloadStatus[ATTEMPTED_INDEX]))) {
+			// Someone added more tiles to the download queue so we reset
+			// counters
+			downloadStatus[ATTEMPTED_INDEX] = Integer.valueOf(0);
+			downloadStatus[SUCCEEDED_INDEX] = Integer.valueOf(0);
+			downloadStatus[FAILED_INDEX] = Integer.valueOf(0);
+			downloadStatus[TOTAL_INDEX] = tilesToDownload;
+		}
+	}
+
+	protected Integer doInBackground(Void... params) {
+
+		List<Tile> tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
+
+		resetDownloadStatus();
+		publishProgress(downloadStatus);
 		int failures = 0;
+
 		Log.d(this.getClass().getName(), "loaded a batch of " + tiles.size()
-				+ " tiles out of " + tilesToDownload);
+				+ " tiles out of " + downloadStatus[TOTAL_INDEX]);
 
 		while (tiles != null && tiles.size() >= 1) {
 
 			for (Tile tile : tiles) {
-				File outputFile = new File(tile.getFileName());
-				File dir = new File(outputFile.getParent());
-				dir.mkdirs();
-				InputStream is = null;
-				FileOutputStream fos = null;
-				long lastModified = outputFile.lastModified();
-				boolean fileExists = outputFile.exists();
-				if (!fileExists
-						|| (fileExists && (lastModified > (System
-								.currentTimeMillis() - TILE_REFRESH_TIME)))) {
-					try {
 
-						URL url = new URL(tile.getUrl());
-						HttpURLConnection c = (HttpURLConnection) url
-								.openConnection();
-						c.setRequestMethod("GET");
-						c.setDoOutput(true);
-						c.setConnectTimeout((int) TIMEOUT / 2);
-						c.setReadTimeout((int) TIMEOUT / 2);
-						c.connect();
-						fos = new FileOutputStream(outputFile);
-						is = c.getInputStream();
-						byte[] buffer = new byte[1024];
-						int len1 = 0;
-						while ((len1 = is.read(buffer)) != -1) {
-							fos.write(buffer, 0, len1);
-						}
-						fos.close();
-						is.close();
+				boolean failed = false;
 
-						if (BitmapFactory.decodeFile(tile.getFileName()) == null) {
-							outputFile = new File(tile.getFileName());
+				for (int i = 0; i <= MAX_RETRY; i++) {
+
+					File outputFile = new File(tile.getFileName());
+					File dir = new File(outputFile.getParent());
+					dir.mkdirs();
+					InputStream is = null;
+					FileOutputStream fos = null;
+
+					if (needsDownloading(tile)) {
+
+						try {
+
+							URL url = new URL(tile.getUrl());
+							HttpURLConnection c = (HttpURLConnection) url
+									.openConnection();
+							c.setRequestMethod("GET");
+							c.setDoOutput(true);
+							c.setConnectTimeout(TIMEOUT);
+							c.setReadTimeout(TIMEOUT);
+							c.connect();
+							fos = new FileOutputStream(outputFile);
+							is = c.getInputStream();
+							byte[] buffer = new byte[1024];
+							int len1 = 0;
+							while ((len1 = is.read(buffer)) != -1) {
+								fos.write(buffer, 0, len1);
+							}
+							fos.close();
+							is.close();
+							break;
+
+						} catch (IOException e) {
+							failed = true;
+							e.printStackTrace();
 							outputFile.delete();
-							failures++;
-						}
-
-					} catch (IOException e) {
-						failures++;
-						e.printStackTrace();
-						outputFile.delete();
-					} finally {
-						if (is != null) {
-							try {
-								is.close();
-							} catch (IOException ignore) {
+						} finally {
+							if (is != null) {
+								try {
+									is.close();
+								} catch (IOException ignore) {
+								}
+							}
+							if (fos != null) {
+								try {
+									fos.close();
+								} catch (IOException ignore) {
+								}
 							}
 						}
-						if (fos != null) {
-							try {
-								fos.close();
-							} catch (IOException ignore) {
-							}
-						}
+					} else {
+						break;
 					}
-				}else if(fileExists){
-					outputFile.delete();
+				}
+				if (failed) {
+					failures++;
+					downloadStatus[FAILED_INDEX]++;
+				} else {
+					downloadStatus[SUCCEEDED_INDEX]++;
 				}
 				tile.delete();
+				downloadStatus[ATTEMPTED_INDEX]++;
+				publishProgress(downloadStatus);
 			}
 
-			tilesToDownload = Tile.getTilesToDownload();
+			updateDownloadStatus();
 			tiles = Tile.getTilesToDownload(TILES_PER_BATCH);
 			Log.d(this.getClass().getName(),
 					"loaded a batch of " + tiles.size() + " tiles out of "
-							+ tilesToDownload);
+							+ downloadStatus[TOTAL_INDEX]);
 		}
 
 		return failures;
 	}
 
+	protected void onProgressUpdate(Integer... downloadStatus) {
+		String message = String.format(
+				context.getResources()
+						.getString(R.string.tiles_download_status),
+				downloadStatus[0], downloadStatus[1], downloadStatus[2],
+				downloadStatus[3]);
+		downloadStatusMarker.setTitle(message);
+		downloadStatusMarker.showInfoWindow();
+	}
+
 	protected void onPostExecute(Integer failures) {
 
 		Task.deleteTask(new Task(TASK_ID));
+		downloadStatusMarker.hideInfoWindow();
+		downloadStatusMarker.remove();
 		// If many tasks like this were running only the one serving the last
 		if (failures > 0) {
 			Toast.makeText(
@@ -163,7 +244,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 					.show();
 		}
 		int deletedTiles = Tile.deleteAllTiles();
-		Log.d(this.getClass().getName(),
-				"Deleted " + deletedTiles + " tiles still in the queue at the end of the download task");
+		Log.d(this.getClass().getName(), "Deleted " + deletedTiles
+				+ " tiles still in the queue at the end of the download task");
 	}
 }
