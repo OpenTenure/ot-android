@@ -876,10 +876,9 @@ public class MainMapFragment extends SupportMapFragment implements
 			}
 
 			if(task == null){
-				Marker downloadInfoMarker = createDownloadStatusMarker();
 				TileDownloadTask downloadTask = new TileDownloadTask();
 				downloadTask.setContext(getActivity().getBaseContext());
-				downloadTask.setDownloadInfoMarker(downloadInfoMarker);
+				downloadTask.setMap(map);
 				downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
 			
@@ -891,17 +890,6 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	}
 	
-	private Marker createDownloadStatusMarker(){
-		Marker downloadStatusMarker = map
-		.addMarker(new MarkerOptions()
-				.position(map.getProjection().getVisibleRegion().latLngBounds.getCenter())
-				.anchor(0.5f, 1.0f));
-		downloadStatusMarker.setAlpha(0.0f);
-		downloadStatusMarker.setInfoWindowAnchor(.5f,1.0f);
-		downloadStatusMarker
-		.setClusterGroup(Constants.MARKER_DOWNLOAD_STATUS_GROUP);
-		return downloadStatusMarker;
-	}
 
 	private void storeCameraPosition(CameraPosition cameraPosition) {
 

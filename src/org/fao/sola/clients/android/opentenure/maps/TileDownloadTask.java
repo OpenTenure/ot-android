@@ -39,7 +39,11 @@ import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Task;
 import org.fao.sola.clients.android.opentenure.model.Tile;
 
+import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -62,14 +66,15 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 	private Context context;
 	private Marker downloadStatusMarker;
+	private GoogleMap map;
 	private Integer[] downloadStatus = new Integer[4];
 
 	public void setContext(Context context) {
 		this.context = context;
 	}
 
-	public void setDownloadInfoMarker(Marker downloadInfoMarker) {
-		this.downloadStatusMarker = downloadInfoMarker;
+	public void setMap(GoogleMap map) {
+		this.map = map;
 	}
 
 	public TileDownloadTask() {
@@ -77,6 +82,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 	protected void onPreExecute() {
 		Task.createTask(new Task(TASK_ID));
+		downloadStatusMarker = createDownloadStatusMarker();
 	}
 
 	private boolean needsDownloading(Tile tile) {
@@ -219,8 +225,26 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 						.getString(R.string.tiles_download_status),
 				downloadStatus[0], downloadStatus[1], downloadStatus[2],
 				downloadStatus[3]);
+		downloadStatusMarker.setPosition(getMarkerPosition());
 		downloadStatusMarker.setTitle(message);
 		downloadStatusMarker.showInfoWindow();
+	}
+	private LatLng getMarkerPosition(){
+		LatLngBounds latLngBounds = map.getProjection().getVisibleRegion().latLngBounds;
+		LatLng position = new LatLng(latLngBounds.southwest.latitude,
+				latLngBounds.southwest.longitude + (latLngBounds.northeast.longitude - latLngBounds.southwest.longitude)/2.0);
+		return position;
+	}
+	private Marker createDownloadStatusMarker(){
+		Marker downloadStatusMarker = map
+		.addMarker(new MarkerOptions()
+				.position(getMarkerPosition())
+				.anchor(0.5f, 1.0f));
+		downloadStatusMarker.setAlpha(0.0f);
+		downloadStatusMarker.setInfoWindowAnchor(.5f,1.0f);
+		downloadStatusMarker
+		.setClusterGroup(Constants.MARKER_DOWNLOAD_STATUS_GROUP);
+		return downloadStatusMarker;
 	}
 
 	protected void onPostExecute(Integer failures) {
