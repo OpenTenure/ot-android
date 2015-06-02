@@ -209,6 +209,39 @@ public class Task {
 		return result;
 	}
 
+	public static int deleteAllTasks() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("DELETE FROM TASK");
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+
 	public static int updateTask(Task task) {
 		int result = 0;
 		Connection localConnection = null;
