@@ -34,6 +34,7 @@ import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.ClaimListener;
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment.MapType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -42,6 +43,7 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -66,11 +68,14 @@ import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.CancelableCallback;
 import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
+import com.androidmapsextensions.GoogleMap.OnMapClickListener;
 import com.androidmapsextensions.GoogleMap.OnMapLongClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
 import com.androidmapsextensions.GoogleMap.OnMarkerDragListener;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.Polyline;
+import com.androidmapsextensions.PolylineOptions;
 import com.androidmapsextensions.SupportMapFragment;
 import com.androidmapsextensions.TileOverlay;
 import com.androidmapsextensions.TileOverlayOptions;
@@ -80,6 +85,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.maps.android.SphericalUtil;
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -100,6 +106,7 @@ public class ClaimMapFragment extends Fragment implements
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
 	private static final float CUSTOM_TILE_PROVIDER_Z_INDEX = 1.0f;
+	protected static final float MEASURE_Z_INDEX = 3.0f;
 	private static int CLAIM_MAP_SIZE = 800;
 	private static int CLAIM_MAP_PADDING = 50;
 
@@ -127,6 +134,10 @@ public class ClaimMapFragment extends Fragment implements
 	private CameraPosition oldCameraPosition;
 	private CameraPosition newCameraPosition;
 	private boolean adjacenciesReset = false;
+	private Marker distanceStart;
+	private Marker distanceEnd;
+	private Marker distanceMarker;
+	private Polyline distanceSegment;
 	private LocationListener myLocationListener = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
@@ -402,14 +413,121 @@ public class ClaimMapFragment extends Fragment implements
 
 			@Override
 			public boolean onMarkerClick(final Marker mark) {
-				return currentProperty.handleMarkerClick(mark, mapMode);
+				switch(mapMode){
+				case add_boundary:
+				case add_non_boundary:
+					return currentProperty.handleMarkerClick(mark, mapMode);
+				case measure:
+					return handleDistanceMarkerClick(mark);
+				default:
+					return false;
+				}
+			}
+		});
+		this.map.setOnMapClickListener(new OnMapClickListener() {
+
+			@Override
+			public void onMapClick(final LatLng position) {
+				switch(mapMode){
+				case add_boundary:
+				case add_non_boundary:
+					break ;
+				case measure:
+					cancelDistance();
+					break ;
+				default:
+					break ;
+				}
 			}
 		});
 	    mSensorManager = (SensorManager) mapView.getContext().getSystemService(Context.SENSOR_SERVICE);
 		return mapView;
 
 	}
-	
+
+	private boolean handleDistanceMarkerClick(Marker mark){
+
+		hideDistance();
+		if((distanceStart != null && mark.equals(distanceStart))
+				|| (distanceEnd != null && mark.equals(distanceEnd))){
+			// Second click on a selected marker: stop measuring
+			distanceStart = null;
+			distanceEnd = null;
+		}else if(distanceEnd != null && distanceStart == null){
+			// measureStart selected
+			distanceStart = mark;
+		}else if(distanceStart != null && distanceEnd == null){
+			// measureEnd selected
+			distanceEnd = mark;
+		}else if(distanceStart != null && distanceEnd != null){
+			// new measureEnd selected
+			distanceStart = distanceEnd;
+			distanceEnd = mark;
+		}else if(distanceStart == null && distanceEnd == null){
+			// measureStart selected
+			distanceStart = mark;
+		}
+		if(distanceStart != null && distanceEnd != null){
+			showDistance();
+		}
+		return true;
+	}
+
+	private void showDistance() {
+		if (distanceStart != null && distanceEnd != null) {
+			double distance = SphericalUtil.computeDistanceBetween(distanceStart.getPosition(), distanceEnd.getPosition());
+
+			if(distance < 0.01){
+				return;
+			}
+			
+			PolylineOptions polylineOptions = new PolylineOptions();
+			polylineOptions.add(distanceStart.getPosition());
+			polylineOptions.add(distanceEnd.getPosition());
+			polylineOptions.zIndex(MEASURE_Z_INDEX);
+			polylineOptions.width(2);
+			polylineOptions.color(Color.BLACK);
+			distanceSegment = map.addPolyline(polylineOptions);
+
+			distanceMarker = map
+					.addMarker(new MarkerOptions()
+							.position(
+									new LatLng(
+											(distanceStart.getPosition().latitude + distanceEnd
+													.getPosition().latitude) / 2,
+											(distanceStart.getPosition().longitude + distanceEnd
+													.getPosition().longitude) / 2))
+							.anchor(0.5f, 1.0f));
+			distanceMarker.setAlpha(0.0f);
+			distanceMarker.setInfoWindowAnchor(.5f, 1.0f);
+			distanceMarker
+					.setClusterGroup(Constants.MARKER_DOWNLOAD_STATUS_GROUP);
+			String title = String.format(OpenTenureApplication.getInstance().getLocale(),
+					"%s: %.1f %s", getResources().getString(R.string.markers_distance_label), distance, getResources().getString(R.string.meters));
+			distanceMarker.setTitle(title);
+			distanceMarker.showInfoWindow();
+
+		}
+	}
+
+	private void hideDistance(){
+		if(distanceMarker != null){
+			distanceMarker.remove();
+			distanceMarker = null;
+		}
+		if(distanceSegment != null){
+			distanceSegment.remove();
+			distanceSegment = null;
+		}
+	}
+
+	private void cancelDistance(){
+		hideDistance();
+		
+		distanceStart = null;
+		distanceEnd = null;
+	}
+
 	private Polygon getPolygon(LatLngBounds bounds){
 		GeometryFactory gf = new GeometryFactory();
 		Coordinate[] coords = new Coordinate[5];
@@ -623,14 +741,20 @@ public class ClaimMapFragment extends Fragment implements
 			return true;
 		case R.id.action_add_boundary:
 			mapMode=MapMode.add_boundary;
+			currentProperty.deselect();
+			cancelDistance();
 			setMapLabel();
 			return true;
 		case R.id.action_add_non_boundary:
 			mapMode=MapMode.add_non_boundary;
+			currentProperty.deselect();
+			cancelDistance();
 			setMapLabel();
 			return true;
 		case R.id.action_measure:
 			mapMode=MapMode.measure;
+			currentProperty.deselect();
+			cancelDistance();
 			setMapLabel();
 			return true;
 		case R.id.map_provider_google_normal:

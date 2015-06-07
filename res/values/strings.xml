@@ -254,6 +254,8 @@
 	<string name="zoom_level_too_low">The area is too large. Increase the zoom level before downloading local data for the map</string>
 	<string name="claim_area_label">Area</string>
 	<string name="square_meters">m2</string>
+	<string name="markers_distance_label">Distance</string>
+	<string name="meters">m</string>
 	<string name="yes">Yes</string>
     <string name="person">Person</string>
     <string name="group">Group</string>

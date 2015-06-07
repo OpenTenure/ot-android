@@ -117,14 +117,14 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			return false;
 		}
 		try {
-			if (mark.getId().equalsIgnoreCase(remove.getId())) {
+			if (mark.equals(remove)) {
 				return removeSelectedMarker();
 			}
-			if (mark.getId().equalsIgnoreCase(relativeEdit.getId())) {
+			if (mark.equals(relativeEdit)) {
 				showRelativeMarkerEditControls();
 				return true;
 			}
-			if (mark.getId().equalsIgnoreCase(cancel.getId())) {
+			if (mark.equals(cancel)) {
 				deselect();
 				return true;
 			}
@@ -142,17 +142,17 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		try {
 			if (amr.onClick(mark)) {
 				return true;
-			}else if (mark.getId().equalsIgnoreCase(add.getId())) {
+			}else if (mark.equals(add)) {
 				Log.d(this.getClass().getName(),"add");
 				return addMarker(mapMode);
-			}else if (mark.getId().equalsIgnoreCase(moveTo.getId())) {
+			}else if (mark.equals(moveTo)) {
 				Log.d(this.getClass().getName(),"moveTo");
 				return moveMarker();
-			}else if (mark.getId().equalsIgnoreCase(cancel.getId())) {
+			}else if (mark.equals(cancel)) {
 				Log.d(this.getClass().getName(),"cancel");
 				deselect();
 				return true;
-			}else if (mark.getId().equalsIgnoreCase(target.getId())) {
+			}else if (mark.equals(target)) {
 				Log.d(this.getClass().getName(),"target");
 				return true;
 			}else{
@@ -204,7 +204,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		try{
 			// Can only be a click on the property name, deselect and let the event flow
 
-			if(propertyMarker != null && mark.getId().equalsIgnoreCase(propertyMarker.getId())){
+			if(propertyMarker != null && mark.equals(propertyMarker)){
 
 				if(mode.compareTo(ModeDispatcher.Mode.MODE_RW) == 0){
 					deselect();
@@ -322,11 +322,16 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		
 	}
 
-	private void deselect(){
+	public void deselect(){
 		hideMarkerEditControls();
 		if(selectedMarker != null){
-			selectedMarker.setIcon(BitmapDescriptorFactory
-					.fromResource(R.drawable.ot_blue_marker));
+			if(verticesMap.containsKey(selectedMarker)){
+				selectedMarker.setIcon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ot_blue_marker));
+			}else{
+				selectedMarker.setIcon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ot_orange_marker));
+			}
 		selectedMarker = null;
 		}
 	}
