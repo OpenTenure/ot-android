@@ -111,17 +111,17 @@
     <string name="generated_on">Сгенерировано</string>
     <string name="group_name">Имя</string>
     <string name="signature">Подпись</string>
-    <string name="software_version_title">Версия ПО</string>    
-    <string name="claim_date">Дата заявления</string>    
+    <string name="software_version_title">Версия ПО</string>
+    <string name="claim_date">Дата заявления</string>
     <string name="claim_name">Название заявления</string>
     <string name="claim_name_label">Название заявления *</string>
     <string name="claim_type">Тип заявления *</string>
     <string name="claim_type_no_star">Тип заявления</string>
-    <string name="default_claim_name">Новое заявление</string>    
+    <string name="default_claim_name">Новое заявление</string>
     <string name="first_name">Имя</string>
     <string name="first_name_label">Имя *</string>
     <string name="last_name">Фамилия</string>
-    <string name="last_name_label">Фамилия *</string>    
+    <string name="last_name_label">Фамилия *</string>
     <string name="date_of_birth">Дата рождения (ГГГГ-MM-ДД)</string>
     <string name="date_of_birth_simple">Дата рождения</string>
     <string name="date_of_birth_label">Дата рождения (ГГГГ-MM-ДД)</string>
@@ -150,7 +150,7 @@
     <string name="message_claim_exported">Заявление %s экспортировано</string>
     <string name="message_attachment_downloaded">Вложение %s загружено</string>
     <string name="message_attachment_downloading">Вложение %s уже загружается</string>
-    <string name="message_attachment_download_failed">Загрузка вложения %s не удалась</string>    
+    <string name="message_attachment_download_failed">Загрузка вложения %s не удалась</string>
     <string name="message_attachment_download_not_complete">Загрузка вложения %s не закончена </string>
     <string name="message_remove_person">Лицо %s удалено</string>
     <string name="message_remove_person_dialog">Вы действительно хотите удалить %s?</string>
@@ -211,13 +211,13 @@
     <string name="message_no_available_shares_adding_new">Измените некоторые доли этого заявления перед перед добавлением новой доли </string>
     <string name="message_share_saved">Доля сохранена</string>
     <string name="message_share_not_saved">Возникла ошибка при сохранении доли </string>
-	<string name="message_already_owner">Выбранное лицо уже имеет долю в этом заявлении</string>
+    <string name="message_already_owner">Выбранное лицо уже имеет долю в этом заявлении</string>
     <string name="message_touch_to_select_a_person">Прикоснитесь для выбора лица</string>
     <string name="message_touch_to_select_a_claim">Прикоснитесь для выбора заявления</string>
     <string name="message_error_mandatory_fields">Заполните все необходимые поля перед сохранением</string>
     <string name="message_error_mandatory_field_first_name">Заполните имя</string>
     <string name="message_error_mandatory_field_last_name">Заполните фамилию</string>
-    <string name="message_error_mandatory_field_gender">Выберите пол</string>    
+    <string name="message_error_mandatory_field_gender">Выберите пол</string>
     <string name="message_error_mandatory_birthdate">Дата рождения имеет не верный формат или пустая</string>
     <string name="message_error_startdate">Дата начала владения имеет не верный формат или пустая</string>
     <string name="message_remove_quest">Вы действительно хотите изъять заявление?</string>
@@ -240,15 +240,15 @@
     <string name="message_title_app_initialized">Приложение инициализировано</string>
     <string name="message_app_initialized_default">Приложение готово к работе с сервером общин по умолчанию </string>
     <string name="message_app_initialized">Приложение готово к работе с сервером общин</string>
-	<string name="check_location_service">Информация о местоположении не доступна. Проверьте в настройках, что услуга определения местоположения активна</string>
-	<string name="tiles_queued">%d тайлов в списке для загрузки</string>
-	<string name="too_many_tiles_queued">%d тайлов в списке для загрузки. Пожалуйста подождите пока загрузятся остальные тайлы</string>
-	<string name="all_tiles_downloaded">Все тайлы в списке для загрузки, были успешно загружены</string>
-	<string name="not_all_tiles_downloaded">%d тайлов для данной области карты не были загружены. Проверьте достаточно ли для работы загруженных тайлов, а противном случае повторите попытку</string>
-	<string name="zoom_level_too_low">Площадь слишком большая. Уменьшите масштаб для загрузке локальных данных о заявлениях</string>
-	<string name="claim_area_label">Площадь</string>
-	<string name="square_meters">m2</string>
-	<string name="yes">Да</string>
+    <string name="check_location_service">Информация о местоположении не доступна. Проверьте в настройках, что услуга определения местоположения активна</string>
+    <string name="tiles_queued">%d тайлов в списке для загрузки</string>
+    <string name="too_many_tiles_queued">%d тайлов в списке для загрузки. Пожалуйста подождите пока загрузятся остальные тайлы</string>
+    <string name="all_tiles_downloaded">Все тайлы в списке для загрузки, были успешно загружены</string>
+    <string name="not_all_tiles_downloaded">%d тайлов для данной области карты не были загружены. Проверьте достаточно ли для работы загруженных тайлов, а противном случае повторите попытку</string>
+    <string name="zoom_level_too_low">Площадь слишком большая. Уменьшите масштаб для загрузке локальных данных о заявлениях</string>
+    <string name="claim_area_label">Площадь</string>
+    <string name="square_meters">m2</string>
+    <string name="yes">Да</string>
     <string name="person">Лицо</string>
     <string name="group">Группа</string>
     <string name="no">Нет</string>
@@ -271,7 +271,7 @@
     <string name="sticky_marker">Прилипающий маркер</string>
     <string name="claimant_picture">Фото заявителя</string>
     <string name="claimant">Заявитель *</string>
-    <string name="claimant_no_star">Заявитель</string>    
+    <string name="claimant_no_star">Заявитель</string>
     <string name="delete_locally">Удалить локально</string>
     <string name="owner">Владелец</string>
     <string name="challenge_to">Оспаривание</string>
@@ -329,7 +329,7 @@
     <string name="updating">обновление</string>
     <string name="uploaded">загружено</string>
     <string name="deleted">удалено</string>
-    <string name="description">Описание</string> 
+    <string name="description">Описание</string>
     <string name="upload_incomplete">загрузка не завершена</string>
     <string name="update_incomplete">обновление не завершено</string>
     <string name="upload_error">ошибка загрузки</string>
@@ -349,125 +349,144 @@
     <string name="hint_type_to_filter">Наберите несколько символов для фильтрации списка заявлений</string>
     <string name="shares_prompt">Выберите доли</string>
     <string name="tiles_provider_dialog_title">Выбрите своего провайдера тайлов для работы в оффлайн</string>
+    <string name="title_import">Импорт сжатого заявления</string>
+    <string name="message_claim_imported">Заявление импортировано </string>
+    <string name="message_claim_ready_to_import">Заявление готово для импортирования</string>
+    <string name="message_claim_ready_to_import_no_dynamic">Заявление будет импортировано, но динамическая часть будет потеряна</string>
+    <string name="message_claim_import_password_error">Неверный пароль. Попробуйте еще раз</string>
+    <string name="message_claim_import_not_compressed_claim">Zip файл не является файлом завяления</string>
+    <string name="message_claim_import_not_claim_archive">Неверный файл архива заявления</string>
+    <string name="message_claim_import_already_present">Заявление уже существует на клиенте</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">Данное заявление не принадлежит вашему сообществу</string>
+    <string name="message_claim_import_preparing">Подготовка заявления для импортирования</string>
+    <string name="message_claim_not_imported">Ошибка, заявление не было импортировано</string>
+    <string name="message_available_shares">Сумма долей меньше 100%</string>
+    <string name="message_files_not_present">Некоторые файлы отсутсвуют в заявлении</string>
+    <string name="message_warnings">Внимание : </string>
+    <string name="null_label">Нет</string>
+    <string name="language_dialog_title">Выберите язык</string>
+    <string name="title_restart_dialog">Необходима перезагрузка</string>
+    <string name="message_restart_dialog">Изменение в конфигурации OpenTenure требует перезагрузки. Хотите перегрузить OpenTenure сейчас?</string>
+
     <string-array name="language_keys">
-        <item >Хмерский</item>
-        <item >Албанский</item>
-        <item >По умолчанию</item>
-        </string-array>
+        <item>Хмерский</item>
+        <item>Албанский</item>
+        <item>По умолчанию</item>
+    </string-array>
     <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
-    
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="tiles_provider_keys">
-        <item >TMS</item>
-        <item >GeoServer</item>
-        </string-array>
+        <item>TMS</item>
+        <item>GeoServer</item>
+    </string-array>
     <string-array name="tiles_provider_values">
-        <item >TMS</item>
-        <item >GeoServer</item>
-        </string-array>
+        <item>TMS</item>
+        <item>GeoServer</item>
+    </string-array>
     <string-array name="share_values">
-        <item >1</item>
-        <item >2</item>
-        <item >3</item>
-        <item >4</item>
-        <item >5</item>
-        <item >6</item>
-        <item >7</item>
-        <item >8</item>
-        <item >9</item>
-        <item >10</item>
-        <item >11</item>
-        <item >12</item>
-        <item >13</item>
-        <item >14</item>
-        <item >15</item>
-        <item >16</item>
-        <item >17</item>
-        <item >18</item>
-        <item >19</item>
-        <item >20</item>
-        <item >21</item>
-        <item >22</item>
-        <item >23</item>
-        <item >24</item>
-        <item >25</item>
-        <item >26</item>
-        <item >27</item>
-        <item >28</item>
-        <item >29</item>
-        <item >30</item>
-        <item >31</item>
-        <item >32</item>
-        <item >33</item>
-        <item >34</item>
-        <item >35</item>
-        <item >36</item>
-        <item >37</item>
-        <item >38</item>
-        <item >39</item>
-        <item >40</item>
-        <item >41</item>
-        <item >42</item>
-        <item >43</item>
-        <item >44</item>
-        <item >45</item>
-        <item >46</item>
-        <item >47</item>
-        <item >48</item>
-        <item >49</item>
-        <item >50</item>
-        <item >51</item>
-        <item >52</item>
-        <item >53</item>
-        <item >54</item>
-        <item >55</item>
-        <item >56</item>
-        <item >57</item>
-        <item >58</item>
-        <item >59</item>
-        <item >60</item>
-        <item >61</item>
-        <item >62</item>
-        <item >63</item>
-        <item >64</item>
-        <item >65</item>
-        <item >66</item>
-        <item >67</item>
-        <item >68</item>
-        <item >69</item>
-        <item >70</item>
-        <item >71</item>
-        <item >72</item>
-        <item >73</item>
-        <item >74</item>
-        <item >75</item>
-        <item >76</item>
-        <item >77</item>
-        <item >78</item>
-        <item >79</item>
-        <item >80</item>
-        <item >81</item>
-        <item >82</item>
-        <item >83</item>
-        <item >84</item>
-        <item >85</item>
-        <item >86</item>
-        <item >87</item>
-        <item >88</item>
-        <item >89</item>
-        <item >90</item>
-        <item >91</item>
-        <item >92</item>
-        <item >93</item>
-        <item >94</item>
-        <item >95</item>
-        <item >96</item>
-        <item >97</item>
-        <item >98</item>
-        <item >99</item>
-        <item >100</item>
-        </string-array>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+        <item>31</item>
+        <item>32</item>
+        <item>33</item>
+        <item>34</item>
+        <item>35</item>
+        <item>36</item>
+        <item>37</item>
+        <item>38</item>
+        <item>39</item>
+        <item>40</item>
+        <item>41</item>
+        <item>42</item>
+        <item>43</item>
+        <item>44</item>
+        <item>45</item>
+        <item>46</item>
+        <item>47</item>
+        <item>48</item>
+        <item>49</item>
+        <item>50</item>
+        <item>51</item>
+        <item>52</item>
+        <item>53</item>
+        <item>54</item>
+        <item>55</item>
+        <item>56</item>
+        <item>57</item>
+        <item>58</item>
+        <item>59</item>
+        <item>60</item>
+        <item>61</item>
+        <item>62</item>
+        <item>63</item>
+        <item>64</item>
+        <item>65</item>
+        <item>66</item>
+        <item>67</item>
+        <item>68</item>
+        <item>69</item>
+        <item>70</item>
+        <item>71</item>
+        <item>72</item>
+        <item>73</item>
+        <item>74</item>
+        <item>75</item>
+        <item>76</item>
+        <item>77</item>
+        <item>78</item>
+        <item>79</item>
+        <item>80</item>
+        <item>81</item>
+        <item>82</item>
+        <item>83</item>
+        <item>84</item>
+        <item>85</item>
+        <item>86</item>
+        <item>87</item>
+        <item>88</item>
+        <item>89</item>
+        <item>90</item>
+        <item>91</item>
+        <item>92</item>
+        <item>93</item>
+        <item>94</item>
+        <item>95</item>
+        <item>96</item>
+        <item>97</item>
+        <item>98</item>
+        <item>99</item>
+        <item>100</item>
+    </string-array>
+
 </resources>
