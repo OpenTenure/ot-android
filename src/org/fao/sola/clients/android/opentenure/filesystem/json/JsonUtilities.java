@@ -47,9 +47,12 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.lang.reflect.Modifier;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Claimant;
 import org.fao.sola.clients.android.opentenure.filesystem.json.model.Location;
@@ -58,6 +61,7 @@ import org.fao.sola.clients.android.opentenure.filesystem.json.model.Share;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
 import org.fao.sola.clients.android.opentenure.model.PropertyLocation;
@@ -82,6 +86,7 @@ public class JsonUtilities {
 		org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim tempClaim = new org.fao.sola.clients.android.opentenure.filesystem.json.model.Claim();
 
 		try {
+			String[] splittpedServerUrl = null;
 
 			Claim claim = Claim.getClaim(claimId);
 
@@ -97,9 +102,17 @@ public class JsonUtilities {
 				// number of days to add
 				String lodgementDate = sdf.format(c.getTime());
 
-				c.add(Calendar.MONTH, 1);
-				// number of days to add
-				String challengeExpiryDate = sdf.format(c.getTime());
+				String challengeExpiryDate = null;
+				if (claim.getStatus().equals(ClaimStatus._CREATED)
+						|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
+						|| claim.getStatus().equals(
+								ClaimStatus._UPLOAD_INCOMPLETE)) {
+					c.add(Calendar.MONTH, 1);
+					// number of days to add
+					challengeExpiryDate = null;
+				} else
+					challengeExpiryDate = sdf.format(claim
+							.getChallengeExpiryDate());
 
 				// tempClaim.setChallengedClaim(null);
 				tempClaim.setDescription(claim.getName());
@@ -107,6 +120,22 @@ public class JsonUtilities {
 						.setChallengedClaimId(claim.getChallengedClaim() != null ? claim
 								.getChallengedClaim().getClaimId() : null);
 				tempClaim.setId(claimId);
+
+				// Server ulr
+				SharedPreferences preferences = PreferenceManager
+						.getDefaultSharedPreferences(OpenTenureApplication
+								.getContext());
+
+				String serverUrl = preferences.getString(
+						OpenTenurePreferencesActivity.CS_URL_PREF,
+						OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+
+				if (serverUrl.contains("//")) {
+					splittpedServerUrl = serverUrl.split("//");
+					tempClaim.setServerUrl(splittpedServerUrl[1]);
+				} else
+					tempClaim.setServerUrl(serverUrl);
+
 				tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
 				tempClaim.setNotes(claim.getNotes());
@@ -134,7 +163,14 @@ public class JsonUtilities {
 				tempClaim.setTypeCode(claim.getType());
 				if (claim.getDateOfStart() != null)
 					tempClaim.setStartDate(sdf.format(claim.getDateOfStart()));
-				tempClaim.setNr("0001");
+
+				if (claim.getStatus().equals(ClaimStatus._CREATED)
+						|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
+						|| claim.getStatus().equals(
+								ClaimStatus._UPLOAD_INCOMPLETE))
+					tempClaim.setNr("0001");
+				else
+					tempClaim.setNr(claim.getClaimNumber());
 
 				tempClaim.setLodgementDate(lodgementDate);
 				tempClaim.setChallengeExpiryDate(challengeExpiryDate);

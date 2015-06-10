@@ -27,9 +27,12 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.filesystem.json.JsonUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
@@ -38,15 +41,21 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
+import com.ipaulpro.afilechooser.utils.FileUtils;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,11 +72,14 @@ import android.widget.Toast;
 public class LocalClaimsFragment extends ListFragment {
 
 	private static final int CLAIM_RESULT = 100;
+	private static final int REQUEST_IMPORT = 2404;
 	private static final String FILTER_KEY = "filter";
 	private View rootView;
 	private List<String> excludeClaimIds = new ArrayList<String>();
 	private ModeDispatcher mainActivity;
 	private String filter = null;
+	private String fullPath = null;
+	private File dest;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -106,16 +118,16 @@ public class LocalClaimsFragment extends ListFragment {
 
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RW) == 0) {
 			if (OpenTenureApplication.isLoggedin()) {
-				itemIn = menu.getItem(3);
+				itemIn = menu.findItem(R.id.action_login);
 				itemIn.setVisible(false);
-				itemOut = menu.getItem(4);
+				itemOut = menu.findItem(R.id.action_logout);
 				itemOut.setVisible(true);
 
 			} else {
 
-				itemIn = menu.getItem(3);
+				itemIn = menu.findItem(R.id.action_login);
 				itemIn.setVisible(true);
-				itemOut = menu.getItem(4);
+				itemOut = menu.findItem(R.id.action_logout);
 				itemOut.setVisible(false);
 			}
 		}
@@ -177,6 +189,34 @@ public class LocalClaimsFragment extends ListFragment {
 					.toString());
 			startActivityForResult(intent, CLAIM_RESULT);
 			return true;
+		case R.id.action_import_zip:
+
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"isInitialized").getValue())) {
+				String newMessage = String.format(OpenTenureApplication
+						.getContext().getString(
+								R.string.message_app_not_yet_initialized));
+
+				Toast newToast = Toast.makeText(
+						OpenTenureApplication.getContext(), newMessage,
+						Toast.LENGTH_LONG);
+				newToast.show();
+
+				return true;
+			}
+
+			Intent getContentIntent = FileUtils.createGetContentIntent();
+
+			intent = Intent.createChooser(getContentIntent, getResources()
+					.getString(R.string.choose_file));
+			try {
+				startActivityForResult(intent, REQUEST_IMPORT);
+			} catch (Exception e) {
+				Log.d(this.getClass().getName(),
+						"Unable to start file chooser intent due to "
+								+ e.getMessage());
+			}
+			return true;
 		case R.id.action_login:
 
 			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
@@ -227,6 +267,101 @@ public class LocalClaimsFragment extends ListFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
+
+		case REQUEST_IMPORT:
+			if (resultCode == com.ipaulpro.afilechooser.FileChooserActivity.RESULT_OK) {
+
+				Uri uri = data.getData();
+
+				fullPath = FileUtils.getPath(rootView.getContext(), uri);
+
+				Log.d(this.getClass().getName(), "Selected file: " + fullPath);
+
+				if (fullPath.endsWith(".zip")) {
+
+					dest = FileSystemUtilities.copyFileInImportFolder(new File(
+							fullPath));
+
+					if (!dest.exists() || !dest.isFile()) {
+
+						String newMessage = "Error preparing import of "
+								+ fullPath;
+
+						Toast newToast = Toast.makeText(rootView.getContext(),
+								newMessage, Toast.LENGTH_LONG);
+						newToast.show();
+
+						return;
+					}
+				} else {
+
+					String newMessage = OpenTenureApplication
+							.getContext()
+							.getString(
+									R.string.message_claim_import_not_claim_archive);
+
+					Toast newToast = Toast.makeText(rootView.getContext(),
+							newMessage, Toast.LENGTH_LONG);
+					newToast.show();
+
+					return;
+				}
+
+				AlertDialog.Builder metadataDialog = new AlertDialog.Builder(
+						rootView.getContext());
+
+				metadataDialog.setTitle(R.string.password);
+
+				final EditText input = new EditText(rootView.getContext());
+
+				input.setInputType(InputType.TYPE_CLASS_TEXT
+						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				input.setTransformationMethod(PasswordTransformationMethod
+						.getInstance());
+				metadataDialog.setView(input);
+
+				metadataDialog.setPositiveButton(R.string.confirm,
+						new DialogInterface.OnClickListener() {
+
+							@Override
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								String password = input.getText().toString();
+								dialog.dismiss();
+
+								new PreImportTask(rootView.getContext())
+										.execute(password, dest);
+
+								return;
+
+							}
+						});
+
+				metadataDialog.setNegativeButton(R.string.cancel,
+						new DialogInterface.OnClickListener() {
+
+							public void onClick(DialogInterface dialog,
+									int which) {
+
+								try {
+									FileSystemUtilities
+											.deleteFilesInFolder(dest
+													.getParentFile());
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									System.out.println("Error deleting files "
+											+ e.getLocalizedMessage());
+									e.printStackTrace();
+								}
+								return;
+							}
+						});
+
+				metadataDialog.show();
+
+			}
+
 		default:
 			update();
 		}

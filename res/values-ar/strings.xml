@@ -6,6 +6,7 @@
     <string name="action_settings">إعدادات</string>
     <string name="action_search">البحث</string>
     <string name="action_new">جديد</string>
+    <string name="action_import">استيراد</string>
     <string name="action_done">منجز</string>
     <string name="action_remove_attachment">إزالة مرفق</string>
     <string name="action_remove_owner">إزالة حقوق مالك</string>
@@ -326,6 +327,26 @@
     <string name="tms_url_pref_summary">عنوان الوب الأساسي لمزود خدمة مربعات الخارطة</string>
     <string name="tms_url_pref_dialog_title">أدخل عنوان الوب لخادم مربعات الخارطة الخاص بك</string>
     <string name="tiles_provider_dialog_title">أختر نوع مزود مربعات الخارطة بدون اتصال</string>
+    <string name="khmer_language">الخميرية</string>
+    <string name="tms_tiles_provider_key">TMS</string>
+    <string name="title_import">أستيراد  ملف الأدعاءات المضغوط </string>
+    <string name="message_claim_imported">تم أستيراد الادعاء</string>
+    <string name="message_claim_ready_to_import">الأدعاء جاهز للأستيراد</string>
+    <string name="message_claim_ready_to_import_no_dynamic">سوف يتم أستيراد الأدعاء ولكن  سيتم فقدان الجزء المتغير</string>
+    <string name="message_claim_import_password_error">خطأ في كلمة المرور. حاول مجددا</string>
+    <string name="message_claim_import_not_compressed_claim">الملف  لا يشكل ملف ادعاء مضغوط</string>
+    <string name="message_claim_import_not_claim_archive">هذا الملف  ليس ملف أرشيف  صالح للأدعاء </string>
+    <string name="message_claim_import_already_present">الأدعاء موجود مسبقا على جهاز العميل</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">الأدعاء لا ينتمي الى مجموعة المجتمع</string>
+    <string name="message_claim_import_preparing">يتم التحضير لاستيراد الأدهاء</string>
+    <string name="message_claim_not_imported">خطأ.  لم يتم إستيراد الأدعاء </string>
+    <string name="message_available_shares">مجموع الحصص لا يساوي نسبة 100% </string>
+    <string name="message_files_not_present">لف أو أكثر من ملفات الأدعاء غير موجودة</string>
+    <string name="message_warnings">تحذيرات:: </string>
+    <string name="null_label">لا شيء</string>
+    <string name="language_dialog_title">إختر لغة</string>
+    <string name="title_restart_dialog">أعادة التشغيل مطلوبة</string>
+    <string name="message_restart_dialog">حتى يأخذ التغيير في إعدادت نظام الحيازة المفتوح أثره, يجب إعادة التشغيل. هل ترغب باعادة التسغيل</string>
 
     <string-array name="tiles_provider_values">
         <item>خدمة مربعات الخارطة</item>
@@ -348,27 +369,22 @@
     <string name="rejected">مرفوض</string>
     <string name="reviewed">روجع</string>
     <string name="moderated">معدل</string>
-    
     <string name="claim_area_label">المساحة</string>
     <string name="square_meters">م2</string>
-    
     <string name="parcel">القطعة</string>
     <string name="description">الوصف</string>
     <string name="generated_on">انشئت في</string>
-    
-    <string-array name="language_keys">
-        <item >Khmer</item>
-        <item >Albanian</item>
-        <item >Default</item>
-        </string-array>
-    <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
-    
-    
 
+    <string-array name="language_keys">
+        <item>Khmer</item>
+        <item>Albanian</item>
+        <item>Default</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="claim_statuses">
         <item>غير معدل</item>
         <item>معدل</item>

@@ -161,6 +161,7 @@ public class ShareDetailsFragment extends Fragment {
 				startActivityForResult(intent,
 						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
 			} else {
+				System.out.println("3 claim.getAvailableShares(): " + claim.getAvailableShares());
 				Toast toast = Toast.makeText(
 						OpenTenureApplication.getContext(),
 						R.string.message_no_available_shares,

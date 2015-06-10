@@ -31,7 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.button.listener.ExportClaimListener;
+
+import org.fao.sola.clients.android.opentenure.button.listener.PreExportClaimListener;
 import org.fao.sola.clients.android.opentenure.button.listener.SubmitClaimListener;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Claim;
@@ -166,7 +167,7 @@ public class LocalClaimsListAdapter extends ArrayAdapter<ClaimListTO> implements
 		vh.send.setOnClickListener(new SubmitClaimListener(claims.get(position)
 				.getId(), vh));
 
-		vh.export.setOnClickListener(new ExportClaimListener(claims.get(
+		vh.export.setOnClickListener(new PreExportClaimListener(claims.get(
 				position).getId()));
 
 		String realStatus = "";

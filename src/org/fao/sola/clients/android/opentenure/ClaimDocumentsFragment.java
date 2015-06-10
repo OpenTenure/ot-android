@@ -83,7 +83,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher mainActivity;
-	
+
 	private Map<String, String> keyValueDocTypes;
 	private Map<String, String> valueKeyDocTypes;
 
@@ -184,29 +184,29 @@ public class ClaimDocumentsFragment extends ListFragment {
 				fileDescription.setHint(R.string.add_description);
 
 				// Code Types Spinner
-				
+
 				/* Mapping id type localization */
 				DocumentType dt = new DocumentType();
-				
+
 				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
 						.getInstance().getLocalization());
 				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
 						.getInstance().getLocalization());
-				
-				
+
 				final Spinner spinner = (Spinner) dialog
 						.findViewById(R.id.documentTypesSpinner);
-				
 
 				List<String> list = new ArrayList<String>();
-				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
+				TreeSet<String> keys = new TreeSet<String>(
+						keyValueDocTypes.keySet());
 				for (String key : keys) {
 					String value = keyValueDocTypes.get(key);
 					list.add(value);
 					// do something
 				}
 
-				//List<String> list = dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
+				// List<String> list =
+				// dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
 				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
 						OpenTenureApplication.getContext(),
@@ -235,8 +235,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						attachment.setFileType((valueKeyDocTypes.get((String) spinner
-										.getSelectedItem())));
+						attachment.setFileType((valueKeyDocTypes
+								.get((String) spinner.getSelectedItem())));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
@@ -297,15 +297,15 @@ public class ClaimDocumentsFragment extends ListFragment {
 						.findViewById(R.id.documentTypesSpinner);
 
 				DocumentType dt = new DocumentType();
-				
+
 				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
 						.getInstance().getLocalization());
 				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
 						.getInstance().getLocalization());
-				
 
 				List<String> list = new ArrayList<String>();
-				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
+				TreeSet<String> keys = new TreeSet<String>(
+						keyValueDocTypes.keySet());
 				for (String key : keys) {
 					String value = keyValueDocTypes.get(key);
 					list.add(value);
@@ -338,10 +338,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 						attachment.setDescription(fileDescription.getText()
 								.toString());
 						attachment.setFileName(copy.getName());
-						System.out.println("Il valore del tipo " + valueKeyDocTypes.get((String) spinner
-										.getSelectedItem()));
-						attachment.setFileType(valueKeyDocTypes.get((String) spinner
-										.getSelectedItem()));
+
+						attachment.setFileType(valueKeyDocTypes
+								.get((String) spinner.getSelectedItem()));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
@@ -692,11 +691,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 		/*
 		 * 
 		 * */
-		
+
 		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
 				.getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
-		
+
 		if (att != null && att.getPath() != null && !att.getPath().equals("")) {
 
 			try {
@@ -751,10 +750,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 			for (Attachment attachment : attachments) {
 				if (!attachment.getAttachmentId().equals(
 						claim.getPerson().getPersonId()))
-				
+
 				{
-					String slogan = attachment.getDescription()
-							+ " - "
+					String slogan = attachment.getDescription() + " - "
 							+ (attachment.getFileType()) + " - "
 							+ attachment.getMimeType();
 					slogans.add(slogan);

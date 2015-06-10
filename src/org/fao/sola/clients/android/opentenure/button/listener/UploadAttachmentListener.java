@@ -30,11 +30,9 @@ package org.fao.sola.clients.android.opentenure.button.listener;
 import org.fao.sola.clients.android.opentenure.AttachmentViewHolder;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
-import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
-import org.fao.sola.clients.android.opentenure.model.AttachmentStatus;
 import org.fao.sola.clients.android.opentenure.network.SaveAttachmentTask;
-import org.fao.sola.clients.android.opentenure.network.response.SaveAttachmentResponse;
+
 
 import android.os.AsyncTask;
 import android.view.View;

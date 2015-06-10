@@ -28,35 +28,42 @@
 package org.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Person;
 
 import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.util.Zip4jConstants;
 import android.content.Context;
 import android.media.MediaScannerConnection;
-import android.os.Environment;
 
 public class ZipUtilities {
 
 	public static boolean AddFilesWithAESEncryption(String password,
-			String claimID) {
+			String claimId) {
 
 		try {
 
+			String claimName = Claim.getClaim(claimId).getName();
+
+			SimpleDateFormat sdf = new SimpleDateFormat();
+
+			sdf.applyPattern("yyyy-MM-dd");
+
 			Context context = OpenTenureApplication.getContext();
 
-			File download = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_ALARMS);
-
-			ZipFile zipFile = new ZipFile(FileSystemUtilities
-					.getOpentenureFolder().getAbsolutePath()
+			ZipFile zipFile = new ZipFile(FileSystemUtilities.getExportFolder()
+					.getAbsolutePath()
 					+ File.separator
-					+ "Claim_" + claimID + ".zip");
+					+ "Claim_"
+					+ claimName
+					+ "_" + sdf.format(new Date()) + ".zip");
 
 			// Build the list of files to be added in the array list
 			// Objects of type File have to be added to the ArrayList
@@ -127,18 +134,66 @@ public class ZipUtilities {
 			// allow updating split zip files
 
 			// zipFile.addFiles(filesToAdd, parameters);
-			zipFile.addFolder(FileSystemUtilities.getClaimFolder(claimID),
+			zipFile.addFolder(FileSystemUtilities.getClaimFolder(claimId),
 					parameters);
 
 			MediaScannerConnection.scanFile(context, new String[] { zipFile
 					.getFile().getAbsolutePath() }, null, null);
 
 			return true;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			return false;
 
 		}
+	}
+
+	public static int UnzipFilesWithAESEncryption(String password, File zip) {
+
+		try {
+			ZipFile zipFile = new ZipFile(zip);
+
+			if (zipFile.isEncrypted()) {
+
+				System.out.println("Is a crypted zip, try password :"
+						+ password);
+				zipFile.setPassword(password.toCharArray());
+			}
+
+			@SuppressWarnings("unchecked")
+			List<FileHeader> fileHeaders = zipFile.getFileHeaders();
+
+			for (FileHeader fileHeader : fileHeaders) {
+
+				if (fileHeader.getFileName().contains("claim.json")) {
+
+					zipFile.extractAll(zip.getParent());
+
+					return 1;
+				}
+
+			}
+
+			return 3;
+
+		} catch (ZipException e) {
+
+			if (e.getMessage().contains("Wrong Password for file")) {
+
+				return 2;
+
+			}
+
+			if (e.getMessage().contains("empty or null password provided")) {
+
+				return 2;
+
+			}
+
+			e.printStackTrace();
+			return 0;
+		}
+
 	}
 
 }

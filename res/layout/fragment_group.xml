@@ -27,7 +27,7 @@
             android:layout_weight="1"
             android:paddingBottom="8dp"
             android:gravity="bottom"
-            android:text="@string/first_name_label"
+            android:text="@string/group_name"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <EditText

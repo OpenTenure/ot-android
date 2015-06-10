@@ -296,8 +296,6 @@ public class Claim {
 		this.recorderName = recorderName;
 	}
 	
-	
-
 	public long getClaimArea() {
 		return claimArea;
 	}

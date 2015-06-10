@@ -265,14 +265,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 		// break;
 
+//		case 0:
+//			sv.setScrollContainer(true);
+//			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
+//					true);
+//			sv.setContentTitle("  ");
+//			sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
+//			break;
 		case 0:
-			sv.setScrollContainer(true);
-			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
-					true);
-			sv.setContentTitle("  ");
-			sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
-			break;
-		case 1:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
 			sv.setContentTitle(getString(R.string.title_claim_map).toUpperCase(
@@ -281,20 +281,20 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
 			break;
-		case 2:
+		case 1:
 			sv.setShowcase(new ViewTarget(mViewPager), true);
 			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_claim_mapdraw_message));
 			mViewPager.setCurrentItem(1);
 			break;
 
-		case 3:
+		case 2:
 			sv.setShowcase(new ViewTarget(
 					findViewById(R.id.action_center_and_follow)), true);
 			sv.setContentTitle("  ");
 			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
 			break;
-		case 4:
+		case 3:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
 			sv.setContentTitle(getString(R.string.title_claim_documents)
@@ -303,7 +303,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-		case 5:
+		case 4:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
 			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
@@ -312,7 +312,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
 			mViewPager.setCurrentItem(3);
 			break;
-		case 6:
+		case 5:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
 			sv.setContentTitle(getString(R.string.title_claim_challenges)
@@ -321,7 +321,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
 			mViewPager.setCurrentItem(4);
 			break;
-		case 7:
+		case 6:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
 			sv.setContentTitle(getString(R.string.owners)
@@ -330,7 +330,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
 			mViewPager.setCurrentItem(5);
 			break;
-		case 8:
+		case 7:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
 			sv.setContentTitle(("  "));
@@ -343,7 +343,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			sv.setButtonText(getString(R.string.close));
 			mViewPager.setCurrentItem(0);
 			break;
-		case 9:
+		case 8:
 			sv.hide();
 			setAlpha(1.0f, tabs, mViewPager);
 			counter = 0;

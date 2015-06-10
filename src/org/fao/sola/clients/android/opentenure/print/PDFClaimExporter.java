@@ -94,10 +94,9 @@ public class PDFClaimExporter {
 	private int currentY = 0;
 	private int pageWidth = A4_PAGE_WIDTH;
 	private int pageHeight = A4_PAGE_HEIGHT;
-	
-	
-	DisplayNameLocalizer dnl = new DisplayNameLocalizer(
-			OpenTenureApplication.getInstance().getLocalization());
+
+	DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication
+			.getInstance().getLocalization());
 
 	public PDFClaimExporter(Context context, String claimId) {
 
@@ -122,7 +121,8 @@ public class PDFClaimExporter {
 			sdf.applyPattern("dd/MM/yyyy HH:MM");
 
 			/*------------------------------------------- HEADER -------------------------------------*/
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 				drawBitmap(bitmapFromResource(context,
 						R.drawable.open_tenure_logo,
 
@@ -162,14 +162,12 @@ public class PDFClaimExporter {
 				moveY(-60);
 			} else {
 
-
 				setFont(FONT_SANS_SERIF, Typeface.NORMAL, 15);
 				moveY(60);
 
 				writeText(context.getResources().getString(
 						R.string.generated_on)
 						+ " :");
-
 
 				setX(40);
 				moveY(25);
@@ -180,7 +178,6 @@ public class PDFClaimExporter {
 
 				moveX(15);
 				moveY(-80);
-
 
 				if (claim.getClaimNumber() != null) {
 					writeBoldText(
@@ -194,7 +191,6 @@ public class PDFClaimExporter {
 
 				setX(420);
 				moveY(40);
-
 
 				drawBitmap(bitmapFromResource(context,
 						R.drawable.open_tenure_logo,
@@ -213,7 +209,8 @@ public class PDFClaimExporter {
 			drawHorizontalLine();
 			newLine();
 
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 
 				writeBoldText(OpenTenureApplication.getContext().getResources()
 						.getString(R.string.claimant_no_star), 18);
@@ -386,8 +383,9 @@ public class PDFClaimExporter {
 								+ ": ", 16);
 				newLine();
 				if (claim.getPerson().getIdType() != null)
-					writeText(dnl.getLocalizedDisplayName(new IdType().getDisplayValueByType(claim
-							.getPerson().getIdType())));
+					writeText(dnl.getLocalizedDisplayName(new IdType()
+							.getDisplayValueByType(claim.getPerson()
+									.getIdType())));
 				setX(300);
 				if (claim.getPerson().getIdNumber() != null)
 					writeText(claim.getPerson().getIdNumber());
@@ -395,7 +393,7 @@ public class PDFClaimExporter {
 				newLine();
 				drawHorizontalLine();
 				newLine();
-				
+
 			} else {
 
 				Bitmap picture = Person.getPersonPictureForPdf(context, claim
@@ -473,20 +471,19 @@ public class PDFClaimExporter {
 					}
 				} else {
 					if (picture == null) {
-					newLine();
-					setX(430);
-					writeBoldText(
-							context.getResources().getString(
-									R.string.group_name)
-									+ " :", 16);
-					setX(130);
-					writeBoldText(
-							context.getResources().getString(
-									R.string.date_of_establishment_label)
-									+ " :", 16);
-					}
-					else{
-						
+						newLine();
+						setX(430);
+						writeBoldText(
+								context.getResources().getString(
+										R.string.group_name)
+										+ " :", 16);
+						setX(130);
+						writeBoldText(
+								context.getResources().getString(
+										R.string.date_of_establishment_label)
+										+ " :", 16);
+					} else {
+
 						setX(40);
 						drawBitmap(picture);
 
@@ -526,10 +523,6 @@ public class PDFClaimExporter {
 						newLine();
 						newLine();
 
-						
-						
-						
-						
 					}
 				}
 
@@ -604,7 +597,8 @@ public class PDFClaimExporter {
 			}
 			/*---------------------------------------------- OWNERS ------------------------------------------------------ */
 
-			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
+			if (OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar"))
 				setX(430);
 			writeBoldText(context.getResources().getString(R.string.owners), 16);
 
@@ -727,8 +721,10 @@ public class PDFClaimExporter {
 										+ ": ", 16);
 						newLine();
 						if (person.getIdType() != null)
-							writeText(new IdType().getDisplayValueByType(claim
-									.getPerson().getIdType()));
+							writeText(dnl.getLocalizedDisplayName(new IdType()
+									.getDisplayValueByType(claim.getPerson()
+											.getIdType())));
+
 						setX(300);
 						if (person.getIdNumber() != null)
 							writeText(claim.getPerson().getIdNumber());
@@ -849,8 +845,10 @@ public class PDFClaimExporter {
 						newLine();
 						setX(430);
 						if (person.getIdType() != null)
-							writeText(new IdType().getDisplayValueByType(claim
-									.getPerson().getIdType()));
+							writeText(dnl.getLocalizedDisplayName(new IdType()
+									.getDisplayValueByType(claim.getPerson()
+											.getIdType())));
+
 						setX(130);
 						if (person.getIdNumber() != null)
 							writeText(claim.getPerson().getIdNumber());
@@ -862,7 +860,8 @@ public class PDFClaimExporter {
 			}
 
 			/*------------------     DOCUMENTS -------------------------------------*/
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 				newLine();
 				if (isPageEnding())
 					addPage(document, context, claimId);
@@ -942,7 +941,8 @@ public class PDFClaimExporter {
 			drawHorizontalLine();
 			if (isPageEnding())
 				addPage(document, context, claimId);
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 
 				newLine();
 				newLine();
@@ -980,7 +980,8 @@ public class PDFClaimExporter {
 			if (isPageEnding())
 				addPage(document, context, claimId);
 
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 				newLine();
 				newLine();
 				newLine();
@@ -1012,8 +1013,8 @@ public class PDFClaimExporter {
 								R.string.date_of_start_label_print), 16);
 
 				newLine();
-				writeText(dnl.getLocalizedDisplayName(new LandUse().getDisplayValueByType(claim
-						.getLandUse())));
+				writeText(dnl.getLocalizedDisplayName(new LandUse()
+						.getDisplayValueByType(claim.getLandUse())));
 				setX(300);
 				sdf.applyPattern("dd/MM/yyyy");
 				if (claim.getDateOfStart() != null)
@@ -1077,7 +1078,8 @@ public class PDFClaimExporter {
 			if (isPageEnding())
 				addPage(document, context, claimId);
 
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 				writeBoldText(
 						context.getResources().getString(
 								R.string.adjacent_claims), 18);
@@ -1265,7 +1267,8 @@ public class PDFClaimExporter {
 			drawBitmap(getMapPicture(mapFileName, 515));
 
 			/*------------------ SIGNATURE -------------------------------------*/
-			if (!OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar")) {
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
 				drawHorizontalLine(pageWidth / 2);
 				newLine();
 				moveY(80);

@@ -90,7 +90,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 		super.onCreate(savedInstanceState);
 		Intent intent = getIntent();
-		
 
 		if (intent.getStringExtra(MODE_KEY) != null)
 			mode = ModeDispatcher.Mode.valueOf(intent.getStringExtra(MODE_KEY));
@@ -137,20 +136,19 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			share.setClaimId(claimId);
 
 		}
-		
 
-		
 		ImageView newOwner = (ImageView) findViewById(R.id.action_new_owner);
-		//Plus button to add a new Owner to the share
+		// Plus button to add a new Owner to the share
 		newOwner.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				Claim claim = Claim.getClaim(claimId);
 				if (claim.getAvailableShares() >= 0) {
 
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
-							((ViewGroup) getWindow().getDecorView()).getContext());
+							((ViewGroup) getWindow().getDecorView())
+									.getContext());
 
 					dialog.setTitle(R.string.new_entity);
 					dialog.setMessage(R.string.message_entity_type);
@@ -162,15 +160,19 @@ public class ShareDetailsActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									Intent intent = new Intent(
-											((ViewGroup) getWindow().getDecorView())
+											((ViewGroup) getWindow()
+													.getDecorView())
 													.getContext(),
 											PersonActivity.class);
-									intent.putExtra(PersonActivity.PERSON_ID_KEY,
+									intent.putExtra(
+											PersonActivity.PERSON_ID_KEY,
 											PersonActivity.CREATE_PERSON_ID);
 									intent.putExtra(PersonActivity.ENTIY_TYPE,
 											PersonActivity.TYPE_PERSON);
-									intent.putExtra(PersonActivity.MODE_KEY, mode);
-									startActivityForResult(intent, PERSON_RESULT);
+									intent.putExtra(PersonActivity.MODE_KEY,
+											mode);
+									startActivityForResult(intent,
+											PERSON_RESULT);
 								}
 							});
 
@@ -181,15 +183,19 @@ public class ShareDetailsActivity extends FragmentActivity implements
 								public void onClick(DialogInterface dialog,
 										int which) {
 									Intent intent = new Intent(
-											((ViewGroup) getWindow().getDecorView())
+											((ViewGroup) getWindow()
+													.getDecorView())
 													.getContext(),
 											PersonActivity.class);
-									intent.putExtra(PersonActivity.PERSON_ID_KEY,
+									intent.putExtra(
+											PersonActivity.PERSON_ID_KEY,
 											PersonActivity.CREATE_PERSON_ID);
 									intent.putExtra(PersonActivity.ENTIY_TYPE,
 											PersonActivity.TYPE_GROUP);
-									intent.putExtra(PersonActivity.MODE_KEY, mode);
-									startActivityForResult(intent, PERSON_RESULT);
+									intent.putExtra(PersonActivity.MODE_KEY,
+											mode);
+									startActivityForResult(intent,
+											PERSON_RESULT);
 
 								}
 							});
@@ -197,22 +203,22 @@ public class ShareDetailsActivity extends FragmentActivity implements
 					dialog.show();
 
 				} else {
+
 					Toast toast = Toast.makeText(
 							OpenTenureApplication.getContext(),
 							R.string.message_no_available_shares,
 							Toast.LENGTH_SHORT);
 					toast.show();
 				}
-				return ;
-				
+				return;
+
 			}
 		});
-		
+
 		Claim claim = Claim.getClaim(claimId);
 		if (!claim.getStatus().equals(ClaimStatus._CREATED)
 				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
-				&& !claim.getStatus()
-						.equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
+				&& !claim.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE)) {
 
 			newOwner.setClickable(false);
 			newOwner.setEnabled(false);
@@ -301,7 +307,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			// adapter = new OwnersListAdapter(context, owners);
 			ListView ownerList = (ListView) findViewById(R.id.owner_list);
 			ownerList.setAdapter(adapter);
-			
+
 			adapter.notifyDataSetChanged();
 
 		}

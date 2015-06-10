@@ -199,6 +199,8 @@ public class OpenTenureApplication extends Application {
 		FileSystemUtilities.createClaimantsFolder();
 		FileSystemUtilities.createOpenTenureFolder();
 		FileSystemUtilities.createCertificatesFolder();
+		FileSystemUtilities.createImportFolder();
+		FileSystemUtilities.createExportFolder();
 		// Get current software version from preferences and new one from package info for migration
 		String version = null;
 		try {

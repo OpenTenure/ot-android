@@ -6,6 +6,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_search">Recherche</string>
     <string name="action_new">Nouveau</string>
+    <string name="action_import">Importation</string>
     <string name="action_done">Terminé</string>
     <string name="action_remove_attachment">Retirer l\'attachment</string>
     <string name="action_remove_owner">Retirer le propriétaire des droits</string>

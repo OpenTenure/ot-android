@@ -6,6 +6,7 @@
     <string name="action_settings">Настройки</string>
     <string name="action_search">Поиск</string>
     <string name="action_new">Новое</string>
+    <string name="action_import">импорт</string>
     <string name="action_done">Завершено</string>
     <string name="action_remove_attachment">Удалить вложение</string>
     <string name="action_remove_owner">Удалить собственника</string>

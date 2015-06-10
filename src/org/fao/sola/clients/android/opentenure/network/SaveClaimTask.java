@@ -223,7 +223,7 @@ public class SaveClaimTask extends
 				claim.setStatus(ClaimStatus._UNMODERATED);
 				claim.setRecorderName(OpenTenureApplication.getUsername());
 				claim.update();
-
+				System.out.println("Challenging Exp Date : " + claim.getChallengeExpiryDate());
 			} catch (Exception e) {
 				Log.d("CommunityServerAPI",
 						"Error uploading the claim " + res.getMessage());

@@ -82,13 +82,12 @@ public class ExporterTask extends AsyncTask<String, Void, String[]> {
 			if (image.exists()) {
 
 				FileSystemUtilities.copyFileInAttachFolder(claimId, image);
-
 			}
 
 			// Json file creation
 			JsonUtilities.createClaimJson(claimId);
 
-			// Creation of zi file from Claim folder
+			// Creation of zip file from Claim folder
 			ZipUtilities.AddFilesWithAESEncryption((String) params[0],
 					(String) params[1]);
 
@@ -114,11 +113,11 @@ public class ExporterTask extends AsyncTask<String, Void, String[]> {
 			String message = "";
 			if (!OpenTenureApplication.getInstance().isKhmer()) {
 				message = String.format(OpenTenureApplication.getContext()
-						.getString(R.string.message_claim_exported, params[1]));
+						.getString(R.string.message_claim_exported, Claim.getClaim((String)params[1]).getName()));
 			} else {
 				message = OpenTenureApplication.getContext().getString(
 						R.string.message_claim_exported)
-						+ " " + params[1];
+						+ " " + Claim.getClaim((String)params[1]).getName();
 
 			}
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
@@ -131,7 +130,7 @@ public class ExporterTask extends AsyncTask<String, Void, String[]> {
 
 			String message = String
 					.format(OpenTenureApplication.getContext().getString(
-							R.string.message_claim_exported_error, params[1]));
+							R.string.message_claim_exported_error, Claim.getClaim((String)params[1]).getName()));
 
 			toast = Toast.makeText(OpenTenureApplication.getContext(), message,
 					Toast.LENGTH_LONG);

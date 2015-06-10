@@ -95,7 +95,7 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 					false);
 			vh = new ViewHolder();
 			vh.slogan = (TextView) convertView.findViewById(R.id.share_slogan);
-			
+
 			vh.shares = (Spinner) convertView.findViewById(R.id.share_shares);
 			vh.owners_num = (TextView) convertView
 					.findViewById(R.id.share_owners_num);
@@ -159,6 +159,7 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 				shares.get(position).setOwners_num(numb);
 
 				if (sharesValue > share.getShares() + availableShares) {
+
 					Toast.makeText(context,
 							R.string.message_no_available_shares,
 							Toast.LENGTH_LONG).show();
@@ -184,7 +185,6 @@ public class SharesListAdapter extends ArrayAdapter<SharesListTO> {
 				// Do nothing
 			}
 		});
-
 
 		if (!readOnly) {
 			vh.removeIcon.setOnClickListener(new OnClickListener() {

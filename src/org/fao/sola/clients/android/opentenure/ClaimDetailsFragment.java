@@ -1013,61 +1013,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 			return true;
 
-		case R.id.action_export:
-
-			if (claimActivity.getClaimId() != null) {
-
-				AlertDialog.Builder metadataDialog = new AlertDialog.Builder(
-						rootView.getContext());
-
-				metadataDialog.setTitle(R.string.password);
-
-				final EditText input = new EditText(rootView.getContext());
-
-				input.setInputType(InputType.TYPE_CLASS_TEXT
-						| InputType.TYPE_TEXT_VARIATION_PASSWORD);
-				input.setTransformationMethod(PasswordTransformationMethod
-						.getInstance());
-				metadataDialog.setView(input);
-
-				metadataDialog.setPositiveButton(R.string.confirm,
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-
-								String password = input.getText().toString();
-								dialog.dismiss();
-
-								new ExporterTask(rootView.getContext())
-										.execute(password,
-												claimActivity.getClaimId());
-
-								return;
-
-							}
-						});
-
-				metadataDialog.setNegativeButton(R.string.cancel,
-						new DialogInterface.OnClickListener() {
-
-							public void onClick(DialogInterface dialog,
-									int which) {
-								return;
-							}
-						});
-
-				metadataDialog.show();
-
-			} else {
-				toast = Toast.makeText(rootView.getContext(),
-						R.string.message_save_claim_before_submit,
-						Toast.LENGTH_SHORT);
-				toast.show();
-			}
-			return true;
-
+		
 		case R.id.action_print:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
 			boolean mapPresent = false;

@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.SerializedName;
 
 public class Claim {
@@ -112,6 +113,11 @@ public class Claim {
 
 	@SerializedName("shares")
 	List<Share> shares;
+	
+	@SerializedName("serverUrl") 
+	@JsonIgnore(true)
+	String serverUrl;
+
 
 	public String getId() {
 		return id;
@@ -329,7 +335,13 @@ public class Claim {
 		this.claimArea = claimArea;
 	}
 
-	
+	public String getServerUrl() {
+		return serverUrl;
+	}
+
+	public void setServerUrl(String serverUrl) {
+		this.serverUrl = serverUrl;
+	}
 	
 	
 	

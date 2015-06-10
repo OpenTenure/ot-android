@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_new">New</string>
+    <string name="action_import">Import</string>
     <string name="action_done">Done</string>
     <string name="action_remove_attachment">Remove attachment</string>
     <string name="action_remove_owner">Remove rights owner</string>
@@ -63,6 +64,7 @@
     <string name="title_share">Share</string>
     <string name="title_claim_challenges">Challenges</string>
     <string name="title_export">Exporting Claim as compressed file</string>
+    <string name="title_import">Importing compressed Claim</string>
     <string name="title_section">Section</string>
     <string name="title_item">Item</string>
     <string name="title_activity_settings">Settings</string>
@@ -147,6 +149,16 @@
     <string name="message_connection_error">Connection not available</string>
     <string name="message_claim_exported_error">The claim %s is not exported</string>
     <string name="message_claim_exported">Exported the claim %s</string>
+    <string name="message_claim_imported">Imported the claim </string>
+    <string name="message_claim_ready_to_import">Claim ready to be imported</string>
+    <string name="message_claim_ready_to_import_no_dynamic">The Claim will be imported but the dynamic part will be lost</string>
+    <string name="message_claim_import_password_error">Password error. Try again</string>
+    <string name="message_claim_import_not_compressed_claim">Zip file is not a compressed claim</string>
+    <string name="message_claim_import_not_claim_archive">This is not a valid claim archive"</string>
+    <string name="message_claim_import_already_present">The claim is already present on the client</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">This claim does not belong to the community</string>
+    <string name="message_claim_import_preparing">preparing import of the claim</string>
+    <string name="message_claim_not_imported">Error, not imported the claim </string>
     <string name="message_attachment_downloaded">Downloaded the attachment %s</string>
     <string name="message_attachment_downloading">Attachment %s already downloading </string>
     <string name="message_attachment_download_failed">Download of attachment %s failed </string>    
@@ -206,11 +218,13 @@
     <string name="message_exit_dialog">Do you really want to quit the application?</string>
     <string name="message_create_before_edit">Create a claim by specifying its details before adding information</string>
     <string name="message_map_not_yet_draw">The map of the claim is not yet complete</string>
+    <string name="message_available_shares">The sum of the shares is less than 100%</string>
     <string name="message_no_available_shares">Free some shares on this claim before modify the value of this share </string>
     <string name="message_no_available_shares_adding_new">Free some shares on this claim before ading a new share </string>
     <string name="message_share_saved">Share saved</string>
     <string name="message_share_not_saved">Error saving share </string>
 	<string name="message_already_owner">The selected person already shares this claim</string>
+	<string name="message_files_not_present">One or more files of the claim are not present</string>
     <string name="message_touch_to_select_a_person">Touch to select a person</string>
     <string name="message_touch_to_select_a_claim">Touch to select a claim</string>
     <string name="message_error_mandatory_fields">Fulfill all the mandatory fields before to save</string>
@@ -226,6 +240,7 @@
     <string name="message_deleted_claim">Claim correctly deleted locally</string>
     <string name="message_error_deleting_claim">Error deleting claim locally</string>
     <string name="message_save_changes">Do you want save changes ?</string>
+    <string name="message_warnings">Warnings : </string>
     <string name="message_discard_changes">Do you really want exit without save ?</string>
     <string name="message_claim_modified">Claim modified</string>
     <string name="message_entity_type">Which kind of entity ?</string>

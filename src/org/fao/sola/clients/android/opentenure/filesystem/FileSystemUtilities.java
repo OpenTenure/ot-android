@@ -68,12 +68,14 @@ public class FileSystemUtilities {
 	private static String _ATTACHMENT_FOLDER = "attachments";
 	private static String _OPEN_TENURE_FOLDER = "Open Tenure";
 	private static String _CERTIFICATES = "Certificates";
+	private static String _IMPORT = "Import";
+	private static String _EXPORT = "Export";
 	private static String _MULTIPAGE = "multipage";
 	private static String _MULTIPAGE_TMP = "multipageTmp.txt";
 
 	/**
 	 * 
-	 * Create the folder that contains all the cliams under the application file
+	 * Create the folder that contains all the claims under the application file
 	 * system
 	 * 
 	 * */
@@ -130,7 +132,7 @@ public class FileSystemUtilities {
 			return false;
 
 	}
-	
+
 	/**
 	 * 
 	 * Create the Certificates folder under the the public file system Here will
@@ -142,12 +144,63 @@ public class FileSystemUtilities {
 
 		if (isExternalStorageWritable()) {
 
-			
 			File ot = new File(getOpentenureFolder(), _CERTIFICATES);
 
 			if (ot.mkdir() && ot.isDirectory()) {
 
 				Log.d("FileSystemUtilities", "Created Certificates Folder");
+				return true;
+			}
+			return false;
+		}
+
+		else
+			return false;
+
+	}
+
+	/**
+	 * 
+	 * Create the Import folder under the the Open Tenure file system. Here will
+	 * be unzipped the zipped claim
+	 * 
+	 * **/
+
+	public static boolean createImportFolder() {
+
+		if (isExternalStorageWritable()) {
+
+			File ot = new File(getOpentenureFolder(), _IMPORT);
+
+			if (ot.mkdir() && ot.isDirectory()) {
+
+				Log.d("FileSystemUtilities", "Created Import Folder");
+				return true;
+			}
+			return false;
+		}
+
+		else
+			return false;
+
+	}
+
+	/**
+	 * 
+	 * Create the Export folder under the Open Tenure file system. Here will be
+	 * stored the zipped claims
+	 * 
+	 * **/
+
+	public static boolean createExportFolder() {
+
+		if (isExternalStorageWritable()) {
+
+			File ot = new File(getOpentenureFolder(), _EXPORT);
+
+			if (ot.mkdir() && ot.isDirectory()) {
+
+				Log.d("FileSystemUtilities", "Created Export Folder");
 				return true;
 			}
 			return false;
@@ -266,6 +319,44 @@ public class FileSystemUtilities {
 		}
 	}
 
+	public static void deleteFilesInFolder(File folder) throws IOException {
+
+		if (folder.exists() && folder.isDirectory()) {
+
+			// directory is empty, then delete it
+			if (folder.list().length == 0) {
+
+				Log.d("FileSystemUtilities",
+						"Folder is empty : " + folder.getAbsolutePath());
+
+			} else {
+
+				// list all the directory contents
+				String files[] = folder.list();
+
+				for (String temp : files) {
+					// construct the file structure
+					File fileDelete = new File(folder, temp);
+
+					// recursive delete
+					deleteFolder(fileDelete);
+				}
+
+				// check the directory again, if empty then delete it
+				if (folder.list().length == 0) {
+					Log.d("FileSystemUtilities",
+							"Folder is empty : " + folder.getAbsolutePath());
+				}
+			}
+
+		} else {
+			// if file, then delete it
+
+			Log.d("FileSystemUtilities",
+					"is not a folder : " + folder.getAbsolutePath());
+		}
+	}
+
 	public static void deleteCompressedClaim(String claimID) throws IOException {
 
 		File oldZip = new File(FileSystemUtilities.getOpentenureFolder()
@@ -308,6 +399,14 @@ public class FileSystemUtilities {
 		return new File(getClaimsFolder(), _CLAIM_PREFIX + claimID);
 	}
 
+	public static File getExportFolder() {
+		return new File(getOpentenureFolder(), _EXPORT);
+	}
+	
+	public static File getImportFolder() {
+		return new File(getOpentenureFolder(), _IMPORT);
+	}
+
 	public static File getClaimantFolder(String personId) {
 		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId);
 	}
@@ -317,7 +416,7 @@ public class FileSystemUtilities {
 	}
 
 	public static boolean createMutipageFolder(String claimID) {
-		
+
 		File multiFolder = null;
 		try {
 			new File(getAttachmentFolder(claimID), _MULTIPAGE).mkdir();
@@ -326,13 +425,14 @@ public class FileSystemUtilities {
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			Log.e("org.fao.sola.clients.android.opentenure.filesystem", e.getMessage());
+			Log.e("org.fao.sola.clients.android.opentenure.filesystem",
+					e.getMessage());
 		}
 
 		if (multiFolder.exists() && multiFolder.isDirectory()) {
 			return true;
 		} else {
-			
+
 			return false;
 
 		}
@@ -405,7 +505,6 @@ public class FileSystemUtilities {
 
 				metaString = metaString + imgName + ";";
 				metaInfo = metaString.split(";");
-				
 
 			} else {
 				metaInfo = new String[2];
@@ -436,17 +535,15 @@ public class FileSystemUtilities {
 
 		return null;
 	}
-	
-	
-	
-	
-	public static String[] updateMultipageDescription(String claimID,String description, String type) {
+
+	public static String[] updateMultipageDescription(String claimID,
+			String description, String type) {
 
 		File metaFile = getMultipageTmpfile(claimID);
 		File tempFile = new File(getMultipageFolder(claimID), "myTempFile.txt");
 
 		int i = 0;
-		
+
 		BufferedReader bfr;
 		String line;
 		String[] metaInfo;
@@ -536,9 +633,9 @@ public class FileSystemUtilities {
 				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		return new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
 	}
-	
+
 	public static File getCertificatesFolder() {
-		
+
 		return new File(getOpentenureFolder(), _CERTIFICATES);
 	}
 
@@ -559,8 +656,8 @@ public class FileSystemUtilities {
 
 			BufferedInputStream br = new BufferedInputStream(reader);
 
-			int i =0;
-			while (( i = br.read(buffer)) != -1) {
+			int i = 0;
+			while ((i = br.read(buffer)) != -1) {
 				writer.write(buffer, 0, i);
 			}
 
@@ -592,8 +689,46 @@ public class FileSystemUtilities {
 
 			BufferedInputStream br = new BufferedInputStream(reader);
 
-			int i =0;
-			while (( i = br.read(buffer)) != -1) {
+			int i = 0;
+			while ((i = br.read(buffer)) != -1) {
+				writer.write(buffer, 0, i);
+			}
+
+			reader.close();
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return dest;
+	}
+
+	public static File copyFileInImportFolder(File source) {
+
+		File importFolder = null;
+		File dest = null;
+
+		try {
+
+
+			importFolder = new File(getOpentenureFolder(), _IMPORT);
+			dest = new File(importFolder, source.getName());
+			dest.createNewFile();
+
+			Log.d("FileSystemUtilities", dest.getAbsolutePath());
+			byte[] buffer = new byte[1024];
+
+			FileInputStream reader = new FileInputStream(
+					source.getAbsoluteFile());
+			FileOutputStream writer = new FileOutputStream(dest);
+
+			BufferedInputStream br = new BufferedInputStream(reader);
+
+			int i = 0;
+			while ((i = br.read(buffer)) != -1) {
 				writer.write(buffer, 0, i);
 			}
 
@@ -743,9 +878,8 @@ public class FileSystemUtilities {
 	public static int getUploadProgress(String claimId, String status) {
 
 		int progress = 0;
-		List<Attachment> attachments=Claim.getClaim(claimId).getAttachments();
-		
-	
+		List<Attachment> attachments = Claim.getClaim(claimId).getAttachments();
+
 		if (attachments.size() == 0)
 			progress = 100;
 		else {
@@ -767,7 +901,8 @@ public class FileSystemUtilities {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 
-				if (!attachment.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
+				if (!attachment.getStatus().equals(
+						AttachmentStatus._UPLOAD_ERROR)) {
 
 					uploadedSize = uploadedSize + attachment.getUploadedBytes();
 

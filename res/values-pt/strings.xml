@@ -6,6 +6,7 @@
     <string name="action_settings">Configurações</string>
     <string name="action_search">Buscar</string>
     <string name="action_new">Novo</string>
+    <string name="action_import">Importação</string>
     <string name="action_done">Feito</string>
     <string name="action_remove_attachment">Remover anexo</string>
     <string name="action_remove_owner">Retirar direitos dos proprietários</string>
@@ -353,18 +354,36 @@
     <string name="unmoderated">não moderado</string>
     <string name="rejected">rejeitado</string>
     <string name="reviewed">revisado</string>
+    <string name="tms_tiles_provider_key">TMS</string>
+    <string name="title_import">Importando o requerimento comprimido</string>
+    <string name="message_claim_imported">Requerimento importado</string>
+    <string name="message_claim_ready_to_import">Requerimento pronto para ser importado</string>
+    <string name="message_claim_ready_to_import_no_dynamic">O requerimento será importado mas a parte dinâmica será perdida</string>
+    <string name="message_claim_import_password_error">Erro na senha. Tente novamente</string>
+    <string name="message_claim_import_not_compressed_claim">O arquivo zipado não é um requerimento comprimido</string>
+    <string name="message_claim_import_not_claim_archive">Este não é um arquivo de requerimento válido</string>
+    <string name="message_claim_import_already_present">O requerimento já está presente no cliente</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">Este requerimento não pertence à comunidade</string>
+    <string name="message_claim_import_preparing">Preparando a importação do requerimento</string>
+    <string name="message_claim_not_imported">Erro, o requerimento não foi importado</string>
+    <string name="message_available_shares">A soma das divisões é inferior a 100%</string>
+    <string name="message_files_not_present">Um ou mais arquivos do requerimento não estão presentes</string>
+    <string name="message_warnings">Advertência: </string>
+    <string name="null_label">Nenhum</string>
+    <string name="language_dialog_title">Selecione um idioma</string>
+    <string name="title_restart_dialog">É necessário o reinício</string>
+    <string name="message_restart_dialog">Uma mudança na configuração do SOLA requer a sua reinicialização para torná-lo mais eficaz. Gostaria de reiniciá-lo agora?</string>
 
     <string-array name="language_keys">
-        <item >Khmer</item>
-        <item >Albanês</item>
-        <item >Padrão</item>
-        </string-array>
+        <item>Khmer</item>
+        <item>Albanês</item>
+        <item>Padrão</item>
+    </string-array>
     <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
-    
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="claim_statuses">
         <item>Não moderado</item>
         <item>Moderado</item>

@@ -307,17 +307,77 @@
     <string name="action_view_community_area">Shiko Zonën e Komunitetit</string>
     <string name="hint_type_to_filter">Shtypni disa karaktere të filtroni nga lista</string>
     <string name="shares_prompt">Zgjidhni pjesët</string>
+    <string name="action_import">Import</string>
+    <string name="khmer_language">Khmer</string>
+    <string name="albanian_language">Shqip</string>
+    <string name="default_language">E paracaktuar</string>
+    <string name="tiles_provider">Ofruesi i Tiles </string>
+    <string name="tms_tiles_provider">Ofruesi i TMS Tiles </string>
+    <string name="tms_tiles_provider_key">TMS</string>
+    <string name="geoserver_tiles_provider">Ofruesi i GeoServer Tiles</string>
+    <string name="geoserver_tiles_provider_key">GeoServer</string>
+    <string name="title_import">Duke importuar Deklarimin e kompresuar</string>
+    <string name="generated_on">Generated on</string>
+    <string name="date_of_start_label_print">Data e deklaruar</string>
+    <string name="attachment_updated">Bashkengjitja e dokumentit eshte perditesuar</string>
+    <string name="message_claim_imported">Deklarimi eshte importuar </string>
+    <string name="message_claim_ready_to_import">Deklarimi gati per tu importuar</string>
+    <string name="message_claim_ready_to_import_no_dynamic">Deklarimi do te importohet por pjesa dynamike do te humbase</string>
+    <string name="message_claim_import_password_error">Fjalekalim i gabuar. Provoni perseri</string>
+    <string name="message_claim_import_not_compressed_claim">File Zip nuk eshte nje deklarim i kompresuar</string>
+    <string name="message_claim_import_not_claim_archive">Arkiva e deklarimit nuk mund te krijohet.Kontrollo te dhenat e detajuara te deklarimit</string>
+    <string name="message_claim_import_already_present">Deklarimi eshte tashme The claim is already present on the client</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">Ky deklarim nuk i perket komunitetit</string>
+    <string name="message_claim_import_preparing">Duke pergatitur raportin e deklarimit</string>
+    <string name="message_claim_not_imported">Gabim, deklarimi nuk eshte importuar </string>
+    <string name="message_download_snapshot_before_printing">Shkarko fragmentin e hartes nga serveri perpara se ta printosh ate</string>
+    <string name="message_available_shares">Shuma e bashkepjesemarrjes eshte me e vogel se 100%</string>
+    <string name="message_files_not_present">Nje ose me shume file te deklarimit nuk gjenden</string>
+    <string name="message_warnings">Paralajmerim : </string>
+    <string name="claim_area_label">Siperfaqja</string>
+    <string name="square_meters">m2</string>
+    <string name="parcel">Parcela</string>
+    <string name="tms_url_pref_title">TMS URL</string>
+    <string name="tms_url_pref_summary">Baza URL e Tiles Map Serverit tuaj</string>
+    <string name="tms_url_pref_dialog_title">Vendosni URL te Serverit tuaj te Map Tiles</string>
+    <string name="created">u krijua</string>
+    <string name="uploading">duke u shkarkuar</string>
+    <string name="updating">duke u perditesuar</string>
+    <string name="uploaded">u shkarkua</string>
+    <string name="deleted">u fshi</string>
+    <string name="description">Pershkrim</string>
+    <string name="upload_incomplete">shkarkimi nuk eshte kryer</string>
+    <string name="update_incomplete">perditesimi nuk eshte kryer</string>
+    <string name="upload_error">gabim ne shkarkim</string>
+    <string name="update_error">gabim ne perditesim</string>
+    <string name="download_incomplete">shkarkimi nuk eshte kryer</string>
+    <string name="download_failed">shkarkimi deshtoi</string>
+    <string name="downloading">duke shkarkuar</string>
+    <string name="moderated"> i moderuar</string>
+    <string name="unmoderated">jo i moderuar</string>
+    <string name="rejected">i refuzuar</string>
+    <string name="reviewed">i rishikuar</string>
+    <string name="language">Gjuha</string>
+    <string name="map_sources">burimi i Hartes</string>
+    <string name="general"> I Pergjithshem</string>
+    <string name="dynamic_form">Forma dinamike</string>
+    <string name="information">Informacion</string>
+    <string name="null_label">Asnje</string>
+    <string name="tiles_provider_dialog_title">Zgjidhni llojin e ofruesit offline te map tiles</string>
+    <string name="language_dialog_title">Zgjidhni gjuhen</string>
+    <string name="title_restart_dialog">Kerkohet rifillimi</string>
+    <string name="message_restart_dialog">Qe ndryshimi ne konfigurimin e Open Tenure te behet efektiv duhet ta rifilloni ate. Deshironi ta rifilloni Open Tenure tani?</string>
+
     <string-array name="language_keys">
-        <item >Khmer</item>
-        <item >Albanian</item>
-        <item >Default</item>
-        </string-array>
+        <item>Khmer</item>
+        <item>Albanian</item>
+        <item>Default</item>
+    </string-array>
     <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
-    
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="claim_statuses">
         <item>I pa moderuar</item>
         <item>I moderuar</item>
