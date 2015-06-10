@@ -6,6 +6,11 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_search">Cerca</string>
     <string name="action_new">Aggiungi</string>
+    <string name="action_change_map_mode">Cambia modo mappa</string>
+    <string name="action_add_from_gps">Aggiungi dal GPS</string>
+    <string name="action_add_boundary">Aggiungi al perimetro</string>
+    <string name="action_add_non_boundary">Aggiungi fuori perimetro</string>
+    <string name="action_measure">Misura</string>
     <string name="action_done">Fatto</string>
     <string name="action_import">Import</string>
     <string name="action_login">Log In</string>
@@ -181,7 +186,8 @@
     <string name="message_encryption_failed">Impossibile cifrare i dati locali</string>
     <string name="message_data_unencrypted">Attenzione: i tuoi dati locali non sono cifrati</string>
     <string name="message_encryption_set">I dati locali sono cifrati. Fornisci la password per decifrarli al prossimo avvio di OpenTenure</string>
-    <string name="message_add_marker">Aggiungere una posizione al perimetro?</string>
+    <string name="message_add_marker">Aggiungere un vertice al perimetro?</string>
+    <string name="message_add_non_boundary_marker">Aggiungere una posizione non perimetrica?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
@@ -229,8 +235,13 @@
 	<string name="too_many_tiles_queued">Ci sono %d immagini nella lista di download. Attendi prima di aggiungerne altre</string>
 	<string name="all_tiles_downloaded">Tutte le immagini nella list di download sono state scaricate</string>
 	<string name="not_all_tiles_downloaded">%d immagini per quest\'area non sono state scaricate. Verificare che il risultato sia soddisfacente o ripeti l\'operazione</string>
+	<string name="tiles_download_status">Provo a scaricare la tile %1$d di %2$d, %3$d scaricate e %4$d fallite finora</string>
 	<string name="zoom_level_too_low">L\'area è troppo estesa. Aumenta il livello di zoom prima di scaricare i dati locali per la mappa</string>
-    <string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
+	<string name="claim_area_label">Area</string>
+	<string name="square_meters">m2</string>
+	<string name="markers_distance_label">Distanza</string>
+	<string name="meters">m</string>
+	<string name="message_error_withdraw_claim">Errore ritirando il claim : </string>
     <string name="message_deleted_claim">Claim cancellato localmente</string>
     <string name="message_error_deleting_claim">Errore cancellando il claim localment</string>
     <string name="message_withdrawn_claim">Claim correttamente ritirato</string>

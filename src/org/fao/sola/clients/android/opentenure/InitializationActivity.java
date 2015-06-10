@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure;
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
+import org.fao.sola.clients.android.opentenure.model.Task;
 import org.fao.sola.clients.android.opentenure.network.UpdateClaimTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateCommunityArea;
 import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
@@ -225,7 +226,8 @@ public class InitializationActivity extends Activity {
 							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
-
+			// Cleanup pending tiles download tasks in case of unclean shutdown
+			Task.deleteAllTasks();
 			Intent i = new Intent(InitializationActivity.this, OpenTenure.class);
 			startActivity(i);
 			finish();

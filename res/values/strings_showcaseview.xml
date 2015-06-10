@@ -184,7 +184,9 @@
                                                         \n once property claim has been mapped and property claim has been saved.
                                                         \n \n The List icon contains a menu option of View Tutorial to re-visit this tutorial
 </string>
-    <string name="showcase_actionClaimMap_message"> \n \n  The green + icon creates a new boundary corner at the current position as determined by the device\'s built-in GPS.
+    <string name="showcase_actionClaimMap_message"> \n \n  The wrench icon allows you to switch between different map editing modes such as: adding markers to the main boundary, adding
+                                                     markers which are not part of the main boundary or measuring the distance between markers.
+         											\n \n  The green + icon creates a new boundary corner at the current position as determined by the device\'s built-in GPS.
                                                      Because of the accuracy constraints of the built-in GPS, this boundary corner should be repositioned (use a Long Press action on the map display)
                                                      relative to the map imagery if the boundary position is clear on the map imagery. In such situations, Open Tenure records both
                                                     the GPS position and the map imagery position.

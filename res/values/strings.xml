@@ -6,7 +6,15 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_new">New</string>
+
     <string name="action_import">Import</string>
+
+    <string name="action_change_map_mode">Change map mode</string>
+    <string name="action_add_from_gps">Add marker from GPS</string>
+    <string name="action_add_boundary">Add boundary marker</string>
+    <string name="action_add_non_boundary">Add non boundary marker</string>
+    <string name="action_measure">Measure</string>
+
     <string name="action_done">Done</string>
     <string name="action_remove_attachment">Remove attachment</string>
     <string name="action_remove_owner">Remove rights owner</string>
@@ -208,7 +216,8 @@
     <string name="message_encryption_set">Your local data is encrypted. Provide the encryption password next time you start OpenTenure</string>
     <string name="message_confirm_new_db_password">Confirm new password</string>
     <string name="message_enter_description">Enter description</string>
-    <string name="message_add_marker">Add marker to the boundary?</string>
+    <string name="message_add_marker">Add boundary marker?</string>
+    <string name="message_add_non_boundary_marker">Add non boundary marker?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
     <string name="message_remove_owner">Remove owner?</string>
@@ -259,9 +268,12 @@
 	<string name="too_many_tiles_queued">There are %d tiles in the download list. Please, wait before downloading additional tiles</string>
 	<string name="all_tiles_downloaded">All tiles in the download list have been downloaded</string>
 	<string name="not_all_tiles_downloaded">%d tiles for this map area have not been downloaded. Check that you are happy with the result or retry the download</string>
+	<string name="tiles_download_status">Attempting to download tile %1$d of %2$d, %3$d downloaded and %4$d failed so far</string>
 	<string name="zoom_level_too_low">The area is too large. Increase the zoom level before downloading local data for the map</string>
 	<string name="claim_area_label">Area</string>
 	<string name="square_meters">m2</string>
+	<string name="markers_distance_label">Distance</string>
+	<string name="meters">m</string>
 	<string name="yes">Yes</string>
     <string name="person">Person</string>
     <string name="group">Group</string>
