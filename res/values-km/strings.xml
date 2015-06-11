@@ -348,18 +348,41 @@
     <string name="dynamic_form">ទម្រង់បែបបទឌីណាមិច</string>
     <string name="information">ពត៌មាន</string>
     <string name="tiles_provider_dialog_title">ជ្រើសរើសប្រភេទអ្នកផ្តល់ផែនទីដែលមិនភ្ជាប់ប្រព័ន្ធអិុនធើណែត</string>
+    <string name="action_change_map_mode">ផ្លាស់ប្តូរទម្រង់ផែនទី</string>
+    <string name="action_add_from_gps">បន្ថែមចំណុចសំគាល់ពីប្រព័ន្ធជីភីអេ</string>
+    <string name="action_add_boundary">បន្ថែមចំណុចសំគាល់ព្រំប្រទល់</string>
+    <string name="action_add_non_boundary">បន្ថែមចំណុចសំគាល់ដែលមិនមែនជាព្រំប្រទល់</string>
+    <string name="action_measure">វាស់វែង</string>
+    <string name="tms_tiles_provider_key">TMS</string>
+    <string name="title_import">នាំចូលឯកសារដីទាមទារដែលបង្រួមរួច</string>
+    <string name="message_claim_imported">នាំចូលឯកសារដីទាមទារ </string>
+    <string name="message_claim_ready_to_import">ឯកសារដីទាមទាររួចរាល់ដើម្បីនាំចូល</string>
+    <string name="message_claim_ready_to_import_no_dynamic">ឯកសារដីទាមទារនឹងត្រូវបាននាំចូល​ បន្តែផែ្នកនៃឌីណាមិកនឹងត្រូវបាត់បង់</string>
+    <string name="message_claim_import_password_error">លេខសំងាត់សខុស. សូមព្យាមយាមម្តង់ទៀត</string>
+    <string name="message_claim_import_not_compressed_claim">ឯកសារZipមិនបានជាឯកសារដីទាមទារដែលបង្រួមទេ</string>
+    <string name="message_claim_import_not_claim_archive">នេះមិនមែនជាឯកសារការទាមទារដែលមានសុពលភាពទេ"</string>
+    <string name="message_claim_import_already_present">ការទាមទារគឺត្រូវបានបង្ហាញបង្ហាញនៅលើម៉ាសុីន</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">ការទាមទារនេះមិនមែនជារបស់សហគមន៍ទេ</string>
+    <string name="message_claim_import_preparing">រៀបចំការនាំចូលឯកសារដីទាមទារ</string>
+    <string name="message_claim_not_imported">មានកំហុស, មិនបាននាំចូលឯកសារដីទាមទារ</string>
+    <string name="message_add_non_boundary_marker">បន្ថែមចំណុចសំគាល់ដែលមិនមែនជាព្រំប្រទល់?</string>
+    <string name="message_available_shares">សរុបការចំណែកនៃទាមទារគឺតិចជាង១០០%</string>
+    <string name="message_files_not_present">ឯកសារការទាមទារមួយឬច្រើនមិនបានបង្ហាញ</string>
+    <string name="message_warnings">ព្រមាន: </string>
+    <string name="tiles_download_status">ការប៉ុនបង់ទាញយកឯកសារក្រឡា tile %1$d of %2$d, %3$d ទាញយកឯកសាររួចហើយ និង %4$d ទទួលបរាជ័យ</string>
+    <string name="markers_distance_label">ចំងាយ</string>
+    <string name="meters">m</string>
 
     <string-array name="language_keys">
-        <item >ខ្មែរ</item>
-        <item >អាល់បានី</item>
-        <item >លំនាំដើម</item>
-        </string-array>
+        <item>ខ្មែរ</item>
+        <item>អាល់បានី</item>
+        <item>លំនាំដើម</item>
+    </string-array>
     <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
-    
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="claim_statuses">
         <item>មិនល្មម</item>
         <item>ល្មម</item>

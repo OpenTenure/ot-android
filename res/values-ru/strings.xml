@@ -367,6 +367,15 @@
     <string name="language_dialog_title">Выберите язык</string>
     <string name="title_restart_dialog">Необходима перезагрузка</string>
     <string name="message_restart_dialog">Изменение в конфигурации OpenTenure требует перезагрузки. Хотите перегрузить OpenTenure сейчас?</string>
+    <string name="action_change_map_mode">Изменить тип карты</string>
+    <string name="action_add_from_gps">Добавить маркер из GPS</string>
+    <string name="action_add_boundary">Добавить маркер границы</string>
+    <string name="action_add_non_boundary">Добавить маркер вне границы</string>
+    <string name="action_measure">Измерить</string>
+    <string name="message_add_non_boundary_marker">Добавить маркер вне границы?</string>
+    <string name="tiles_download_status">Попытка загрузить тайл %1$d из %2$d, %3$d загружено и %4$d не удалось загрузить</string>
+    <string name="markers_distance_label">Дистанция</string>
+    <string name="meters">м</string>
 
     <string-array name="language_keys">
         <item>Хмерский</item>

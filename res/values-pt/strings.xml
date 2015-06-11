@@ -373,6 +373,15 @@
     <string name="language_dialog_title">Selecione um idioma</string>
     <string name="title_restart_dialog">É necessário o reinício</string>
     <string name="message_restart_dialog">Uma mudança na configuração do SOLA requer a sua reinicialização para torná-lo mais eficaz. Gostaria de reiniciá-lo agora?</string>
+    <string name="action_change_map_mode">Alterar o modo do mapa</string>
+    <string name="action_add_from_gps">Adicionar marcador do GPS</string>
+    <string name="action_add_boundary">Adicionar marcador de fronteira</string>
+    <string name="action_add_non_boundary">Adicionar marcador de não fronteira</string>
+    <string name="action_measure">Medida</string>
+    <string name="message_add_non_boundary_marker">Adicionar marcador de não fronteira?</string>
+    <string name="tiles_download_status">Preparando para baixar %1$d of %2$d, %3$d foram baixados e %4$d falharam</string>
+    <string name="markers_distance_label">Distância</string>
+    <string name="meters">m</string>
 
     <string-array name="language_keys">
         <item>Khmer</item>
