@@ -475,6 +475,7 @@ public class JsonUtilities {
 	public static int remainingDays(java.sql.Date challengeExpiryDate) {
 		if (challengeExpiryDate == null)
 			return 0;
+		System.out.println("challengeExpiryDate  + " + challengeExpiryDate );
 		return (int) ((challengeExpiryDate.getTime() - new java.util.Date()
 				.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 	}
