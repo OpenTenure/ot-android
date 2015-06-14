@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +56,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 	public static final String TASK_ID = "TileDownloadTask";
 	private static final int TILES_PER_BATCH = 50;
-	private static final long TILE_REFRESH_TIME = 21 * 24 * 60 * 60 * 1000;
+	public static final long TILE_REFRESH_TIME = 21 * 24 * 60 * 60 * 1000;
 	private static final int TIMEOUT = 8000;
 	private static final int MAX_RETRY = 2;
 
@@ -90,15 +91,19 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 		File tileFile = new File(tile.getFileName());
 
 		if (!tileFile.exists()) {
+			
+			// If it doesn't exist request a new download
+
 			return true;
 		}
 
-		long lastModified = tileFile.lastModified();
-
-		if ((lastModified > (System.currentTimeMillis() - TILE_REFRESH_TIME))
+		if ((tileFile.lastModified() < (System.currentTimeMillis() - TILE_REFRESH_TIME))
 				|| (BitmapFactory.decodeFile(tile.getFileName()) == null)) {
-			// if it's older than the refresh time or can't be decoded as an
-			// image
+
+			// If it does not comply with our caching policy
+			// or can't be decoded as an image delete it and request
+			// a new download
+			
 			tileFile.delete();
 			return true;
 		}
@@ -155,6 +160,9 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 					if (needsDownloading(tile)) {
 
+						Log.d(this.getClass().getName(), "Trying to download tile " + tile.getUrl()
+								+ " to file " + tile.getFileName());
+						
 						try {
 
 							URL url = new URL(tile.getUrl());
@@ -174,9 +182,15 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 							}
 							fos.close();
 							is.close();
+							failed = false;
 							break;
 
-						} catch (IOException e) {
+						} catch (FileNotFoundException e) {
+							failed = true;
+							e.printStackTrace();
+							outputFile.delete();
+							break;
+						} catch (Exception e) {
 							failed = true;
 							e.printStackTrace();
 							outputFile.delete();
@@ -195,6 +209,7 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 							}
 						}
 					} else {
+						failed = false;
 						break;
 					}
 				}

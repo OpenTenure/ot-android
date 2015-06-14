@@ -54,9 +54,6 @@ class PopupAdapter implements InfoWindowAdapter {
 
 	    TextView tv=(TextView)popup.findViewById(R.id.title);
 	    tv.setText(marker.getTitle());
-	    
-	    System.out.println("marker.getTitle() " + marker.getTitle());
-
 	    return(popup);
 	  }
 	}

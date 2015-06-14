@@ -40,15 +40,16 @@ import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesPr
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileProvider;
 
 public class LocalMapTileProvider implements TileProvider {
-	public static final long TILE_MAX_CACHE_TIME = 28 * 24 * 60 * 60 * 1000;
 	public static final int TILE_WIDTH = 256;
 	public static final int TILE_HEIGHT = 256;
-	private static final int BUFFER_SIZE = 16 * 1024;
+	private static final int BUFFER_SIZE = 32 * 1024;
+
 	private OfflineTilesProvider tilesProvider;
 	public LocalMapTileProvider() {
 		SharedPreferences prefs = PreferenceManager
@@ -79,8 +80,8 @@ public class LocalMapTileProvider implements TileProvider {
 		try {
 			File tileFile = new File(tileFileName);
 			if(tileFile.exists()){
-				if(tileFile.lastModified() > (System
-						.currentTimeMillis() - TILE_MAX_CACHE_TIME)){
+				if(tileFile.lastModified() < (System
+						.currentTimeMillis() - TileDownloadTask.TILE_REFRESH_TIME)){
 					// The tile does not comply our caching policy
 					// so we delete it and return null
 					tileFile.delete();
@@ -100,7 +101,7 @@ public class LocalMapTileProvider implements TileProvider {
 				}
 			}
 		} catch (IOException e) {
-
+			Log.d(this.getClass().getName(), "Can't read local tile: " + tileFileName);
 		} catch (OutOfMemoryError e) {
 
 		} finally {
@@ -117,5 +118,4 @@ public class LocalMapTileProvider implements TileProvider {
 		}
 		return null;
 	}
-
 }

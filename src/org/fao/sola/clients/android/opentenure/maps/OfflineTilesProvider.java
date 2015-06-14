@@ -27,20 +27,96 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.model.Tile;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.UrlTileProvider;
 
-public interface OfflineTilesProvider {
+public abstract class OfflineTilesProvider extends UrlTileProvider {
 
+	// array indexes for array to hold tile x y.
+	public static final int X = 0;
+	public static final int Y = 1;
+	// It appears that 6 is the mimimum level we can zoom out
+	private static final int MIN_ZOOM_LEVEL = 6;
 	public static final int TILE_WIDTH = 256;
 	public static final int TILE_HEIGHT = 256;
 	public enum TilesProviderType{TMS, GeoServer};
-	public TilesProviderType getType();
-	public List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom);
-	public String getBaseStorageDir();
-	public String getTilesSuffix();
+	protected abstract TilesProviderType getType();
+	protected abstract String getBaseStorageDir();
+	protected abstract String getTilesSuffix();
+	protected abstract String getUrl(int x, int y, int zoom);
+
+	public OfflineTilesProvider(int width, int height) {
+		super(width, height);
+	}
+
+	private static double mercatorFromLatitude(double latitude) {
+	    double radians = Math.log(Math.tan(Math.toRadians(latitude+90.0)/2));
+	    double mercator = Math.toDegrees(radians);
+	    return mercator;
+	}
+	
+	private static int[] tileOfCoordinate(LatLng coord, int zoom) {
+	    int[] result = new int[2];
+		int noTiles = (1 << zoom);
+	    double longitudeSpan = 360.0 / noTiles;
+	    result[X] = BigDecimal.valueOf((coord.longitude + 180.0)/longitudeSpan).intValue();
+	    result[Y] = -(BigDecimal.valueOf(((noTiles * (mercatorFromLatitude(coord.latitude) - 180.0)))/360.0).intValue());
+
+	    return result;
+	}
+	
+	public List<Tile> getTilesForLatLngBounds(LatLngBounds llb, int startZoom, int endZoom){
+		List<Tile> tiles = new ArrayList<Tile>();
+
+		// Composing tiles for upper levels of zoom
+		
+		for(int zoom = MIN_ZOOM_LEVEL ; zoom < startZoom ; zoom++){
+			
+			int[] northeast = tileOfCoordinate(llb.northeast, zoom);
+			int[] southwest = tileOfCoordinate(llb.southwest, zoom);
+			
+			for(int x = southwest[X] ; x <= northeast[X] ; x++){
+				for(int y = northeast[Y] ; y <= southwest[Y] ; y++){
+					String fileName = getBaseStorageDir() + zoom + "/" + x + "/" + y + getTilesSuffix();
+					Tile tile = new Tile();
+					tile.setUrl(getUrl(x, y, zoom));
+					tile.setFileName(fileName);
+					tiles.add(tile);
+				}
+			}
+		}
+
+		int[] northeast = tileOfCoordinate(llb.northeast, startZoom);
+		int[] southwest = tileOfCoordinate(llb.southwest, startZoom);
+		
+		for(int zoom = startZoom ; zoom <= endZoom; zoom++){
+			
+			for(int x = southwest[X] ; x <= northeast[X] ; x++){
+				for(int y = northeast[Y] ; y <= southwest[Y] ; y++){
+					String fileName = getBaseStorageDir() + zoom + "/" + x + "/" + y + getTilesSuffix();
+					Tile tile = new Tile();
+					tile.setUrl(getUrl(x, y, zoom));
+					tile.setFileName(fileName);
+					tiles.add(tile);
+				}
+			}
+
+			// At each subsequent level of zoom, tiles indexes double
+
+			northeast[X] *= 2;
+			northeast[Y] *= 2;
+			southwest[X] *= 2;
+			southwest[Y] *= 2;
+		}
+		
+		return tiles;
+	}
 
 }

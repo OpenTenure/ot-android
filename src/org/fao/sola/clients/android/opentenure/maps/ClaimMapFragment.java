@@ -121,7 +121,6 @@ public class ClaimMapFragment extends Fragment implements
 	private MultiPolygon visiblePropertiesMultiPolygon;
 	private boolean saved = false;
 	private LocationHelper lh;
-	private TileOverlay tiles = null;
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher modeActivity;
 	private final static String MAP_TYPE = "__MAP_TYPE__";
@@ -336,7 +335,7 @@ public class ClaimMapFragment extends Fragment implements
 			// probably an orientation change don't move the view but
 			// restore the current type of the map
 			mapType = MapType.valueOf(savedInstanceState.getString(MAP_TYPE));
-			setMapType();
+			setMapType(true);
 		} else {
 			// restore the latest map type used on the main map
 			try {
@@ -345,7 +344,8 @@ public class ClaimMapFragment extends Fragment implements
 			} catch (Exception e) {
 				mapType = MapType.map_provider_google_normal;
 			}
-			setMapType();
+			// don't draw properties since we might not have loaded them yet
+			setMapType(false);
 		}
 
 		hideVisibleProperties();
@@ -639,11 +639,10 @@ public class ClaimMapFragment extends Fragment implements
 		}
 	}
 
-	private void setMapType() {
+	private void setMapType(boolean drawProperties) {
 
-		if (tiles != null) {
+		for(TileOverlay tiles : map.getTileOverlays()){
 			tiles.remove();
-			tiles = null;
 		}
 
 		switch (mapType) {
@@ -663,33 +662,41 @@ public class ClaimMapFragment extends Fragment implements
 			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
 					OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			redrawProperties();
+			if(drawProperties){
+				redrawProperties();
+			}
 			break;
 		case map_provider_osm_mapquest:
 			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
 					256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider).zIndex(CUSTOM_TILE_PROVIDER_Z_INDEX));
-			redrawProperties();
+			if(drawProperties){
+				redrawProperties();
+			}
 			break;
 		case map_provider_local_tiles:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()).zIndex(
 					CUSTOM_TILE_PROVIDER_Z_INDEX));
-			redrawProperties();
+			if(drawProperties){
+				redrawProperties();
+			}
 			break;
 		case map_provider_geoserver:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
-			tiles = map.addTileOverlay(new TileOverlayOptions()
+			map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
 							preferences)));
-			redrawProperties();
+			if(drawProperties){
+				redrawProperties();
+			}
 			break;
 		default:
 			break;
@@ -759,35 +766,35 @@ public class ClaimMapFragment extends Fragment implements
 			return true;
 		case R.id.map_provider_google_normal:
 			mapType=MapType.map_provider_google_normal;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_google_satellite:
 			mapType=MapType.map_provider_google_satellite;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_google_hybrid:
 			mapType=MapType.map_provider_google_hybrid;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_google_terrain:
 			mapType=MapType.map_provider_google_terrain;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_osm_mapnik:
 			mapType=MapType.map_provider_osm_mapnik;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_osm_mapquest:
 			mapType=MapType.map_provider_osm_mapquest;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_local_tiles:
 			mapType=MapType.map_provider_local_tiles;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.map_provider_geoserver:
 			mapType=MapType.map_provider_geoserver;
-			setMapType();
+			setMapType(true);
 			return true;
 		case R.id.action_save:
 			saved = true;

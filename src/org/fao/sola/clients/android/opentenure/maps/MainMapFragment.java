@@ -119,7 +119,6 @@ public class MainMapFragment extends SupportMapFragment implements
 	private MapLabel label;
 	private GoogleMap map;
 	private LocationHelper lh;
-	private TileOverlay tiles = null;
 	private List<BasePropertyBoundary> visibleProperties;
 	private List<Claim> allClaims;
 	private MultiPolygon visiblePropertiesMultiPolygon;
@@ -481,10 +480,8 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	public void setMapType() {
 
-
-		if (tiles != null) {
+		for(TileOverlay tiles : map.getTileOverlays()){
 			tiles.remove();
-			tiles = null;
 		}
 
 		switch (mapType) {
@@ -504,7 +501,7 @@ public class MainMapFragment extends SupportMapFragment implements
 			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
 					OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapNikTileProvider));
 			redrawVisibleProperties();
 			break;
@@ -512,13 +509,13 @@ public class MainMapFragment extends SupportMapFragment implements
 			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
 					256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					mapQuestTileProvider));
 			redrawVisibleProperties();
 			break;
 		case map_provider_local_tiles:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			tiles = map.addTileOverlay(new TileOverlayOptions().tileProvider(
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(
 					new LocalMapTileProvider()));
 			redrawVisibleProperties();
 			break;
@@ -526,7 +523,7 @@ public class MainMapFragment extends SupportMapFragment implements
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
 			SharedPreferences preferences = PreferenceManager
 					.getDefaultSharedPreferences(mapView.getContext());
-			tiles = map.addTileOverlay(new TileOverlayOptions()
+			map.addTileOverlay(new TileOverlayOptions()
 					.tileProvider(new WmsMapTileProvider(256, 256,
 							preferences)));
 			redrawVisibleProperties();
