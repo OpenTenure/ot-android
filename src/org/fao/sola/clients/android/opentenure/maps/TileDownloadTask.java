@@ -55,7 +55,7 @@ import android.widget.Toast;
 public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 
 	public static final String TASK_ID = "TileDownloadTask";
-	private static final int TILES_PER_BATCH = 50;
+	private static final int TILES_PER_BATCH = 20;
 	public static final long TILE_REFRESH_TIME = 21 * 24 * 60 * 60 * 1000;
 	private static final int TIMEOUT = 8000;
 	private static final int MAX_RETRY = 2;
@@ -238,8 +238,8 @@ public class TileDownloadTask extends AsyncTask<Void, Integer, Integer> {
 		String message = String.format(
 				context.getResources()
 						.getString(R.string.tiles_download_status),
-				downloadStatus[0], downloadStatus[1], downloadStatus[2],
-				downloadStatus[3]);
+				downloadStatus[ATTEMPTED_INDEX], downloadStatus[TOTAL_INDEX],
+				downloadStatus[SUCCEEDED_INDEX], downloadStatus[FAILED_INDEX]);
 		downloadStatusMarker.setPosition(getMarkerPosition());
 		downloadStatusMarker.setTitle(message);
 		downloadStatusMarker.showInfoWindow();
