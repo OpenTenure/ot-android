@@ -45,6 +45,8 @@
     <string name="action_new_picture">New picture</string>
     <string name="action_new_additional_info">Add information</string>
     <string name="action_new_attachment">New document</string>
+    <string name="action_to_group">Change in group</string>
+    <string name="action_to_person">Change in person</string>
     <string name="action_lock_db">Configure data encryption</string>
     <string name="action_export">Export</string>
     <string name="action_rotate">Rotate map using device compass</string>
