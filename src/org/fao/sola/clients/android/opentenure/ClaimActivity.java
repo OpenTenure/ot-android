@@ -93,10 +93,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onDestroy() {
 		super.onDestroy();
 		OpenTenureApplication.getInstance().getDatabase().sync();
+
+		System.out.println("onDestroy");
 	};
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		System.out.println("onKeyDown");
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 
 			final ClaimDetailsFragment fragment = (ClaimDetailsFragment) fragmentReferences
@@ -116,13 +120,14 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public void onPause() {
-
+		System.out.println("onPause");
 		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
 
 	@Override
 	public void onResume() {
+		System.out.println("onResume()");
 
 		OpenTenureApplication.getInstance().getDatabase().open();
 		OpenTenure.setLocale(this);
@@ -159,6 +164,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		System.out.println("onCreate()");
 		OpenTenure.setLocale(this);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		super.onCreate(savedInstanceState);
@@ -265,36 +271,23 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		// setAlpha(1.0f, tabs.getTabsContainer().getChildAt(0));
 		// break;
 
-//		case 0:
-//			sv.setScrollContainer(true);
-//			sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
-//					true);
-//			sv.setContentTitle("  ");
-//			sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
-//			break;
+		// case 0:
+		// sv.setScrollContainer(true);
+		// sv.setShowcase(new ViewTarget(findViewById(R.id.action_export)),
+		// true);
+		// sv.setContentTitle("  ");
+		// sv.setContentText(getString(R.string.showcase_actionClaimDetails_message));
+		// break;
 		case 0:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(1)), true);
-			sv.setContentTitle(getString(R.string.title_claim_map).toUpperCase(
+			sv.setContentTitle(getString(R.string.owners).toUpperCase(
 					Locale.getDefault()));
-			sv.setContentText(getString(R.string.showcase_claim_map_message));
+			sv.setContentText(getString(R.string.showcase_claim_shares_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(1));
 			mViewPager.setCurrentItem(1);
 			break;
 		case 1:
-			sv.setShowcase(new ViewTarget(mViewPager), true);
-			sv.setContentTitle("  ");
-			sv.setContentText(getString(R.string.showcase_claim_mapdraw_message));
-			mViewPager.setCurrentItem(1);
-			break;
-
-		case 2:
-			sv.setShowcase(new ViewTarget(
-					findViewById(R.id.action_center_and_follow)), true);
-			sv.setContentTitle("  ");
-			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
-			break;
-		case 3:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(2)), true);
 			sv.setContentTitle(getString(R.string.title_claim_documents)
@@ -303,7 +296,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(2));
 			mViewPager.setCurrentItem(2);
 			break;
-		case 4:
+		case 2:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(3)), true);
 			sv.setContentTitle(getString(R.string.title_claim_adjacencies)
@@ -312,24 +305,38 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(3));
 			mViewPager.setCurrentItem(3);
 			break;
-		case 5:
+		case 3:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(4)), true);
-			sv.setContentTitle(getString(R.string.title_claim_challenges)
-					.toUpperCase(Locale.getDefault()));
-			sv.setContentText(getString(R.string.showcase_claim_challenges_message));
+			sv.setContentTitle(getString(R.string.title_claim_map).toUpperCase(
+					Locale.getDefault()));
+			sv.setContentText(getString(R.string.showcase_claim_map_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(4));
 			mViewPager.setCurrentItem(4);
+			break;
+		case 4:
+			sv.setShowcase(new ViewTarget(mViewPager), true);
+			sv.setContentTitle("  ");
+			sv.setContentText(getString(R.string.showcase_claim_mapdraw_message));
+			mViewPager.setCurrentItem(4);
+			break;
+
+		case 5:
+			sv.setShowcase(new ViewTarget(
+					findViewById(R.id.action_center_and_follow)), true);
+			sv.setContentTitle("  ");
+			sv.setContentText(getString(R.string.showcase_actionClaimMap_message));
 			break;
 		case 6:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(5)), true);
-			sv.setContentTitle(getString(R.string.owners)
+			sv.setContentTitle(getString(R.string.title_claim_challenges)
 					.toUpperCase(Locale.getDefault()));
-			sv.setContentText(getString(R.string.showcase_claim_shares_message));
+			sv.setContentText(getString(R.string.showcase_claim_challenges_message));
 			setAlpha(1.0f, tabs.getTabsContainer().getChildAt(5));
 			mViewPager.setCurrentItem(5);
 			break;
+
 		case 7:
 			sv.setShowcase(
 					new ViewTarget(tabs.getTabsContainer().getChildAt(0)), true);
@@ -399,16 +406,45 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		case android.R.id.home:
 			// This is called when the Home (Up) button is pressed in the action
 			// bar.
-			Intent upIntent;
 
-			upIntent = NavUtils.getParentActivityIntent(this);
-			upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
-					| Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivity(upIntent);
-			finish();
+			final ClaimDetailsFragment fragment = (ClaimDetailsFragment) fragmentReferences
+					.get(0);
 
-			return true;
+			if (fragment != null) {
+				if (fragment.checkChanges()) {
 
+					// Intent upIntent;
+					//
+					// upIntent = NavUtils.getParentActivityIntent(this);
+					// upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+					// | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					// startActivity(upIntent);
+					// finish();
+
+					return true;
+				} else {
+					Intent upIntent;
+
+					upIntent = NavUtils.getParentActivityIntent(this);
+					upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+							| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(upIntent);
+					finish();
+
+					return true;
+				}
+			} else {
+
+				Intent upIntent;
+
+				upIntent = NavUtils.getParentActivityIntent(this);
+				upIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+						| Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(upIntent);
+				finish();
+
+				return true;
+			}
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -447,7 +483,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new ClaimDetailsFragment();
 				break;
 			case 1:
-				fragment = new ClaimMapFragment();
+				fragment = new OwnersFragment();
 				break;
 			case 2:
 				fragment = new ClaimDocumentsFragment();
@@ -456,22 +492,26 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				fragment = new AdjacentClaimsFragment();
 				break;
 			case 4:
-				fragment = new ChallengingClaimsFragment();
+				fragment = new ClaimMapFragment();
 				break;
 			case 5:
-				fragment = new OwnersFragment();
+				fragment = new ChallengingClaimsFragment();
 				break;
 			default:
 				List<SectionTemplate> sectionTemplateList = formTemplate
 						.getSectionTemplateList();
-				if (sectionTemplateList == null || sectionTemplateList.size() <= 0) {
-					return new SectionElementFragment(new SectionElementPayload(),
-							new SectionTemplate(), mode);
+				if (sectionTemplateList == null
+						|| sectionTemplateList.size() <= 0) {
+					return new SectionElementFragment(
+							new SectionElementPayload(), new SectionTemplate(),
+							mode);
 				}
-				SectionTemplate sectionTemplate = sectionTemplateList.get(sectionPosition);
+				SectionTemplate sectionTemplate = sectionTemplateList
+						.get(sectionPosition);
 				if (sectionTemplate == null) {
-					return new SectionElementFragment(new SectionElementPayload(),
-							new SectionTemplate(), mode);
+					return new SectionElementFragment(
+							new SectionElementPayload(), new SectionTemplate(),
+							mode);
 				}
 				if (sectionTemplate.getMaxOccurrences() > 1) {
 					fragment = new SectionFragment(editedFormPayload
@@ -519,11 +559,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 					OpenTenureApplication.getInstance().getLocalization());
 			String sectionTitle = null;
 			if (editedFormPayload != null) {
-				sectionTitle = editedFormPayload.getSectionPayloadList().get(position)
-						.getDisplayName().toUpperCase(Locale.US);
+				sectionTitle = editedFormPayload.getSectionPayloadList()
+						.get(position).getDisplayName().toUpperCase(Locale.US);
 			} else if (formTemplate != null) {
-				sectionTitle = formTemplate.getSectionTemplateList().get(position)
-						.getDisplayName().toUpperCase(Locale.getDefault());
+				sectionTitle = formTemplate.getSectionTemplateList()
+						.get(position).getDisplayName()
+						.toUpperCase(Locale.getDefault());
 			} else {
 				sectionTitle = "";
 			}
@@ -541,17 +582,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			case 0:
 				return getString(R.string.title_claim).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_claim_map).toUpperCase(l);
+				return getString(R.string.owners).toUpperCase(l);
 			case 2:
 				return getString(R.string.title_claim_documents).toUpperCase(l);
 			case 3:
 				return getString(R.string.title_claim_adjacencies).toUpperCase(
 						l);
 			case 4:
+				return getString(R.string.title_claim_map).toUpperCase(l);
+			case 5:
 				return getString(R.string.title_claim_challenges)
 						.toUpperCase(l);
-			case 5:
-				return getString(R.string.owners).toUpperCase(l);
 			default:
 				return getSectionTitle(sectionPosition);
 			}
@@ -618,7 +659,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	@Override
 	public void onClaimSaved() {
 		ClaimMapFragment claimMapFragment = (ClaimMapFragment) fragmentReferences
-				.get(1);
+				.get(4);
 		if (editedFormPayload != null) {
 			editedFormPayload.setClaimId(claimId);
 		}
