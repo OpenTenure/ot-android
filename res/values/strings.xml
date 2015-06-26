@@ -267,10 +267,10 @@
     <string name="message_app_initialized">The app is ready to work and communicate to the Open Tenure Community Server </string>
 	<string name="check_location_service">No location information available. Check that location service is enabled in your settings</string>
 	<string name="tiles_queued">There are %d tiles in the download list</string>
-	<string name="too_many_tiles_queued">There are %d tiles in the download list. Please, wait before downloading additional tiles</string>
+	<string name="too_many_tiles_queued">There are %d tiles in the download list. Please, wait before adding tiles to the list</string>
 	<string name="all_tiles_downloaded">All tiles in the download list have been downloaded</string>
-	<string name="not_all_tiles_downloaded">%d tiles for this map area have not been downloaded. Check that you are happy with the result or retry the download</string>
-	<string name="tiles_download_status">Attempting to download tile %1$d of %2$d, %3$d downloaded and %4$d failed so far</string>
+	<string name="not_all_tiles_downloaded">Some tiles for this map area were not downloaded. Check that you are happy with the result or retry the download</string>
+	<string name="tiles_download_status">Downloading tile %1$d of %2$d</string>
 	<string name="zoom_level_too_low">The area is too large. Increase the zoom level before downloading local data for the map</string>
 	<string name="claim_area_label">Area</string>
 	<string name="square_meters">m2</string>
