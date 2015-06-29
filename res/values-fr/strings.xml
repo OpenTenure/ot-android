@@ -214,6 +214,7 @@
     <string name="tiles_queued">Il y a %d images du mosaiquage dans la liste de téléchargement</string>
     <string name="too_many_tiles_queued">Il y a %d images du mosaiquage dans la liste des téléchargement. Merci d\'attendre avant de télécharger d\'autres images du mosaiquage.</string>
     <string name="all_tiles_downloaded">Toutes les images du mosaiquage de la liste de téléchargement ont été téléchargées.</string>
+    <string name="tiles_download_status">Téléchargement tuile  %1$d de %2$d</string>
     <string name="not_all_tiles_downloaded">%d images du mosaiquage pour ce plan ont été téléchargées. Vérifier que ce mosaiquage vous convienne ou recommencer le téléchargement.</string>
     <string name="zoom_level_too_low">L\'étendue du plan est trop large. Augmenter le niveau de zoom avant de télécharger des données locales pour la plan</string>
     <string name="yes">Oui</string>

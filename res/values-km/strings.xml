@@ -231,6 +231,7 @@
     <string name="tiles_queued">មាន ទិន្នន័យ %d នៅក្នុងបញ្ជីដែលបានទាញយករួចហើយ</string>
     <string name="too_many_tiles_queued">មាន ទិន្នន័យ %d នៅក្នងបណ្ជីដែលបានទាញយក។ សូម រងចាំមុនពេលទាញយកទិន្នន័បន្ថែម</string>
     <string name="all_tiles_downloaded">ទិន្នន័យទាំអស់ដែលមាននៅក្នុងបញ្ជីដែលបានទាញយករួចហើយ</string>
+    <string name="tiles_download_status">ទាញយក ក្បឿង %1$d នៃ %2$d</string>
     <string name="not_all_tiles_downloaded">ភាគរយ d ទិន្នន័យសម្រាប់ផែនតំបន់នេះមិនទាន់បានទាញយក ។ ពិនិត្យ ថាតើអ្នកទទួលយកលទ្ធផល ឬធ្វើការទាញយកម្តងទៀត</string>
     <string name="zoom_level_too_low">តំបន់ធំពេក។ បង្កើនកម្រិតទំហំមុនទាញយកទិន្នន័យក្នុងស្រុកសម្រាប់ផែនទី</string>
     <string name="yes">បាទ</string>

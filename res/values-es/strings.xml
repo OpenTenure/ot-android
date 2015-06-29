@@ -220,6 +220,7 @@
     <string name="too_many_tiles_queued">Hay %d mosaicos en la lista de descarga. Por favor, espere antes de descargar mosaicos adicionales</string>
     <string name="all_tiles_downloaded">Todos los mosaicos en la lista de descarga han sido descargados con éxito</string>
     <string name="not_all_tiles_downloaded">No se han descargado %d mosaicos de esta área del mapa. Verifique si esta satisfecho con el resultado o reinicie la descarga</string>
+    <string name="tiles_download_status">Descarga de baldosas %1$d de %2$d</string>
     <string name="zoom_level_too_low">El área es muy larga. Incremente el nivel de visión antes de descargar datos locales para el mapa</string>
     <string name="message_claim_exported_error">La demanda %s no esta exportada</string>
     <string name="message_claim_exported">La demanda se exporto %s</string>
