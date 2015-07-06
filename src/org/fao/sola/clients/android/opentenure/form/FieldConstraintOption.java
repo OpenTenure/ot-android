@@ -16,6 +16,7 @@ public class FieldConstraintOption {
 	private String fieldConstraintId;
 	protected String name;
 	protected String displayName;
+	protected int itemOrder;
 
 	public String getId() {
 		return id;
@@ -56,28 +57,40 @@ public class FieldConstraintOption {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+	
+	
+	public int getItemOrder() {
+		return itemOrder;
+	}
+
+	public void setItemOrder(int itemOrder) {
+		this.itemOrder = itemOrder;
+	}
 
 	public FieldConstraintOption(){
 		this.id = UUID.randomUUID().toString();
 	}
 
-	public FieldConstraintOption(String name, String displayName){
+	public FieldConstraintOption(String name, String displayName, int itemOrder){
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.displayName = displayName;
+		this.itemOrder = itemOrder;
 	}
 
 	public FieldConstraintOption(FieldConstraintOption fieldConstraintOption){
 		this.id = UUID.randomUUID().toString();
 		this.name = new String(fieldConstraintOption.getName());
 		this.displayName = new String(fieldConstraintOption.getDisplayName());
-	}
+		this.itemOrder = fieldConstraintOption.getItemOrder();
+		}
 
 	@Override
 	public String toString() {
 		return "Option [name=" + name
 				+ ", displayName=" + displayName
 				+ ", id=" + id
+				+ ", itemOrder=" + itemOrder
 				+ "]";
 	}
 	public String toJson() {

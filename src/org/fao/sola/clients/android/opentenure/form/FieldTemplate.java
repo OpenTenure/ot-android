@@ -51,40 +51,44 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME,
-include=JsonTypeInfo.As.PROPERTY,
-property="fieldType")
-
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "fieldType")
 @JsonSubTypes({
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.BoolField.class, name="BOOL"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DateField.class, name="DATE"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DecimalField.class, name="DECIMAL"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.DocumentField.class, name="DOCUMENT"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.GeometryField.class, name="GEOMETRY"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.IntegerField.class, name="INTEGER"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.SnapshotField.class, name="SNAPSHOT"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.TextField.class, name="TEXT"),
-    @JsonSubTypes.Type(value=org.fao.sola.clients.android.opentenure.form.field.TimeField.class, name="TIME")
-})
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.BoolField.class, name = "BOOL"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.DateField.class, name = "DATE"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.DecimalField.class, name = "DECIMAL"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.DocumentField.class, name = "DOCUMENT"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.GeometryField.class, name = "GEOMETRY"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.IntegerField.class, name = "INTEGER"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.SnapshotField.class, name = "SNAPSHOT"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.TextField.class, name = "TEXT"),
+		@JsonSubTypes.Type(value = org.fao.sola.clients.android.opentenure.form.field.TimeField.class, name = "TIME") })
+public class FieldTemplate implements Comparable<FieldTemplate> {
 
-public class FieldTemplate {
-	
 	private String id;
 	@JsonIgnore
 	private SectionTemplate sectionTemplate;
 	private String sectionTemplateId;
 	protected String name;
 	protected String displayName;
+	protected int itemOrder;
 	protected String hint;
 	protected FieldType fieldType;
 	protected List<FieldConstraint> fieldConstraintList;
-	
+
 	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public int getItemOrder() {
+		return itemOrder;
+	}
+
+	public void setItemOrder(int itemOrder) {
+		this.itemOrder = itemOrder;
 	}
 
 	public String getSectionTemplateId() {
@@ -106,15 +110,15 @@ public class FieldTemplate {
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getDisplayName() {
 		return displayName;
 	}
-	
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
@@ -122,7 +126,7 @@ public class FieldTemplate {
 	public String getHint() {
 		return hint;
 	}
-	
+
 	public void setHint(String hint) {
 		this.hint = hint;
 	}
@@ -138,95 +142,104 @@ public class FieldTemplate {
 	public List<FieldConstraint> getFieldConstraintList() {
 		return fieldConstraintList;
 	}
-	
+
 	public void setFieldConstraintList(List<FieldConstraint> fieldConstraintList) {
 		this.fieldConstraintList = fieldConstraintList;
 	}
 
 	@Override
 	public String toString() {
-		return "FieldTemplate ["
-				+ "id=" + id
-				+ ", name=" + name
-				+ ", fieldType=" + fieldType
-				+ ", hint=" + hint
-				+ ", displayName=" + displayName
-				+ ", fieldConstraintList=" + Arrays.toString(fieldConstraintList.toArray()) + "]";
+		return "FieldTemplate [" + "id=" + id + "itemOrder=" + itemOrder
+				+ ", name=" + name + ", fieldType=" + fieldType + ", hint="
+				+ hint + ", displayName=" + displayName
+				+ ", fieldConstraintList="
+				+ Arrays.toString(fieldConstraintList.toArray()) + "]";
 	}
-	
-	public FieldTemplate(){
+
+	public FieldTemplate() {
 		this.id = UUID.randomUUID().toString();
 		this.fieldConstraintList = new ArrayList<FieldConstraint>();
 	}
 
-	public FieldTemplate(FieldTemplate fieldTemplate){
+	public FieldTemplate(FieldTemplate fieldTemplate) {
 		this.id = UUID.randomUUID().toString();
-		if(fieldTemplate.getName() != null){
+		if (fieldTemplate.getName() != null) {
 			this.name = new String(fieldTemplate.getName());
 		}
 
-		if(fieldTemplate.getDisplayName() != null){
+		if (fieldTemplate.getDisplayName() != null) {
 			this.displayName = new String(fieldTemplate.getDisplayName());
 		}
-		if(fieldTemplate.getHint() != null){
+		if (fieldTemplate.getHint() != null) {
 			this.hint = new String(fieldTemplate.getHint());
 		}
 		this.fieldType = fieldTemplate.getFieldType();
 		this.fieldConstraintList = new ArrayList<FieldConstraint>();
-		if(fieldTemplate.getFieldConstraintList() != null){
-			for(FieldConstraint con:fieldTemplate.getFieldConstraintList()){
+		if (fieldTemplate.getFieldConstraintList() != null) {
+			for (FieldConstraint con : fieldTemplate.getFieldConstraintList()) {
 				// Can't copy a constraint since it is an abstract class
-				if(con instanceof DateTimeFormatConstraint){
-					this.fieldConstraintList.add(new DateTimeFormatConstraint((DateTimeFormatConstraint)con));
-				}else if(con instanceof IntegerConstraint){
-					this.fieldConstraintList.add(new IntegerConstraint((IntegerConstraint)con));
-				}else if(con instanceof LengthConstraint){
-					this.fieldConstraintList.add(new LengthConstraint((LengthConstraint)con));
-				}else if(con instanceof NotNullConstraint){
-					this.fieldConstraintList.add(new NotNullConstraint((NotNullConstraint)con));
-				}else if(con instanceof OptionConstraint){
-					this.fieldConstraintList.add(new OptionConstraint((OptionConstraint)con));
-				}else if(con instanceof IntegerRangeConstraint){
-					this.fieldConstraintList.add(new IntegerRangeConstraint((IntegerRangeConstraint)con));
-				}else if(con instanceof DoubleRangeConstraint){
-					this.fieldConstraintList.add(new DoubleRangeConstraint((DoubleRangeConstraint)con));
-				}else if(con instanceof RegexpFormatConstraint){
-					this.fieldConstraintList.add(new RegexpFormatConstraint((RegexpFormatConstraint)con));
-				}else{
+				if (con instanceof DateTimeFormatConstraint) {
+					this.fieldConstraintList.add(new DateTimeFormatConstraint(
+							(DateTimeFormatConstraint) con));
+				} else if (con instanceof IntegerConstraint) {
+					this.fieldConstraintList.add(new IntegerConstraint(
+							(IntegerConstraint) con));
+				} else if (con instanceof LengthConstraint) {
+					this.fieldConstraintList.add(new LengthConstraint(
+							(LengthConstraint) con));
+				} else if (con instanceof NotNullConstraint) {
+					this.fieldConstraintList.add(new NotNullConstraint(
+							(NotNullConstraint) con));
+				} else if (con instanceof OptionConstraint) {
+					this.fieldConstraintList.add(new OptionConstraint(
+							(OptionConstraint) con));
+				} else if (con instanceof IntegerRangeConstraint) {
+					this.fieldConstraintList.add(new IntegerRangeConstraint(
+							(IntegerRangeConstraint) con));
+				} else if (con instanceof DoubleRangeConstraint) {
+					this.fieldConstraintList.add(new DoubleRangeConstraint(
+							(DoubleRangeConstraint) con));
+				} else if (con instanceof RegexpFormatConstraint) {
+					this.fieldConstraintList.add(new RegexpFormatConstraint(
+							(RegexpFormatConstraint) con));
+				} else {
 					this.fieldConstraintList.add(con);
 				}
-		}
+			}
 		}
 	}
-	
-	public FieldTemplate(FieldPayload field){
+
+	public FieldTemplate(FieldPayload field) {
 		this.id = UUID.randomUUID().toString();
-		if(field.getName() != null){
+		if (field.getName() != null) {
 			this.name = new String(field.getName());
 		}
-		if(field.getDisplayName() != null){
+		if (field.getDisplayName() != null) {
 			this.displayName = new String(field.getDisplayName());
 		}
 		this.fieldType = field.getFieldType();
 	}
 
 	public void addConstraint(FieldConstraint fieldConstraint) throws Exception {
-		if(fieldConstraint.appliesTo(this)){
+		if (fieldConstraint.appliesTo(this)) {
 			fieldConstraintList.add(fieldConstraint);
-		}else{
-			throw new FormException("Constraint " + fieldConstraint.toString() + " does not apply to field " + this.toString());
+		} else {
+			throw new FormException("Constraint " + fieldConstraint.toString()
+					+ " does not apply to field " + this.toString());
 		}
 	}
 
-	public FieldConstraint getFailedConstraint(String externalDisplayName, FieldPayload payload) {
-		for(FieldConstraint fieldConstraint : fieldConstraintList){
+	public FieldConstraint getFailedConstraint(String externalDisplayName,
+			FieldPayload payload) {
+		for (FieldConstraint fieldConstraint : fieldConstraintList) {
 			boolean check;
-			if(externalDisplayName != null){
-				check = fieldConstraint.check(externalDisplayName + "/" + displayName , payload);
-			}else{
+			if (externalDisplayName != null) {
+				check = fieldConstraint.check(externalDisplayName + "/"
+						+ displayName, payload);
+			} else {
 				check = fieldConstraint.check(externalDisplayName, payload);
 			}
-			if(!check){
+			if (!check) {
 				return fieldConstraint;
 			}
 		}
@@ -235,14 +248,14 @@ public class FieldTemplate {
 
 	public String toJson() {
 		ObjectMapper mapper = new ObjectMapper();
-		  try {
+		try {
 			return mapper.writeValueAsString(this);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		  return null;
+		return null;
 	}
-	
+
 	public static FieldTemplate fromJson(String json) {
 		ObjectMapper mapper = new ObjectMapper();
 		FieldTemplate field;
@@ -258,4 +271,20 @@ public class FieldTemplate {
 		}
 		return null;
 	}
+
+	@Override
+	public int compareTo(FieldTemplate field) {
+		// TODO Auto-generated method stub
+
+		if (field.getItemOrder() == itemOrder)
+			return 0;
+		if (field.getItemOrder() > itemOrder)
+			return -1;
+		if (field.getItemOrder() < itemOrder)
+			return 1;
+		
+		return 0;
+		
+	}
+
 }

@@ -50,6 +50,7 @@ public class FieldPayload {
 	private String stringPayload;
 	private BigDecimal bigDecimalPayload;
 	private Boolean booleanPayload;
+	protected int itemOrder;
 	
 	public String getId() {
 		return id;
@@ -73,6 +74,14 @@ public class FieldPayload {
 
 	public void setSectionElementPayloadId(String sectionElementPayloadId) {
 		this.sectionElementPayloadId = sectionElementPayloadId;
+	}
+		
+	public int getItemOrder() {
+		return itemOrder;
+	}
+
+	public void setItemOrder(int itemOrder) {
+		this.itemOrder = itemOrder;
 	}
 
 	public String getName() {

@@ -27,6 +27,11 @@
  */
 package org.fao.sola.clients.android.opentenure.form.ui;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
@@ -108,6 +113,11 @@ public class SectionElementFragment extends Fragment {
 		LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.fragment_field_group);
 		int i = 0;
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
+		
+		
+		
+		
+		Collections.sort(elementTemplate.getFieldTemplateList()) ;
 		
 		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
 			FieldPayload fieldPayload = null;

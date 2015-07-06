@@ -107,7 +107,7 @@ public class FieldViewFactory {
 			}
 			String nullDisplayName = activity.getBaseContext().getString(
 					R.string.null_label);
-			options.add(new FieldConstraintOption(null, nullDisplayName));
+			options.add(new FieldConstraintOption(null, nullDisplayName, 0));
 			names.add(null);
 			displayNames.add(nullDisplayName);
 		}
@@ -137,6 +137,7 @@ public class FieldViewFactory {
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1,
 					int arg2, long arg3) {
+				
 				payload.setStringPayload(names.get(arg2));
 				FieldConstraint constraint;
 				if ((constraint = field.getFailedConstraint(

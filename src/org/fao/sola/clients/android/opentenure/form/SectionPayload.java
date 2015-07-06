@@ -46,6 +46,7 @@ public class SectionPayload {
 	private transient FormPayload formPayload;
 	private String formPayloadId;
 	private String name;
+	private int itemOrder;
 	private String displayName;
 	private String elementName;
 	private String elementDisplayName;
@@ -75,6 +76,14 @@ public class SectionPayload {
 
 	public void setFormPayloadId(String formPayloadId) {
 		this.formPayloadId = formPayloadId;
+	}
+	
+	public int getItemOrder() {
+		return itemOrder;
+	}
+
+	public void setItemOrder(int itemOrder) {
+		this.itemOrder = itemOrder;
 	}
 
 	public String getName() {
@@ -144,6 +153,7 @@ public class SectionPayload {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
+				+ ", itemOrder=" + itemOrder
 				+ ", elementName=" + elementName
 				+ ", elementDisplayName=" + elementDisplayName
 				+ ", minOccurrences=" + minOccurrences
@@ -170,6 +180,7 @@ public class SectionPayload {
 		this.name = sp.getName();
 		this.displayName = sp.getDisplayName();
 		this.elementName = sp.getElementName();
+		this.itemOrder = sp.getItemOrder();
 		this.elementDisplayName = sp.getElementDisplayName();
 		this.minOccurrences = sp.getMinOccurrences();
 		this.maxOccurrences = sp.getMaxOccurrences();
@@ -184,6 +195,7 @@ public class SectionPayload {
 		this.name = st.getName();
 		this.elementName = st.getElementName();
 		this.elementDisplayName = st.getElementDisplayName();
+		this.itemOrder = st.getItemOrder();
 		this.minOccurrences = st.getMinOccurrences();
 		this.maxOccurrences = st.getMaxOccurrences();
 		this.displayName = st.getDisplayName();

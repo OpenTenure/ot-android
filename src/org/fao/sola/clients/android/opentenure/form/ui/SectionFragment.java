@@ -94,7 +94,6 @@ public class SectionFragment extends ListFragment {
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, new SectionElementPayload(sectionTemplate).toJson());
 			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
-			System.out.println("Mode : " + mode);
 			intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
 			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			return true;

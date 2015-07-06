@@ -51,6 +51,7 @@ public class SectionTemplate {
 	private FormTemplate formTemplate;
 	private String formTemplateName;
 	private String name;
+	private int itemOrder;
 	private String displayName;
 	private String errorMsg = "{0} must contain between {2} and {3} elements";
 	private int minOccurrences;
@@ -101,6 +102,15 @@ public class SectionTemplate {
 
 	public int getMinOccurrences() {
 		return minOccurrences;
+	}
+	
+	
+	public int getItemOrder() {
+		return itemOrder;
+	}
+
+	public void setItemOrder(int itemOrder) {
+		this.itemOrder = itemOrder;
 	}
 
 	public void setMinOccurrences(int minOccurrences) {
@@ -153,6 +163,7 @@ public class SectionTemplate {
 				+ "id=" + id
 				+ ", name=" + name
 				+ ", displayName=" + displayName
+				+ ", itemOrder=" + itemOrder
 				+ ", errorMsg=" + errorMsg
 				+ ", minOccurrences=" + minOccurrences
 				+ ", maxOccurrences=" + maxOccurrences
@@ -162,22 +173,24 @@ public class SectionTemplate {
 				+ "]";
 	}
 
-	public SectionTemplate(String name, String displayName, String elementName, String elementDisplayName, int minOccurrences, int maxOccurrences){
+	public SectionTemplate(String name, String displayName, String elementName, String elementDisplayName, int minOccurrences, int maxOccurrences,int itemOrder){
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.displayName = displayName;
 		this.elementName = elementName;
+		this.itemOrder = itemOrder;
 		this.elementDisplayName = elementDisplayName;
 		this.minOccurrences = minOccurrences;
 		this.maxOccurrences = maxOccurrences;
 		this.fieldTemplateList = new ArrayList<FieldTemplate>();
 	}
 
-	public SectionTemplate(String name, String displayName){
+	public SectionTemplate(String name, String displayName, int itemOrder){
 		this.id = UUID.randomUUID().toString();
 		this.name = name;
 		this.displayName = displayName;
 		this.elementName = name;
+		this.itemOrder = itemOrder;
 		this.elementDisplayName = displayName;
 		this.fieldTemplateList = new ArrayList<FieldTemplate>();
 		this.minOccurrences = 1;
@@ -194,6 +207,7 @@ public class SectionTemplate {
 		this.minOccurrences = sec.minOccurrences;
 		this.maxOccurrences = sec.maxOccurrences;
 		this.name = new String(sec.getName());
+		this.itemOrder = sec.getItemOrder();
 		this.displayName = new String(sec.getDisplayName());
 		this.elementName = new String(sec.getElementName());
 		this.elementDisplayName = new String(sec.getElementDisplayName());
@@ -207,6 +221,7 @@ public class SectionTemplate {
 		this.name = new String(sp.getName());
 		this.elementName = new String(sp.getElementName());
 		this.elementDisplayName = new String(sp.getElementDisplayName());
+		this.itemOrder = sp.getItemOrder();
 		this.minOccurrences = sp.getMinOccurrences();
 		this.maxOccurrences = sp.getMaxOccurrences();
 		this.displayName = new String(sp.getDisplayName());
@@ -233,6 +248,7 @@ public class SectionTemplate {
 			FieldPayload fieldValue = new FieldPayload();
 			fieldValue.setName(name);
 			fieldValue.setDisplayName(displayName);
+			fieldValue.setItemOrder(itemOrder);
 			fieldValue.setFieldValueType(FieldValueType.NUMBER);
 			fieldValue.setBigDecimalPayload(new BigDecimal(elements.size()));
 			fieldTemplate.setName(name);
