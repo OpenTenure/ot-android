@@ -31,12 +31,9 @@ package org.fao.sola.clients.android.opentenure.maps;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
-import org.fao.sola.clients.android.opentenure.OpenTenure;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.model.Adjacency.CardinalDirection;
@@ -71,7 +68,7 @@ import com.vividsolutions.jts.geom.Polygon;
 public class BasePropertyBoundary {
 
 	protected static final float BOUNDARY_Z_INDEX = 2.0f;
-	public static final double SNAP_THRESHOLD = 0.0001;
+	public static final double SNAP_THRESHOLD = 0.00005;
 
 	protected String name;
 	protected String claimId;
@@ -80,7 +77,6 @@ public class BasePropertyBoundary {
 	protected List<Vertex> vertices = new ArrayList<Vertex>();
 	protected Map<Marker, PropertyLocation> propertyLocationsMap = new HashMap<Marker, PropertyLocation>();
 	protected boolean propertyLocationsVisible = false;
-	private ClaimDispatcher claimActivity;
 
 	public boolean isPropertyLocationsVisible() {
 		return propertyLocationsVisible;
