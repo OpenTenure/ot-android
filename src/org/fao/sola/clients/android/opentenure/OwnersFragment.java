@@ -145,12 +145,11 @@ public class OwnersFragment extends ListFragment {
 		update();
 		
 		
-
+		OpenTenureApplication.setOwnersFragment(this);
 		return rootView;
 	}
 
 	protected void update() {
-
 		String claimId = claimActivity.getClaimId();
 
 		if (claimId != null) {

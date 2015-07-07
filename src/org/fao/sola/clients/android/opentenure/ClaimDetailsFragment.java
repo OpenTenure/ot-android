@@ -1388,6 +1388,8 @@ public class ClaimDetailsFragment extends Fragment {
 				owner.setShareId(share.getId());
 
 				owner.create();
+				
+				OpenTenureApplication.getOwnersFragment().update();
 			}
 			return 1;
 

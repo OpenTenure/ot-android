@@ -97,6 +97,7 @@ public class OpenTenureApplication extends Application {
 	private static MainMapFragment mapFragment;
 	private static ClaimDocumentsFragment documentsFragment;
 	private static ClaimDetailsFragment detailsFragment;
+	private static OwnersFragment ownersFragment;
 	private static String claimId;
 	private List<String> changingClaims = null;
 
@@ -114,6 +115,16 @@ public class OpenTenureApplication extends Application {
 
 	public Database getDatabase() {
 		return database;
+	}
+
+	
+		
+	public static OwnersFragment getOwnersFragment() {
+		return ownersFragment;
+	}
+
+	public static void setOwnersFragment(OwnersFragment ownersFragment) {
+		OpenTenureApplication.ownersFragment = ownersFragment;
 	}
 
 	public static ClaimDocumentsFragment getDocumentsFragment() {
