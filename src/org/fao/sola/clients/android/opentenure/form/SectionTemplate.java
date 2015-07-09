@@ -44,7 +44,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SectionTemplate {
+public class SectionTemplate implements Comparable<SectionTemplate>{
 	
 	private String id;
 	@JsonIgnore
@@ -313,6 +313,21 @@ public class SectionTemplate {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public int compareTo(SectionTemplate section) {
+		 
+		
+		if (section.getItemOrder() == itemOrder)
+			return 0;
+		if (section.getItemOrder() > itemOrder)
+			return -1;
+		if (section.getItemOrder() < itemOrder)
+			return 1;
+		
+		return 0;
+
 	}
 
 }

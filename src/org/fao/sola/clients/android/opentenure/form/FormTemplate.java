@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure.form;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -74,6 +75,8 @@ public class FormTemplate {
 	}
 
 	public List<SectionTemplate> getSectionTemplateList() {
+				
+		Collections.sort(sectionTemplateList);
 		return sectionTemplateList;
 	}
 
