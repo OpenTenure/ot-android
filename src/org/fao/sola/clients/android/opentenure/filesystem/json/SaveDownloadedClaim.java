@@ -227,9 +227,10 @@ public class SaveDownloadedClaim {
 				date = sdf.parse(downloadedClaim.getStartDate());
 				claimDB.setDateOfStart(new java.sql.Date(date.getTime()));
 			}
-			date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
-			claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
-
+			if (downloadedClaim.getChallengeExpiryDate() != null) {
+				date = sdf.parse(downloadedClaim.getChallengeExpiryDate());
+				claimDB.setChallengeExpiryDate(new java.sql.Date(date.getTime()));
+			} 
 			claimDB.setPerson(person);
 			claimDB.setStatus(downloadedClaim.getStatusCode());
 			claimDB.setClaimNumber(downloadedClaim.getNr());
