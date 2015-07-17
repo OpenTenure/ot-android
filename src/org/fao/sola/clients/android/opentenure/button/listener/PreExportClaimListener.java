@@ -30,6 +30,7 @@ package org.fao.sola.clients.android.opentenure.button.listener;
 import java.util.Iterator;
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.ExporterTask;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.SharesListTO;
@@ -40,6 +41,7 @@ import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -141,8 +143,8 @@ public class PreExportClaimListener implements OnClickListener {
 							dialog.dismiss();
 
 							new PreExportClaimTask(view.getContext())
-									.execute(claimId);
-
+									.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,claimId);
+							
 							return;
 
 						}

@@ -60,7 +60,7 @@ public class GetClaimantPhotoTask extends
 
 		Attachment att = params[0];
 		GetAttachmentResponse res = null;
-		int lenght = 10000; /* Should be setted by property */
+		int lenght = 50000; /* Should be setted by property */
 		long offSet = 0;
 
 		att.setStatus(AttachmentStatus._DOWNLOADING);

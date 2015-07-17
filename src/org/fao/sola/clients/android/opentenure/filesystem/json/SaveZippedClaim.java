@@ -74,7 +74,7 @@ public class SaveZippedClaim {
 		org.fao.sola.clients.android.opentenure.model.Claim claimDB = new org.fao.sola.clients.android.opentenure.model.Claim();
 
 		/*
-		 * First of all cheks if claim is challenging another claim. In case of
+		 * First of all checks if claim is challenging another claim. In case of
 		 * challenge, need to download ad save the claim challenged
 		 * 
 		 * 
@@ -86,7 +86,7 @@ public class SaveZippedClaim {
 				&& !zippedClaim.getChallengedClaimId().equals("")) {
 
 			/*
-			 * The downloaded claim got a challenging . Check if the challenged
+			 * The zipped claim got a challenging . Check if the challenged
 			 * is already present locally
 			 */
 			org.fao.sola.clients.android.opentenure.model.Claim challenged = org.fao.sola.clients.android.opentenure.model.Claim

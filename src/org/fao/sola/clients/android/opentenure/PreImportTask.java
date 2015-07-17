@@ -97,10 +97,10 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 		try {
 			zip = (File) params[1];
 
+			Log.d("PreImportTask", "Unzipping.... ");
+
 			int result = ZipUtilities.UnzipFilesWithAESEncryption(
 					(String) params[0], (File) params[1]);
-
-			Log.d("PreImportTask", "Claim unzipped ");
 
 			results[0] = result;
 
@@ -126,6 +126,7 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 
 		boolean isSameForm = true;
 
+		importFolder = zip.getParentFile();
 		if ((Integer) params[0] == 1) {
 
 			/*
@@ -134,8 +135,6 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 			 */
 
 			try {
-
-				importFolder = zip.getParentFile();
 
 				zip.delete();
 
@@ -167,29 +166,28 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 
 						org.fao.sola.clients.android.opentenure.model.Claim claimDB = org.fao.sola.clients.android.opentenure.model.Claim
 								.getClaim(claim.getId());
-						
+
 						System.out.println("serverUrl " + claim.getServerUrl());
 
 						/* Check if claim is already in the client */
 						if (claim.getServerUrl() != null) {
 
-							String serverAddress ="";
-							
+							String serverAddress = "";
+
 							// Server ulr
 							SharedPreferences preferences = PreferenceManager
 									.getDefaultSharedPreferences(OpenTenureApplication
 											.getContext());
-							
-							
-								
-							String serverUrl =preferences.getString(
-									OpenTenurePreferencesActivity.CS_URL_PREF, OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
 
-							if(!serverUrl.trim().equals(""))
+							String serverUrl = preferences
+									.getString(
+											OpenTenurePreferencesActivity.CS_URL_PREF,
+											OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+
+							if (!serverUrl.trim().equals(""))
 								serverAddress = serverUrl.split("//")[1];
 
-							if (!claim.getServerUrl().equals(
-									serverAddress)) {
+							if (!claim.getServerUrl().equals(serverAddress)) {
 
 								FileSystemUtilities
 										.deleteFilesInFolder(importFolder);
@@ -213,7 +211,8 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 						/* Check if claim is already in the client */
 						if (claimDB != null) {
 
-							FileSystemUtilities.deleteFilesInFolder(importFolder);
+							FileSystemUtilities
+									.deleteFilesInFolder(importFolder);
 
 							Toast toast;
 
@@ -300,6 +299,7 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 								 * In case of cancel delete all files in import
 								 * folder
 								 */
+
 								FileSystemUtilities
 										.deleteFilesInFolder(importFolder);
 							} catch (IOException e) {
@@ -358,6 +358,8 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 								 * If cancel operation delete all file in import
 								 * folder
 								 */
+
+
 								FileSystemUtilities
 										.deleteFilesInFolder(importFolder);
 							} catch (IOException e) {
@@ -400,7 +402,7 @@ public class PreImportTask extends AsyncTask<Object, Void, Object[]> {
 			Toast toast;
 
 			String message = OpenTenureApplication.getContext().getString(
-					R.string.message_claim_import_password_error);
+					R.string.message_claim_import_not_compressed_claim);
 
 			Log.d("PreImportTask", "Zip file is not a compressed claim");
 

@@ -72,8 +72,8 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 		progressDialog = ProgressDialog.show(mContext,
 				mContext.getString(R.string.title_export),
 				mContext.getString(R.string.message_export), true, false);
-		
-		importFolder= FileSystemUtilities.getImportFolder();
+
+		importFolder = FileSystemUtilities.getImportFolder();
 	}
 
 	@Override
@@ -82,6 +82,7 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 
 		Claim claim = null;
 		Object[] results = (Object[]) new Object[2];
+		results[0] = false;
 
 		try {
 
@@ -103,10 +104,13 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 				Gson gson = new Gson();
 				claim = gson.fromJson(json, Claim.class);
 
-				/*Calling the import function passing the the instance of parsed json and the file pointer to the unzipped claim*/
+				/*
+				 * Calling the import function passing the the instance of
+				 * parsed json and the file pointer to the unzipped claim
+				 */
 				results[0] = SaveZippedClaim.save(claim, claimFolder);
-				
-				/*Cleaning the import folder*/
+
+				/* Cleaning the import folder */
 				FileSystemUtilities.deleteFilesInFolder(importFolder);
 
 			}
@@ -117,7 +121,7 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 
 			return results;
 		}
-		
+
 		results[1] = claim;
 		return results;
 	}
@@ -129,8 +133,8 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 		Claim claim = (Claim) params[1];
 
 		if (result) {
-			/*positive case*/
-			
+			/* positive case */
+
 			progressDialog.dismiss();
 
 			LocalClaimsFragment frag = OpenTenureApplication
@@ -140,24 +144,25 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 			Toast toast;
 			String message = OpenTenureApplication.getContext().getString(
 					R.string.message_claim_imported)
-					+ " " + org.fao.sola.clients.android.opentenure.model.Claim
-					.getClaim(claim.getId()).getName();
-			
+					+ " "
+					+ org.fao.sola.clients.android.opentenure.model.Claim
+							.getClaim(claim.getId()).getName();
+
 			Log.d("ImportTask", message);
 
 			toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG);
 			toast.show();
 
 		} else {
-			/*negative case*/
-			
+			/* negative case */
+
 			progressDialog.dismiss();
-			
+
 			try {
 				FileSystemUtilities.deleteFilesInFolder(importFolder);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				Log.d("ImportTask","Error deleting files");
+				Log.d("ImportTask", "Error deleting files");
 				e.printStackTrace();
 			}
 
@@ -166,7 +171,7 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 			String message = OpenTenureApplication.getContext().getString(
 					R.string.message_claim_not_imported);
 
-			Log.d("ImportTask",  message );
+			Log.d("ImportTask", message);
 
 			toast = Toast.makeText(mContext, message, Toast.LENGTH_LONG);
 			toast.show();
@@ -176,4 +181,3 @@ public class ImportTask extends AsyncTask<Object, Void, Object[]> {
 	}
 
 }
-
