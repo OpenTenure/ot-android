@@ -27,8 +27,10 @@
  */
 package org.fao.sola.clients.android.opentenure.maps;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,11 +67,11 @@ import android.widget.Toast;
 
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.SnapshotReadyCallback;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.androidmapsextensions.Marker;
-import com.androidmapsextensions.MarkerOptions;
 import com.vividsolutions.jts.algorithm.distance.DistanceToPoint;
 import com.vividsolutions.jts.algorithm.distance.PointPairDistance;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -78,6 +80,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class EditablePropertyBoundary extends BasePropertyBoundary {
 
 	public static final String DEFAULT_MAP_FILE_NAME = "_map_.jpg";
+	public static final String DEFAULT_GEOM_FILE_NAME = "_geom_.csv";
 	public static final String DEFAULT_MAP_FILE_TYPE = "cadastralMap";
 	public static final String DEFAULT_MAP_MIME_TYPE = "image/jpeg";
 	private Map<Marker, Vertex> verticesMap;
@@ -924,6 +927,62 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		marker.setClusterGroup(Constants.BASE_PROPERTY_LOCATION_MARKERS_GROUP + propertyLocationsMap.size());
 		return marker;
 	}
+	
+	private void saveGeometry(Claim claim){
+		BufferedWriter bw = null;
+		String path = FileSystemUtilities
+				.getAttachmentFolder(claimId)
+				+ File.separator
+				+ DEFAULT_GEOM_FILE_NAME;
+
+		try {
+			bw = new BufferedWriter(new FileWriter(path));
+			
+			bw.write(
+					"CLAIM_ID" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					+ "SEQUENCE_NUMBER" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					+ "GPS_LAT" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					+ "GPS_LON" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					+ "MAP_LAT" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					+ "MAP_LON" + FileSystemUtilities._CSV_REC_TERMINATOR
+					);
+			bw.flush();
+			
+			for(Vertex vertex:claim.getVertices()){
+				bw.write(
+						vertex.getClaimId() + FileSystemUtilities._CSV_FIELD_TERMINATOR
+						+ vertex.getSequenceNumber() + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+						LatLng gpsPosition = vertex.getGPSPosition();
+						if(gpsPosition != null){
+							bw.write(gpsPosition.latitude + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							+ gpsPosition.longitude + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+						}	
+						else{
+							bw.write("null" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							+ "null" + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+						}
+						LatLng mapPosition = vertex.getMapPosition();
+						if(mapPosition != null){
+							bw.write(mapPosition.latitude + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							+ mapPosition.longitude + FileSystemUtilities._CSV_REC_TERMINATOR);
+						}	
+						else{
+							bw.write("null" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							+ "null" + FileSystemUtilities._CSV_REC_TERMINATOR);
+						}
+						bw.flush();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bw != null) {
+				try {
+					bw.close();
+				} catch (Throwable ignore) {
+				}
+			}
+		}
+	}
 
 	public void saveSnapshot() {
 
@@ -958,6 +1017,7 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						att.setPath(path);
 						att.setSize(new File(path).length());
 						att.create();
+						saveGeometry(claim);
 						Toast toast = Toast.makeText(context,
 								R.string.message_map_snapshot_saved,
 								Toast.LENGTH_SHORT);

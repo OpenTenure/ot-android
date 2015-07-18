@@ -72,6 +72,8 @@ public class FileSystemUtilities {
 	private static String _EXPORT = "Export";
 	private static String _MULTIPAGE = "multipage";
 	private static String _MULTIPAGE_TMP = "multipageTmp.txt";
+	public static String _CSV_FIELD_TERMINATOR = ";";
+	public static String _CSV_REC_TERMINATOR = "\n";
 
 	/**
 	 * 
