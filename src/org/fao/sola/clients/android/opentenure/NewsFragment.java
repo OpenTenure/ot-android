@@ -43,6 +43,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -570,9 +571,18 @@ public class NewsFragment extends ListFragment {
 		List<Link> links = Link.getLinks();
 		List<String> news = new ArrayList<String>();
 		List<String> urls = new ArrayList<String>();
+		SharedPreferences OpenTenurePreferences = PreferenceManager
+				.getDefaultSharedPreferences(rootView.getContext());
+
 		for(Link link:links){
 			news.add(link.getDesc());
-			urls.add(link.getUrl());
+			if(link.getLinkId().equalsIgnoreCase(Link.ID_CS_URL)){
+				urls.add(OpenTenurePreferences.getString(
+						OpenTenurePreferencesActivity.CS_URL_PREF,
+						OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
+			}else{
+				urls.add(link.getUrl());
+			}
 		}
 		ArrayAdapter<Link> adapter = new NewsListAdapter(rootView.getContext(), links);
 		setListAdapter(adapter);

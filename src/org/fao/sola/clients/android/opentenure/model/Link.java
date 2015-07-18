@@ -40,6 +40,9 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Link {
+	
+	public static String ID_CS_URL = "1"; 
+	public static String ID_SOLA_URL = "2"; 
 
 	public String getLinkId() {
 		return linkId;
