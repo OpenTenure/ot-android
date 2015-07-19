@@ -939,35 +939,32 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 			bw = new BufferedWriter(new FileWriter(path));
 			
 			bw.write(
-					"CLAIM_ID" + FileSystemUtilities._CSV_FIELD_TERMINATOR
-					+ "SEQUENCE_NUMBER" + FileSystemUtilities._CSV_FIELD_TERMINATOR
-					+ "GPS_LAT" + FileSystemUtilities._CSV_FIELD_TERMINATOR
-					+ "GPS_LON" + FileSystemUtilities._CSV_FIELD_TERMINATOR
-					+ "MAP_LAT" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+					"SEQUENCE_NUMBER" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+					+ "GPS_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+					+ "GPS_LON" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+					+ "MAP_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
 					+ "MAP_LON" + FileSystemUtilities._CSV_REC_TERMINATOR
 					);
 			bw.flush();
 			
 			for(Vertex vertex:claim.getVertices()){
-				bw.write(
-						vertex.getClaimId() + FileSystemUtilities._CSV_FIELD_TERMINATOR
-						+ vertex.getSequenceNumber() + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+				bw.write(vertex.getSequenceNumber() + FileSystemUtilities._CSV_FIELD_SEPARATOR);
 						LatLng gpsPosition = vertex.getGPSPosition();
 						if(gpsPosition != null){
-							bw.write(gpsPosition.latitude + FileSystemUtilities._CSV_FIELD_TERMINATOR
-							+ gpsPosition.longitude + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+							bw.write(gpsPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
+							+ gpsPosition.longitude + FileSystemUtilities._CSV_FIELD_SEPARATOR);
 						}	
 						else{
-							bw.write("null" + FileSystemUtilities._CSV_FIELD_TERMINATOR
-							+ "null" + FileSystemUtilities._CSV_FIELD_TERMINATOR);
+							bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+							+ "null" + FileSystemUtilities._CSV_FIELD_SEPARATOR);
 						}
 						LatLng mapPosition = vertex.getMapPosition();
 						if(mapPosition != null){
-							bw.write(mapPosition.latitude + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							bw.write(mapPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
 							+ mapPosition.longitude + FileSystemUtilities._CSV_REC_TERMINATOR);
 						}	
 						else{
-							bw.write("null" + FileSystemUtilities._CSV_FIELD_TERMINATOR
+							bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
 							+ "null" + FileSystemUtilities._CSV_REC_TERMINATOR);
 						}
 						bw.flush();
