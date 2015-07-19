@@ -27,6 +27,8 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import org.fao.sola.clients.android.opentenure.model.Link;
+
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
@@ -48,6 +50,18 @@ public class OpenTenurePreferencesFragment extends PreferenceFragment {
 				getActivity()
 						.setResult(
 								OpenTenurePreferencesActivity.RESULT_CODE_RESTART);
+			}
+			if (key.equals(OpenTenurePreferencesActivity.CS_URL_PREF)) {
+				Link link = Link.getLink(Link.ID_CS_URL);
+				if(link != null){
+					SharedPreferences OpenTenurePreferences = PreferenceManager
+							.getDefaultSharedPreferences(OpenTenureApplication.getContext());
+					String csUrl = OpenTenurePreferences.getString(
+							OpenTenurePreferencesActivity.CS_URL_PREF,
+							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER);
+					link.setUrl(csUrl);
+					link.update();
+				}
 			}
 		}
 	}

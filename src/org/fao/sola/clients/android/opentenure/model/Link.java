@@ -300,12 +300,13 @@ public class Link {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT LNK.URL, LNK.DESC FROM LINK LNK");
+					.prepareStatement("SELECT LNK.LINK_ID, LNK.URL, LNK.DESC FROM LINK LNK");
 			rs = statement.executeQuery();
 			while (rs.next()) {
 				Link link = new Link();
-				link.setUrl(rs.getString(1));
-				Clob clob = rs.getClob(2);
+				link.setLinkId(rs.getString(1));
+				link.setUrl(rs.getString(2));
+				Clob clob = rs.getClob(3);
 				link.setDesc(clob.getSubString(1L, (int)clob.length()));
 				links.add(link);
 			}
