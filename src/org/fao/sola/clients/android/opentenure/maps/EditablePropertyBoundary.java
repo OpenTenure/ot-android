@@ -930,9 +930,9 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 	
 	private void saveGeometry(Claim claim){
 		BufferedWriter bw = null;
-		String path = FileSystemUtilities
-				.getAttachmentFolder(claimId)
+		String path = FileSystemUtilities.getExportFolder().getPath()
 				+ File.separator
+				+ claim.getName()
 				+ DEFAULT_GEOM_FILE_NAME;
 
 		try {
