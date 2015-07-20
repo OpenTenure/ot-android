@@ -928,57 +928,63 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 		return marker;
 	}
 	
-	private void saveGeometry(Claim claim){
-		BufferedWriter bw = null;
-		String path = FileSystemUtilities.getExportFolder().getPath()
-				+ File.separator
-				+ claim.getName()
-				+ DEFAULT_GEOM_FILE_NAME;
+	public void saveGeometry(){
+		String claimId = claimActivity.getClaimId();
 
-		try {
-			bw = new BufferedWriter(new FileWriter(path));
-			
-			bw.write(
-					"SEQUENCE_NUMBER" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-					+ "GPS_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-					+ "GPS_LON" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-					+ "MAP_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-					+ "MAP_LON" + FileSystemUtilities._CSV_REC_TERMINATOR
-					);
-			bw.flush();
-			
-			for(Vertex vertex:claim.getVertices()){
-				bw.write(vertex.getSequenceNumber() + FileSystemUtilities._CSV_FIELD_SEPARATOR);
-						LatLng gpsPosition = vertex.getGPSPosition();
-						if(gpsPosition != null){
-							bw.write(gpsPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
-							+ gpsPosition.longitude + FileSystemUtilities._CSV_FIELD_SEPARATOR);
-						}	
-						else{
-							bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-							+ "null" + FileSystemUtilities._CSV_FIELD_SEPARATOR);
-						}
-						LatLng mapPosition = vertex.getMapPosition();
-						if(mapPosition != null){
-							bw.write(mapPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
-							+ mapPosition.longitude + FileSystemUtilities._CSV_REC_TERMINATOR);
-						}	
-						else{
-							bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
-							+ "null" + FileSystemUtilities._CSV_REC_TERMINATOR);
-						}
-						bw.flush();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (bw != null) {
-				try {
-					bw.close();
-				} catch (Throwable ignore) {
+		if (claimId != null) {
+			Claim claim = Claim.getClaim(claimId);
+			BufferedWriter bw = null;
+			String path = FileSystemUtilities.getExportFolder().getPath()
+					+ File.separator
+					+ claim.getName()
+					+ DEFAULT_GEOM_FILE_NAME;
+
+			try {
+				bw = new BufferedWriter(new FileWriter(path));
+				
+				bw.write(
+						"SEQUENCE_NUMBER" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+						+ "GPS_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+						+ "GPS_LON" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+						+ "MAP_LAT" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+						+ "MAP_LON" + FileSystemUtilities._CSV_REC_TERMINATOR
+						);
+				bw.flush();
+				
+				for(Vertex vertex:claim.getVertices()){
+					bw.write(vertex.getSequenceNumber() + FileSystemUtilities._CSV_FIELD_SEPARATOR);
+							LatLng gpsPosition = vertex.getGPSPosition();
+							if(gpsPosition != null){
+								bw.write(gpsPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
+								+ gpsPosition.longitude + FileSystemUtilities._CSV_FIELD_SEPARATOR);
+							}	
+							else{
+								bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+								+ "null" + FileSystemUtilities._CSV_FIELD_SEPARATOR);
+							}
+							LatLng mapPosition = vertex.getMapPosition();
+							if(mapPosition != null){
+								bw.write(mapPosition.latitude + FileSystemUtilities._CSV_FIELD_SEPARATOR
+								+ mapPosition.longitude + FileSystemUtilities._CSV_REC_TERMINATOR);
+							}	
+							else{
+								bw.write("null" + FileSystemUtilities._CSV_FIELD_SEPARATOR
+								+ "null" + FileSystemUtilities._CSV_REC_TERMINATOR);
+							}
+							bw.flush();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (bw != null) {
+					try {
+						bw.close();
+					} catch (Throwable ignore) {
+					}
 				}
 			}
 		}
+
 	}
 
 	public void saveSnapshot() {
@@ -1014,7 +1020,6 @@ public class EditablePropertyBoundary extends BasePropertyBoundary {
 						att.setPath(path);
 						att.setSize(new File(path).length());
 						att.create();
-						saveGeometry(claim);
 						Toast toast = Toast.makeText(context,
 								R.string.message_map_snapshot_saved,
 								Toast.LENGTH_SHORT);

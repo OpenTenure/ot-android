@@ -14,7 +14,7 @@
     <string name="action_add_boundary">Add boundary marker</string>
     <string name="action_add_non_boundary">Add non boundary marker</string>
     <string name="action_measure">Measure</string>
-
+    <string name="action_export_geo">Export geographic data</string>
     <string name="action_done">Done</string>
     <string name="action_remove_attachment">Remove attachment</string>
     <string name="action_remove_owner">Remove rights owner</string>
@@ -154,6 +154,7 @@
     <string name="message_password_too_short">The password must be at least %d characters long</string>
     <string name="message_password_character_is_wrong">The password must only contain digits and letters</string>
     <string name="message_saved">Saved</string>
+    <string name="message_exported">Exported</string>
     <string name="message_server_error_saving_claim">Server Internal Error</string>
     <string name="message_service_not_available">Service Not Available</string>
     <string name="message_connection_error">Connection not available</string>

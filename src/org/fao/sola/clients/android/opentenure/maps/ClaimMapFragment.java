@@ -802,6 +802,12 @@ public class ClaimMapFragment extends Fragment implements
 					R.string.message_saved, Toast.LENGTH_SHORT);
 			toast.show();
 			return true;
+		case R.id.action_export_geo:
+			currentProperty.saveGeometry();
+			toast = Toast.makeText(mapView.getContext(),
+					R.string.message_exported, Toast.LENGTH_SHORT);
+			toast.show();
+			return true;
 		case R.id.action_new_picture:
 			Log.d(this.getClass().getName(), "newPicture");
 			centerMapOnCurrentProperty(new CancelableCallback() {

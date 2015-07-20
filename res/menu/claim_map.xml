@@ -10,7 +10,7 @@
                   android:title="@string/action_add_non_boundary" />
             <item android:id="@+id/action_measure"
                   android:title="@string/action_measure" />
-        </menu>
+            </menu>
     </item>
     <item android:id="@+id/action_add_from_gps"
           android:icon="@android:drawable/ic_input_add"
@@ -55,5 +55,8 @@
           android:showAsAction="never" />
     <item android:id="@+id/map_provider_geoserver"
           android:title="@string/map_provider_geoserver"
+          android:showAsAction="never" />
+    <item android:id="@+id/action_export_geo"
+          android:title="@string/action_export_geo"
           android:showAsAction="never" />
 </menu>

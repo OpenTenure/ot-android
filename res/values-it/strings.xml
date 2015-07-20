@@ -11,6 +11,7 @@
     <string name="action_add_boundary">Aggiungi al perimetro</string>
     <string name="action_add_non_boundary">Aggiungi fuori perimetro</string>
     <string name="action_measure">Misura</string>
+    <string name="action_export_geo">Esporta dati geografici</string>
     <string name="action_done">Fatto</string>
     <string name="action_import">Import</string>
     <string name="action_login">Log In</string>
@@ -140,6 +141,7 @@
     <string name="message_password_too_short">La password deve essere lunga almeno %d caratteri</string>
     <string name="message_password_character_is_wrong">La password deve contenere solo lettere e cifre</string>
     <string name="message_saved">Salvato</string>
+    <string name="message_exported">Esportato</string>
     <string name="message_service_not_available">Servizio non disponibile</string>
     <string name="message_connection_error">Connessione non disponibile</string>
     <string name="message_server_error_saving_claim">Server Error</string>
