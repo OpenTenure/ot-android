@@ -252,7 +252,7 @@ public class FieldViewFactory {
 		number.setBackgroundColor(activity.getResources().getColor(
 				android.R.color.white));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
-		if (payload.getStringPayload() != null) {
+		if (payload.getBigDecimalPayload() != null) {
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
 		if (mode == Mode.MODE_RO) {
@@ -318,7 +318,7 @@ public class FieldViewFactory {
 				| InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		number.setBackgroundColor(activity.getResources().getColor(
 				android.R.color.white));
-		if (payload.getStringPayload() != null) {
+		if (payload.getBigDecimalPayload() != null) {
 			number.setText(payload.getBigDecimalPayload().toPlainString());
 		}
 		if (mode == Mode.MODE_RO) {
