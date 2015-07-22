@@ -66,7 +66,7 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedIdTypes = false;
 	private boolean checkedLandUses = false;
 	private boolean checkedLanguages = false;
-	
+
 	public boolean isCheckedLanguages() {
 		return checkedLanguages;
 	}
@@ -108,6 +108,7 @@ public class OpenTenureApplication extends Application {
 
 	private static volatile int claimsToDownload = 0;
 	private static volatile int initialClaimsToDownload = 0;
+	private static volatile int claimsDownloaded = 0;
 
 	public static OpenTenureApplication getInstance() {
 		return sInstance;
@@ -117,8 +118,6 @@ public class OpenTenureApplication extends Application {
 		return database;
 	}
 
-	
-		
 	public static OwnersFragment getOwnersFragment() {
 		return ownersFragment;
 	}
@@ -212,7 +211,8 @@ public class OpenTenureApplication extends Application {
 		FileSystemUtilities.createCertificatesFolder();
 		FileSystemUtilities.createImportFolder();
 		FileSystemUtilities.createExportFolder();
-		// Get current software version from preferences and new one from package info for migration
+		// Get current software version from preferences and new one from
+		// package info for migration
 		String version = null;
 		try {
 			version = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
@@ -222,8 +222,11 @@ public class OpenTenureApplication extends Application {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(getContext());
 		// Use new version as default for new one
-		String currentVersion = preferences.getString(OpenTenurePreferencesActivity.SOFTWARE_VERSION_PREF, VERSION_NOT_FOUND);
-		OpenTenurePreferencesMigrator.migratePreferences(preferences, currentVersion, version);
+		String currentVersion = preferences.getString(
+				OpenTenurePreferencesActivity.SOFTWARE_VERSION_PREF,
+				VERSION_NOT_FOUND);
+		OpenTenurePreferencesMigrator.migratePreferences(preferences,
+				currentVersion, version);
 		super.onCreate();
 
 	}
@@ -418,6 +421,8 @@ public class OpenTenureApplication extends Application {
 	public static void decrementClaimsToDownload() {
 		synchronized (SEMAPHORE) {
 			claimsToDownload--;
+
+			System.out.println("claimsToDownload " + claimsToDownload);
 		}
 	}
 
@@ -434,6 +439,18 @@ public class OpenTenureApplication extends Application {
 			return (int) ((((float) (initialClaimsToDownload - claimsToDownload) / (float) initialClaimsToDownload)) * 100.0);
 		}
 
+	}
+
+	public static int getClaimsDownloaded() {
+		synchronized (SEMAPHORE) {
+			return claimsDownloaded;
+		}
+	}
+
+	public static void setClaimsDownloaded(int claimsDownloaded) {
+		synchronized (SEMAPHORE) {
+			OpenTenureApplication.claimsDownloaded = claimsDownloaded;
+		}
 	}
 
 	public String getLocalization() {
@@ -502,10 +519,11 @@ public class OpenTenureApplication extends Application {
 
 		} else {
 
-			localization =
-					Resources.getSystem().getConfiguration().locale.getLanguage()
+			localization = Resources.getSystem().getConfiguration().locale
+					.getLanguage()
 					+ "-"
-					+ Resources.getSystem().getConfiguration().locale.getCountry();
+					+ Resources.getSystem().getConfiguration().locale
+							.getCountry();
 		}
 		setLocale(locale);
 		System.out.println("Localization is now: " + localization);

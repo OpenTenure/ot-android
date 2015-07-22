@@ -137,6 +137,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		// Before to start downloading claims the input is divided in two and assigned to two thread. 
 		
 		OpenTenureApplication.setClaimsToDownload(input.getClaims().size());
+		OpenTenureApplication.setClaimsDownloaded(0);
 		
 		
 		
@@ -153,7 +154,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		
 		input2.setClaimId(input.getClaimId());
 		input2.setClaims(inputList2);
-		input2.setDownloaded(input.getDownloaded());
+		//input2.setDownloaded(input.getDownloaded());
 		input2.setHttpStatusCode(input.getHttpStatusCode());
 		input2.setMapView(input.getMapView());
 		input2.setMessage(input.getMessage());
@@ -163,7 +164,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		
 		input3.setClaimId(input.getClaimId());
 		input3.setClaims(inputList3);
-		input3.setDownloaded(input.getDownloaded());
+		//input3.setDownloaded(input.getDownloaded());
 		input3.setHttpStatusCode(input.getHttpStatusCode());
 		input3.setMapView(input.getMapView());
 		input3.setMessage(input.getMessage());
@@ -174,7 +175,7 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		GetClaimsInput input4 = new GetClaimsInput();
 		input4.setClaimId(input.getClaimId());
 		input4.setClaims(inputList4);
-		input4.setDownloaded(input.getDownloaded());
+		//input4.setDownloaded(input.getDownloaded());
 		input4.setHttpStatusCode(input.getHttpStatusCode());
 		input4.setMapView(input.getMapView());
 		input4.setMessage(input.getMessage());
@@ -187,7 +188,6 @@ public class GetAllClaimsTask extends AsyncTask<Object, Void, GetClaimsInput> {
 		GetClaimsTask task1 = new GetClaimsTask();
 		task1.setClaimsMap(claimsMap);
 		task1.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,input);		
-		
 		
 		GetClaimsTask task2 = new GetClaimsTask();
 		task2.setClaimsMap(claimsMap);

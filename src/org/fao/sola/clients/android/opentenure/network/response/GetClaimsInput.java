@@ -70,13 +70,13 @@ public class GetClaimsInput extends ApiResponse{
 		this.mapView = mapView;
 	}
 
-	public int getDownloaded() {
-		return downloaded;
-	}
-
-	public void setDownloaded(int downloaded) {
-		this.downloaded = downloaded;
-	}
+//	public int getDownloaded() {
+//		return downloaded;
+//	}
+//
+//	public void setDownloaded(int downloaded) {
+//		this.downloaded = downloaded;
+//	}
 
 	public boolean isResult() {
 		return result;

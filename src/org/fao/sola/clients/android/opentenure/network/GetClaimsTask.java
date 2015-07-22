@@ -74,7 +74,7 @@ public class GetClaimsTask extends
 		List<Claim> claims = input.getClaims();
 
 		input.setResult(true);
-		input.setDownloaded(0);
+		
 
 		for (Iterator<Claim> iterator = claims.iterator(); iterator.hasNext();) {
 			Claim claimToDownload = (Claim) iterator.next();
@@ -97,7 +97,7 @@ public class GetClaimsTask extends
 					FileSystemUtilities.deleteClaim(claimToDownload.getId());
 				}
 
-				// input.setDownloaded(input.getDownloaded() + 1);
+				//input.setDownloaded(input.getDownloaded() + 1);
 				OpenTenureApplication.decrementClaimsToDownload();
 				publishProgress(input);
 
@@ -140,9 +140,11 @@ public class GetClaimsTask extends
 				if (success == false) {
 
 					input.setResult(success);
+					OpenTenureApplication.decrementClaimsToDownload();
+					publishProgress(input);
 
 				} else {
-
+					OpenTenureApplication.setClaimsDownloaded(OpenTenureApplication.getClaimsDownloaded() + 1);
 					OpenTenureApplication.decrementClaimsToDownload();
 					publishProgress(input);
 
@@ -200,8 +202,7 @@ public class GetClaimsTask extends
 						OpenTenureApplication.getContext().getResources()
 								.getString(R.string.message_claims_downloaded),
 						Toast.LENGTH_LONG);
-				
-				
+								
 				
 				OpenTenureApplication.getMapFragment().refreshMap();
 				OpenTenureApplication.getLocalClaimsFragment().refresh();
@@ -231,7 +232,7 @@ public class GetClaimsTask extends
 								.getResources()
 								.getString(
 										R.string.message_error_downloading_claims),
-								input.getDownloaded());
+								OpenTenureApplication.getClaimsDownloaded());
 				
 				OpenTenureApplication.getMapFragment().refreshMap();
 				OpenTenureApplication.getLocalClaimsFragment().refresh();
