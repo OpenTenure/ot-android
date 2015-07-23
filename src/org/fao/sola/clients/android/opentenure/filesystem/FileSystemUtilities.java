@@ -36,7 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,6 +53,9 @@ import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
@@ -404,7 +409,7 @@ public class FileSystemUtilities {
 	public static File getExportFolder() {
 		return new File(getOpentenureFolder(), _EXPORT);
 	}
-	
+
 	public static File getImportFolder() {
 		return new File(getOpentenureFolder(), _IMPORT);
 	}
@@ -715,7 +720,6 @@ public class FileSystemUtilities {
 
 		try {
 
-
 			importFolder = new File(getOpentenureFolder(), _IMPORT);
 			dest = new File(importFolder, source.getName());
 			dest.createNewFile();
@@ -919,6 +923,79 @@ public class FileSystemUtilities {
 		}
 
 		return progress;
+
+	}
+
+	public static File reduce(File file) {
+
+		InputStream in = null;
+
+		/* Choosing the right reduction factor */
+		int percentage = 0;
+		if (file.length() < 2000000)
+			percentage = 50;
+
+		if (file.length() >= 2000000 && file.length() < 3000000)
+			percentage = 40;
+
+		if (file.length() >= 3000000)
+			percentage = 30;
+
+		try {
+			in = new FileInputStream(file);
+
+			Bitmap bitmap = BitmapFactory.decodeStream(in);
+			File tmpFile = new File(file.getParentFile(), file.getName()
+					.substring(0, file.getName().indexOf(".j")) + "2.jpg");
+			try {
+				OutputStream out = new FileOutputStream(tmpFile);
+				try {
+					if (bitmap.compress(CompressFormat.JPEG, percentage, out)) {
+						{
+							File tmp = file;
+							file = tmpFile;
+							tmpFile = tmp;
+						}
+
+						System.out.println("tmpFile : "
+								+ tmpFile.getAbsolutePath());
+						System.out.println("file : " + file.getAbsolutePath());
+
+						tmpFile.delete();
+
+					} else {
+						throw new Exception(
+								"Failed to save the image as a JPEG");
+					}
+				} finally {
+					out.close();
+				}
+			} catch (Throwable t) {
+
+				System.out.println(" error" + t.getMessage());
+				tmpFile.delete();
+				try {
+					throw t;
+				} catch (Throwable e) {
+
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception ex) {
+
+			System.out.println("Exception reducing file "
+					+ ex.getLocalizedMessage());
+
+		} finally {
+			try {
+				in.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return file;
 
 	}
 

@@ -229,6 +229,21 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 						File copy = FileUtils.getFile(rootView.getContext(),
 								uri);
+						
+						//*******
+						
+						if(copy.length() > 999999){
+							
+							System.out.println("Attachment size : " + copy.length());
+							System.out.println("Reducing size...." +
+									"" + copy.length());
+							copy = FileSystemUtilities.reduce(copy);	
+						}
+						else
+							System.out.println("Attachment size : " + copy.length());
+						
+						
+						//*********
 
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
