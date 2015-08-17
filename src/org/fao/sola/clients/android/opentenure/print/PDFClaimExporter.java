@@ -38,6 +38,14 @@ import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.form.FieldPayload;
+import org.fao.sola.clients.android.opentenure.form.FieldType;
+import org.fao.sola.clients.android.opentenure.form.FieldValueType;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
+import org.fao.sola.clients.android.opentenure.form.SectionPayload;
+import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
+import org.fao.sola.clients.android.opentenure.form.ui.FieldViewFactory;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
@@ -243,6 +251,7 @@ public class PDFClaimExporter {
 						drawBitmap(picture);
 
 						newLine();
+
 						moveY(-125);
 						writeBoldText(
 								context.getResources().getString(
@@ -584,8 +593,9 @@ public class PDFClaimExporter {
 				newLine();
 				setX(430);
 				if (claim.getPerson().getIdType() != null)
-					writeText(new IdType().getDisplayValueByType(claim
-							.getPerson().getIdType()));
+					writeText(dnl.getLocalizedDisplayName(new IdType()
+							.getDisplayValueByType(claim.getPerson()
+									.getIdType())));
 				setX(130);
 				if (claim.getPerson().getIdNumber() != null)
 					writeText(claim.getPerson().getIdNumber());
@@ -923,8 +933,8 @@ public class PDFClaimExporter {
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
-					writeText((new DocumentType())
-							.getDisplayVauebyType(attachment.getFileType()));
+					writeText(dnl.getLocalizedDisplayName((new DocumentType())
+							.getDisplayVauebyType(attachment.getFileType())));
 
 					setX(130);
 					writeText(attachment.getDescription());
@@ -1044,8 +1054,8 @@ public class PDFClaimExporter {
 						+ context.getResources().getString(
 								R.string.square_meters));
 				setX(130);
-				writeText(new ClaimType()
-						.getDisplayValueByType(claim.getType()));
+				writeText(dnl.getLocalizedDisplayName(new ClaimType()
+						.getDisplayValueByType(claim.getType())));
 				newLine();
 				setX(430);
 				writeBoldText(
@@ -1057,8 +1067,8 @@ public class PDFClaimExporter {
 
 				newLine();
 				setX(430);
-				writeText(new LandUse().getDisplayValueByType(claim
-						.getLandUse()));
+				writeText(dnl.getLocalizedDisplayName(new LandUse()
+						.getDisplayValueByType(claim.getLandUse())));
 				setX(130);
 				sdf.applyPattern("dd/MM/yyyy");
 				if (claim.getDateOfStart() != null)
@@ -1260,6 +1270,480 @@ public class PDFClaimExporter {
 				}
 
 			}
+
+			// ----------------------------------Dynamic Data
+			// ----------------------------------------------- //
+
+			if (!OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar")) {
+				FormPayload payLoad = claim.getDynamicForm();
+				List<SectionPayload> list = payLoad.getSectionPayloadList();
+
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					SectionPayload sectionPayload = (SectionPayload) iterator
+							.next();
+
+					System.out.println(sectionPayload);
+
+					addPage(document, context, claimId);
+
+					newLine();
+					drawHorizontalLine();
+					newLine();
+					newLine();
+
+					writeBoldText(
+							context.getResources().getString(
+									R.string.title_section), 18);
+					writeBoldText(
+							" : "
+									+ dnl.getLocalizedDisplayName(sectionPayload
+											.getDisplayName()), 18);
+
+					newLine();
+					newLine();
+					newLine();
+					newLine();
+
+					List<SectionElementPayload> fuffa = sectionPayload
+							.getSectionElementPayloadList();
+
+					for (Iterator iterator2 = fuffa.iterator(); iterator2
+							.hasNext();) {
+						SectionElementPayload sectionElementPayload = (SectionElementPayload) iterator2
+								.next();
+						List<FieldPayload> pizzaq = sectionElementPayload
+								.getFieldPayloadList();
+
+						int x = horizontalMargin;
+
+						for (Iterator iterator3 = pizzaq.iterator(); iterator3
+								.hasNext();) {
+							FieldPayload fieldPayload = (FieldPayload) iterator3
+									.next();
+
+							String load = null;
+
+							switch (fieldPayload.getFieldType()) {
+							case DATE:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+
+								} else {
+
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+
+								break;
+							case TIME:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case SNAPSHOT:
+							case DOCUMENT:
+							case GEOMETRY:
+							case TEXT:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case DECIMAL:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+
+								newLine();
+								if (fieldPayload.getBigDecimalPayload() != null) {
+									setX(x);
+									writeText(fieldPayload
+											.getBigDecimalPayload() + "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBigDecimalPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case INTEGER:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								;
+								newLine();
+								if (fieldPayload.getBigDecimalPayload() != null) {
+									setX(x);
+									writeText(fieldPayload
+											.getBigDecimalPayload() + "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBigDecimalPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case BOOL:
+
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+
+								newLine();
+								if (fieldPayload.getBooleanPayload() != null) {
+									setX(x);
+									writeText(fieldPayload.getBooleanPayload()
+											+ "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBooleanPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							default:
+								break;
+							}
+
+							if (x == horizontalMargin)
+								x = 300;
+							else
+								x = horizontalMargin;
+
+						}
+					}
+				}
+			} else {
+
+				FormPayload payLoad = claim.getDynamicForm();
+				List<SectionPayload> list = payLoad.getSectionPayloadList();
+
+				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+					SectionPayload sectionPayload = (SectionPayload) iterator
+							.next();
+
+					System.out.println(sectionPayload);
+
+					addPage(document, context, claimId);
+
+					newLine();
+					drawHorizontalLine();
+					newLine();
+					newLine();
+
+					writeBoldText(
+							context.getResources().getString(
+									R.string.title_section), 18);
+					writeBoldText(
+							" : "
+									+ dnl.getLocalizedDisplayName(sectionPayload
+											.getDisplayName()), 18);
+
+					newLine();
+					newLine();
+					newLine();
+					newLine();
+
+					List<SectionElementPayload> fuffa = sectionPayload
+							.getSectionElementPayloadList();
+
+					for (Iterator iterator2 = fuffa.iterator(); iterator2
+							.hasNext();) {
+						SectionElementPayload sectionElementPayload = (SectionElementPayload) iterator2
+								.next();
+						List<FieldPayload> pizzaq = sectionElementPayload
+								.getFieldPayloadList();
+
+						int x = horizontalMargin;
+
+						for (Iterator iterator3 = pizzaq.iterator(); iterator3
+								.hasNext();) {
+							FieldPayload fieldPayload = (FieldPayload) iterator3
+									.next();
+
+							String load = null;
+
+							switch (fieldPayload.getFieldType()) {
+							case DATE:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+
+								} else {
+
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+
+								break;
+							case TIME:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+								} else
+									newLine();
+								if (x == 300) {
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case SNAPSHOT:
+							case DOCUMENT:
+							case GEOMETRY:
+							case TEXT:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								load = fieldPayload.getStringPayload();
+								newLine();
+								if (load != null) {
+									setX(x);
+									writeText(dnl.getLocalizedDisplayName(load));
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getStringPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case DECIMAL:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+
+								newLine();
+								if (fieldPayload.getBigDecimalPayload() != null) {
+									setX(x);
+									writeText(fieldPayload
+											.getBigDecimalPayload() + "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBigDecimalPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case INTEGER:
+
+								setX(x);
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+								;
+								newLine();
+								if (fieldPayload.getBigDecimalPayload() != null) {
+									setX(x);
+									writeText(fieldPayload
+											.getBigDecimalPayload() + "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBigDecimalPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							case BOOL:
+
+								writeBoldText(
+										dnl.getLocalizedDisplayName(fieldPayload
+												.getDisplayName())
+												+ " :", 16);
+
+								newLine();
+								if (fieldPayload.getBooleanPayload() != null) {
+									setX(x);
+									writeText(fieldPayload.getBooleanPayload()
+											+ "");
+								} else
+									newLine();
+								if (x == 300) {
+
+									newLine();
+									newLine();
+									newLine();
+									newLine();
+								} else {
+									if (fieldPayload.getBooleanPayload() != null)
+										moveY(-20);
+									else
+										moveY(-25);
+								}
+								break;
+							default:
+								break;
+							}
+
+							if (x == horizontalMargin)
+								x = 300;
+							else
+								x = horizontalMargin;
+
+						}
+					}
+				}
+
+			}
+
 			// ---------------------------------------------------------------------------------------------
 			// MAP screenshot section
 			addPage(document, context, claimId);
