@@ -880,6 +880,22 @@ public class FileSystemUtilities {
 
 		return true;
 	}
+	
+	
+	/**
+	 * Replace special characters in a string with '-'
+	 * 
+	 * @param original String
+	 * @return
+	 */
+	public static String cleanBySpecial(String original){
+		 char[] reservedChars = {'?',':','\\',':','\'','*','|','/','<','>'};
+		 
+		 for (int i = 0; i < reservedChars.length; i++) {			
+			 original = original.replace(reservedChars[i], '-');
+			}
+		return original;
+	}
 
 	public static int getUploadProgress(String claimId, String status) {
 

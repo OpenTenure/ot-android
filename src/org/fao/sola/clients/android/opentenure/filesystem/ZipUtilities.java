@@ -51,6 +51,10 @@ public class ZipUtilities {
 		try {
 
 			String claimName = Claim.getClaim(claimId).getName();
+			
+			
+			/*Removing special characters from claim name */
+			claimName = FileSystemUtilities.cleanBySpecial(claimName);
 
 			SimpleDateFormat sdf = new SimpleDateFormat();
 
