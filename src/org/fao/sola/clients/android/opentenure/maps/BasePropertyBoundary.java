@@ -132,7 +132,7 @@ public class BasePropertyBoundary {
 		name = claim.getName() == null || claim.getName().equalsIgnoreCase("") ? context
 				.getResources().getString(R.string.default_claim_name) : claim
 				.getName();
-		
+
 		String status = claim.getStatus();
 		claimId = claim.getClaimId();
 		claimSlogan = claim.getSlogan(context);
@@ -158,7 +158,7 @@ public class BasePropertyBoundary {
 				color = context.getResources()
 						.getColor(R.color.status_reviewed);
 				break;
-				
+
 			case challenged:
 				color = context.getResources().getColor(
 						R.color.status_challenged);
@@ -185,7 +185,6 @@ public class BasePropertyBoundary {
 
 	protected void calculateGeometry(Claim claim, boolean updateArea) {
 
-		
 		if (vertices == null || vertices.size() <= 0) {
 			return;
 		}
@@ -194,7 +193,7 @@ public class BasePropertyBoundary {
 			bounds = new LatLngBounds(center, center);
 			return;
 		}
-		
+
 		GeometryFactory gf = new GeometryFactory();
 
 		// need at least 4 coordinates for a three vertices polygon
@@ -228,8 +227,7 @@ public class BasePropertyBoundary {
 
 		polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
-		
-		
+
 		if ((claim != null)
 				&& updateArea
 				&& OpenTenureApplication.getClaimId() != null
@@ -238,20 +236,49 @@ public class BasePropertyBoundary {
 
 			area = SphericalUtil.computeArea(coordList);
 			area = (long) Math.round(area);
-			
-			 int digit = (int) (Math.abs(area) % 10);
-			 if(digit > 0 && digit < 5)
-				 area = area - digit ; 
-			 else if (digit > 5 && digit < 9)
-				 area = area + 10 - digit; 
-			 else if (digit == 9)
-				 area = area + 1;
-			
-			
-			if (claim.getClaimArea() != area) {
 
-				claim.updateArea((long)area);
-				claim.setClaimArea((long)area);
+			int digit = 0;
+
+			if (area > 100 && area < 1000) {
+				digit = (int) (Math.abs(area) % 10);
+				if (digit > 0 && digit < 7)
+					area = area - digit;
+				else if (digit >= 7 && digit < 9)
+					area = area + 10 - digit;
+				else if (digit == 9)
+					area = area + 1;
+			}
+
+			if (area > 1000 && area < 10000) {
+				digit = (int) (Math.abs(area) % 100);
+				if (digit > 0 && digit < 70)
+					area = area - digit;
+				else if (digit >= 70 && digit <= 99)
+					area = area + 100 - digit;
+
+			}
+
+			if (area > 10000 && area < 100000) {
+				digit = (int) (Math.abs(area) % 1000);
+
+				if (digit > 0 && digit < 700)
+					area = area - digit;
+				else if (digit >= 700 && digit <= 999)
+					area = area + 1000 - digit;
+			}
+
+			if (area > 100000) {
+				digit = (int) (Math.abs(area) % 10000);
+
+				if (digit > 0 && digit < 7000)
+					area = area - digit;
+				else if (digit >= 7000 && digit <= 9999)
+					area = area + 10000 - digit;
+			}
+
+			if (claim.getClaimArea() != area) {
+				claim.updateArea((long) area);
+				claim.setClaimArea((long) area);
 				OpenTenureApplication.getDetailsFragment().reloadArea(claim);
 
 			}
@@ -302,16 +329,15 @@ public class BasePropertyBoundary {
 		tf.setTextAlign(Align.CENTER);
 		tf.setAntiAlias(true);
 		tf.setColor(color);
-		try{
+		try {
 			tf.getTextBounds(name, 0, name.length(), boundsText);
-			}
-		catch(Exception e){
-			name = context
-					.getResources().getString(R.string.default_claim_name);
-			if(name != null)
-			tf.getTextBounds(name, 0, name.length(), boundsText);
+		} catch (Exception e) {
+			name = context.getResources()
+					.getString(R.string.default_claim_name);
+			if (name != null)
+				tf.getTextBounds(name, 0, name.length(), boundsText);
 		}
-		
+
 		Bitmap.Config conf = Bitmap.Config.ARGB_8888;
 		Bitmap bmpText = Bitmap.createBitmap(boundsText.width(),
 				boundsText.height() - boundsText.bottom, conf);
@@ -361,26 +387,36 @@ public class BasePropertyBoundary {
 		polyline = map.addPolyline(polylineOptions);
 		ClaimType ct = new ClaimType();
 		String areaString = null;
-		
+
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
 				OpenTenureApplication.getInstance().getLocalization());
-		
-		areaString = OpenTenureApplication.getContext()
-				.getString(R.string.claim_area_label) + " " + (long)area + " " +  OpenTenureApplication.getContext()
-				.getString(R.string.square_meters); 
-		
-//		if (area < 10000) {
-//			areaString = String.format(Locale.US, ", Area: %.2f m2", area);
-//		} else if (area >= 10000 && area < 1000000) {
-//			areaString = String.format(Locale.US, ", Area: %.2f ha",
-//					area / 10000);
-//		} else {
-//			areaString = String.format(Locale.US, ", Area: %.2f km2",
-//					area / 1000000);
-//		}
-		propertyMarker = createPropertyMarker(center,
-				claimSlogan + ", " + context.getString(R.string.type) + ": "
-						+ dnl.getLocalizedDisplayName(ct.getDisplayValueByType(claimType)) + ", " + areaString);
+
+		areaString = OpenTenureApplication.getContext().getString(
+				R.string.claim_area_label)
+				+ " "
+				+ (long) area
+				+ " "
+				+ OpenTenureApplication.getContext().getString(
+						R.string.square_meters);
+
+		// if (area < 10000) {
+		// areaString = String.format(Locale.US, ", Area: %.2f m2", area);
+		// } else if (area >= 10000 && area < 1000000) {
+		// areaString = String.format(Locale.US, ", Area: %.2f ha",
+		// area / 10000);
+		// } else {
+		// areaString = String.format(Locale.US, ", Area: %.2f km2",
+		// area / 1000000);
+		// }
+		propertyMarker = createPropertyMarker(
+				center,
+				claimSlogan
+						+ ", "
+						+ context.getString(R.string.type)
+						+ ": "
+						+ dnl.getLocalizedDisplayName(ct
+								.getDisplayValueByType(claimType)) + ", "
+						+ areaString);
 
 	}
 
