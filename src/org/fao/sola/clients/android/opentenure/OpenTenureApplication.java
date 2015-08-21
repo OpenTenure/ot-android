@@ -66,14 +66,7 @@ public class OpenTenureApplication extends Application {
 	private boolean checkedIdTypes = false;
 	private boolean checkedLandUses = false;
 	private boolean checkedLanguages = false;
-
-	public boolean isCheckedLanguages() {
-		return checkedLanguages;
-	}
-
-	public void setCheckedLanguages(boolean checkedLanguages) {
-		this.checkedLanguages = checkedLanguages;
-	}
+	private boolean checkedGeometryRequired = false;
 
 	private boolean checkedCommunityArea = false;
 	private boolean checkedForm = false;
@@ -291,6 +284,23 @@ public class OpenTenureApplication extends Application {
 		this.checkedDocTypes = checkedDocTypes;
 	}
 
+	public boolean isCheckedLanguages() {
+		return checkedLanguages;
+	}
+
+	public void setCheckedLanguages(boolean checkedLanguages) {
+		this.checkedLanguages = checkedLanguages;
+	}
+	
+	public boolean isCheckedGeometryRequired() {
+		return checkedGeometryRequired;
+	}
+
+	public void setCheckedGeometryRequired(boolean checkedGeometryRequired) {
+		this.checkedGeometryRequired = checkedGeometryRequired;
+	}
+	
+	
 	/*
 	 * Return the single instance of the inizialized HttpClient that handle
 	 * connection and session to the server
@@ -302,6 +312,8 @@ public class OpenTenureApplication extends Application {
 		else
 			return prepareClient();
 	}
+
+
 
 	/*
 	 * Return the single instance of the inizialized HttpClient that handle

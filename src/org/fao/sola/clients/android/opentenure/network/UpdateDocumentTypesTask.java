@@ -54,7 +54,8 @@ public class UpdateDocumentTypesTask extends
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator<ClaimType> iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<ClaimType> iterator = types.iterator(); iterator
+					.hasNext();) {
 				ClaimType documentType = (ClaimType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.DocumentType type = new org.fao.sola.clients.android.opentenure.model.DocumentType();
@@ -82,17 +83,16 @@ public class UpdateDocumentTypesTask extends
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()		
+								.isCheckedLanguages()
+						&& OpenTenureApplication.getInstance().isCheckedForm()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedForm()
+								.isCheckedGeometryRequired()
 
 				)
 
 				{
-					
 
-					OpenTenureApplication.getInstance()
-							.setInitialized(true);
+					OpenTenureApplication.getInstance().setInitialized(true);
 
 					Configuration conf = Configuration
 							.getConfigurationByName("isInitialized");

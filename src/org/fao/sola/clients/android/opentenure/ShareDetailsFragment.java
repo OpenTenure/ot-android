@@ -105,36 +105,34 @@ public class ShareDetailsFragment extends Fragment {
 
 	}
 
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//
-//		menu.clear();
-//
-//		inflater.inflate(R.menu.share_details, menu);
-//
-//		super.onCreateOptionsMenu(menu, inflater);
-//		Claim claim = Claim.getClaim(claimId);
-//		if (claim != null && !claim.isModifiable()) {
-//			
-//			menu.removeItem(R.id.action_new);
-//			menu.removeItem(R.id.action_save);
-//		}
-//		
-//		
-//		setHasOptionsMenu(true);
-//		setRetainInstance(true);
-//	}
+	// @Override
+	// public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	//
+	// menu.clear();
+	//
+	// inflater.inflate(R.menu.share_details, menu);
+	//
+	// super.onCreateOptionsMenu(menu, inflater);
+	// Claim claim = Claim.getClaim(claimId);
+	// if (claim != null && !claim.isModifiable()) {
+	//
+	// menu.removeItem(R.id.action_new);
+	// menu.removeItem(R.id.action_save);
+	// }
+	//
+	//
+	// setHasOptionsMenu(true);
+	// setRetainInstance(true);
+	// }
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		
 		setRetainInstance(true);
 		rootView = inflater.inflate(R.layout.share_details, container, false);
 		setHasOptionsMenu(true);
-		
-		
+
 		return rootView;
 
 	}
@@ -161,7 +159,7 @@ public class ShareDetailsFragment extends Fragment {
 				startActivityForResult(intent,
 						SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT);
 			} else {
-				System.out.println("3 claim.getAvailableShares(): " + claim.getAvailableShares());
+
 				Toast toast = Toast.makeText(
 						OpenTenureApplication.getContext(),
 						R.string.message_no_available_shares,

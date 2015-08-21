@@ -39,22 +39,23 @@ import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
-public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>> {
-	
+public class UpdateLanguagesTask extends
+		AsyncTask<String, Void, List<Language>> {
+
 	@Override
 	protected List<Language> doInBackground(String... params) {
 		List<Language> types = CommunityServerAPI.getLanguages();
 		return types;
 	}
-	
+
 	@Override
 	protected void onPostExecute(List<Language> languages) {
 
 		if (languages != null && (languages.size() > 0)) {
 
 			for (Language language : languages) {
-				
-				org.fao.sola.clients.android.opentenure.model.Language lang= new org.fao.sola.clients.android.opentenure.model.Language();
+
+				org.fao.sola.clients.android.opentenure.model.Language lang = new org.fao.sola.clients.android.opentenure.model.Language();
 
 				lang.setActive(language.isActive());
 				lang.setIsDefault(language.isIsDefault());
@@ -67,8 +68,9 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 					Log.d(this.getClass().getName(), "Storing language " + lang);
 					lang.add();
 
-				}else {
-					Log.d(this.getClass().getName(), "Updating language " + lang);
+				} else {
+					Log.d(this.getClass().getName(), "Updating language "
+							+ lang);
 					lang.updateLanguage();
 				}
 
@@ -85,17 +87,18 @@ public class UpdateLanguagesTask extends AsyncTask<String, Void, List<Language>>
 								.isCheckedIdTypes()
 						&& OpenTenureApplication.getInstance()
 								.isCheckedDocTypes()
-					    && OpenTenureApplication.getInstance()
+						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()		
+								.isCheckedLanguages()
+						&& OpenTenureApplication.getInstance().isCheckedForm()
+
 						&& OpenTenureApplication.getInstance()
-								.isCheckedForm()
+								.isCheckedGeometryRequired()
 
 				)
 
 				{
-
 
 					OpenTenureApplication.getInstance().setInitialized(true);
 

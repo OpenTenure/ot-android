@@ -43,6 +43,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateParcelGeoRequiredTask;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -634,6 +635,14 @@ public class NewsFragment extends ListFragment {
 
 			UpdateLanguagesTask updateLanguages = new UpdateLanguagesTask();
 			updateLanguages.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		
+		if (!OpenTenureApplication.getInstance().isCheckedGeometryRequired()) {
+			Log.d(this.getClass().getName(),
+					"starting tasks for parcel geomtry setting download");
+
+			UpdateParcelGeoRequiredTask updateGeo = new UpdateParcelGeoRequiredTask();
+			updateGeo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 		
 		if (!OpenTenureApplication.getInstance().isCheckedForm()) {

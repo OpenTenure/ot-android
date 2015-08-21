@@ -57,7 +57,8 @@ public class UpdateClaimTypesTask extends
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator<ClaimType> iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<ClaimType> iterator = types.iterator(); iterator
+					.hasNext();) {
 				ClaimType claimType = (ClaimType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.ClaimType type = new org.fao.sola.clients.android.opentenure.model.ClaimType();
@@ -87,9 +88,10 @@ public class UpdateClaimTypesTask extends
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()		
+								.isCheckedLanguages()
+						&& OpenTenureApplication.getInstance().isCheckedForm()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedForm()
+								.isCheckedGeometryRequired()
 
 				) {
 

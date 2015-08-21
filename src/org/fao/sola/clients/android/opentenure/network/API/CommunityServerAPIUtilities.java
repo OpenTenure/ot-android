@@ -73,6 +73,8 @@ public class CommunityServerAPIUtilities {
 	
 	public static final String HTTPS_GETLANGUAGES = "%s/ws/ref/getlanguages";
 	
+	public static final String HTTPS_GETPARCELGEOMREQUIRED = "%s/ws/%s/claim/getParcelGeomRequired";
+		
 	public static final String HTTPS_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	public static final String HTTP_GETCOMMUNITYAREA = "%s/ws/%s/ref/getcommunityarea";
 	

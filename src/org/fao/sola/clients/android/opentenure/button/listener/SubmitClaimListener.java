@@ -39,6 +39,7 @@ import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
@@ -75,13 +76,15 @@ public class SubmitClaimListener implements OnClickListener {
 			return;
 
 		} else {
-			if(OpenTenureApplication.getInstance().isConnectedWifi(v.getContext())){
+			if (OpenTenureApplication.getInstance().isConnectedWifi(
+					v.getContext())) {
 				submitClaim(v);
-			}else{
+			} else {
 				// Avoid to automatically download claims over mobile data
 				AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
 						v.getContext());
-				confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
+				confirmDownloadBuilder
+						.setTitle(R.string.title_confirm_data_transfer);
 				confirmDownloadBuilder.setMessage(v.getResources().getString(
 						R.string.message_data_over_mobile));
 
@@ -103,59 +106,69 @@ public class SubmitClaimListener implements OnClickListener {
 							}
 						});
 
-				final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
+				final AlertDialog confirmDownloadDialog = confirmDownloadBuilder
+						.create();
 				confirmDownloadDialog.show();
 			}
 			return;
 		}
 
 	}
-	
-	private void submitClaim(View v){
+
+	private void submitClaim(View v) {
 		if (claimId != null) {
-			
+
 			Person person = Claim.getClaim(claimId).getPerson();
 			Claim claim = Claim.getClaim(claimId);
-			
-			//Check is claim is already in uploading status(double click on send issue)
-			if (claim.getStatus().equals(ClaimStatus._UPLOADING)){
+
+			// Check is claim is already in uploading status(double click on
+			// send issue)
+			if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 				return;
 			}
-			
-			//Here the claimant picture is added as attachment just before to submit claim
+
+			// Here the claimant picture is added as attachment just before to
+			// submit claim
 			person.addPersonPictureAsAttachment(claimId);
-
+			
+			/*Checking if the Geometry is mandatory for claim's submission*/
 			List<Vertex> vertices = Vertex.getVertices(claimId);
+			
+			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
+					"geometryRequired").getValue())) {
+				
+				System.out.println("Geometry is mandatory : " + Boolean.parseBoolean(Configuration.getConfigurationByName(
+						"geometryRequired").getValue()));
 
-			if (vertices.size() < 3) {
+				if (vertices.size() < 3) {
 
-				Toast toast = Toast.makeText(v.getContext(),
-						R.string.message_map_not_yet_draw,
-						Toast.LENGTH_LONG);
-				toast.show();
-				return;
-
+					Toast toast = Toast.makeText(v.getContext(),
+							R.string.message_map_not_yet_draw,
+							Toast.LENGTH_LONG);
+					toast.show();
+					return;
+					}
 			}
+
 			JsonUtilities.createClaimJson(claimId);
 
 			Log.d(this.getClass().getName(),
 					"mapGeometry: " + Vertex.mapWKTFromVertices(vertices));
 			Log.d(this.getClass().getName(),
 					"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
-			
-			
-			
+
 			FormPayload payload = claim.getDynamicForm();
 
 			if (payload != null) {
-				
+
 				FormTemplate template = payload.getFormTemplate();
 
-				if(template != null){
-					
-					FieldConstraint failedConstraint = template.getFailedConstraint(payload);
-					
-					if(failedConstraint != null){
+				if (template != null) {
+
+					FieldConstraint failedConstraint = template
+							.getFailedConstraint(payload);
+
+					if (failedConstraint != null) {
 						Toast toast = Toast.makeText(v.getContext(),
 								failedConstraint.getErrorMsg(),
 								Toast.LENGTH_LONG);
@@ -165,7 +178,8 @@ public class SubmitClaimListener implements OnClickListener {
 				}
 			}
 
-			int progress = FileSystemUtilities.getUploadProgress(claimId, claim.getStatus());
+			int progress = FileSystemUtilities.getUploadProgress(claimId,
+					claim.getStatus());
 
 			vh.getBar().setVisibility(View.VISIBLE);
 			vh.getBar().setProgress(progress);

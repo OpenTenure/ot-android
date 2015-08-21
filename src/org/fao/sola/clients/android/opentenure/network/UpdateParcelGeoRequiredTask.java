@@ -34,91 +34,79 @@ import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
-public class UpdateCommunityArea extends AsyncTask<String, Void, String> {
+public class UpdateParcelGeoRequiredTask extends
+		AsyncTask<String, Void, String> {
+
+	private static String _GEOMETRYREQUIRED = "geometryRequired";
 
 	@Override
-	protected String doInBackground(String... arg0) {
-		String polygon = CommunityServerAPI.getCommunityArea();
-		return polygon;
-
+	protected String doInBackground(String... params) {
+		String required = CommunityServerAPI.getGeometryRequired();
+		return required;
 	}
 
 	@Override
-	protected void onPostExecute(String polygon) {
+	protected void onPostExecute(String result) {
 
-		if (polygon != null) {
-			try {
+		String required = "";
+
+		if (result.equals("1"))
+			required = "true";
+		else
+			required = "false";
+
+		Configuration conf = new Configuration();
+		conf.setName(_GEOMETRYREQUIRED);
+		conf.setValue(required);
+
+		if (Configuration.getConfigurationByName(_GEOMETRYREQUIRED) == null)
+			conf.create();
+		else
+			conf.update();
+
+		OpenTenureApplication.getInstance().setCheckedGeometryRequired(true);
+
+		synchronized (OpenTenureApplication.getInstance()) {
+
+			if (OpenTenureApplication.getInstance().isCheckedCommunityArea()
+					&& OpenTenureApplication.getInstance().isCheckedTypes()
+					&& OpenTenureApplication.getInstance().isCheckedDocTypes()
+					&& OpenTenureApplication.getInstance().isCheckedLandUses()
+					&& OpenTenureApplication.getInstance().isCheckedLanguages()
+					&& OpenTenureApplication.getInstance().isCheckedForm()
+					&& OpenTenureApplication.getInstance().isCheckedIdTypes())
+
+			{
+
+				/*
+				 * The application is initialized
+				 */
+
+				OpenTenureApplication.getInstance().setInitialized(true);
 
 				Configuration configuration = Configuration
-						.getConfigurationByName("communityArea");
+						.getConfigurationByName("isInitialized");
+				conf.setValue("true");
+				conf.update();
 
-				if (configuration != null) {
-					configuration.setValue(polygon);
-					configuration.update();
-				} else {
-					configuration = new Configuration();
-					configuration.setName("communityArea");
-					configuration.setValue(polygon);
+				FragmentActivity fa = (FragmentActivity) OpenTenureApplication
+						.getNewsFragment();
+				if (fa != null)
+					fa.invalidateOptionsMenu();
 
-					configuration.create();
+				Configuration latitude = Configuration
+						.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
+				if (latitude != null)
+					latitude.delete();
 
-				}
+				MainMapFragment mapFrag = OpenTenureApplication
+						.getMapFragment();
 
-				// OpenTenureApplication.getMapFragment().refreshMap();
-
-				OpenTenureApplication.getInstance().setCheckedCommunityArea(
-						true);
-
-				synchronized (OpenTenureApplication.getInstance()) {
-
-					if (OpenTenureApplication.getInstance()
-							.isCheckedCommunityArea()
-							&& OpenTenureApplication.getInstance()
-									.isCheckedTypes()
-							&& OpenTenureApplication.getInstance()
-									.isCheckedIdTypes()
-							&& OpenTenureApplication.getInstance()
-									.isCheckedCommunityArea()
-							&& OpenTenureApplication.getInstance()
-									.isCheckedForm()
-							&& OpenTenureApplication.getInstance()
-									.isCheckedGeometryRequired()
-
-					) {
-
-						OpenTenureApplication.getInstance()
-								.setInitialized(true);
-
-						Configuration conf = Configuration
-								.getConfigurationByName("isInitialized");
-						conf.setValue("true");
-						conf.update();
-
-						FragmentActivity fa = (FragmentActivity) OpenTenureApplication
-								.getNewsFragment();
-						if (fa != null)
-							fa.invalidateOptionsMenu();
-
-						Configuration latitude = Configuration
-								.getConfigurationByName(MainMapFragment.MAIN_MAP_LATITUDE);
-						if (latitude != null)
-							latitude.delete();
-
-						MainMapFragment mapFrag = OpenTenureApplication
-								.getMapFragment();
-
-						mapFrag.boundCameraToInterestArea();
-
-					}
-				}
-
-			} catch (Exception e) {
-				Log.d("OpenTenure", this.getClass().getName() + e.getMessage());
+				mapFrag.boundCameraToInterestArea();
 			}
-
 		}
+
 	}
 
 }

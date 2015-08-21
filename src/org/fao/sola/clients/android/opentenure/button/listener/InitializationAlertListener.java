@@ -36,8 +36,10 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateParcelGeoRequiredTask;
 
 import android.app.Dialog;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -109,6 +111,15 @@ public class InitializationAlertListener implements OnClickListener{
 			UpdateCommunityArea updateArea = new UpdateCommunityArea();
 			updateArea.execute();
 		}
+		
+		if (!OpenTenureApplication.getInstance().isCheckedGeometryRequired()) {
+			Log.d(this.getClass().getName(),
+					"starting tasks for parcel geomtry setting download");
+
+			UpdateParcelGeoRequiredTask updateGeo = new UpdateParcelGeoRequiredTask();
+			updateGeo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		}
+		
 		if (!OpenTenureApplication.getInstance().isCheckedForm()) {
 			Log.d(this.getClass().getName(),
 					"starting tasks for form retrieval");

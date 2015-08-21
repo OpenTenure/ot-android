@@ -37,6 +37,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateDocumentTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
+import org.fao.sola.clients.android.opentenure.network.UpdateParcelGeoRequiredTask;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -217,6 +218,15 @@ public class InitializationActivity extends Activity {
 					updateArea
 							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
+				
+				if (!OpenTenureApplication.getInstance().isCheckedGeometryRequired()) {
+					Log.d(this.getClass().getName(),
+							"starting tasks for parcel geomtry setting download");
+
+					UpdateParcelGeoRequiredTask updateGeo = new UpdateParcelGeoRequiredTask();
+					updateGeo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				}
+				
 				if (!OpenTenureApplication.getInstance().isCheckedForm()) {
 					Log.d(this.getClass().getName(),
 							"starting tasks for form retrieval");

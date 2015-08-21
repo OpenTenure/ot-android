@@ -71,7 +71,7 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
 
 		}
-		
+
 		return formUrl;
 	}
 
@@ -170,6 +170,8 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLanguages()
 						&& OpenTenureApplication.getInstance().isCheckedTypes()
+						&& OpenTenureApplication.getInstance()
+								.isCheckedGeometryRequired()
 
 				) {
 

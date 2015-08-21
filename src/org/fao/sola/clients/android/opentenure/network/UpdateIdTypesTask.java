@@ -52,7 +52,8 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 
 		if (types != null && (types.size() > 0)) {
 
-			for (Iterator<IdType> iterator = types.iterator(); iterator.hasNext();) {
+			for (Iterator<IdType> iterator = types.iterator(); iterator
+					.hasNext();) {
 				IdType idType = (IdType) iterator.next();
 
 				org.fao.sola.clients.android.opentenure.model.IdType type = new org.fao.sola.clients.android.opentenure.model.IdType();
@@ -81,9 +82,11 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 						&& OpenTenureApplication.getInstance()
 								.isCheckedLandUses()
 						&& OpenTenureApplication.getInstance()
-								.isCheckedLanguages()		
+								.isCheckedLanguages()
+						&& OpenTenureApplication.getInstance().isCheckedForm()
+
 						&& OpenTenureApplication.getInstance()
-								.isCheckedForm()
+								.isCheckedGeometryRequired()
 
 				)
 
@@ -106,7 +109,6 @@ public class UpdateIdTypesTask extends AsyncTask<String, Void, List<IdType>> {
 					if (latitude != null)
 						latitude.delete();
 
-					
 					MainMapFragment mapFrag = OpenTenureApplication
 							.getMapFragment();
 
