@@ -40,6 +40,7 @@ public class OpenTenurePreferencesActivity extends PreferenceActivity implements
 	public static final int RESULT_CODE_RESTART = 128;
 	public static final String CS_URL_PREF = "cs_url_pref";
 	public static final String TMS_URL_PREF = "tms_url_pref";
+	public static final String WTMS_URL_PREF = "wtms_url_pref";
 	public static final String GEOSERVER_URL_PREF = "geoserver_url_pref";
 	public static final String GEOSERVER_LAYER_PREF = "geoserver_layer_pref";
 	public static final String FORM_URL_PREF = "form_template_url_pref";

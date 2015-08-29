@@ -231,7 +231,6 @@
     <string name="message_adjacencies_saved">Adiacenze salvate</string>
     <string name="message_adjacencies_not_saved">Adiacenze non salvate</string>
     <string name="message_claim_modified">Claim modificato</string>
-    
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
 	<string name="tiles_queued">Ci sono %d frammenti di mappa nella lista di download</string>
 	<string name="too_many_tiles_queued">Ci sono %d frammenti di mappa da scaricare. Attendi prima di aggiungerne altri</string>
@@ -304,6 +303,9 @@
     <string name="tms_url_pref_title">TMS URL</string>
     <string name="tms_url_pref_summary">URL del Tiles Map Server</string>
     <string name="tms_url_pref_dialog_title">Inserisci l\'URL del tuo Tiles Map Server</string>
+    <string name="wtms_url_pref_title">WTMS URL</string>
+    <string name="wtms_url_pref_summary">URL del Web Tiles Map Server</string>
+    <string name="wtms_url_pref_dialog_title">Inserisci l\'URL del tuo Web Tiles Map Server</string>
     <string name="property">Proprietà</string>    
     <string name="adjacent_claims">Richieste adiacenti</string>
     <string name="adjacent_properties">Richieste adiacenti</string> 

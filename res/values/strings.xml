@@ -29,6 +29,8 @@
     <string name="tiles_provider">Tiles Provider</string>
     <string name="tms_tiles_provider">TMS Tiles Provider</string>
     <string name="tms_tiles_provider_key">TMS</string>
+    <string name="wtms_tiles_provider">WTMS Tiles Provider</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
     <string name="geoserver_tiles_provider">GeoServer Tiles Provider</string>
     <string name="geoserver_tiles_provider_key">GeoServer</string>
     <string name="action_login">Log In</string>
@@ -333,6 +335,9 @@
     <string name="tms_url_pref_title">TMS URL</string>
     <string name="tms_url_pref_summary">Base URL of your Tiles Map Server</string>
     <string name="tms_url_pref_dialog_title">Enter the URL of your Tiles Map Server</string>
+    <string name="wtms_url_pref_title">WTMS URL</string>
+    <string name="wtms_url_pref_summary">Base URL of your Web Tiles Map Server</string>
+    <string name="wtms_url_pref_dialog_title">Enter the URL of your Web Tiles Map Server</string>
     <string name="property">Property</string>
     <string name="id_type">Id Type</string>
     <string name="id_number">Id Number</string>
@@ -394,10 +399,12 @@
         <item >default_language</item>
         </string-array>
     <string-array name="tiles_provider_keys">
+        <item >WTMS</item>
         <item >TMS</item>
         <item >GeoServer</item>
         </string-array>
     <string-array name="tiles_provider_values">
+        <item >WTMS</item>
         <item >TMS</item>
         <item >GeoServer</item>
         </string-array>

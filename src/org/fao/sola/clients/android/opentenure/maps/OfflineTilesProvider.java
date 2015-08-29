@@ -46,7 +46,7 @@ public abstract class OfflineTilesProvider extends UrlTileProvider {
 	private static final int MIN_ZOOM_LEVEL = 6;
 	public static final int TILE_WIDTH = 256;
 	public static final int TILE_HEIGHT = 256;
-	public enum TilesProviderType{TMS, GeoServer};
+	public enum TilesProviderType{WTMS, TMS, GeoServer};
 	protected abstract TilesProviderType getType();
 	protected abstract String getBaseStorageDir();
 	protected abstract String getTilesSuffix();

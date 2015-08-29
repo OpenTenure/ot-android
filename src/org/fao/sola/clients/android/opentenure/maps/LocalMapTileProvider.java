@@ -52,12 +52,18 @@ public class LocalMapTileProvider implements TileProvider {
 
 	private OfflineTilesProvider tilesProvider;
 	public LocalMapTileProvider() {
+		
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(OpenTenureApplication.getContext());
-		if(prefs.getString(OpenTenure.tiles_provider, TilesProviderType.GeoServer.toString()).equals(TilesProviderType.GeoServer.toString())){
+		
+		String currentTilesProvider = prefs.getString(OpenTenure.tiles_provider, TilesProviderType.GeoServer.toString());
+		
+		if(currentTilesProvider.equals(TilesProviderType.GeoServer.toString())){
 			tilesProvider = new OfflineWmsMapTileProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
-		}else{
+		}else if(currentTilesProvider.equals(TilesProviderType.TMS.toString())){
 			tilesProvider = new OfflineTmsMapTilesProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
+		}else{
+			tilesProvider = new OfflineWtmsMapTilesProvider(TILE_WIDTH, TILE_HEIGHT, prefs);
 		}
 	}
 

@@ -36,19 +36,19 @@ import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 
 import android.content.SharedPreferences;
 
-public class OfflineTmsMapTilesProvider extends OfflineTilesProvider{
+public class OfflineWtmsMapTilesProvider extends OfflineTilesProvider{
 
     private String URL_STRING;
     
-    public OfflineTmsMapTilesProvider(int width, int height, SharedPreferences preferences) {
+    public OfflineWtmsMapTilesProvider(int width, int height, SharedPreferences preferences) {
     	super(width, height);
 		URL_STRING = preferences.getString(
-				OpenTenurePreferencesActivity.TMS_URL_PREF,
-				"http://host/path?x=%d&y=%d&z=%d");
+				OpenTenurePreferencesActivity.WTMS_URL_PREF,
+				"http://host/path/%d/%d/%d"+getTilesSuffix());
 	}
     
     protected String getUrl(int x, int y, int zoom){
-        return String.format(Locale.US, URL_STRING, x, y, zoom);
+        return String.format(Locale.US, URL_STRING, zoom, x, y);
     }
 
 	@Override
@@ -57,7 +57,7 @@ public class OfflineTmsMapTilesProvider extends OfflineTilesProvider{
             URL url = null;
 
             try {
-                url = new URL(String.format(Locale.US, URL_STRING, x, y, zoom));
+                url = new URL(String.format(Locale.US, URL_STRING, zoom, x, y));
             } 
             catch (MalformedURLException e) {
                 throw new AssertionError(e);
@@ -71,7 +71,7 @@ public class OfflineTmsMapTilesProvider extends OfflineTilesProvider{
 	}
 
 	protected TilesProviderType getType() {
-		return TilesProviderType.TMS;
+		return TilesProviderType.WTMS;
 	}
 
 	protected String getBaseStorageDir() {

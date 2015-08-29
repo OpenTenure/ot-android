@@ -843,10 +843,15 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			List<Tile> tiles = null;
 			OfflineTilesProvider provider = null;
-			if(sharedPrefs.getString(OpenTenure.tiles_provider, OfflineTilesProvider.TilesProviderType.GeoServer.toString()).equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
+			
+			String currentTilesProvider = sharedPrefs.getString(OpenTenure.tiles_provider, OfflineTilesProvider.TilesProviderType.GeoServer.toString());
+
+			if(currentTilesProvider.equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
 				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
-			}else{
+			}else if(currentTilesProvider.equalsIgnoreCase(TilesProviderType.TMS.toString())){
 				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			}else{
+				provider = new OfflineWtmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
 			}
 			tiles = provider.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
 
