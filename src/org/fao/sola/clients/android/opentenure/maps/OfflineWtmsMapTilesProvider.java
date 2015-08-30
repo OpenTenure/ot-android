@@ -44,7 +44,7 @@ public class OfflineWtmsMapTilesProvider extends OfflineTilesProvider{
     	super(width, height);
 		URL_STRING = preferences.getString(
 				OpenTenurePreferencesActivity.WTMS_URL_PREF,
-				"http://host/path/%d/%d/%d"+getTilesSuffix());
+				"http://host/path/%d/%d/%d.jpg");
 	}
     
     protected String getUrl(int x, int y, int zoom){
@@ -79,7 +79,10 @@ public class OfflineWtmsMapTilesProvider extends OfflineTilesProvider{
 	}
 
 	protected String getTilesSuffix() {
-		return ".jpg";
+		String[] tokens = URL_STRING.split("\\.(?=[^\\.]+$)");
+		if(tokens.length>1)
+			return tokens[1];
+		else
+			return "";
 	}
-
 }
