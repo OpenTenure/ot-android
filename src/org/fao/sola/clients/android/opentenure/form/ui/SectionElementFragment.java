@@ -27,46 +27,72 @@
  */
 package org.fao.sola.clients.android.opentenure.form.ui;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.ClaimListener;
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
+import org.fao.sola.clients.android.opentenure.FormDispatcher;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 import org.fao.sola.clients.android.opentenure.form.FieldValueType;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.Person;
+import org.fao.sola.clients.android.opentenure.model.Vertex;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SectionElementFragment extends Fragment {
 
 	private static final String ELEMENT_PAYLOAD_KEY = "elementPayload";
 	private static final String ELEMENT_TEMPLATE_KEY = "elementTemplate";
+	private static final String SECTION_ELEMENT_PAYLOAD_KEY = null;
+	private static final String SECTION_ELEMENT_SAVED = "sectionSaved";
 	private View rootView;
 	private SectionElementPayload elementPayload;
 	private SectionTemplate elementTemplate;
 	private Mode mode;
+	private ClaimDispatcher claimActivity;
+	private FormDispatcher formDispatcher;
 
-	public SectionElementFragment(SectionElementPayload payload, SectionTemplate template, Mode mode){
+	public SectionElementFragment(SectionElementPayload payload,
+			SectionTemplate template, Mode mode) {
 		this.elementTemplate = template;
 		this.elementPayload = payload;
 		this.mode = mode;
@@ -76,57 +102,127 @@ public class SectionElementFragment extends Fragment {
 		return elementPayload;
 	}
 
-	public SectionElementFragment(){
+	public SectionElementFragment() {
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+
+		try {
+			claimActivity = (ClaimDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ClaimDispatcher "
+					+ activity.getLocalClassName());
+		}
+		try {
+			formDispatcher = (FormDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement FormDispatcher");
+		}
 	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.menu.field_group, menu);
-		
+
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		if (claim != null && !claim.isModifiable()) {
+			menu.removeItem(R.id.action_save);
+		}
+
+		if (getActivity().getIntent().getBooleanExtra(SectionElementActivity.HIDE_SAVE_BUTTON_KEY, false))
+			menu.removeItem(R.id.action_save);
+
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.fragment_field_group, container, false);
+		rootView = inflater.inflate(R.layout.fragment_field_group, container,
+				false);
 		setHasOptionsMenu(true);
 		InputMethodManager imm = (InputMethodManager) rootView.getContext()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInputFromWindow(rootView.getWindowToken(), 0, InputMethodManager.HIDE_IMPLICIT_ONLY);
-		
-		if(savedInstanceState != null && savedInstanceState.getString(ELEMENT_PAYLOAD_KEY) != null){
-			elementPayload = SectionElementPayload.fromJson(savedInstanceState.getString(ELEMENT_PAYLOAD_KEY));
+		imm.toggleSoftInputFromWindow(rootView.getWindowToken(), 0,
+				InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+		if (savedInstanceState != null
+				&& savedInstanceState.getString(ELEMENT_PAYLOAD_KEY) != null) {
+			elementPayload = SectionElementPayload.fromJson(savedInstanceState
+					.getString(ELEMENT_PAYLOAD_KEY));
 		}
-		if(savedInstanceState != null && savedInstanceState.getString(ELEMENT_TEMPLATE_KEY) != null){
-			elementTemplate = SectionTemplate.fromJson(savedInstanceState.getString(ELEMENT_TEMPLATE_KEY));
+		if (savedInstanceState != null
+				&& savedInstanceState.getString(ELEMENT_TEMPLATE_KEY) != null) {
+			elementTemplate = SectionTemplate.fromJson(savedInstanceState
+					.getString(ELEMENT_TEMPLATE_KEY));
 		}
-		if(savedInstanceState != null && savedInstanceState.getString(SectionElementActivity.MODE_KEY) != null){
-			mode = Mode.valueOf(savedInstanceState.getString(SectionElementActivity.MODE_KEY));
+		if (savedInstanceState != null
+				&& savedInstanceState
+						.getString(SectionElementActivity.MODE_KEY) != null) {
+			mode = Mode.valueOf(savedInstanceState
+					.getString(SectionElementActivity.MODE_KEY));
 		}
 		update();
 		return rootView;
 	}
-	
-	private void update(){
-		LinearLayout ll = (LinearLayout) rootView.findViewById(R.id.fragment_field_group);
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// handle item selection
+		Toast toast;
+		switch (item.getItemId()) {
+
+		case R.id.action_save:
+
+			int updated = updateClaim();
+
+			if (updated == 1) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_saved, Toast.LENGTH_SHORT);
+				toast.show();
+
+			} else if (updated == 2) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_error_startdate, Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_unable_to_save, Toast.LENGTH_SHORT);
+				toast.show();
+			}
+
+		}
+		return true;
+	}
+
+	private void update() {
+		LinearLayout ll = (LinearLayout) rootView
+				.findViewById(R.id.fragment_field_group);
 		int i = 0;
-		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
-		
-		
-		
-		
-		Collections.sort(elementTemplate.getFieldTemplateList()) ;
-		
-		for(final FieldTemplate field:elementTemplate.getFieldTemplateList()){
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
+
+		Collections.sort(elementTemplate.getFieldTemplateList());
+
+		for (final FieldTemplate field : elementTemplate.getFieldTemplateList()) {
 			FieldPayload fieldPayload = null;
-			if(elementPayload.getFieldPayloadList().size() > i){
+			if (elementPayload.getFieldPayloadList().size() > i) {
 				fieldPayload = elementPayload.getFieldPayloadList().get(i);
-			}else{
-				// For some reason the payload of this form has fewer fields than the template
-				// used to build it. This is probably due to editing the template without
-				// changing its id, so we build a dummy text field on the fly not to break
+			} else {
+				// For some reason the payload of this form has fewer fields
+				// than the template
+				// used to build it. This is probably due to editing the
+				// template without
+				// changing its id, so we build a dummy text field on the fly
+				// not to break
 				// the GUI
 				fieldPayload = new FieldPayload();
 				fieldPayload.setFieldType(FieldType.TEXT);
@@ -136,41 +232,76 @@ public class SectionElementFragment extends Fragment {
 			TextView label = new TextView(getActivity());
 			label.setTextSize(20);
 			label.setPadding(0, 10, 0, 8);
-			label.setTextAppearance(getActivity(), android.R.attr.textAppearanceMedium);
-			label.setLayoutParams(new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-			String labelText = dnl.getLocalizedDisplayName(
-					field.getDisplayName());
+			label.setTextAppearance(getActivity(),
+					android.R.attr.textAppearanceMedium);
+			label.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+					LayoutParams.WRAP_CONTENT));
+			String labelText = dnl.getLocalizedDisplayName(field
+					.getDisplayName());
 			label.setText(Html.fromHtml(labelText));
 			ll.addView(label);
 			// Add input field
 
-			switch(field.getFieldType()){
+			switch (field.getFieldType()) {
 			case DATE:
-				ll.addView(FieldViewFactory.getViewForDateField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForDateField(getActivity(),
+						dnl, field, fieldPayload, mode));
 				break;
 			case TIME:
-				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(),
+						dnl, field, fieldPayload, mode));
 				break;
 			case SNAPSHOT:
 			case DOCUMENT:
 			case GEOMETRY:
 			case TEXT:
-				ll.addView(FieldViewFactory.getViewForTextField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForTextField(getActivity(),
+						dnl, field, fieldPayload, mode));
 				break;
 			case DECIMAL:
-				ll.addView(FieldViewFactory.getViewForDecimalField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForDecimalField(
+						getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case INTEGER:
-				ll.addView(FieldViewFactory.getViewForNumberField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForNumberField(
+						getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(getActivity(), dnl, field, fieldPayload, mode));
+				ll.addView(FieldViewFactory.getViewForBooleanField(
+						getActivity(), dnl, field, fieldPayload, mode));
 				break;
 			default:
 				break;
 			}
 			i++;
+		}
+	}
+
+	public int updateClaim() {
+
+		int result = 0;
+
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		// Still allow saving the claim if the dynamic part contains errors
+
+		isFormValid();
+		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
+
+		result = claim.update();
+
+		return result;
+	}
+
+	private boolean isFormValid() {
+		FormPayload formPayload = formDispatcher.getEditedFormPayload();
+		FormTemplate formTemplate = formDispatcher.getFormTemplate();
+		FieldConstraint constraint = null;
+		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
+			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
+					Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
 		}
 	}
 
@@ -181,4 +312,5 @@ public class SectionElementFragment extends Fragment {
 		outState.putString(SectionElementActivity.MODE_KEY, mode.toString());
 		super.onSaveInstanceState(outState);
 	}
+
 }

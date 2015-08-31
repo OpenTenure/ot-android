@@ -28,6 +28,7 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,11 +101,19 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-		System.out.println("onKeyDown");
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 
 			final ClaimDetailsFragment fragment = (ClaimDetailsFragment) fragmentReferences
 					.get(0);
+
+			for (int i = 0; i < fragmentReferences.size(); i++) {
+
+				System.out.println("fragment " + fragmentReferences.get(i));
+			}
+
+			System.out.println("onKeyDown : fragment "
+					+ fragmentReferences.size());
+			System.out.println("onKeyDown : fragment " + fragment);
 
 			if (fragment != null) {
 				if (fragment.checkChanges()) {
@@ -469,7 +478,7 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		public void destroyItem(android.view.ViewGroup container, int position,
 				Object object) {
 
-			fragmentReferences.remove(position);
+			// fragmentReferences.remove(position);
 
 		}
 

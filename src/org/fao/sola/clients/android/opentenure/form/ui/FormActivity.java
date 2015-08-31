@@ -77,6 +77,7 @@ public class FormActivity extends FragmentActivity {
 	
 	@Override
 	public void onBackPressed() {
+		
 		AlertDialog.Builder exitDialog = new AlertDialog.Builder(this);
 		exitDialog.setTitle(R.string.title_exit_dialog);
 		exitDialog.setMessage(getResources().getString(R.string.message_exit_dialog));

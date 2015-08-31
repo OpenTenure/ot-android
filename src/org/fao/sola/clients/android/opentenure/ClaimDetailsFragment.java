@@ -103,6 +103,8 @@ public class ClaimDetailsFragment extends Fragment {
 	private Map<String, String> valueKeyClaimTypesMap;
 	private boolean challengedJustLoaded = false;
 	private final Calendar localCalendar = Calendar.getInstance();
+	
+	
 	private static final int PERSON_RESULT = 100;
 
 	@Override
@@ -253,7 +255,8 @@ public class ClaimDetailsFragment extends Fragment {
 		String claimantId = ((TextView) rootView.findViewById(R.id.claimant_id))
 				.getText().toString();
 
-		if (OpenTenureApplication.getInstance().getLocalization().startsWith("ar")) {
+		if (OpenTenureApplication.getInstance().getLocalization()
+				.startsWith("ar")) {
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 		}
@@ -414,18 +417,22 @@ public class ClaimDetailsFragment extends Fragment {
 
 		ClaimType ct = new ClaimType();
 
-		keyValueClaimTypesMap = ct.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
-		valueKeyClaimTypesMap = ct.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization());
-		//List<String> list = new ArrayList<String>(keyValueClaimTypesMap.keySet());
-		
+		keyValueClaimTypesMap = ct.getKeyValueMap(OpenTenureApplication
+				.getInstance().getLocalization());
+		valueKeyClaimTypesMap = ct.getValueKeyMap(OpenTenureApplication
+				.getInstance().getLocalization());
+		// List<String> list = new
+		// ArrayList<String>(keyValueClaimTypesMap.keySet());
+
 		List<String> list = new ArrayList<String>();
-		//java.util.Collections.sort(list);
-		
-		SortedSet<String> keys = new TreeSet<String>(keyValueClaimTypesMap.keySet());
-		for (String key : keys) { 
-		   String value = keyValueClaimTypesMap.get(key);
-		   list.add(value);
-		   // do something
+		// java.util.Collections.sort(list);
+
+		SortedSet<String> keys = new TreeSet<String>(
+				keyValueClaimTypesMap.keySet());
+		for (String key : keys) {
+			String value = keyValueClaimTypesMap.get(key);
+			list.add(value);
+			// do something
 		}
 
 		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
@@ -444,22 +451,25 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.landUseSpinner);
 
 		LandUse lu = new LandUse();
-		keyValueMapLandUse = lu.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization());
-		valueKeyMapLandUse = lu.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization());
-		
-		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator.hasNext();) {
+		keyValueMapLandUse = lu.getKeyValueMap(OpenTenureApplication
+				.getInstance().getLocalization());
+		valueKeyMapLandUse = lu.getValueKeyMap(OpenTenureApplication
+				.getInstance().getLocalization());
+
+		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator
+				.hasNext();) {
 			String string = (String) iterator.next();
 		}
-		
+
 		List<String> landUseslist = new ArrayList<String>();
 		keys = new TreeSet<String>(keyValueMapLandUse.keySet());
-		for (String key : keys) { 
-		   String value = keyValueMapLandUse.get(key);
-		   landUseslist.add(value);
-		   // do something
+		for (String key : keys) {
+			String value = keyValueMapLandUse.get(key);
+			landUseslist.add(value);
+			// do something
 		}
-		
-		//java.util.Collections.sort(landUseslist);
+
+		// java.util.Collections.sort(landUseslist);
 
 		ArrayAdapter<String> dataAdapterLU = new ArrayAdapter<String>(
 				OpenTenureApplication.getContext(), R.layout.my_spinner,
@@ -607,7 +617,8 @@ public class ClaimDetailsFragment extends Fragment {
 	private void loadClaimant(Person claimant) {
 
 		if (claimant != null) {
-			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
+			if (OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar"))
 				((View) rootView.findViewById(R.id.claimant_slogan))
 						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -664,10 +675,11 @@ public class ClaimDetailsFragment extends Fragment {
 	}
 
 	public void load(Claim claim) {
-		
+
 		if (claim != null) {
 
-			if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
+			if (OpenTenureApplication.getInstance().getLocale().toString()
+					.startsWith("ar"))
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
 						.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -867,7 +879,8 @@ public class ClaimDetailsFragment extends Fragment {
 		Person person = Person.getPerson(((TextView) rootView
 				.findViewById(R.id.claimant_id)).getText().toString());
 
-		if (OpenTenureApplication.getInstance().getLocale().toString().startsWith("ar"))
+		if (OpenTenureApplication.getInstance().getLocale().toString()
+				.startsWith("ar"))
 			((View) rootView.findViewById(R.id.claimant_slogan))
 					.setTextAlignment(View.TEXT_DIRECTION_LOCALE);
 
@@ -897,8 +910,9 @@ public class ClaimDetailsFragment extends Fragment {
 		String landUseDispValue = (String) ((Spinner) rootView
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(valueKeyMapLandUse.get(landUseDispValue));
-		
-		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator.hasNext();) {
+
+		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator
+				.hasNext();) {
 			String string = (String) iterator.next();
 		}
 		String notes = ((EditText) rootView
@@ -1013,7 +1027,6 @@ public class ClaimDetailsFragment extends Fragment {
 
 			return true;
 
-		
 		case R.id.action_print:
 			Claim claim = Claim.getClaim(claimActivity.getClaimId());
 			boolean mapPresent = false;
@@ -1141,12 +1154,14 @@ public class ClaimDetailsFragment extends Fragment {
 							.getText().toString()))
 				changed = true;
 			else {
+
 				Person person = Person.getPerson(((TextView) rootView
 						.findViewById(R.id.claimant_id)).getText().toString());
 				if (!claim.getPerson().getPersonId()
 						.equals(person.getPersonId()))
 					changed = true;
 				else {
+
 					Claim challengedClaim = Claim.getClaim(((TextView) rootView
 							.findViewById(R.id.challenge_to_claim_id))
 							.getText().toString());
@@ -1170,15 +1185,15 @@ public class ClaimDetailsFragment extends Fragment {
 								valueKeyClaimTypesMap.get(claimType)))
 							changed = true;
 						else {
+
 							String landUseDispValue = (String) ((Spinner) rootView
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
 							if (claim.getLandUse() == null
 									&& valueKeyMapLandUse.get(landUseDispValue) != null)
 								changed = true;
-							else if (!claim
-									.getLandUse()
-									.equals(valueKeyMapLandUse.get(landUseDispValue)))
+							else if (!claim.getLandUse().equals(
+									valueKeyMapLandUse.get(landUseDispValue)))
 								changed = true;
 							else {
 
@@ -1190,6 +1205,7 @@ public class ClaimDetailsFragment extends Fragment {
 										&& !claim.getNotes().equals(notes))
 									changed = true;
 								else {
+
 									String startDate = ((EditText) rootView
 											.findViewById(R.id.date_of_start_input_field))
 											.getText().toString();
@@ -1202,6 +1218,7 @@ public class ClaimDetailsFragment extends Fragment {
 												&& !startDate.equals(""))
 											changed = true;
 									} else {
+
 										java.util.Date dob = null;
 
 										if (startDate != null
@@ -1219,14 +1236,17 @@ public class ClaimDetailsFragment extends Fragment {
 														.compareTo(date) != 0)
 													changed = true;
 
+												else {
+
+													changed = isFormChanged();
+												}
+
 											} catch (ParseException e) {
 												e.printStackTrace();
 												dob = null;
 
 											}
 
-										} else {
-											changed = isFormChanged();
 										}
 
 									}
@@ -1388,7 +1408,7 @@ public class ClaimDetailsFragment extends Fragment {
 				owner.setShareId(share.getId());
 
 				owner.create();
-				
+
 				OpenTenureApplication.getOwnersFragment().update();
 			}
 			return 1;
@@ -1425,6 +1445,7 @@ public class ClaimDetailsFragment extends Fragment {
 				|| ((editedFormPayload == null) && (originalFormPayload != null))
 				|| !editedFormPayload.toJson().equalsIgnoreCase(
 						originalFormPayload.toJson())) {
+
 			return true;
 		} else {
 			return false;

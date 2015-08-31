@@ -49,6 +49,9 @@ public class UpdateParcelGeoRequiredTask extends
 	@Override
 	protected void onPostExecute(String result) {
 
+		if(result == null)
+			return ; 
+		
 		String required = "";
 
 		if (result.equals("1"))

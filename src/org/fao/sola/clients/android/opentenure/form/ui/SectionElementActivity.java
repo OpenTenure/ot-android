@@ -29,11 +29,20 @@ package org.fao.sola.clients.android.opentenure.form.ui;
 
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.ClaimActivity;
+import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.ClaimListener;
+import org.fao.sola.clients.android.opentenure.FormDispatcher;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.PersonFragment;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
+import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.SurveyFormTemplate;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -45,11 +54,16 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
+import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 
-public class SectionElementActivity extends FragmentActivity {
+public class SectionElementActivity extends FragmentActivity implements
+		ClaimDispatcher, FormDispatcher {
 
+	public static final String CREATE_CLAIM_ID = "create";
 	public static final String SECTION_ELEMENT_POSITION_KEY = "sectionElementPosition";
 	public static final int SECTION_ELEMENT_POSITION_NEW = -1;
 	public static final int SECTION_ELEMENT_POSITION_DISCARD = -2;
@@ -57,6 +71,7 @@ public class SectionElementActivity extends FragmentActivity {
 	public static final String SECTION_ELEMENT_PAYLOAD_KEY = "sectionElementPayload";
 	public static final String MODE_KEY = "mode";
 	public static final int SECTION_ELEMENT_ACTIVITY_REQUEST_CODE = 4321;
+	public static final String HIDE_SAVE_BUTTON_KEY = "hideButtonKey";
 	private int sectionElementPosition;
 	private ModeDispatcher.Mode mode;
 	private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -66,6 +81,11 @@ public class SectionElementActivity extends FragmentActivity {
 	private SectionElementPayload editedElement;
 	private SectionTemplate elementTemplate;
 	private SectionElementFragment elementFragment;
+	private String claimId = null;
+	private FormPayload originalFormPayload;
+	private FormPayload editedFormPayload;
+	private FormTemplate formTemplate;
+	private static final String SECTION_ELEMENT_SAVED = "sectionSaved";
 
 	@Override
 	public void onDestroy() {
@@ -105,14 +125,13 @@ public class SectionElementActivity extends FragmentActivity {
 		String savedMode = null;
 
 		if (savedInstanceState != null) {
-			savedPosition = savedInstanceState
-					.getInt(SECTION_ELEMENT_POSITION_KEY, SECTION_ELEMENT_POSITION_NEW);
+			savedPosition = savedInstanceState.getInt(
+					SECTION_ELEMENT_POSITION_KEY, SECTION_ELEMENT_POSITION_NEW);
 			savedElement = savedInstanceState
 					.getString(SECTION_ELEMENT_PAYLOAD_KEY);
 			savedElementTemplate = savedInstanceState
 					.getString(SECTION_TEMPLATE_KEY);
-			savedMode = savedInstanceState
-					.getString(MODE_KEY);
+			savedMode = savedInstanceState.getString(MODE_KEY);
 		}
 
 		int intentPosition = getIntent().getExtras().getInt(
@@ -131,31 +150,27 @@ public class SectionElementActivity extends FragmentActivity {
 		}
 
 		if (savedElement != null) {
-			editedElement = SectionElementPayload
-					.fromJson(savedElement);
+			editedElement = SectionElementPayload.fromJson(savedElement);
 		} else {
 			editedElement = new SectionElementPayload(originalElement);
 		}
 		String intentTemplate = getIntent().getExtras().getString(
 				SECTION_TEMPLATE_KEY);
 		if (savedElementTemplate != null) {
-			elementTemplate = SectionTemplate
-					.fromJson(savedElementTemplate);
+			elementTemplate = SectionTemplate.fromJson(savedElementTemplate);
 		} else {
-			elementTemplate = SectionTemplate
-					.fromJson(intentTemplate);
+			elementTemplate = SectionTemplate.fromJson(intentTemplate);
 		}
 
-		if(savedMode != null){
-			mode = ModeDispatcher.Mode
-					.valueOf(savedMode);
-		}else{
-			mode = ModeDispatcher.Mode
-					.valueOf(getIntent().getStringExtra(MODE_KEY));
+		if (savedMode != null) {
+			mode = ModeDispatcher.Mode.valueOf(savedMode);
+		} else {
+			mode = ModeDispatcher.Mode.valueOf(getIntent().getStringExtra(
+					MODE_KEY));
 		}
 		elementFragment = new SectionElementFragment(editedElement,
 				elementTemplate, mode);
-		
+
 		setContentView(R.layout.activity_field_group);
 
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -168,20 +183,29 @@ public class SectionElementActivity extends FragmentActivity {
 				R.color.ab_tab_indicator_opentenure));
 		tabs.setViewPager(mViewPager);
 
+		// Setup the form before creating the section adapter
+		claimId = OpenTenureApplication.getInstance().getClaimId();
+
+		setupDynamicSections();
+
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (mode == ModeDispatcher.Mode.MODE_RO || originalElement.toJson().equalsIgnoreCase(editedElement.toJson())) {
+		
+		
+		if (mode == ModeDispatcher.Mode.MODE_RO
+				|| originalElement.toJson().equalsIgnoreCase(
+						editedElement.toJson())) {
 			Intent resultIntent = new Intent();
 			resultIntent.putExtra(SECTION_ELEMENT_POSITION_KEY,
 					SECTION_ELEMENT_POSITION_DISCARD);
-			resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
-					elementFragment.getEditedElement().toJson());
-			setResult(RESULT_CANCELED,
-					resultIntent);
+			resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY, elementFragment
+					.getEditedElement().toJson());
+			setResult(RESULT_CANCELED, resultIntent);
 			finish();
 		} else {
+
 			AlertDialog.Builder exitDialog = new AlertDialog.Builder(this);
 			exitDialog.setTitle(R.string.title_save_claim_dialog);
 			exitDialog.setMessage(getResources().getString(
@@ -197,8 +221,7 @@ public class SectionElementActivity extends FragmentActivity {
 									sectionElementPosition);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									editedElement.toJson());
-							setResult(RESULT_OK,
-									resultIntent);
+							setResult(RESULT_OK, resultIntent);
 							finish();
 						}
 					});
@@ -212,14 +235,22 @@ public class SectionElementActivity extends FragmentActivity {
 									SECTION_ELEMENT_POSITION_DISCARD);
 							resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY,
 									originalElement.toJson());
-							setResult(RESULT_CANCELED,
-									resultIntent);
+							setResult(RESULT_CANCELED, resultIntent);
 							finish();
 						}
 					});
 			exitDialog.show();
 
 		}
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {		
+			
+				return super.onKeyDown(keyCode, event);
+		} else
+			return super.onKeyDown(keyCode, event);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -252,5 +283,76 @@ public class SectionElementActivity extends FragmentActivity {
 			}
 			return null;
 		}
+	}
+
+	public void setupDynamicSections() {
+		if (claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
+			// setting up for an existing claim
+			Claim claim = Claim.getClaim(claimId);
+			originalFormPayload = claim.getDynamicForm();
+			if (originalFormPayload != null) {
+				// There's a payload already attached to this claim
+				editedFormPayload = new FormPayload(originalFormPayload);
+				// Try to retrieve its template
+				formTemplate = SurveyFormTemplate
+						.getFormTemplateByName(originalFormPayload
+								.getFormTemplateName());
+				if (formTemplate == null) {
+					// We don't have the original template for this payload
+					// let's try to rebuild it from the payload itself
+					formTemplate = new FormTemplate(originalFormPayload);
+
+				}
+
+			} else {
+				// A payload has not been created for this claim
+				// so we refer to the default template for the dynamic part
+				formTemplate = SurveyFormTemplate
+						.getDefaultSurveyFormTemplate();
+				originalFormPayload = new FormPayload(formTemplate);
+				originalFormPayload.setClaimId(claimId);
+				editedFormPayload = new FormPayload(originalFormPayload);
+			}
+		} else {
+			// It's a newly created claim
+			// so we refer to the default template for the dynamic part
+			formTemplate = SurveyFormTemplate.getDefaultSurveyFormTemplate();
+			originalFormPayload = new FormPayload(formTemplate);
+			editedFormPayload = new FormPayload(originalFormPayload);
+		}
+	}
+
+	@Override
+	public FormPayload getEditedFormPayload() {
+		return editedFormPayload;
+	}
+
+	@Override
+	public FormPayload getOriginalFormPayload() {
+		// TODO Auto-generated method stub
+		return originalFormPayload;
+	}
+
+	@Override
+	public FormTemplate getFormTemplate() {
+		// TODO Auto-generated method stub
+		return formTemplate;
+	}
+
+	@Override
+	public void setClaimId(String claimId) {
+		this.claimId = claimId;
+		if (claimId != null && !claimId.equalsIgnoreCase(CREATE_CLAIM_ID)) {
+			Claim claim = Claim.getClaim(claimId);
+			setTitle(getResources().getString(R.string.app_name) + ": "
+					+ claim.getName());
+		}
+
+	}
+
+	@Override
+	public String getClaimId() {
+		// TODO Auto-generated method stub
+		return claimId;
 	}
 }

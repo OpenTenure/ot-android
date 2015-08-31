@@ -32,15 +32,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.FormDispatcher;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
 import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
+import org.fao.sola.clients.android.opentenure.form.FormPayload;
+import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 import org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 
 import android.app.Activity;
 import android.content.Context;
@@ -55,15 +60,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 public class SectionFragment extends ListFragment {
 
 	private static final String SECTION_PAYLOAD_KEY = "sectionPayload";
 	private static final String SECTION_TEMPLATE_KEY = "sectionTemplate";
+	
 	private View rootView;
 	private SectionPayload sectionPayload;
 	private SectionTemplate sectionTemplate;
 	private Mode mode;
+	private ClaimDispatcher claimActivity;
+	private FormDispatcher formDispatcher;
 
 	public SectionFragment(SectionPayload section, SectionTemplate sectionTemplate, Mode mode){
 		this.sectionTemplate = sectionTemplate;
@@ -75,6 +84,30 @@ public class SectionFragment extends ListFragment {
 	}
 
 	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+
+		// This makes sure that the container activity has implemented
+		// the callback interface. If not, it throws an exception
+
+		try {
+			claimActivity = (ClaimDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement ClaimDispatcher " + activity.getLocalClassName());
+		}
+		try {
+			formDispatcher = (FormDispatcher) activity;
+		} catch (ClassCastException e) {
+			throw new ClassCastException(activity.toString()
+					+ " must implement FormDispatcher");
+		}
+
+	}
+
+	
+	
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		menu.clear();
 		inflater.inflate(R.menu.multiple_field_group, menu);
@@ -82,6 +115,11 @@ public class SectionFragment extends ListFragment {
 			MenuItem item = menu.findItem(R.id.action_new);
 			item.setVisible(false);
 		}
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		if (claim != null && !claim.isModifiable()) {
+			menu.removeItem(R.id.action_save);
+		}
+		
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -94,9 +132,34 @@ public class SectionFragment extends ListFragment {
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_POSITION_KEY, SectionElementActivity.SECTION_ELEMENT_POSITION_NEW);
 			intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, new SectionElementPayload(sectionTemplate).toJson());
 			intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
+			intent.putExtra(SectionElementActivity.HIDE_SAVE_BUTTON_KEY, true);
 			intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
 			startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			return true;
+			
+		case R.id.action_save:
+
+			Toast toast;
+			Claim claim = Claim.getClaim(claimActivity.getClaimId());
+			int updated = updateClaim();
+
+			if (updated == 1) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_saved, Toast.LENGTH_SHORT);
+				toast.show();
+
+			} else if (updated == 2) {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_error_startdate, Toast.LENGTH_SHORT);
+				toast.show();
+			} else {
+				toast = Toast.makeText(rootView.getContext(),
+						R.string.message_unable_to_save, Toast.LENGTH_SHORT);
+				toast.show();
+			}
+			
+			return true;
+		
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -212,6 +275,34 @@ public class SectionFragment extends ListFragment {
 			setListAdapter(adapter);
 			adapter.notifyDataSetChanged();
 
+	}
+	
+	public int updateClaim() {
+
+		int result = 0;
+		// Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		Claim claim = Claim.getClaim(claimActivity.getClaimId());		
+		// Still allow saving the claim if the dynamic part contains errors
+		
+		isFormValid();		
+		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
+
+		result = claim.update();
+
+		return result;
+	}
+	
+	private boolean isFormValid() {
+		FormPayload formPayload = formDispatcher.getEditedFormPayload();
+		FormTemplate formTemplate = formDispatcher.getFormTemplate();
+		FieldConstraint constraint = null;
+		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
+			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
+					Toast.LENGTH_SHORT).show();
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	@Override

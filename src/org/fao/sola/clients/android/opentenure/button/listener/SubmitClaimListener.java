@@ -130,15 +130,12 @@ public class SubmitClaimListener implements OnClickListener {
 			// Here the claimant picture is added as attachment just before to
 			// submit claim
 			person.addPersonPictureAsAttachment(claimId);
-			
-			/*Checking if the Geometry is mandatory for claim's submission*/
+
+			/* Checking if the Geometry is mandatory for claim's submission */
 			List<Vertex> vertices = Vertex.getVertices(claimId);
-			
+
 			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
 					"geometryRequired").getValue())) {
-				
-				System.out.println("Geometry is mandatory : " + Boolean.parseBoolean(Configuration.getConfigurationByName(
-						"geometryRequired").getValue()));
 
 				if (vertices.size() < 3) {
 
@@ -147,7 +144,7 @@ public class SubmitClaimListener implements OnClickListener {
 							Toast.LENGTH_LONG);
 					toast.show();
 					return;
-					}
+				}
 			}
 
 			JsonUtilities.createClaimJson(claimId);
