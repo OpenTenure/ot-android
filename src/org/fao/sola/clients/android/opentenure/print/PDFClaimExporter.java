@@ -38,7 +38,9 @@ import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
+import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
+import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
 import org.fao.sola.clients.android.opentenure.form.FieldType;
 import org.fao.sola.clients.android.opentenure.form.FieldValueType;
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
@@ -1276,17 +1278,15 @@ public class PDFClaimExporter {
 
 			if (!OpenTenureApplication.getInstance().getLocale().toString()
 					.startsWith("ar")) {
-				FormPayload payLoad = claim.getDynamicForm();
-				List<SectionPayload> list = payLoad.getSectionPayloadList();
+				FormPayload formPayload = claim.getDynamicForm();
+
+				List<SectionPayload> list = formPayload.getSectionPayloadList();
 
 				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 					SectionPayload sectionPayload = (SectionPayload) iterator
 							.next();
 
-					System.out.println(sectionPayload);
-
 					addPage(document, context, claimId);
-
 					newLine();
 					drawHorizontalLine();
 					newLine();
@@ -1305,19 +1305,19 @@ public class PDFClaimExporter {
 					newLine();
 					newLine();
 
-					List<SectionElementPayload> fuffa = sectionPayload
+					List<SectionElementPayload> sePayload = sectionPayload
 							.getSectionElementPayloadList();
 
-					for (Iterator iterator2 = fuffa.iterator(); iterator2
+					for (Iterator iterator2 = sePayload.iterator(); iterator2
 							.hasNext();) {
 						SectionElementPayload sectionElementPayload = (SectionElementPayload) iterator2
 								.next();
-						List<FieldPayload> pizzaq = sectionElementPayload
+						List<FieldPayload> fieldPayloadList = sectionElementPayload
 								.getFieldPayloadList();
 
 						int x = horizontalMargin;
 
-						for (Iterator iterator3 = pizzaq.iterator(); iterator3
+						for (Iterator iterator3 = fieldPayloadList.iterator(); iterator3
 								.hasNext();) {
 							FieldPayload fieldPayload = (FieldPayload) iterator3
 									.next();
@@ -1506,8 +1506,29 @@ public class PDFClaimExporter {
 								x = horizontalMargin;
 
 						}
+
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						drawHorizontalLine();
+
+						newLine();
+						newLine();
+
+						if (isPageEnding())
+							addPage(document, context, claimId);
+
+						newLine();
+						newLine();
 					}
+
 				}
+
 			} else {
 
 				FormPayload payLoad = claim.getDynamicForm();
@@ -1517,8 +1538,6 @@ public class PDFClaimExporter {
 					SectionPayload sectionPayload = (SectionPayload) iterator
 							.next();
 
-					System.out.println(sectionPayload);
-
 					addPage(document, context, claimId);
 
 					newLine();
@@ -1739,6 +1758,25 @@ public class PDFClaimExporter {
 								x = horizontalMargin;
 
 						}
+
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						newLine();
+						drawHorizontalLine();
+
+						newLine();
+						newLine();
+
+						if (isPageEnding())
+							addPage(document, context, claimId);
+
+						newLine();
+						newLine();
 					}
 				}
 
