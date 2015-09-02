@@ -203,6 +203,7 @@ public class SectionElementActivity extends FragmentActivity implements
 			resultIntent.putExtra(SECTION_ELEMENT_PAYLOAD_KEY, elementFragment
 					.getEditedElement().toJson());
 			setResult(RESULT_CANCELED, resultIntent);
+			
 			finish();
 		} else {
 
@@ -355,4 +356,12 @@ public class SectionElementActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		return claimId;
 	}
+
+	@Override
+	public void resetOriginalFormPayload() {
+		// TODO Auto-generated method stub
+		originalFormPayload = editedFormPayload;
+	}
+
+
 }

@@ -694,4 +694,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 		return originalFormPayload;
 	}
 
+	@Override
+	public void resetOriginalFormPayload() {
+		// TODO Auto-generated method stub
+		
+		originalFormPayload = editedFormPayload;
+		
+	}
+
 }

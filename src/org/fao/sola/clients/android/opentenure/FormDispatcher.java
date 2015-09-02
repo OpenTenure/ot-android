@@ -34,4 +34,5 @@ public interface FormDispatcher {
 	public FormPayload getEditedFormPayload();
 	public FormPayload getOriginalFormPayload();
 	public FormTemplate getFormTemplate();
+	public void resetOriginalFormPayload();
 }

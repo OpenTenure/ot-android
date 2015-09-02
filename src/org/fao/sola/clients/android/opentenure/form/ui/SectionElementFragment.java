@@ -133,7 +133,7 @@ public class SectionElementFragment extends Fragment {
 		inflater.inflate(R.menu.field_group, menu);
 
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		if (claim != null && !claim.isModifiable()) {
+		if (claim == null || !claim.isModifiable()) {
 			menu.removeItem(R.id.action_save);
 		}
 

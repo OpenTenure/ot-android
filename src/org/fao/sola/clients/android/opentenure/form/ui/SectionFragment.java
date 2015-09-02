@@ -47,6 +47,8 @@ import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 import org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 
+import com.google.android.gms.actions.ReserveIntents;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -116,7 +118,7 @@ public class SectionFragment extends ListFragment {
 			item.setVisible(false);
 		}
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
-		if (claim != null && !claim.isModifiable()) {
+		if (claim == null || !claim.isModifiable()) {
 			menu.removeItem(R.id.action_save);
 		}
 		
@@ -146,6 +148,7 @@ public class SectionFragment extends ListFragment {
 			if (updated == 1) {
 				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_saved, Toast.LENGTH_SHORT);
+				
 				toast.show();
 
 			} else if (updated == 2) {
@@ -287,7 +290,12 @@ public class SectionFragment extends ListFragment {
 		isFormValid();		
 		claim.setDynamicForm(formDispatcher.getEditedFormPayload());
 
+			
+		
 		result = claim.update();
+		
+		if(result == 1)
+			formDispatcher.resetOriginalFormPayload();
 
 		return result;
 	}

@@ -105,6 +105,7 @@ public class SectionElementListAdapter extends ArrayAdapter<SectionElementListTO
 				intent.putExtra(SectionElementActivity.SECTION_ELEMENT_PAYLOAD_KEY, sectionElements.get(position).getJson());
 				intent.putExtra(SectionElementActivity.SECTION_TEMPLATE_KEY, sectionTemplate.toJson());
 				intent.putExtra(SectionElementActivity.MODE_KEY, mode.toString());
+				intent.putExtra(SectionElementActivity.HIDE_SAVE_BUTTON_KEY, true);
 				fragment.startActivityForResult(intent, SectionElementActivity.SECTION_ELEMENT_ACTIVITY_REQUEST_CODE);
 			}
 			
