@@ -40,6 +40,8 @@ import java.util.UUID;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
 public class Configuration {
+	
+	public static final String PROTOVERSION_NAME = "PROTOVERSION";
 
 	public String getConfigurationId() {
 		return configurationId;

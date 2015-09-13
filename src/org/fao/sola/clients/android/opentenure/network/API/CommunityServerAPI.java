@@ -67,6 +67,22 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CommunityServerAPI {
+	
+	public static String SERVER_PROTO_VERSION_HEADER = "ProtoVersion";
+	
+	private static String serverProtoVersion;
+	
+	public static String getServerProtoVersion(){
+		return serverProtoVersion;
+	}
+
+	private static void setServerProtoVersion(HttpResponse serverResponse){
+		setServerProtoVersion(serverResponse.getFirstHeader(SERVER_PROTO_VERSION_HEADER).getValue());
+	}
+
+	private static void setServerProtoVersion(String serverProtoVersion){
+		CommunityServerAPI.serverProtoVersion = serverProtoVersion;
+	}
 
 	/**
 	 * 
@@ -128,8 +144,10 @@ public class CommunityServerAPI {
 			// Gson gson = new Gson();
 			// Login login = gson.fromJson(json, Login.class);
 
-			switch (response.getStatusLine().getStatusCode()) {
+			setServerProtoVersion(response);
 
+			switch (response.getStatusLine().getStatusCode()) {
+			
 			case 200:
 				OpenTenureApplication.setCoockieStore(CS);
 				Log.d("CommunityServerAPI", "Login status : 200");
@@ -206,6 +224,8 @@ public class CommunityServerAPI {
 
 			Log.d("CommunityServerAPI", response.getStatusLine().toString());
 
+			setServerProtoVersion(response);
+
 			switch (response.getStatusLine().getStatusCode()) {
 
 			case 200:
@@ -278,6 +298,8 @@ public class CommunityServerAPI {
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
+
+			setServerProtoVersion(response);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -353,6 +375,8 @@ public class CommunityServerAPI {
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -426,6 +450,8 @@ public class CommunityServerAPI {
 			Log.d("CommunityServerAPI", "WITHDRAW Claim status line "
 					+ response.getStatusLine());
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -494,6 +520,8 @@ public class CommunityServerAPI {
 		/* Calling the Server.... */
 		try {
 			HttpResponse response = client.execute(request, context);
+
+			setServerProtoVersion(response);
 
 			Log.d("CommunityServerAPI",
 					"GET Claim status line " + response.getStatusLine());
@@ -575,6 +603,8 @@ public class CommunityServerAPI {
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
+
+			setServerProtoVersion(response);
 
 			Log.d("CommunityServerAPI", "GET Attachment status line "
 					+ response.getStatusLine());
@@ -699,6 +729,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -763,6 +795,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -826,6 +860,8 @@ public class CommunityServerAPI {
 		try {
 
 			HttpResponse response = client.execute(request);
+
+			setServerProtoVersion(response);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -892,6 +928,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -952,6 +990,8 @@ public class CommunityServerAPI {
 		try {
 
 			HttpResponse response = client.execute(request);
+
+			setServerProtoVersion(response);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -1021,6 +1061,8 @@ public class CommunityServerAPI {
 		try {
 
 			HttpResponse response = client.execute(request);
+
+			setServerProtoVersion(response);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
@@ -1092,6 +1134,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -1159,6 +1203,8 @@ public class CommunityServerAPI {
 
 			/* Calling the Server.... */
 			HttpResponse response = client.execute(request, context);
+
+			setServerProtoVersion(response);
 
 			Log.d("CommunityServerAPI",
 					"saveClaim status line " + response.getStatusLine());
@@ -1267,6 +1313,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request, context);
 
+			setServerProtoVersion(response);
+
 			Log.d("CommunityServerAPI", "saveAttachment HTTP status line "
 					+ response.getStatusLine());
 
@@ -1351,6 +1399,8 @@ public class CommunityServerAPI {
 
 			HttpResponse response = client.execute(request, context);
 
+			setServerProtoVersion(response);
+
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
 
@@ -1411,6 +1461,8 @@ public class CommunityServerAPI {
 			context.setAttribute(ClientContext.COOKIE_STORE, CS);
 
 			HttpResponse response = client.execute(request, context);
+
+			setServerProtoVersion(response);
 
 			String json = CommunityServerAPIUtilities.Slurp(response
 					.getEntity().getContent(), 1024);
