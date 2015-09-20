@@ -56,7 +56,7 @@ CREATE TABLE LINK
 URL VARCHAR(255) NOT NULL,
 DESC CLOB);
 
-MERGE INTO LINK(LINK_ID, URL, DESC) KEY (LINK_ID) SELECT '1', 'http://ot.flossola.org', 'OpenTenure Community: visit the OpenTenure Community web site and tell us what you think.' FROM DUAL;
+MERGE INTO LINK(LINK_ID, URL, DESC) KEY (LINK_ID) SELECT '1', 'https://demo.opentenure.org', 'OpenTenure Community: visit the OpenTenure Community web site and tell us what you think.' FROM DUAL;
 MERGE INTO LINK(LINK_ID, URL, DESC) KEY (LINK_ID) SELECT '2', 'http://www.flossola.org/home', 'FLOSS SOLA: look at the latest news on FLOSS SOLA web site.' FROM DUAL;
 
  CREATE TABLE DOCUMENT_TYPE
