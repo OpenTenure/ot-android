@@ -99,7 +99,7 @@ public class Location {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
+					.prepareStatement("INSERT INTO LOCATION(LOCATION_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
 			statement.setString(1, loc.getLocationId());
 			statement.setString(2, loc.getName());
 			statement.setBigDecimal(3, new BigDecimal(loc.getLat()));
@@ -135,7 +135,7 @@ public class Location {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LOCATION(LOC.LOCATION_ID, LOC.NAME, LOC.LAT, LOC.LON) VALUES(?,?,?,?)");
+					.prepareStatement("INSERT INTO LOCATION(LOCATION_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
 			statement.setString(1, getLocationId());
 			statement.setString(2, getName());
 			statement.setBigDecimal(3, new BigDecimal(getLat()));
