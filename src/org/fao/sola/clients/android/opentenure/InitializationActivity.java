@@ -162,6 +162,8 @@ public class InitializationActivity extends Activity {
 			super.onPostExecute(result);
 			Log.d(this.getClass().getName(),
 					"check to see if the application is initialized");
+			
+			OpenTenureApplication.getInstance().setNetworkError(false);
 
 			if (Boolean.parseBoolean(Configuration.getConfigurationByName(
 					"isInitialized").getValue())) {

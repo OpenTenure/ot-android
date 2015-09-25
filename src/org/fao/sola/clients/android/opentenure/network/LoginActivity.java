@@ -22,8 +22,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.abblasio.login.LoginPlainGe
-
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.

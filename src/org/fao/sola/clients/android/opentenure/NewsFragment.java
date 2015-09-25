@@ -589,6 +589,8 @@ public class NewsFragment extends ListFragment {
 	private void initialize() {
 		Log.d(this.getClass().getName(),
 				"starting tasks for static data download");
+		
+		OpenTenureApplication.getInstance().setNetworkError(false);
 
 		if (!OpenTenureApplication.getInstance().isCheckedTypes()) {
 			Log.d(this.getClass().getName(),

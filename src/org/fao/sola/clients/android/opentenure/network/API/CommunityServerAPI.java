@@ -28,9 +28,11 @@
 package org.fao.sola.clients.android.opentenure.network.API;
 
 import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -234,6 +236,7 @@ public class CommunityServerAPI {
 
 		catch (UnknownHostException uhe) {
 
+			System.out.println("UHE CAUSE " + uhe.getCause());
 			Log.d("CommunityServerAPI",
 					"Logout UnknownHostException" + uhe.getMessage());
 			uhe.printStackTrace();
@@ -730,7 +733,30 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {
+		} catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI",
+					"GET LAND USES NETWORK ERROR SE" + se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI",
+					"GET LAND USES NETWORK ERROR STOE" + stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}
+		catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET LAND USES NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} 
+		catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET LAND USES ERROR " + ex.getMessage());
@@ -794,7 +820,28 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {
+		}catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI",
+					"GET LANGUAGES NETWORK ERROR SE" + se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI",
+					"GET LANGUAGES NETWORK ERROR STOE" + stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET LANGUAGES NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}  catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET LANGUAGES ERROR " + ex.getMessage());
@@ -858,7 +905,30 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {
+		}  catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI", "GET ALL ID TYPES NETWORK ERROR SE"
+					+ se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI", "GET ALL ID TYPES NETWORK ERROR STOE"
+					+ stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET ALL ID TYPES NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} 
+
+		catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET ALL ID TYPES ERROR " + ex.getMessage());
@@ -921,6 +991,34 @@ public class CommunityServerAPI {
 
 			}
 
+		} catch (java.net.ConnectException ce) {
+			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR CE"
+					+ ce.getMessage());
+			ce.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+
+		}catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR SE"
+					+ se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR STOE"
+					+ stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
 		} catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
@@ -984,7 +1082,39 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {
+		} catch (java.net.ConnectException ce) {
+			Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES NETWORK ERROR CE"
+					+ ce.getMessage());
+			ce.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+
+		} catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI", "GET ALL CLAIM TYPES NETWORK ERROR SE"
+					+ se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI", "GET ALL CLAIM NETWORK ERROR STOE"
+					+ stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}
+		
+		catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET ALL CLAIM NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}	
+		
+		catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET ALL CLAIM TYPES ERROR " + ex.getMessage());
@@ -1054,10 +1184,39 @@ public class CommunityServerAPI {
 
 			}
 
+		} catch (java.net.ConnectException ce) {
+			Log.d("CommunityServerAPI",
+					"GET ALL DOCUMENT TYPES NETWORK ERROR CE" + ce.getMessage());
+			ce.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+
+		} catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI",
+					"GET ALL DOCUMENT TYPES NETWORK ERROR SE" + se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI",
+					"GET ALL DOCUMENT TYPES NETWORK ERROR STOE"
+							+ stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET ALL DOCUMENT TYPES NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
 		} catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
-					"GET ALL CLAIM TYPES ERROR " + ex.getMessage());
+					"GET ALL DOCUMENT TYPES ERROR " + ex.getMessage());
 			ex.printStackTrace();
 			return null;
 
@@ -1117,7 +1276,38 @@ public class CommunityServerAPI {
 
 			}
 
-		} catch (Exception ex) {
+		} catch (java.net.ConnectException ce) {
+			Log.d("CommunityServerAPI",
+					"GET PARCEL GEOMETRY REQUIRED NETWORK ERROR CE"
+							+ ce.getMessage());
+			ce.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+
+		}  catch (java.net.SocketException se) {
+
+			Log.d("CommunityServerAPI",
+					"GET PARCEL GEOMETRY REQUIRED NETWORK ERROR SE"
+							+ se.getMessage());
+			se.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		} catch (java.net.SocketTimeoutException stoe) {
+
+			Log.d("CommunityServerAPI",
+					"GET PARCEL GEOMETRY REQUIRED NETWORK ERROR STOE"
+							+ stoe.getMessage());
+			stoe.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}catch (javax.net.ssl.SSLException ssle) {
+
+			Log.d("CommunityServerAPI", "GET PARCEL GEOMETRY NETWORK ERROR SSLE"
+					+ ssle.getMessage());
+			ssle.printStackTrace();
+			OpenTenureApplication.getInstance().setNetworkError(true);
+			return null;
+		}  catch (Exception ex) {
 
 			Log.d("CommunityServerAPI", "GET PARCEL GEOMETRY REQUIRED ERROR "
 					+ ex.getMessage());
@@ -1191,6 +1381,7 @@ public class CommunityServerAPI {
 
 		} catch (UnknownHostException uhe) {
 
+			
 			uhe.printStackTrace();
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
@@ -1362,6 +1553,7 @@ public class CommunityServerAPI {
 					.getStatusCode());
 
 		} catch (UnknownHostException uhe) {
+			
 			apiResponse = new ApiResponse();
 			apiResponse.setHttpStatusCode(100);
 			apiResponse.setMessage("uploadChunk error :" + uhe.getMessage());

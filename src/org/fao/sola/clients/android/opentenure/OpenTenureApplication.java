@@ -61,6 +61,7 @@ public class OpenTenureApplication extends Application {
 	private static OpenTenureApplication sInstance;
 	private Database database;
 	private static Context context;
+	private boolean networkError = false;
 	private boolean checkedTypes = false;
 	private boolean checkedDocTypes = false;
 	private boolean checkedIdTypes = false;
@@ -291,7 +292,7 @@ public class OpenTenureApplication extends Application {
 	public void setCheckedLanguages(boolean checkedLanguages) {
 		this.checkedLanguages = checkedLanguages;
 	}
-	
+
 	public boolean isCheckedGeometryRequired() {
 		return checkedGeometryRequired;
 	}
@@ -299,8 +300,7 @@ public class OpenTenureApplication extends Application {
 	public void setCheckedGeometryRequired(boolean checkedGeometryRequired) {
 		this.checkedGeometryRequired = checkedGeometryRequired;
 	}
-	
-	
+
 	/*
 	 * Return the single instance of the inizialized HttpClient that handle
 	 * connection and session to the server
@@ -312,8 +312,6 @@ public class OpenTenureApplication extends Application {
 		else
 			return prepareClient();
 	}
-
-
 
 	/*
 	 * Return the single instance of the inizialized HttpClient that handle
@@ -475,6 +473,14 @@ public class OpenTenureApplication extends Application {
 
 	public void setInitialized(boolean initialized) {
 		this.initialized = initialized;
+	}
+
+	public boolean isNetworkError() {
+		return networkError;
+	}
+
+	public void setNetworkError(boolean networkError) {
+		this.networkError = networkError;
 	}
 
 	public void setLocalization(String localization) {

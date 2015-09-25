@@ -53,6 +53,8 @@ public class InitializationAlertListener implements OnClickListener{
 		
 		Log.d(this.getClass().getName(),
 				"starting tasks for static data download");
+		
+		OpenTenureApplication.getInstance().setNetworkError(false);
 
 		Configuration conf = Configuration
 				.getConfigurationByName("isInitialized");

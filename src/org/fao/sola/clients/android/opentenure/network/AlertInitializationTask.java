@@ -89,11 +89,13 @@ public class AlertInitializationTask extends
 
 		dialog.dismiss();
 
+		System.out.println("Network error :" + OpenTenureApplication.getInstance().isNetworkError());
+		
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(input
 				.getContext());
 		if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
 				"isInitialized").getValue())
-				&& OpenTenureApplication.getInstance().isOnline()) {
+				&& (OpenTenureApplication.getInstance().isOnline() && !OpenTenureApplication.getInstance().isNetworkError())) {
 
 			alertDialog.setTitle(R.string.message_title_app_not_initialized);
 			alertDialog.setMessage(OpenTenureApplication.getContext()
@@ -102,7 +104,7 @@ public class AlertInitializationTask extends
 
 		} else if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
 				"isInitialized").getValue())
-				&& !OpenTenureApplication.getInstance().isOnline()) {
+				&& (!OpenTenureApplication.getInstance().isOnline() || OpenTenureApplication.getInstance().isNetworkError())) {
 
 			alertDialog.setTitle(R.string.message_title_app_not_initialized);
 			alertDialog.setMessage(OpenTenureApplication.getContext()
