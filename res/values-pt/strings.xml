@@ -382,6 +382,15 @@
     <string name="tiles_download_status">Preparando para baixar %1$d of %2$d, %3$d foram baixados e %4$d falharam</string>
     <string name="markers_distance_label">Distância</string>
     <string name="meters">m</string>
+    <string name="action_export_geo">Exportar dados geográficos</string>
+    <string name="wtms_tiles_provider">Provedor do WTMS</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
+    <string name="action_to_group">Modificação no grupo</string>
+    <string name="action_to_person">Modificação na pessoa</string>
+    <string name="message_exported">Exportado</string>
+    <string name="wtms_url_pref_title">URL WTMS</string>
+    <string name="wtms_url_pref_summary">URL padrão do seu Servidor de Mapa Web</string>
+    <string name="wtms_url_pref_dialog_title">Digite a URL do seu Servidor de Mapa Web</string>
 
     <string-array name="language_keys">
         <item>Khmer</item>

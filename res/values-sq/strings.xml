@@ -367,6 +367,24 @@
     <string name="language_dialog_title">Zgjidhni gjuhen</string>
     <string name="title_restart_dialog">Kerkohet rifillimi</string>
     <string name="message_restart_dialog">Qe ndryshimi ne konfigurimin e Open Tenure te behet efektiv duhet ta rifilloni ate. Deshironi ta rifilloni Open Tenure tani?</string>
+    <string name="action_change_map_mode">Ndrysho formen e hartes</string>
+    <string name="action_add_from_gps">Shto piken nga GPS</string>
+    <string name="action_add_boundary">Shto shenjen e kufirit</string>
+    <string name="action_add_non_boundary">Shto shenjen jo kufitare</string>
+    <string name="action_measure">Mat</string>
+    <string name="action_export_geo">Eksporto te dhenat gjeografike</string>
+    <string name="wtms_tiles_provider">WTMS Tiles Provider</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
+    <string name="action_to_group">Ndrysho ne grup</string>
+    <string name="action_to_person">Ndrysho ne person</string>
+    <string name="message_exported">Eksportuar</string>
+    <string name="message_add_non_boundary_marker">Shto shenje jo kufitare?</string>
+    <string name="tiles_download_status">Duke shkarkuar tile-n %1$d of %2$d</string>
+    <string name="markers_distance_label">Distanca</string>
+    <string name="meters">m</string>
+    <string name="wtms_url_pref_title">WTMS URL</string>
+    <string name="wtms_url_pref_summary">Base URL of your Web Tiles Map Server</string>
+    <string name="wtms_url_pref_dialog_title">Vendos URL te Web Tiles Map Server-it tuaj</string>
 
     <string-array name="language_keys">
         <item>Khmer</item>

@@ -376,6 +376,15 @@
     <string name="tiles_download_status">Попытка загрузить тайл %1$d из %2$d, %3$d загружено и %4$d не удалось загрузить</string>
     <string name="markers_distance_label">Дистанция</string>
     <string name="meters">м</string>
+    <string name="action_export_geo">Экспортировать гео данные</string>
+    <string name="wtms_tiles_provider">WTMS Провайдер тайлов</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
+    <string name="action_to_group">Изменение в группе</string>
+    <string name="action_to_person">Изменение физического лица</string>
+    <string name="message_exported">Экспортировано</string>
+    <string name="wtms_url_pref_title">WTMS URL</string>
+    <string name="wtms_url_pref_summary">Базовый URL вашего Веб сервера тайлов</string>
+    <string name="wtms_url_pref_dialog_title">Введите URL вашего Веб сервера тайлов</string>
 
     <string-array name="language_keys">
         <item>Хмерский</item>

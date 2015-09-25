@@ -373,6 +373,19 @@
     <string name="tiles_download_status">ការប៉ុនបង់ទាញយកឯកសារក្រឡា tile %1$d of %2$d, %3$d ទាញយកឯកសាររួចហើយ និង %4$d ទទួលបរាជ័យ</string>
     <string name="markers_distance_label">ចំងាយ</string>
     <string name="meters">m</string>
+    <string name="action_export_geo"> នាំចេញទិន្នន័យភូមិសាស្រ្ត </string>
+    <string name="wtms_tiles_provider"> អ្នកផ្ដល់ WTMS ក្បឿង </string>
+    <string name="wtms_tiles_provider_key"> WTMS </string>
+    <string name="action_to_group"> ការផ្លាស់ប្តូរនៅក្នុងក្រុម </string>
+    <string name="action_to_person"> ការផ្លាស់ប្តូរនៅក្នុងមនុស្សម្នាក់ </string>
+    <string name="message_exported"> នាំចេញ </string>
+    <string name="wtms_url_pref_title"> WTMS URL ដែល </string>
+    <string name="wtms_url_pref_summary"> មូលដ្ឋាន URL របស់បណ្ដាញរបស់ម៉ាស៊ីនបម្រើផែនទីក្បឿង </string>
+    <string name="wtms_url_pref_dialog_title"> បញ្ចូល URL របស់បណ្ដាញរបស់ម៉ាស៊ីនបម្រើផែនទីក្បឿង </string>
+    <string name="null_label"> គ្មាន </string>
+    <string name="language_dialog_title"> ជ្រើសភាសា </string>
+    <string name="title_restart_dialog"> ចាប់ផ្តើមឡើងវិញ </string>
+    <string name="message_restart_dialog"> ផ្លាស់ប្តូរក្នុងការកំណត់រចនាសម្ព័ន្ធ OpenTenure មួយតម្រូវឱ្យចាប់ផ្ដើមឡើងវិញដើម្បីឱ្យមានប្រសិទ្ធិភាព។ តើអ្នកចង់ចាប់ផ្ដើមឡើងវិញ OpenTenure ឥឡូវនេះ? </string>
 
     <string-array name="language_keys">
         <item>ខ្មែរ</item>

@@ -356,6 +356,15 @@
     <string name="tiles_download_status"> محاولة تنزيل مربعات الخريطة %1$d من %2$d , تم تنزيل %3$d ولكن فشلت عملية التنزيل ل %4$d حتى الأن </string>
     <string name="markers_distance_label">المسافة</string>
     <string name="meters">م</string>
+    <string name="action_export_geo">تصدير البيانات الجغرافية</string>
+    <string name="wtms_tiles_provider">مزود WTMS لمربعات الخريطة</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
+    <string name="action_to_group"> تغيير في المجموعة</string>
+    <string name="action_to_person"> تغيير في الشخص</string>
+    <string name="message_exported">تم التصدير</string>
+    <string name="wtms_url_pref_title">WTMS رابط</string>
+    <string name="wtms_url_pref_summary">الرابط الأساسي لخادم الوب الخاص بمربعات الخريطة </string>
+    <string name="wtms_url_pref_dialog_title">أدخل رابط الوب لخادم مربعات الخريطة</string>
 
     <string-array name="tiles_provider_values">
         <item>خدمة مربعات الخارطة</item>

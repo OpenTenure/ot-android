@@ -349,17 +349,53 @@
     <string name="tiles_provider_dialog_title">Select the type of your offline map tiles provider</string>
     <string name="hint_type_to_filter">Entrer des caractères pour filtrer la liste</string>
     <string name="shares_prompt">Sélectionner les parts</string>
+    <string name="action_change_map_mode">Changer le mode du plan</string>
+    <string name="action_add_from_gps">Ajouter un repère à partir du point GPS</string>
+    <string name="action_add_boundary">Ajouter un repère de limite de propriété</string>
+    <string name="action_add_non_boundary">Ajouter un autre repère</string>
+    <string name="action_measure">Mesurer</string>
+    <string name="action_export_geo">Exporter les données géographiques</string>
+    <string name="tms_tiles_provider_key">TMS</string>
+    <string name="wtms_tiles_provider">Fournisseur de données WTMS</string>
+    <string name="wtms_tiles_provider_key">WTMS</string>
+    <string name="action_to_group">Changement dans le groupe</string>
+    <string name="action_to_person">Changement chez la personne</string>
+    <string name="title_import">Importation de déclaration compressée</string>
+    <string name="message_exported">Exportée</string>
+    <string name="message_claim_imported">Déclaration exportée</string>
+    <string name="message_claim_ready_to_import">Déclaration prête à être importée</string>
+    <string name="message_claim_ready_to_import_no_dynamic">La déclaration va être importée mais la partie dynamique va être perdue</string>
+    <string name="message_claim_import_password_error">Erreur du mot de passe. Essayez de nouveau</string>
+    <string name="message_claim_import_not_compressed_claim">Le fichier Zip n’est pas une déclaration compressée</string>
+    <string name="message_claim_import_not_claim_archive">Ce n’est pas une archive de déclaration valide"</string>
+    <string name="message_claim_import_already_present">La déclaration est déjà présente sur le serveur</string>
+    <string name="message_claim_import_claim_not_belongs_to_community">Cette déclaration n’appartient pas à cette communauté</string>
+    <string name="message_claim_import_preparing">Préparation de l’import de la déclaration</string>
+    <string name="message_claim_not_imported">Erreur, déclaration non importée</string>
+    <string name="message_add_non_boundary_marker">Ajouter un repère autre qu’un repère de limite ?</string>
+    <string name="message_available_shares">La somme des parts est inférieure à 100%</string>
+    <string name="message_files_not_present">Un ou plusieurs fichiers de la déclaration ne sont pas attachés</string>
+    <string name="message_warnings">Alerte : </string>
+    <string name="markers_distance_label">Distance</string>
+    <string name="meters">m</string>
+    <string name="wtms_url_pref_title">WTMS URL</string>
+    <string name="wtms_url_pref_summary">Base URL du serveur Web du plan</string>
+    <string name="wtms_url_pref_dialog_title">Entrer l’URL de votre serveur Web</string>
+    <string name="null_label">Aucun</string>
+    <string name="language_dialog_title">Sélectionner la langue</string>
+    <string name="title_restart_dialog">Redémarrage nécessaire</string>
+    <string name="message_restart_dialog">Un changement dans la configuration d’OpenTenure requiert un redémarrage pour devenir effectif. Voulez-vous redémarrer OpenTenure maintenant ?</string>
 
     <string-array name="language_keys">
-        <item >Khmer</item>
-        <item >Albanais</item>
-        <item >Default</item>
-        </string-array>
+        <item>Khmer</item>
+        <item>Albanais</item>
+        <item>Default</item>
+    </string-array>
     <string-array name="language_values">
-        <item >khmer_language</item>
-        <item >albanian_language</item>
-        <item >default_language</item>
-        </string-array>
+        <item>khmer_language</item>
+        <item>albanian_language</item>
+        <item>default_language</item>
+    </string-array>
     <string-array name="claim_statuses">
         <item>Non modérée</item>
         <item>Modérée</item>
