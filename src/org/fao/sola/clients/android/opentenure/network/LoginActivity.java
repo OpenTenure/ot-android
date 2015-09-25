@@ -2,6 +2,7 @@ package org.fao.sola.clients.android.opentenure.network;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.animation.Animator;
@@ -288,6 +289,22 @@ public class LoginActivity extends Activity {
 
 			default:
 				break;
+			}
+
+			String serverProtoVersion = CommunityServerAPI.getServerProtoVersion();
+			String expectedProtoVersion = Configuration.getConfigurationValue(Configuration.PROTOVERSION_NAME);
+
+			if(expectedProtoVersion != null && serverProtoVersion != null){
+
+				if(expectedProtoVersion.compareTo(serverProtoVersion) > 0){
+					toast = Toast.makeText(OpenTenureApplication.getContext(),
+							R.string.message_update_server, Toast.LENGTH_LONG);
+					toast.show();
+				}else if(expectedProtoVersion.compareTo(serverProtoVersion) < 0){
+					toast = Toast.makeText(OpenTenureApplication.getContext(),
+							R.string.message_update_client, Toast.LENGTH_LONG);
+					toast.show();
+				}
 			}
 
 		}

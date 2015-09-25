@@ -1,6 +1,6 @@
 /**
  * ******************************************************************************************
- * Copyright (C) 2014 - Food and Agriculture Organization of the United Nations (FAO).
+ * Copyright (C) 2015 - Food and Agriculture Organization of the United Nations (FAO).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -27,28 +27,47 @@
  */
 package org.fao.sola.clients.android.opentenure.model;
 
-import java.io.StringReader;
-import java.sql.Clob;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-public class Configuration {
-	
-	public static final String PROTOVERSION_NAME = "PROTOVERSION";
+import com.google.android.gms.maps.model.LatLng;
 
-	public String getConfigurationId() {
-		return configurationId;
+public class MapBookmark {
+
+	@Override
+	public String toString() {
+		return "MapBookmark [mapBookmarkId=" + mapBookmarkId + ", name=" + name
+				+ ", lat=" + lat + ", lon=" + lon + "]";
 	}
 
-	public void setConfigurationId(String configurationId) {
-		this.configurationId = configurationId;
+	public double getLat() {
+		return lat;
+	}
+
+	public void setLat(double lat) {
+		this.lat = lat;
+	}
+
+	public double getLon() {
+		return lon;
+	}
+
+	public void setLon(double lon) {
+		this.lon = lon;
+	}
+
+	public String getMapBookmarkId() {
+		return mapBookmarkId;
+	}
+
+	public void setMapBookmarkId(String mapBookmarkId) {
+		this.mapBookmarkId = mapBookmarkId;
 	}
 
 	public String getName() {
@@ -59,25 +78,18 @@ public class Configuration {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	String configurationId;
+	String mapBookmarkId;
 	String name;
-	String value;
+	double lat;
+	double lon;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public Configuration() {
-		this.configurationId = UUID.randomUUID().toString();
+	public MapBookmark() {
+		this.mapBookmarkId = UUID.randomUUID().toString();
 	}
 
-	public static int createConfiguration(Configuration cfg) {
+	public static int createLocation(MapBookmark loc) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -87,10 +99,11 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, cfg.getConfigurationId());
-			statement.setString(2, cfg.getName());
-			statement.setCharacterStream(3, new StringReader(cfg.getValue()));
+					.prepareStatement("INSERT INTO MAP_BOOKMARK(MAP_BOOKMARK_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
+			statement.setString(1, loc.getMapBookmarkId());
+			statement.setString(2, loc.getName());
+			statement.setBigDecimal(3, new BigDecimal(loc.getLat()));
+			statement.setBigDecimal(4, new BigDecimal(loc.getLon()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -122,14 +135,14 @@ public class Configuration {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CONFIGURATION(CONFIGURATION_ID, NAME, VALUE) VALUES (?,?,?)");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("INSERT INTO MAP_BOOKMARK(MAP_BOOKMARK_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
+			statement.setString(1, getMapBookmarkId());
 			statement.setString(2, getName());
-			statement.setCharacterStream(3, new StringReader(getValue()));
+			statement.setBigDecimal(3, new BigDecimal(getLat()));
+			statement.setBigDecimal(4, new BigDecimal(getLon()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
@@ -149,7 +162,7 @@ public class Configuration {
 		return result;
 	}
 
-	public static int deleteConfiguration(Configuration cfg) {
+	public static int deleteLocation(MapBookmark loc) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -159,12 +172,12 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, cfg.getConfigurationId());
+					.prepareStatement("DELETE FROM MAP_BOOKMARK WHERE MAP_BOOKMARK_ID=?");
+			statement.setString(1, loc.getMapBookmarkId());
 			result = statement.executeUpdate();
+			statement.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		} finally {
@@ -191,10 +204,11 @@ public class Configuration {
 
 		try {
 
-			localConnection = db.getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
-					.prepareStatement("DELETE CONFIGURATION WHERE CONFIGURATION_ID=?");
-			statement.setString(1, getConfigurationId());
+					.prepareStatement("DELETE FROM MAP_BOOKMARK WHERE MAP_BOOKMARK_ID=?");
+			statement.setString(1, getMapBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -217,7 +231,7 @@ public class Configuration {
 		return result;
 	}
 
-	public static int updateConfiguration(Configuration cfg) {
+	public static int updateLocation(MapBookmark loc) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -227,10 +241,11 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
-			statement.setString(1, cfg.getName());
-			statement.setCharacterStream(2, new StringReader(cfg.getValue()));
-			statement.setString(3, cfg.getConfigurationId());
+					.prepareStatement("UPDATE MAP_BOOKMARK SET NAME=?, LAT=?, LON=? WHERE MAP_BOOKMARK_ID=?");
+			statement.setString(1, loc.getName());
+			statement.setBigDecimal(2, new BigDecimal(loc.getLat()));
+			statement.setBigDecimal(3, new BigDecimal(loc.getLon()));
+			statement.setString(4, loc.getMapBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -262,10 +277,11 @@ public class Configuration {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CONFIGURATION SET NAME=?, VALUE=? WHERE CONFIGURATION_ID=?");
+					.prepareStatement("UPDATE MAP_BOOKMARK SET NAME=?, LAT=?, LON=? WHERE MAP_BOOKMARK_ID=?");
 			statement.setString(1, getName());
-			statement.setCharacterStream(2, new StringReader(getValue()));
-			statement.setString(3, getConfigurationId());
+			statement.setBigDecimal(2, new BigDecimal(getLat()));
+			statement.setBigDecimal(3, new BigDecimal(getLon()));
+			statement.setString(4, getMapBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -288,8 +304,8 @@ public class Configuration {
 		return result;
 	}
 
-	public static String getConfigurationValue(String name) {
-		String val = null;
+	public static MapBookmark getLocation(String name) {
+		MapBookmark loc = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -299,12 +315,15 @@ public class Configuration {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
+					.prepareStatement("SELECT BM.MAP_BOOKMARK_ID, BM.LAT, BM.LON FROM MAP_BOOKMARK BM WHERE BM.NAME=?");
 			statement.setString(1, name);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				Clob clob = rs.getClob(1);
-				val = clob.getSubString(1L, (int)clob.length());
+				loc = new MapBookmark();
+				loc.setMapBookmarkId(rs.getString(1));
+				loc.setName(name);
+				loc.setLat(rs.getBigDecimal(2).doubleValue());
+				loc.setLon(rs.getBigDecimal(3).doubleValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -330,29 +349,24 @@ public class Configuration {
 				}
 			}
 		}
-		return val;
+		return loc;
 	}
 
-	public static Configuration getConfigurationByName(String name) {
-		Configuration cfg = null;
+	public static LatLng getCurrentLocation() {
+		LatLng currentLocation = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CFG.CONFIGURATION_ID, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.NAME=?");
-			statement.setString(1, name);
+					.prepareStatement("SELECT BM.LAT, BM.LON FROM MAP_BOOKMARK BM WHERE BM.NAME='CURRENT'");
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				cfg = new Configuration();
-				cfg.setConfigurationId(rs.getString(1));
-				cfg.setName(name);
-				Clob clob = rs.getClob(2);
-				cfg.setValue(clob.getSubString(1L, (int)clob.length()));
+				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
+						rs.getBigDecimal(2).doubleValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -378,100 +392,7 @@ public class Configuration {
 				}
 			}
 		}
-		return cfg;
-	}
-
-	public static Map<String, String> getConfigurationValues() {
-		Map<String, String> cfg = new HashMap<String, String>();
-		Connection localConnection = null;
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-
-		try {
-
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
-			statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG");
-			rs = statement.executeQuery();
-			while (rs.next()) {
-				String key = rs.getString(1);
-				Clob clob = rs.getClob(2);
-				cfg.put(key, clob.getSubString(1L, (int)clob.length()));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return cfg;
-	}
-
-	public static Configuration getConfiguration(String configurationId) {
-		Configuration cfg = null;
-		Connection localConnection = null;
-		PreparedStatement statement = null;
-		ResultSet rs = null;
-
-		try {
-
-			localConnection = OpenTenureApplication.getInstance().getDatabase()
-					.getConnection();
-			statement = localConnection
-					.prepareStatement("SELECT CFG.NAME, CFG.VALUE FROM CONFIGURATION CFG WHERE CFG.CONFIGURATION_ID=?");
-			statement.setString(1, configurationId);
-			rs = statement.executeQuery();
-			while (rs.next()) {
-				cfg = new Configuration();
-				cfg.setConfigurationId(configurationId);
-				cfg.setName(rs.getString(1));
-				Clob clob = rs.getClob(2);
-				cfg.setValue(clob.getSubString(1L, (int)clob.length()));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception exception) {
-			exception.printStackTrace();
-		} finally {
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (statement != null) {
-				try {
-					statement.close();
-				} catch (SQLException e) {
-				}
-			}
-			if (localConnection != null) {
-				try {
-					localConnection.close();
-				} catch (SQLException e) {
-				}
-			}
-		}
-		return cfg;
+		return currentLocation;
 	}
 
 }

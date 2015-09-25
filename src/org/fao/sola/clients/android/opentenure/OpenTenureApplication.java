@@ -98,7 +98,7 @@ public class OpenTenureApplication extends Application {
 	private static View personsView;
 	private static LocalClaimsFragment localClaimsFragment;
 	private static FragmentActivity newsFragmentActivity;
-	public static String _DEFAULT_COMMUNITY_SERVER = "https://ot.flossola.org";
+	public static String _DEFAULT_COMMUNITY_SERVER = "https://demo.opentenure.org";
 
 	private static volatile int claimsToDownload = 0;
 	private static volatile int initialClaimsToDownload = 0;

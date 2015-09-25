@@ -231,6 +231,8 @@
     <string name="message_adjacencies_saved">Adiacenze salvate</string>
     <string name="message_adjacencies_not_saved">Adiacenze non salvate</string>
     <string name="message_claim_modified">Claim modificato</string>
+    <string name="message_update_server">Il Community Server sta usando una vecchia versione del protocollo di comunicazione. Attendi che l\'amministratore aggiorni il Community Server prima di proseguire</string>
+    <string name="message_update_client">Il Community Server sta usando una nuova versione del protocollo di comunicazione. Attendi un aggiornamento di Open Tenure prima di proseguire</string>
     <string name="check_location_service">Nessuna informazione di localizzazione disponibile. Controlla nelle impostazioni che il servizio di localizzazione sia attivo</string>
 	<string name="tiles_queued">Ci sono %d frammenti di mappa nella lista di download</string>
 	<string name="too_many_tiles_queued">Ci sono %d frammenti di mappa da scaricare. Attendi prima di aggiungerne altri</string>

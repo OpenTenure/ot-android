@@ -44,6 +44,7 @@ import org.fao.sola.clients.android.opentenure.network.UpdateIdTypesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLandUsesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateLanguagesTask;
 import org.fao.sola.clients.android.opentenure.network.UpdateParcelGeoRequiredTask;
+import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPI;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -652,6 +653,23 @@ public class NewsFragment extends ListFragment {
 					"starting tasks for form retrieval");
 			FormRetriever formRetriever = new FormRetriever(getActivity());
 			formRetriever.execute();
+		}
+
+		String serverProtoVersion = CommunityServerAPI.getServerProtoVersion();
+		String expectedProtoVersion = Configuration.getConfigurationValue(Configuration.PROTOVERSION_NAME);
+		Toast toast;
+
+		if(expectedProtoVersion != null && serverProtoVersion != null){
+
+			if(expectedProtoVersion.compareTo(serverProtoVersion) > 0){
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						R.string.message_update_server, Toast.LENGTH_LONG);
+				toast.show();
+			}else if(expectedProtoVersion.compareTo(serverProtoVersion) < 0){
+				toast = Toast.makeText(OpenTenureApplication.getContext(),
+						R.string.message_update_client, Toast.LENGTH_LONG);
+				toast.show();
+			}
 		}
 
 		AlertInitializationTask fakeTask = new AlertInitializationTask(

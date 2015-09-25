@@ -66,10 +66,10 @@ public class OfflineWmsMapTileProvider extends OfflineTilesProvider{
     	super(width, height);
 		String baseURL = preferences.getString(
 				OpenTenurePreferencesActivity.GEOSERVER_URL_PREF,
-				"http://demo.flossola.org/geoserver/sola");
+				"http://demo.opentenure.org/geoserver/opentenure");
 		String layer = preferences.getString(
 				OpenTenurePreferencesActivity.GEOSERVER_LAYER_PREF,
-				"sola:nz_orthophoto");
+				"opentenure:claims");
 		URL_STRING = baseURL + 
 	            "/wms?layers=" + layer + 
 	            "&version=" + version + 
