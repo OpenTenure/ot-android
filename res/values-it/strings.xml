@@ -26,6 +26,7 @@
     <string name="action_remove_section_element">Rimuovi elemento</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
+    <string name="action_export_log">Esporta log</string>
     <string name="action_save">Salva</string>
     <string name="action_add_claimant">Aggiungi Richiedente</string>
     <string name="action_modify_claimant">Modifica Richiedente</string>
@@ -223,6 +224,7 @@
     <string name="message_title_app_initializing">Sto inizializzando OpenTenure</string>
     <string name="message_app_initializing">Attendere&#8230;</string>
     <string name="message_db_backed_up">E\' stata creata una copia dei dati locali</string>
+    <string name="message_log_exported">E\' stato esportato il registro degli eventi dell\'applicazione</string>
     <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>

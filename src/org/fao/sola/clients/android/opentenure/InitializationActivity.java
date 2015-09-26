@@ -223,7 +223,7 @@ public class InitializationActivity extends Activity {
 				
 				if (!OpenTenureApplication.getInstance().isCheckedGeometryRequired()) {
 					Log.d(this.getClass().getName(),
-							"starting tasks for parcel geomtry setting download");
+							"starting tasks for parcel geometry setting download");
 
 					UpdateParcelGeoRequiredTask updateGeo = new UpdateParcelGeoRequiredTask();
 					updateGeo.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -245,11 +245,11 @@ public class InitializationActivity extends Activity {
 			if(expectedProtoVersion != null && serverProtoVersion != null){
 
 				if(expectedProtoVersion.compareTo(serverProtoVersion) > 0){
-					toast = Toast.makeText(OpenTenureApplication.getContext(),
+					toast = Toast.makeText(getBaseContext(),
 							R.string.message_update_server, Toast.LENGTH_LONG);
 					toast.show();
 				}else if(expectedProtoVersion.compareTo(serverProtoVersion) < 0){
-					toast = Toast.makeText(OpenTenureApplication.getContext(),
+					toast = Toast.makeText(getBaseContext(),
 							R.string.message_update_client, Toast.LENGTH_LONG);
 					toast.show();
 				}

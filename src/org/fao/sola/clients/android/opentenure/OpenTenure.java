@@ -27,8 +27,13 @@
  */
 package org.fao.sola.clients.android.opentenure;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
@@ -53,6 +58,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.github.amlcurran.showcaseview.ApiUtils;
@@ -457,6 +463,16 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 					OpenTenurePreferencesActivity.class);
 			startActivityForResult(intent, OpenTenurePreferencesActivity.REQUEST_CODE);
 			return true;
+		case R.id.action_export_log:
+			exportLog();
+			String backupMessage = String.format(OpenTenureApplication
+					.getContext().getString(R.string.message_log_exported));
+
+			Toast backupToast = Toast.makeText(
+					OpenTenureApplication.getContext(), backupMessage,
+					Toast.LENGTH_LONG);
+			backupToast.show();
+			return true;
 		case R.id.action_showcase:
 
 			// ShowCase Tutorial
@@ -477,6 +493,26 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	private void exportLog(){
+		String exportPath = null;
+		try{
+			Log.d(this.getClass().getName(), "**** Open Tenure Application Log ****");
+		    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
+			exportPath = FileSystemUtilities.getOpentenureFolder() + File.separator + dateFormat.format(new Date()) + "-log-export.txt";
+
+	         new ProcessBuilder()
+	         .command("logcat", "-d","-f",exportPath)
+	         .redirectErrorStream(true)
+	         .start();
+	    	 // Clear log to avoid duplicate lines
+	         new ProcessBuilder()
+	         .command("logcat", "-c")
+	         .redirectErrorStream(true)
+	         .start();
+	    } catch (Exception e) {
+	    }
 	}
 
 	public void restart(){

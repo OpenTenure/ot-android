@@ -76,7 +76,6 @@ import android.widget.Toast;
 
 public class NewsFragment extends ListFragment {
 	private View rootView;
-	MenuItem alert;
 	private String filter = null;
 	private static final String FILTER_KEY = "filter";
 
@@ -90,7 +89,7 @@ public class NewsFragment extends ListFragment {
 		MenuItem itemIn;
 		MenuItem itemOut;
 
-		alert = menu.getItem(2);
+		MenuItem alert = menu.findItem(R.id.action_alert);
 		alert.setVisible(false);
 
 		OpenTenureApplication.setNewsFragment(getActivity());
@@ -660,11 +659,11 @@ public class NewsFragment extends ListFragment {
 		if(expectedProtoVersion != null && serverProtoVersion != null){
 
 			if(expectedProtoVersion.compareTo(serverProtoVersion) > 0){
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
+				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_update_server, Toast.LENGTH_LONG);
 				toast.show();
 			}else if(expectedProtoVersion.compareTo(serverProtoVersion) < 0){
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
+				toast = Toast.makeText(rootView.getContext(),
 						R.string.message_update_client, Toast.LENGTH_LONG);
 				toast.show();
 			}

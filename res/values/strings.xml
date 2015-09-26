@@ -23,6 +23,7 @@
     <string name="action_remove_section_element">Remove element</string>
     <string name="action_camera">Camera</string>
     <string name="action_map">Map</string>
+    <string name="action_export_log">Export log</string>
     <string name="khmer_language">Khmer</string>
     <string name="albanian_language">Albanian</string>
     <string name="default_language">Default</string>
@@ -264,6 +265,7 @@
     <string name="message_app_not_initialized_network">The network\'s connection is not available</string>
     <string name="message_app_not_yet_initialized">The application is not yet initialized</string>
     <string name="message_db_backed_up">A copy of the local database has been created</string>
+    <string name="message_log_exported">A copy of the application log has been exported</string>
     <string name="message_app_not_initialized">Check in \'Settings\' that the settings of your Open Tenure Community Server are correct and run again the initialization process</string>
     <string name="message_title_app_initialized">The application is initialized</string>
     <string name="message_app_initialized_default">The app is ready to work and communicate to the Default Open Tenure Community Server </string>
