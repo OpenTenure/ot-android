@@ -95,6 +95,12 @@
             android:windowSoftInputMode="adjustPan" >
         </activity>
         <activity
+            android:name="org.fao.sola.clients.android.opentenure.SelectBookmarkActivity"
+            android:theme="@style/Theme.Opentenure"
+            android:label="@string/title_activity_select_bookmark"
+            android:windowSoftInputMode="adjustPan" >
+        </activity>
+        <activity
             android:name="org.fao.sola.clients.android.opentenure.ShareDetailsActivity"
             android:theme="@style/Theme.Opentenure"
             android:label="@string/title_activity_share_details"

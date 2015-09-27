@@ -62,6 +62,7 @@
     <string name="title_map">Community Map</string>
     <string name="title_claims">List of Claims</string>
     <string name="title_persons">Persons</string>
+    <string name="title_bookmarks">Bookmarks</string>
     <string name="title_challenged_claims">Challenged claims</string>
     <string name="title_challenged_claim">Challenged claim : </string>
     <string name="title_claim">Claim</string>
@@ -87,6 +88,7 @@
     <string name="title_activity_group">Open Tenure: New group</string>
     <string name="title_activity_select_claim">Open Tenure: Select claim</string>
     <string name="title_activity_select_person">Open Tenure: Select person</string>
+    <string name="title_activity_select_bookmark">Open Tenure: Select bookmark</string>
     <string name="title_activity_share_details">Open Tenure: Share details</string>
     <string name="title_activity_file_chooser">Choose a file</string>
     <string name="title_lock_db">Encrypt local data</string>

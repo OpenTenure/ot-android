@@ -47,6 +47,7 @@
     <string name="title_map">Mappa della Comunita\'</string>
     <string name="title_claims">Lista delle Richieste</string>
     <string name="title_persons">Persone</string>
+    <string name="title_bookmarks">Luoghi</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
     <string name="title_challenged_claim">Claim sfidato</string>
     <string name="title_claim">Richiesta</string>
@@ -72,6 +73,7 @@
     <string name="title_activity_group">Open Tenure: Nuovo gruppo</string>
     <string name="title_activity_select_claim">Open Tenure: Selezione richiesta</string>
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
+    <string name="title_activity_select_bookmark">Open Tenure: Selezione luogo</string>
     <string name="title_activity_share_details">Open Tenure: Dettaglio della quota</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
     <string name="title_confirm_data_transfer">Conferma trasferimento dati</string>
