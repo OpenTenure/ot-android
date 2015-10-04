@@ -40,7 +40,9 @@
     <string name="action_backup_db">Backup local data</string>
     <string name="action_print">Print</string>
     <string name="action_save">Save</string>
-    <string name="action_center">Center</string>
+    <string name="action_go_to">Go to</string>
+    <string name="action_center">Center GPS</string>
+    <string name="action_select_bookmark">Select bookmark</string>
     <string name="action_view_community_area">View Community Area</string>
     <string name="action_submit">Submit</string>
     <string name="action_download_file">Download File</string>
@@ -94,6 +96,7 @@
     <string name="title_lock_db">Encrypt local data</string>
     <string name="title_confirm_data_transfer">Confirm data transfer</string>
     <string name="title_add_non_boundary">Add a non boundary location</string>
+    <string name="title_add_map_bookmark">Add map bookmark</string>
     <string name="title_exit_dialog">Exit</string>
     <string name="title_initialization_process">Initialization Process</string>
     <string name="title_remove_person_dialog">Remove person</string>
@@ -226,6 +229,7 @@
     <string name="message_enter_description">Enter description</string>
     <string name="message_add_marker">Add boundary marker?</string>
     <string name="message_add_non_boundary_marker">Add non boundary marker?</string>
+    <string name="message_add_map_bookmark_marker">Add map bookmark marker?</string>
     <string name="message_remove_marker">Remove marker?</string>
     <string name="message_remove_attachment">Remove attachment?</string>
     <string name="message_remove_owner">Remove owner?</string>

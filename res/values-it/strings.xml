@@ -31,7 +31,9 @@
     <string name="action_add_claimant">Aggiungi Richiedente</string>
     <string name="action_modify_claimant">Modifica Richiedente</string>
     <string name="action_download_file">Scarica File</string>
-    <string name="action_center">Centra</string>
+    <string name="action_go_to">Vai a</string>
+    <string name="action_center">Centra GPS</string>
+    <string name="action_select_bookmark">Scegli preferito</string>
     <string name="action_view_community_area">Area di interesse</string>
     <string name="action_submit">Invia</string>
     <string name="action_download_claims">Scarica Claims</string>
@@ -78,7 +80,8 @@
     <string name="title_activity_file_chooser">Scegli un file</string>
     <string name="title_confirm_data_transfer">Conferma trasferimento dati</string>
     <string name="title_lock_db">Cifratura dei dati locali</string>
-    <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
+    <string name="title_add_non_boundary">Aggiunta di una posizione non perimetrica</string>
+    <string name="title_add_map_bookmark">Aggiunta di una posizione favorita</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="title_remove_person_dialog">Rimozione persona</string>
     <string name="title_save_claim_dialog">Il Claim e\' stato modificato</string>
@@ -193,6 +196,7 @@
     <string name="message_encryption_set">I dati locali sono cifrati. Fornisci la password per decifrarli al prossimo avvio di OpenTenure</string>
     <string name="message_add_marker">Aggiungere un vertice al perimetro?</string>
     <string name="message_add_non_boundary_marker">Aggiungere una posizione non perimetrica?</string>
+    <string name="message_add_map_bookmark_marker">Aggiungere una posizione preferita?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>

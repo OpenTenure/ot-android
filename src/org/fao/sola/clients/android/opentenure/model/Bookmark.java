@@ -417,8 +417,8 @@ public class Bookmark {
 				Bookmark book = new Bookmark();
 				book.setBookmarkId(rs.getString(1));
 				book.setName(rs.getString(2));
-				book.setLat(rs.getBigDecimal(2).doubleValue());
-				book.setLon(rs.getBigDecimal(3).doubleValue());
+				book.setLat(rs.getBigDecimal(3).doubleValue());
+				book.setLon(rs.getBigDecimal(4).doubleValue());
 				bookmarks.add(book);
 			}
 		} catch (SQLException e) {

@@ -36,33 +36,10 @@ import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.ModeDispatcher;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
+import org.fao.sola.clients.android.opentenure.SelectBookmarkActivity;
 import org.fao.sola.clients.android.opentenure.maps.MainMapFragment.MapType;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
@@ -93,6 +70,31 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
 public class ClaimMapFragment extends Fragment implements
 		OnCameraChangeListener, SensorEventListener, ClaimListener {
 
@@ -109,6 +111,8 @@ public class ClaimMapFragment extends Fragment implements
 	protected static final float MEASURE_Z_INDEX = 3.0f;
 	private static int CLAIM_MAP_SIZE = 800;
 	private static int CLAIM_MAP_PADDING = 50;
+	private static final int BOOKMARK_RESULT = 100;
+
 
 	private MapMode mapMode = MapMode.add_boundary;
 	private MapType mapType = MapType.map_provider_google_normal;
@@ -903,9 +907,31 @@ public class ClaimMapFragment extends Fragment implements
 			map.stopAnimation();
 			isRotating = false;
 			return true;
+		case R.id.action_select_bookmark:
+			Intent intent = new Intent(getActivity().getBaseContext(),
+					SelectBookmarkActivity.class);
+			startActivityForResult(intent, BOOKMARK_RESULT);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		if (data != null) { // No selection has been done
+
+			switch (requestCode) {
+			case BOOKMARK_RESULT:
+				String bookmarkId = data
+						.getStringExtra(SelectBookmarkActivity.BOOKMARK_ID_KEY);
+				Log.d(this.getClass().getName(), "Selected bookmark: " + bookmarkId);
+				break;
+			}
+		}
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
