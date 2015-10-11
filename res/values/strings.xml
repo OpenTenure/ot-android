@@ -42,7 +42,7 @@
     <string name="action_save">Save</string>
     <string name="action_go_to">Go to</string>
     <string name="action_center">Center GPS</string>
-    <string name="action_select_bookmark">Select bookmark</string>
+    <string name="action_select_bookmark">Go to bookmark</string>
     <string name="action_view_community_area">View Community Area</string>
     <string name="action_submit">Submit</string>
     <string name="action_download_file">Download File</string>

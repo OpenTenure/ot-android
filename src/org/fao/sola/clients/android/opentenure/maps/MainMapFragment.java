@@ -108,7 +108,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	public static final String MAIN_MAP_LONGITUDE = "__MAIN_MAP_LONGITUDE__";
 	public static final String MAIN_MAP_TYPE = "__MAIN_MAP_PROVIDER__";
 	private static final int MAP_LABEL_FONT_SIZE = 16;
-	private static final int MAX_ZOOM_LEVELS_TO_DOWNLOAD = 3;
+	public static final float MAX_ZOOM_LEVELS_TO_DOWNLOAD = 3.0f;
 	private static final int MAX_TILES_IN_DOWNLOAD_QUEUE = 1000;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
@@ -273,8 +273,8 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 			itemOut.setVisible(false);
 		}
 		if (map != null) {
-			int currentZoomLevel = (int) map.getCameraPosition().zoom;
-			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
+			float currentZoomLevel = map.getCameraPosition().zoom;
+			float maxSupportedZoomLevel = map.getMaxZoomLevel();
 
 			if (currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
 				MenuItem item = menu.findItem(R.id.action_download_tiles);
@@ -940,8 +940,8 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 	}
 
 	private void downloadTiles() {
-		int currentZoomLevel = (int) map.getCameraPosition().zoom;
-		int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
+		float currentZoomLevel = map.getCameraPosition().zoom;
+		float maxSupportedZoomLevel = map.getMaxZoomLevel();
 
 		if (currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
 
@@ -967,7 +967,7 @@ public class MainMapFragment extends SupportMapFragment implements OnCameraChang
 				provider = new OfflineWtmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH,
 						OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
 			}
-			tiles = provider.getTilesForLatLngBounds(bounds, currentZoomLevel, 21);
+			tiles = provider.getTilesForLatLngBounds(bounds, (int)currentZoomLevel, (int)maxSupportedZoomLevel);
 
 			if ((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE) {
 

@@ -33,7 +33,7 @@
     <string name="action_download_file">Scarica File</string>
     <string name="action_go_to">Vai a</string>
     <string name="action_center">Centra GPS</string>
-    <string name="action_select_bookmark">Scegli preferito</string>
+    <string name="action_select_bookmark">Vai a preferito</string>
     <string name="action_view_community_area">Area di interesse</string>
     <string name="action_submit">Invia</string>
     <string name="action_download_claims">Scarica Claims</string>
