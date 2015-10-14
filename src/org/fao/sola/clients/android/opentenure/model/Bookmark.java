@@ -32,17 +32,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 
-import com.google.android.gms.maps.model.LatLng;
-
-public class MapBookmark {
+public class Bookmark {
 
 	@Override
 	public String toString() {
-		return "MapBookmark [mapBookmarkId=" + mapBookmarkId + ", name=" + name
+		return "Bookmark [bookmarkId=" + bookmarkId + ", name=" + name
 				+ ", lat=" + lat + ", lon=" + lon + "]";
 	}
 
@@ -62,12 +62,12 @@ public class MapBookmark {
 		this.lon = lon;
 	}
 
-	public String getMapBookmarkId() {
-		return mapBookmarkId;
+	public String getBookmarkId() {
+		return bookmarkId;
 	}
 
-	public void setMapBookmarkId(String mapBookmarkId) {
-		this.mapBookmarkId = mapBookmarkId;
+	public void setBookmarkId(String bookmarkId) {
+		this.bookmarkId = bookmarkId;
 	}
 
 	public String getName() {
@@ -78,18 +78,18 @@ public class MapBookmark {
 		this.name = name;
 	}
 
-	String mapBookmarkId;
+	String bookmarkId;
 	String name;
 	double lat;
 	double lon;
 
 	Database db = OpenTenureApplication.getInstance().getDatabase();
 
-	public MapBookmark() {
-		this.mapBookmarkId = UUID.randomUUID().toString();
+	public Bookmark() {
+		this.bookmarkId = UUID.randomUUID().toString();
 	}
 
-	public static int createLocation(MapBookmark loc) {
+	public static int createBookmark(Bookmark book) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -100,10 +100,10 @@ public class MapBookmark {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO MAP_BOOKMARK(MAP_BOOKMARK_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
-			statement.setString(1, loc.getMapBookmarkId());
-			statement.setString(2, loc.getName());
-			statement.setBigDecimal(3, new BigDecimal(loc.getLat()));
-			statement.setBigDecimal(4, new BigDecimal(loc.getLon()));
+			statement.setString(1, book.getBookmarkId());
+			statement.setString(2, book.getName());
+			statement.setBigDecimal(3, new BigDecimal(book.getLat()));
+			statement.setBigDecimal(4, new BigDecimal(book.getLon()));
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -136,7 +136,7 @@ public class MapBookmark {
 			localConnection = db.getConnection();
 			statement = localConnection
 					.prepareStatement("INSERT INTO MAP_BOOKMARK(MAP_BOOKMARK_ID, NAME, LAT, LON) VALUES(?,?,?,?)");
-			statement.setString(1, getMapBookmarkId());
+			statement.setString(1, getBookmarkId());
 			statement.setString(2, getName());
 			statement.setBigDecimal(3, new BigDecimal(getLat()));
 			statement.setBigDecimal(4, new BigDecimal(getLon()));
@@ -162,7 +162,7 @@ public class MapBookmark {
 		return result;
 	}
 
-	public static int deleteLocation(MapBookmark loc) {
+	public static int deleteBookmark(Bookmark book) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -173,7 +173,7 @@ public class MapBookmark {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE FROM MAP_BOOKMARK WHERE MAP_BOOKMARK_ID=?");
-			statement.setString(1, loc.getMapBookmarkId());
+			statement.setString(1, book.getBookmarkId());
 			result = statement.executeUpdate();
 			statement.close();
 		} catch (SQLException e) {
@@ -208,7 +208,7 @@ public class MapBookmark {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("DELETE FROM MAP_BOOKMARK WHERE MAP_BOOKMARK_ID=?");
-			statement.setString(1, getMapBookmarkId());
+			statement.setString(1, getBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -231,7 +231,7 @@ public class MapBookmark {
 		return result;
 	}
 
-	public static int updateLocation(MapBookmark loc) {
+	public static int updateBookmark(Bookmark book) {
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -242,10 +242,10 @@ public class MapBookmark {
 					.getConnection();
 			statement = localConnection
 					.prepareStatement("UPDATE MAP_BOOKMARK SET NAME=?, LAT=?, LON=? WHERE MAP_BOOKMARK_ID=?");
-			statement.setString(1, loc.getName());
-			statement.setBigDecimal(2, new BigDecimal(loc.getLat()));
-			statement.setBigDecimal(3, new BigDecimal(loc.getLon()));
-			statement.setString(4, loc.getMapBookmarkId());
+			statement.setString(1, book.getName());
+			statement.setBigDecimal(2, new BigDecimal(book.getLat()));
+			statement.setBigDecimal(3, new BigDecimal(book.getLon()));
+			statement.setString(4, book.getBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -281,7 +281,7 @@ public class MapBookmark {
 			statement.setString(1, getName());
 			statement.setBigDecimal(2, new BigDecimal(getLat()));
 			statement.setBigDecimal(3, new BigDecimal(getLon()));
-			statement.setString(4, getMapBookmarkId());
+			statement.setString(4, getBookmarkId());
 			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -304,8 +304,8 @@ public class MapBookmark {
 		return result;
 	}
 
-	public static MapBookmark getLocation(String name) {
-		MapBookmark loc = null;
+	public static Bookmark getBookmarkByName(String name) {
+		Bookmark book = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
@@ -315,15 +315,15 @@ public class MapBookmark {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT BM.MAP_BOOKMARK_ID, BM.LAT, BM.LON FROM MAP_BOOKMARK BM WHERE BM.NAME=?");
+					.prepareStatement("SELECT BOOK.MAP_BOOKMARK_ID, BOOK.LAT, BOOK.LON FROM MAP_BOOKMARK BOOK WHERE BOOK.NAME=?");
 			statement.setString(1, name);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				loc = new MapBookmark();
-				loc.setMapBookmarkId(rs.getString(1));
-				loc.setName(name);
-				loc.setLat(rs.getBigDecimal(2).doubleValue());
-				loc.setLon(rs.getBigDecimal(3).doubleValue());
+				book = new Bookmark();
+				book.setBookmarkId(rs.getString(1));
+				book.setName(name);
+				book.setLat(rs.getBigDecimal(2).doubleValue());
+				book.setLon(rs.getBigDecimal(3).doubleValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -349,24 +349,29 @@ public class MapBookmark {
 				}
 			}
 		}
-		return loc;
+		return book;
 	}
 
-	public static LatLng getCurrentLocation() {
-		LatLng currentLocation = null;
+	public static Bookmark getBookmark(String bookmarkId) {
+		Bookmark book = null;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
 		ResultSet rs = null;
 
 		try {
 
-			localConnection = OpenTenureApplication.getInstance().getDatabase().getConnection();
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT BM.LAT, BM.LON FROM MAP_BOOKMARK BM WHERE BM.NAME='CURRENT'");
+					.prepareStatement("SELECT BOOK.NAME, BOOK.LAT, BOOK.LON FROM MAP_BOOKMARK BOOK WHERE BOOK.MAP_BOOKMARK_ID=?");
+			statement.setString(1, bookmarkId);
 			rs = statement.executeQuery();
 			while (rs.next()) {
-				currentLocation = new LatLng(rs.getBigDecimal(1).doubleValue(),
-						rs.getBigDecimal(2).doubleValue());
+				book = new Bookmark();
+				book.setBookmarkId(bookmarkId);
+				book.setName(rs.getString(1));
+				book.setLat(rs.getBigDecimal(2).doubleValue());
+				book.setLon(rs.getBigDecimal(3).doubleValue());
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -392,7 +397,54 @@ public class MapBookmark {
 				}
 			}
 		}
-		return currentLocation;
+		return book;
 	}
 
+	public static List<Bookmark> getAllBookmarks() {
+		List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+		ResultSet rs = null;
+
+		try {
+
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT BOOK.MAP_BOOKMARK_ID, BOOK.NAME, BOOK.LAT, BOOK.LON FROM MAP_BOOKMARK BOOK");
+			rs = statement.executeQuery();
+			while (rs.next()) {
+				Bookmark book = new Bookmark();
+				book.setBookmarkId(rs.getString(1));
+				book.setName(rs.getString(2));
+				book.setLat(rs.getBigDecimal(3).doubleValue());
+				book.setLon(rs.getBigDecimal(4).doubleValue());
+				bookmarks.add(book);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return bookmarks;
+	}
 }

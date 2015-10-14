@@ -26,11 +26,14 @@
     <string name="action_remove_section_element">Rimuovi elemento</string>
     <string name="action_camera">Foto</string>
     <string name="action_map">Mappa</string>
+    <string name="action_export_log">Esporta log</string>
     <string name="action_save">Salva</string>
     <string name="action_add_claimant">Aggiungi Richiedente</string>
     <string name="action_modify_claimant">Modifica Richiedente</string>
     <string name="action_download_file">Scarica File</string>
-    <string name="action_center">Centra</string>
+    <string name="action_go_to">Vai a</string>
+    <string name="action_center">Centra GPS</string>
+    <string name="action_select_bookmark">Vai a preferito</string>
     <string name="action_view_community_area">Area di interesse</string>
     <string name="action_submit">Invia</string>
     <string name="action_download_claims">Scarica Claims</string>
@@ -46,6 +49,7 @@
     <string name="title_map">Mappa della Comunita\'</string>
     <string name="title_claims">Lista delle Richieste</string>
     <string name="title_persons">Persone</string>
+    <string name="title_bookmarks">Luoghi</string>
     <string name="title_challenged_claims">Richieste con opposizioni</string>
     <string name="title_challenged_claim">Claim sfidato</string>
     <string name="title_claim">Richiesta</string>
@@ -71,11 +75,13 @@
     <string name="title_activity_group">Open Tenure: Nuovo gruppo</string>
     <string name="title_activity_select_claim">Open Tenure: Selezione richiesta</string>
     <string name="title_activity_select_person">Open Tenure: Selezione persona</string>
+    <string name="title_activity_select_bookmark">Open Tenure: Selezione luogo</string>
     <string name="title_activity_share_details">Open Tenure: Dettaglio della quota</string>
     <string name="title_activity_file_chooser">Scegli un file</string>
     <string name="title_confirm_data_transfer">Conferma trasferimento dati</string>
     <string name="title_lock_db">Cifratura dei dati locali</string>
-    <string name="title_add_non_boundary">Aggiunta di un luogo non di confine</string>
+    <string name="title_add_non_boundary">Aggiunta di una posizione non perimetrica</string>
+    <string name="title_add_map_bookmark">Aggiunta di una posizione favorita</string>
     <string name="title_exit_dialog">Uscita</string>
     <string name="title_remove_person_dialog">Rimozione persona</string>
     <string name="title_save_claim_dialog">Il Claim e\' stato modificato</string>
@@ -190,6 +196,7 @@
     <string name="message_encryption_set">I dati locali sono cifrati. Fornisci la password per decifrarli al prossimo avvio di OpenTenure</string>
     <string name="message_add_marker">Aggiungere un vertice al perimetro?</string>
     <string name="message_add_non_boundary_marker">Aggiungere una posizione non perimetrica?</string>
+    <string name="message_add_map_bookmark_marker">Aggiungere una posizione preferita?</string>
     <string name="message_remove_marker">Rimuovere la posizione?</string>
     <string name="message_remove_attachment">Rimuovere l\'allegato?</string>
     <string name="message_remove_owner">Rimuovere la quota?</string>
@@ -223,6 +230,7 @@
     <string name="message_title_app_initializing">Sto inizializzando OpenTenure</string>
     <string name="message_app_initializing">Attendere&#8230;</string>
     <string name="message_db_backed_up">E\' stata creata una copia dei dati locali</string>
+    <string name="message_log_exported">E\' stato esportato il registro degli eventi dell\'applicazione</string>
     <string name="message_app_not_yet_initialized">E\' necessario prima inizializzare l\'applicazione </string>
     <string name="message_remove_quest">Vuoi veramente ritirare il Claim ?</string>
     <string name="message_remove_claim">Vuoi veramente rimuovere il Claim ?</string>

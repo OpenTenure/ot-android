@@ -28,13 +28,16 @@
 package org.fao.sola.clients.android.opentenure.maps;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.MapLabel;
 import org.fao.sola.clients.android.opentenure.OpenTenure;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.maps.OfflineTilesProvider.TilesProviderType;
+import org.fao.sola.clients.android.opentenure.model.Bookmark;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Task;
@@ -43,35 +46,11 @@ import org.fao.sola.clients.android.opentenure.network.GetAllClaimsTask;
 import org.fao.sola.clients.android.opentenure.network.LoginActivity;
 import org.fao.sola.clients.android.opentenure.network.LogoutTask;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.androidmapsextensions.ClusteringSettings;
 import com.androidmapsextensions.GoogleMap;
 import com.androidmapsextensions.GoogleMap.OnCameraChangeListener;
+import com.androidmapsextensions.GoogleMap.OnMapLongClickListener;
+import com.androidmapsextensions.GoogleMap.OnMarkerClickListener;
 import com.androidmapsextensions.Marker;
 import com.androidmapsextensions.MarkerOptions;
 import com.androidmapsextensions.SupportMapFragment;
@@ -81,6 +60,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -90,28 +70,52 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
-public class MainMapFragment extends SupportMapFragment implements
-		OnCameraChangeListener {
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class MainMapFragment extends SupportMapFragment implements OnCameraChangeListener {
 
 	public static final String MAIN_MAP_ZOOM = "__MAIN_MAP_ZOOM__";
 	public static final String MAIN_MAP_LATITUDE = "__MAIN_MAP_LATITUDE__";
 	public static final String MAIN_MAP_LONGITUDE = "__MAIN_MAP_LONGITUDE__";
 	public static final String MAIN_MAP_TYPE = "__MAIN_MAP_PROVIDER__";
 	private static final int MAP_LABEL_FONT_SIZE = 16;
-	private static final int MAX_ZOOM_LEVELS_TO_DOWNLOAD = 3;
+	public static final float MAX_ZOOM_LEVELS_TO_DOWNLOAD = 3.0f;
 	private static final int MAX_TILES_IN_DOWNLOAD_QUEUE = 1000;
 	private static final String OSM_MAPNIK_BASE_URL = "http://a.tile.openstreetmap.org/{z}/{x}/{y}.png";
 	private static final String OSM_MAPQUEST_BASE_URL = "http://otile1.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png";
+	private Map<Marker, Bookmark> mapBookmarksMap = new HashMap<Marker, Bookmark>();
 
 	public enum MapType {
-		map_provider_google_normal,
-		map_provider_google_satellite,
-		map_provider_google_hybrid,
-		map_provider_google_terrain,
-		map_provider_osm_mapnik,
-		map_provider_osm_mapquest,
-		map_provider_local_tiles,
-		map_provider_geoserver
+		map_provider_google_normal, map_provider_google_satellite, map_provider_google_hybrid, map_provider_google_terrain, map_provider_osm_mapnik, map_provider_osm_mapquest, map_provider_local_tiles, map_provider_geoserver
 	};
 
 	private MapType mapType = MapType.map_provider_google_normal;
@@ -124,12 +128,74 @@ public class MainMapFragment extends SupportMapFragment implements
 	private MultiPolygon visiblePropertiesMultiPolygon;
 	private boolean isFollowing = false;
 	private Marker myLocation;
+	private Marker remove;
+	private Marker cancel;
+	private Marker selectedMarker;
+
+	private boolean handleMarkerEditClick(Marker mark) {
+		if (remove == null || cancel == null) {
+			return false;
+		}
+		try {
+			if (mark.equals(remove)) {
+				return removeSelectedMarker();
+			}
+			if (mark.equals(cancel)) {
+				deselect();
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// Clustered markers have no ID and may throw this
+		}
+		return false;
+	}
+
+	private boolean removeSelectedMarker() {
+
+		if (mapBookmarksMap.containsKey(selectedMarker)) {
+			return removeSelectedMapBookmark();
+		}
+		return false;
+
+	}
+
+	private boolean removeSelectedMapBookmark() {
+		Bookmark mb = mapBookmarksMap.remove(selectedMarker);
+		mapBookmarksMap.remove(selectedMarker);
+		selectedMarker.remove();
+		mb.delete();
+		hideMarkerEditControls();
+		selectedMarker = null;
+		return true;
+	}
+
+	private void hideMarkerEditControls() {
+		if (remove != null) {
+			remove.remove();
+			remove = null;
+		}
+		if (cancel != null) {
+			cancel.remove();
+			cancel = null;
+		}
+
+	}
+
+	public void deselect() {
+		hideMarkerEditControls();
+		if (selectedMarker != null) {
+			if (mapBookmarksMap.containsKey(selectedMarker)) {
+				selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_bookmark));
+			}
+			selectedMarker = null;
+		}
+	}
+
 	private LocationListener myLocationListener = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
 			if (isFollowing && myLocation != null) {
-				myLocation.setPosition(new LatLng(location.getLatitude(),
-						location.getLongitude()));
+				myLocation.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
 			}
 		}
 
@@ -146,6 +212,40 @@ public class MainMapFragment extends SupportMapFragment implements
 		}
 	};
 
+	private void showMarkerEditControls() {
+		
+		hideMarkerEditControls();
+		
+		Projection projection = map.getProjection();
+		Point markerScreenPosition = projection.toScreenLocation(selectedMarker.getPosition());
+
+		Bitmap bmp = BitmapFactory
+				.decodeResource(mapView.getResources(), R.drawable.map_bookmark_selected);
+		int markerHeight = bmp.getHeight();
+		int markerWidth = bmp.getWidth();
+
+		remove = map.addMarker(new MarkerOptions()
+		.position(projection.fromScreenLocation(getControlRemovePosition(markerScreenPosition, markerWidth, markerHeight)))
+		.anchor(0.5f, 0.5f)
+		.icon(BitmapDescriptorFactory
+				.fromResource(R.drawable.ic_menu_close_clear_cancel)));
+		remove.setClusterGroup(Constants.MARKER_EDIT_REMOVE_GROUP);
+		cancel = map.addMarker(new MarkerOptions()
+		.position(projection.fromScreenLocation(getControlCancelPosition(markerScreenPosition, markerWidth, markerHeight)))
+		.anchor(0.5f, 0.5f)
+		.icon(BitmapDescriptorFactory
+				.fromResource(R.drawable.ic_menu_block)));
+		cancel.setClusterGroup(Constants.MARKER_EDIT_CANCEL_GROUP);
+	}
+
+	private Point getControlRemovePosition(Point markerScreenPosition, int markerWidth, int markerHeight){
+		return new Point(markerScreenPosition.x - markerWidth, markerScreenPosition.y + markerHeight);
+	}
+
+	private Point getControlCancelPosition(Point markerScreenPosition, int markerWidth, int markerHeight){
+		return new Point(markerScreenPosition.x + markerWidth, markerScreenPosition.y + markerHeight);
+	}
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		MenuItem itemIn;
@@ -157,8 +257,7 @@ public class MainMapFragment extends SupportMapFragment implements
 			e.printStackTrace();
 		}
 
-		Log.d(this.getClass().getName(), "Is the user logged in ? : "
-				+ OpenTenureApplication.isLoggedin());
+		Log.d(this.getClass().getName(), "Is the user logged in ? : " + OpenTenureApplication.isLoggedin());
 
 		if (OpenTenureApplication.isLoggedin()) {
 			itemIn = menu.findItem(R.id.action_login);
@@ -173,55 +272,11 @@ public class MainMapFragment extends SupportMapFragment implements
 			itemOut = menu.findItem(R.id.action_logout);
 			itemOut.setVisible(false);
 		}
-		if(map != null){
-			boolean isInCommunityArea = false;
+		if (map != null) {
+			float currentZoomLevel = map.getCameraPosition().zoom;
+			float maxSupportedZoomLevel = map.getMaxZoomLevel();
 
-			Configuration cfg = Configuration.getConfigurationByName(
-					"isInitialized");
-			if (cfg != null && Boolean.parseBoolean(cfg.getValue())) {
-				GeometryFactory gf = new GeometryFactory();
-
-				// Get a geometry for the community area
-				List<LatLng> caPoints = CommunityArea.getPolyline().getPoints();
-
-				Coordinate[] caCoords = new Coordinate[(caPoints.size()) > 4 ? (caPoints.size()) : 4];
-
-				int i = 0;
-
-				for (LatLng caPoint : caPoints) {
-					caCoords[i++] = new Coordinate(caPoint.longitude, caPoint.latitude);
-				}
-
-				if(caPoints.size() == 2){
-					// the source is a line segment so we replicate the second vertex to create a three vertices polygon
-					caCoords[i++] = new Coordinate(caPoints.get(1).longitude, caPoints.get(1).latitude);
-				}
-
-				Polygon communityArea = gf.createPolygon(caCoords);
-				communityArea.setSRID(Constants.SRID);
-
-				LatLngBounds visibleBounds = map.getProjection().getVisibleRegion().latLngBounds;
-
-				Coordinate[] vbCoords = new Coordinate[5];
-				
-				vbCoords[0] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.northeast.latitude);
-				vbCoords[1] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.southwest.latitude);
-				vbCoords[2] = new Coordinate(visibleBounds.southwest.longitude, visibleBounds.southwest.latitude);
-				vbCoords[3] = new Coordinate(visibleBounds.southwest.longitude, visibleBounds.northeast.latitude);
-				vbCoords[4] = new Coordinate(visibleBounds.northeast.longitude, visibleBounds.northeast.latitude);
-
-				Polygon visibleBoundsPolygon = gf.createPolygon(vbCoords);
-				visibleBoundsPolygon.setSRID(Constants.SRID);
-				if(communityArea.getEnvelope().contains(visibleBoundsPolygon.getEnvelope())
-						|| communityArea.getEnvelope().overlaps(visibleBoundsPolygon.getEnvelope())){
-					isInCommunityArea = true;
-				}
-			}
-
-			int currentZoomLevel = (int) map.getCameraPosition().zoom;
-			int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
-			
-			if ( isInCommunityArea && currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+			if (currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
 				MenuItem item = menu.findItem(R.id.action_download_tiles);
 				item.setVisible(true);
 			} else {
@@ -235,74 +290,66 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		super.onCreateView(inflater, container, savedInstanceState);
 		mapView = inflater.inflate(R.layout.main_map, container, false);
 		setHasOptionsMenu(true);
-		label = (MapLabel) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.main_map_provider_label);
-		label.changeTextProperties(MAP_LABEL_FONT_SIZE, getActivity()
-				.getResources().getString(R.string.map_provider_google_normal));
-		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
+		label = (MapLabel) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_provider_label);
+		label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+				getActivity().getResources().getString(R.string.map_provider_google_normal));
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_fragment))
+				.getExtendedMap();
 		ClusteringSettings settings = new ClusteringSettings();
-		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(
-				getResources()));
+		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
 		settings.addMarkersDynamically(true);
 		try {
 			map.setClustering(settings);
 		} catch (Throwable i) {
-			
+
 			final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(OpenTenureApplication.getContext());
 			if (status != ConnectionResult.SUCCESS) {
-	            Log.d(this.getClass().getName(), GooglePlayServicesUtil.getErrorString(status));
+				Log.d(this.getClass().getName(), GooglePlayServicesUtil.getErrorString(status));
 
-	            // ask user to update google play services.
-	            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, getActivity(), 1);
-	            dialog.show();
-	            
-	            try {
+				// ask user to update google play services.
+				Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, getActivity(), 1);
+				dialog.show();
+
+				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-	            System.exit(0);
+				System.exit(0);
 			}
-			
+
 		}
 		reloadVisibleProperties();
 
-		lh = new LocationHelper((LocationManager) getActivity()
-				.getBaseContext().getSystemService(Context.LOCATION_SERVICE));
+		lh = new LocationHelper(
+				(LocationManager) getActivity().getBaseContext().getSystemService(Context.LOCATION_SERVICE));
 		lh.start();
 		MapsInitializer.initialize(this.getActivity());
 		map.setInfoWindowAdapter(new PopupAdapter(inflater));
 		map.setOnCameraChangeListener(this);
 
-		if (savedInstanceState != null
-				&& savedInstanceState.getString(MAIN_MAP_TYPE) != null) {
+		if (savedInstanceState != null && savedInstanceState.getString(MAIN_MAP_TYPE) != null) {
 			// probably an orientation change don't move the view but
 			// restore the current type of the map
 			mapType = MapType.valueOf(savedInstanceState.getString(MAIN_MAP_TYPE));
 		} else {
 			// restore the latest map type used on the main map
 			try {
-				mapType = MapType.valueOf(Configuration
-						.getConfigurationValue(MainMapFragment.MAIN_MAP_TYPE));
+				mapType = MapType.valueOf(Configuration.getConfigurationValue(MainMapFragment.MAIN_MAP_TYPE));
 			} catch (Exception e) {
 				mapType = MapType.map_provider_google_normal;
 			}
 		}
 		setMapType();
 
-		String zoom = Configuration
-				.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
-		String latitude = Configuration
-				.getConfigurationValue(MainMapFragment.MAIN_MAP_LATITUDE);
-		String longitude = Configuration
-				.getConfigurationValue(MainMapFragment.MAIN_MAP_LONGITUDE);
+		String zoom = Configuration.getConfigurationValue(MainMapFragment.MAIN_MAP_ZOOM);
+		String latitude = Configuration.getConfigurationValue(MainMapFragment.MAIN_MAP_LATITUDE);
+		String longitude = Configuration.getConfigurationValue(MainMapFragment.MAIN_MAP_LONGITUDE);
 
 		// If we previously used the map
 		if (zoom != null && latitude != null && longitude != null) {
@@ -310,14 +357,12 @@ public class MainMapFragment extends SupportMapFragment implements
 
 				// Let's start from where we left it
 				map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-						new LatLng(Double.parseDouble(latitude), Double
-								.parseDouble(longitude)), Float
-								.parseFloat(zoom)));
+						new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude)),
+						Float.parseFloat(zoom)));
 			} catch (Exception e) {
 			}
 		} else {
-			Configuration cfg = Configuration.getConfigurationByName(
-					"isInitialized");
+			Configuration cfg = Configuration.getConfigurationByName("isInitialized");
 			if (cfg != null && Boolean.parseBoolean(cfg.getValue())) {
 
 				LatLngBounds.Builder bounds;
@@ -333,8 +378,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 				}
 				// set bounds with all the map points
-				map.moveCamera(CameraUpdateFactory.newLatLngBounds(
-						bounds.build(), 400, 400, 10));
+				map.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 400, 400, 10));
 
 			}
 
@@ -343,10 +387,134 @@ public class MainMapFragment extends SupportMapFragment implements
 		OpenTenureApplication.setMapFragment(this);
 
 		redrawVisibleProperties();
+
+		this.map.setOnMapLongClickListener(new OnMapLongClickListener() {
+
+			@Override
+			public void onMapLongClick(final LatLng position) {
+				addMapBookmark(position);
+			}
+		});
+
+		this.map.setOnMarkerClickListener(new OnMarkerClickListener() {
+
+			@Override
+			public boolean onMarkerClick(final Marker mark) {
+				return handleMarkerClick(mark);
+			}
+		});
 		
+		List<Bookmark> allBookmarks = Bookmark.getAllBookmarks();
+		
+		for(Bookmark bm : allBookmarks){
+			mapBookmarksMap.put(createMapBookmarkMarker(new LatLng(bm.getLat(), bm.getLon()), bm.getName()),bm);
+		}
+
 		OpenTenureApplication.setActivity(getActivity());
-		
+
 		return mapView;
+	}
+
+	private boolean handleMarkerClick(final Marker mark) {
+		if (handleMarkerEditClick(mark)) {
+			return true;
+		}else if(handleMapBookmarkMarkerClick(mark)){
+			return true;
+		} else {
+			return handleClick(mark);
+		}
+	}
+
+	private boolean handleMapBookmarkMarkerClick(final Marker mark){
+		if (mapBookmarksMap.containsKey(mark)) {
+				deselect();
+				selectedMarker = mark;
+				selectedMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.map_bookmark_selected));
+				selectedMarker.showInfoWindow();
+				showMarkerEditControls();
+				return true;
+		}
+		return false;
+		
+	}
+
+	private boolean handleClick(Marker mark) {
+		try {
+			deselect();
+			if (!mark.isInfoWindowShown()) {
+				mark.showInfoWindow();
+				return true;
+			}
+		} catch (UnsupportedOperationException e) {
+			// Clustered markers have no ID and may throw this
+		}
+		// Let the flow continue in order to center the map around selected
+		// marker and display info window
+		return false;
+	}
+
+	private void addMapBookmark(final LatLng position) {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(mapView.getContext());
+		dialog.setTitle(R.string.message_add_map_bookmark_marker);
+		dialog.setMessage("Lon: " + position.longitude + ", lat: " + position.latitude);
+		dialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				AlertDialog.Builder locationDescriptionDialog = new AlertDialog.Builder(mapView.getContext());
+				locationDescriptionDialog.setTitle(R.string.title_add_map_bookmark);
+				final EditText bookmarkDescriptionInput = new EditText(mapView.getContext());
+				bookmarkDescriptionInput.setInputType(InputType.TYPE_CLASS_TEXT);
+				locationDescriptionDialog.setView(bookmarkDescriptionInput);
+				locationDescriptionDialog
+						.setMessage(mapView.getContext().getResources().getString(R.string.message_enter_description));
+
+				locationDescriptionDialog.setPositiveButton(R.string.confirm, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						String bookmarkDescription = bookmarkDescriptionInput.getText().toString();
+						addMapBookmark(position, bookmarkDescription);
+					}
+				});
+				locationDescriptionDialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				});
+
+				locationDescriptionDialog.show();
+
+			}
+		});
+		dialog.setNegativeButton(R.string.cancel, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+			}
+		});
+
+		dialog.show();
+	}
+
+	private void addMapBookmark(LatLng position, String name) {
+
+		Marker mark = createMapBookmarkMarker(position, name);
+		Bookmark mb = new Bookmark();
+		mb.setName(name);
+		mb.setLat(position.latitude);
+		mb.setLon(position.longitude);
+		mb.create();
+		mapBookmarksMap.put(mark, mb);
+	}
+
+	protected Marker createMapBookmarkMarker(LatLng position, String description) {
+		Marker marker;
+		marker = map.addMarker(new MarkerOptions().position(position).title(description)
+				.clusterGroup(Constants.BASE_MAP_BOOKMARK_MARKERS_GROUP + mapBookmarksMap.size())
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_bookmark)));
+		return marker;
 	}
 
 	private void showVisibleProperties() {
@@ -375,11 +543,10 @@ public class MainMapFragment extends SupportMapFragment implements
 	@Override
 	public void onStart() {
 
-		map = ((SupportMapFragment) getActivity().getSupportFragmentManager()
-				.findFragmentById(R.id.main_map_fragment)).getExtendedMap();
+		map = ((SupportMapFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.main_map_fragment))
+				.getExtendedMap();
 		ClusteringSettings settings = new ClusteringSettings();
-		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(
-				getResources()));
+		settings.clusterOptionsProvider(new OpenTenureClusterOptionsProvider(getResources()));
 		settings.addMarkersDynamically(true);
 		map.setClustering(settings);
 		super.onStart();
@@ -390,20 +557,16 @@ public class MainMapFragment extends SupportMapFragment implements
 	public void onDestroyView() {
 
 		lh.stop();
-		Fragment map = getFragmentManager().findFragmentById(
-				R.id.main_map_fragment);
-		Fragment label = getFragmentManager().findFragmentById(
-				R.id.main_map_provider_label);
+		Fragment map = getFragmentManager().findFragmentById(R.id.main_map_fragment);
+		Fragment label = getFragmentManager().findFragmentById(R.id.main_map_provider_label);
 		try {
 			if (map.isResumed()) {
-				FragmentTransaction ft = getActivity()
-						.getSupportFragmentManager().beginTransaction();
+				FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 				ft.remove(map);
 				ft.commit();
 			}
 			if (label.isResumed()) {
-				FragmentTransaction ft = getActivity()
-						.getSupportFragmentManager().beginTransaction();
+				FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 				ft.remove(label);
 				ft.commit();
 			}
@@ -439,48 +602,46 @@ public class MainMapFragment extends SupportMapFragment implements
 	}
 
 	private void setMapLabel() {
-		
+
 		switch (mapType) {
-			case map_provider_google_normal:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_google_normal));
-				break;
-			case map_provider_google_satellite:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_google_satellite));
-				break;
-			case map_provider_google_hybrid:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_google_hybrid));
-				break;
-			case map_provider_google_terrain:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_google_terrain));
-				break;
-			case map_provider_osm_mapnik:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_osm_mapnik));
-				break;
-			case map_provider_osm_mapquest:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_osm_mapquest));
-				break;
-			case map_provider_local_tiles:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_local_tiles));
-				break;
-			case map_provider_geoserver:
-				label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources()
-						.getString(R.string.map_provider_geoserver));
-				break;
-			default:
-				break;
+		case map_provider_google_normal:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_google_normal));
+			break;
+		case map_provider_google_satellite:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_google_satellite));
+			break;
+		case map_provider_google_hybrid:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_google_hybrid));
+			break;
+		case map_provider_google_terrain:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_google_terrain));
+			break;
+		case map_provider_osm_mapnik:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_osm_mapnik));
+			break;
+		case map_provider_osm_mapquest:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_osm_mapquest));
+			break;
+		case map_provider_local_tiles:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE,
+					getResources().getString(R.string.map_provider_local_tiles));
+			break;
+		case map_provider_geoserver:
+			label.changeTextProperties(MAP_LABEL_FONT_SIZE, getResources().getString(R.string.map_provider_geoserver));
+			break;
+		default:
+			break;
 		}
 	}
 
 	public void setMapType() {
 
-		for(TileOverlay tiles : map.getTileOverlays()){
+		for (TileOverlay tiles : map.getTileOverlays()) {
 			tiles.remove();
 		}
 
@@ -498,34 +659,26 @@ public class MainMapFragment extends SupportMapFragment implements
 			map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
 			break;
 		case map_provider_osm_mapnik:
-			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256,
-					OSM_MAPNIK_BASE_URL);
+			OsmTileProvider mapNikTileProvider = new OsmTileProvider(256, 256, OSM_MAPNIK_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					mapNikTileProvider));
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(mapNikTileProvider));
 			redrawVisibleProperties();
 			break;
 		case map_provider_osm_mapquest:
-			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256,
-					256, OSM_MAPQUEST_BASE_URL);
+			OsmTileProvider mapQuestTileProvider = new OsmTileProvider(256, 256, OSM_MAPQUEST_BASE_URL);
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					mapQuestTileProvider));
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(mapQuestTileProvider));
 			redrawVisibleProperties();
 			break;
 		case map_provider_local_tiles:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			map.addTileOverlay(new TileOverlayOptions().tileProvider(
-					new LocalMapTileProvider()));
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(new LocalMapTileProvider()));
 			redrawVisibleProperties();
 			break;
 		case map_provider_geoserver:
 			map.setMapType(GoogleMap.MAP_TYPE_NONE);
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(mapView.getContext());
-			map.addTileOverlay(new TileOverlayOptions()
-					.tileProvider(new WmsMapTileProvider(256, 256,
-							preferences)));
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
+			map.addTileOverlay(new TileOverlayOptions().tileProvider(new WmsMapTileProvider(256, 256, preferences)));
 			redrawVisibleProperties();
 			break;
 		default:
@@ -533,8 +686,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		}
 		setMapLabel();
 
-		Configuration provider = Configuration
-				.getConfigurationByName(MAIN_MAP_TYPE);
+		Configuration provider = Configuration.getConfigurationByName(MAIN_MAP_TYPE);
 
 		if (provider != null) {
 			provider.setValue(mapType.toString());
@@ -561,35 +713,35 @@ public class MainMapFragment extends SupportMapFragment implements
 		case R.id.action_settings:
 			return true;
 		case R.id.map_provider_google_normal:
-			mapType=MapType.map_provider_google_normal;
+			mapType = MapType.map_provider_google_normal;
 			setMapType();
 			return true;
 		case R.id.map_provider_google_satellite:
-			mapType=MapType.map_provider_google_satellite;
+			mapType = MapType.map_provider_google_satellite;
 			setMapType();
 			return true;
 		case R.id.map_provider_google_hybrid:
-			mapType=MapType.map_provider_google_hybrid;
+			mapType = MapType.map_provider_google_hybrid;
 			setMapType();
 			return true;
 		case R.id.map_provider_google_terrain:
-			mapType=MapType.map_provider_google_terrain;
+			mapType = MapType.map_provider_google_terrain;
 			setMapType();
 			return true;
 		case R.id.map_provider_osm_mapnik:
-			mapType=MapType.map_provider_osm_mapnik;
+			mapType = MapType.map_provider_osm_mapnik;
 			setMapType();
 			return true;
 		case R.id.map_provider_osm_mapquest:
-			mapType=MapType.map_provider_osm_mapquest;
+			mapType = MapType.map_provider_osm_mapquest;
 			setMapType();
 			return true;
 		case R.id.map_provider_local_tiles:
-			mapType=MapType.map_provider_local_tiles;
+			mapType = MapType.map_provider_local_tiles;
 			setMapType();
 			return true;
 		case R.id.map_provider_geoserver:
-			mapType=MapType.map_provider_geoserver;
+			mapType = MapType.map_provider_geoserver;
 			setMapType();
 			return true;
 		case R.id.action_center_and_follow:
@@ -601,103 +753,80 @@ public class MainMapFragment extends SupportMapFragment implements
 			} else {
 				LatLng currentLocation = lh.getLastKnownLocation();
 
-				if (currentLocation != null && currentLocation.latitude != 0.0
-						&& currentLocation.longitude != 0.0) {
-					map.animateCamera(CameraUpdateFactory.newLatLngZoom(
-							currentLocation, 18), 1000, null);
-					myLocation = map
-							.addMarker(new MarkerOptions()
-									.position(currentLocation)
-									.anchor(0.5f, 0.5f)
-									.title(mapView.getContext().getResources()
-											.getString(R.string.title_i_m_here))
-									.icon(BitmapDescriptorFactory
-											.fromResource(R.drawable.ic_menu_mylocation)));
-					myLocation
-							.setClusterGroup(Constants.MY_LOCATION_MARKERS_GROUP);
+				if (currentLocation != null && currentLocation.latitude != 0.0 && currentLocation.longitude != 0.0) {
+					map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18), 1000, null);
+					myLocation = map.addMarker(new MarkerOptions().position(currentLocation).anchor(0.5f, 0.5f)
+							.title(mapView.getContext().getResources().getString(R.string.title_i_m_here))
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_menu_mylocation)));
+					myLocation.setClusterGroup(Constants.MY_LOCATION_MARKERS_GROUP);
 					lh.setCustomListener(myLocationListener);
 					isFollowing = true;
 
 				} else {
-					Toast.makeText(getActivity().getBaseContext(),
-							R.string.check_location_service, Toast.LENGTH_LONG)
+					Toast.makeText(getActivity().getBaseContext(), R.string.check_location_service, Toast.LENGTH_LONG)
 							.show();
 				}
 			}
 			return true;
-			
-		case R.id.action_center_community_area:
-			
-			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
-				Toast toast;
-				String toastMessage = String.format(OpenTenureApplication
-						.getContext().getString(
-								R.string.message_app_not_yet_initialized));
 
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						toastMessage, Toast.LENGTH_LONG);
+		case R.id.action_center_community_area:
+
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName("isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String
+						.format(OpenTenureApplication.getContext().getString(R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage, Toast.LENGTH_LONG);
 				toast.show();
 
 				return true;
 			}
-			
-			MainMapFragment mapFrag = OpenTenureApplication
-			.getMapFragment();
+
+			MainMapFragment mapFrag = OpenTenureApplication.getMapFragment();
 
 			mapFrag.boundCameraToInterestArea();
 			return true;
 
 		case R.id.action_download_claims:
-			
-			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
-				Toast toast;
-				String toastMessage = String.format(OpenTenureApplication
-						.getContext().getString(
-								R.string.message_app_not_yet_initialized));
 
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						toastMessage, Toast.LENGTH_LONG);
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName("isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String
+						.format(OpenTenureApplication.getContext().getString(R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage, Toast.LENGTH_LONG);
 				toast.show();
 
 				return true;
 			}
 
 			if (!OpenTenureApplication.isLoggedin()) {
-				Toast toast = Toast.makeText(
-						OpenTenureApplication.getContext(),
-						R.string.message_login_before, Toast.LENGTH_LONG);
+				Toast toast = Toast.makeText(OpenTenureApplication.getContext(), R.string.message_login_before,
+						Toast.LENGTH_LONG);
 				toast.show();
 				return true;
 			} else {
-				if(OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())){
+				if (OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())) {
 					downloadClaims();
-				}else{
+				} else {
 					// Avoid to automatically download claims over mobile data
-					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
-							mapView.getContext());
+					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(mapView.getContext());
 					confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
-					confirmDownloadBuilder.setMessage(getResources().getString(
-							R.string.message_data_over_mobile));
+					confirmDownloadBuilder.setMessage(getResources().getString(R.string.message_data_over_mobile));
 
-					confirmDownloadBuilder.setPositiveButton(R.string.confirm,
-							new OnClickListener() {
+					confirmDownloadBuilder.setPositiveButton(R.string.confirm, new OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									downloadClaims();
-								}
-							});
-					confirmDownloadBuilder.setNegativeButton(R.string.cancel,
-							new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							downloadClaims();
+						}
+					});
+					confirmDownloadBuilder.setNegativeButton(R.string.cancel, new OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
 
 					final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
 					confirmDownloadDialog.show();
@@ -705,16 +834,13 @@ public class MainMapFragment extends SupportMapFragment implements
 				return true;
 			}
 		case R.id.action_login:
-			
-			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
-				Toast toast;
-				String toastMessage = String.format(OpenTenureApplication
-						.getContext().getString(
-								R.string.message_app_not_yet_initialized));
 
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						toastMessage, Toast.LENGTH_LONG);
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName("isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String
+						.format(OpenTenureApplication.getContext().getString(R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage, Toast.LENGTH_LONG);
 				toast.show();
 				return true;
 			}
@@ -735,8 +861,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 				LogoutTask logoutTask = new LogoutTask();
 
-				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						getActivity());
+				logoutTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity());
 
 			} catch (Exception e) {
 				Log.d("Details", "An error ");
@@ -746,56 +871,46 @@ public class MainMapFragment extends SupportMapFragment implements
 
 			return true;
 		case R.id.action_download_tiles:
-			
-			if (!Boolean.parseBoolean(Configuration.getConfigurationByName(
-					"isInitialized").getValue())) {
-				Toast toast;
-				String toastMessage = String.format(OpenTenureApplication
-						.getContext().getString(
-								R.string.message_app_not_yet_initialized));
 
-				toast = Toast.makeText(OpenTenureApplication.getContext(),
-						toastMessage, Toast.LENGTH_LONG);
+			if (!Boolean.parseBoolean(Configuration.getConfigurationByName("isInitialized").getValue())) {
+				Toast toast;
+				String toastMessage = String
+						.format(OpenTenureApplication.getContext().getString(R.string.message_app_not_yet_initialized));
+
+				toast = Toast.makeText(OpenTenureApplication.getContext(), toastMessage, Toast.LENGTH_LONG);
 				toast.show();
 
 				return true;
 			}
 
-			if(!OpenTenureApplication.getInstance().isOnline()){
-				Toast.makeText(
-						mapView.getContext(),
-						mapView.getContext().getResources().getString(
-										R.string.error_connection), Toast.LENGTH_LONG).show();
-				
+			if (!OpenTenureApplication.getInstance().isOnline()) {
+				Toast.makeText(mapView.getContext(),
+						mapView.getContext().getResources().getString(R.string.error_connection), Toast.LENGTH_LONG)
+						.show();
+
 				return true;
-			}else{
-				if(OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())){
+			} else {
+				if (OpenTenureApplication.getInstance().isConnectedWifi(mapView.getContext())) {
 					downloadTiles();
-				}else{
+				} else {
 					// Avoid to automatically download tiles over mobile data
-					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(
-							mapView.getContext());
+					AlertDialog.Builder confirmDownloadBuilder = new AlertDialog.Builder(mapView.getContext());
 					confirmDownloadBuilder.setTitle(R.string.title_confirm_data_transfer);
-					confirmDownloadBuilder.setMessage(getResources().getString(
-							R.string.message_data_over_mobile));
+					confirmDownloadBuilder.setMessage(getResources().getString(R.string.message_data_over_mobile));
 
-					confirmDownloadBuilder.setPositiveButton(R.string.confirm,
-							new OnClickListener() {
+					confirmDownloadBuilder.setPositiveButton(R.string.confirm, new OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									downloadTiles();
-								}
-							});
-					confirmDownloadBuilder.setNegativeButton(R.string.cancel,
-							new OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							downloadTiles();
+						}
+					});
+					confirmDownloadBuilder.setNegativeButton(R.string.cancel, new OnClickListener() {
 
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-								}
-							});
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+						}
+					});
 
 					final AlertDialog confirmDownloadDialog = confirmDownloadBuilder.create();
 					confirmDownloadDialog.show();
@@ -806,16 +921,14 @@ public class MainMapFragment extends SupportMapFragment implements
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
-	private void downloadClaims(){
-		ProgressBar bar = (ProgressBar) mapView
-				.findViewById(R.id.progress_bar);
+
+	private void downloadClaims() {
+		ProgressBar bar = (ProgressBar) mapView.findViewById(R.id.progress_bar);
 
 		bar.setVisibility(View.VISIBLE);
 		bar.setProgress(0);
 
-		TextView label = (TextView) mapView
-				.findViewById(R.id.download_claim_label);
+		TextView label = (TextView) mapView.findViewById(R.id.download_claim_label);
 		label.setVisibility(View.VISIBLE);
 
 		OpenTenureApplication.setMapFragment(this);
@@ -823,80 +936,80 @@ public class MainMapFragment extends SupportMapFragment implements
 		LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
 
 		GetAllClaimsTask task = new GetAllClaimsTask();
-		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds,
-				mapView);
+		task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, bounds, mapView);
 	}
-	
-	private void downloadTiles(){
-		int currentZoomLevel = (int) map.getCameraPosition().zoom;
-		int maxSupportedZoomLevel = (int) map.getMaxZoomLevel();
-		
-		if ( currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
+
+	private void downloadTiles() {
+		float currentZoomLevel = map.getCameraPosition().zoom;
+		float maxSupportedZoomLevel = map.getMaxZoomLevel();
+
+		if (currentZoomLevel >= (maxSupportedZoomLevel - MAX_ZOOM_LEVELS_TO_DOWNLOAD)) {
 
 			int tilesToDownload = Tile.getTilesToDownload();
-		
 
 			LatLngBounds bounds = map.getProjection().getVisibleRegion().latLngBounds;
-			
-			SharedPreferences sharedPrefs = PreferenceManager
-			.getDefaultSharedPreferences(mapView.getContext());
+
+			SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mapView.getContext());
 
 			List<Tile> tiles = null;
 			OfflineTilesProvider provider = null;
-			
-			String currentTilesProvider = sharedPrefs.getString(OpenTenure.tiles_provider, OfflineTilesProvider.TilesProviderType.GeoServer.toString());
 
-			if(currentTilesProvider.equalsIgnoreCase(TilesProviderType.GeoServer.toString())){
-				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
-			}else if(currentTilesProvider.equalsIgnoreCase(TilesProviderType.TMS.toString())){
-				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
-			}else{
-				provider = new OfflineWtmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH, OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			String currentTilesProvider = sharedPrefs.getString(OpenTenure.tiles_provider,
+					OfflineTilesProvider.TilesProviderType.GeoServer.toString());
+
+			if (currentTilesProvider.equalsIgnoreCase(TilesProviderType.GeoServer.toString())) {
+				provider = new OfflineWmsMapTileProvider(OfflineTilesProvider.TILE_WIDTH,
+						OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			} else if (currentTilesProvider.equalsIgnoreCase(TilesProviderType.TMS.toString())) {
+				provider = new OfflineTmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH,
+						OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
+			} else {
+				provider = new OfflineWtmsMapTilesProvider(OfflineTilesProvider.TILE_WIDTH,
+						OfflineTilesProvider.TILE_HEIGHT, sharedPrefs);
 			}
-			tiles = provider.getTilesForLatLngBounds(bounds, currentZoomLevel,21);
+			tiles = provider.getTilesForLatLngBounds(bounds, (int)currentZoomLevel, (int)maxSupportedZoomLevel);
 
-			if((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE){
-			
+			if ((tilesToDownload + tiles.size()) < MAX_TILES_IN_DOWNLOAD_QUEUE) {
+
 				Tile.createTiles(tiles);
 				Log.d(this.getClass().getName(), "Created " + tiles.size() + " tiles to download");
-				tilesToDownload = Tile.getTilesToDownload(); 
+				tilesToDownload = Tile.getTilesToDownload();
 				Toast.makeText(getActivity().getBaseContext(),
-						String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
-						.show();
-			}else{
+						String.format(getActivity().getBaseContext().getResources().getString(R.string.tiles_queued),
+								tilesToDownload),
+						Toast.LENGTH_LONG).show();
+			} else {
 				Toast.makeText(getActivity().getBaseContext(),
-						String.format(getActivity().getBaseContext().getResources().getString(R.string.too_many_tiles_queued), tilesToDownload), Toast.LENGTH_LONG)
-						.show();
+						String.format(
+								getActivity().getBaseContext().getResources().getString(R.string.too_many_tiles_queued),
+								tilesToDownload),
+						Toast.LENGTH_LONG).show();
 			}
 
 			Task task = Task.getTask(TileDownloadTask.TASK_ID);
-			
-			if(task != null && System.currentTimeMillis() - task.getStarted().getTime() > 900000){
+
+			if (task != null && System.currentTimeMillis() - task.getStarted().getTime() > 900000) {
 				// Cancel tasks older than 15 minutes
 				task.delete();
 				task = null;
 			}
 
-			if(task == null){
+			if (task == null) {
 				TileDownloadTask downloadTask = new TileDownloadTask();
 				downloadTask.setContext(getActivity().getBaseContext());
 				downloadTask.setMap(map);
 				downloadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
-			
+
 		} else {
-			Toast.makeText(getActivity().getBaseContext(),
-					R.string.zoom_level_too_low, Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(getActivity().getBaseContext(), R.string.zoom_level_too_low, Toast.LENGTH_LONG).show();
 		}
 
 	}
-	
 
 	private void storeCameraPosition(CameraPosition cameraPosition) {
 
-		Configuration zoom = Configuration
-				.getConfigurationByName(MAIN_MAP_ZOOM);
+		Configuration zoom = Configuration.getConfigurationByName(MAIN_MAP_ZOOM);
 
 		if (zoom != null) {
 			zoom.setValue("" + cameraPosition.zoom);
@@ -908,8 +1021,7 @@ public class MainMapFragment extends SupportMapFragment implements
 			zoom.create();
 		}
 
-		Configuration latitude = Configuration
-				.getConfigurationByName(MAIN_MAP_LATITUDE);
+		Configuration latitude = Configuration.getConfigurationByName(MAIN_MAP_LATITUDE);
 
 		if (latitude != null) {
 			latitude.setValue("" + cameraPosition.target.latitude);
@@ -921,8 +1033,7 @@ public class MainMapFragment extends SupportMapFragment implements
 			latitude.create();
 		}
 
-		Configuration longitude = Configuration
-				.getConfigurationByName(MAIN_MAP_LONGITUDE);
+		Configuration longitude = Configuration.getConfigurationByName(MAIN_MAP_LONGITUDE);
 
 		if (longitude != null) {
 			longitude.setValue("" + cameraPosition.target.longitude);
@@ -947,8 +1058,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		}
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
-			BasePropertyBoundary bpb = new BasePropertyBoundary(
-					mapView.getContext(), map, claim, false);
+			BasePropertyBoundary bpb = new BasePropertyBoundary(mapView.getContext(), map, claim, false);
 			Polygon claimPoly = bpb.getPolygon();
 			if (claimPoly != null && claimPoly.intersects(boundsPoly)) {
 				visibleProperties.add(bpb);
@@ -959,18 +1069,15 @@ public class MainMapFragment extends SupportMapFragment implements
 
 		for (BasePropertyBoundary visibleProperty : visibleProperties) {
 
-			if (visibleProperty.getVertices() != null
-					&& visibleProperty.getVertices().size() > 0) {
+			if (visibleProperty.getVertices() != null && visibleProperty.getVertices().size() > 0) {
 				visiblePropertiesPolygonList.add(visibleProperty.getPolygon());
 			}
 		}
-		Polygon[] visiblePropertiesPolygons = new Polygon[visiblePropertiesPolygonList
-				.size()];
+		Polygon[] visiblePropertiesPolygons = new Polygon[visiblePropertiesPolygonList.size()];
 		visiblePropertiesPolygonList.toArray(visiblePropertiesPolygons);
 
 		GeometryFactory gf = new GeometryFactory();
-		visiblePropertiesMultiPolygon = gf
-				.createMultiPolygon(visiblePropertiesPolygons);
+		visiblePropertiesMultiPolygon = gf.createMultiPolygon(visiblePropertiesPolygons);
 		visiblePropertiesMultiPolygon.setSRID(Constants.SRID);
 
 		showVisibleProperties();
@@ -981,16 +1088,11 @@ public class MainMapFragment extends SupportMapFragment implements
 		GeometryFactory gf = new GeometryFactory();
 		Coordinate[] coords = new Coordinate[5];
 
-		coords[0] = new Coordinate(bounds.northeast.longitude,
-				bounds.northeast.latitude);
-		coords[1] = new Coordinate(bounds.northeast.longitude,
-				bounds.southwest.latitude);
-		coords[2] = new Coordinate(bounds.southwest.longitude,
-				bounds.southwest.latitude);
-		coords[3] = new Coordinate(bounds.southwest.longitude,
-				bounds.northeast.latitude);
-		coords[4] = new Coordinate(bounds.northeast.longitude,
-				bounds.northeast.latitude);
+		coords[0] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
+		coords[1] = new Coordinate(bounds.northeast.longitude, bounds.southwest.latitude);
+		coords[2] = new Coordinate(bounds.southwest.longitude, bounds.southwest.latitude);
+		coords[3] = new Coordinate(bounds.southwest.longitude, bounds.northeast.latitude);
+		coords[4] = new Coordinate(bounds.northeast.longitude, bounds.northeast.latitude);
 
 		Polygon polygon = gf.createPolygon(coords);
 		polygon.setSRID(Constants.SRID);
@@ -1016,8 +1118,7 @@ public class MainMapFragment extends SupportMapFragment implements
 		allClaims = Claim.getSimplifiedClaimsForMap();
 		visibleProperties = new ArrayList<BasePropertyBoundary>();
 		for (Claim claim : allClaims) {
-			visibleProperties.add(new BasePropertyBoundary(
-					mapView.getContext(), map, claim, false));
+			visibleProperties.add(new BasePropertyBoundary(mapView.getContext(), map, claim, false));
 		}
 
 		showVisibleProperties();
@@ -1035,8 +1136,7 @@ public class MainMapFragment extends SupportMapFragment implements
 
 	public void boundCameraToInterestArea() {
 
-		if (Boolean.parseBoolean(Configuration.getConfigurationByName(
-				"isInitialized").getValue())) {
+		if (Boolean.parseBoolean(Configuration.getConfigurationByName("isInitialized").getValue())) {
 
 			drawAreaOfInterest();
 
@@ -1054,10 +1154,9 @@ public class MainMapFragment extends SupportMapFragment implements
 				bounds.include(cn);
 
 			}
-			
+
 			// set bounds with all the map points
-			map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(),
-					400, 400, 10));
+			map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 400, 400, 10));
 
 		}
 
