@@ -34,6 +34,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
@@ -77,7 +78,10 @@ public class CommunityServerAPI {
 	}
 
 	private static void setServerProtoVersion(HttpResponse serverResponse){
-		setServerProtoVersion(serverResponse.getFirstHeader(SERVER_PROTO_VERSION_HEADER).getValue());
+		Header header = serverResponse.getFirstHeader(SERVER_PROTO_VERSION_HEADER);
+		if(header != null){
+			setServerProtoVersion(header.getValue());
+		}
 	}
 
 	private static void setServerProtoVersion(String serverProtoVersion){
