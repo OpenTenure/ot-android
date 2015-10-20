@@ -79,6 +79,7 @@ public class CommunityServerAPI {
 		return serverProtoVersion;
 	}
 
+
 	private static void setServerProtoVersion(HttpResponse serverResponse) {
 		Header header = serverResponse
 				.getFirstHeader(SERVER_PROTO_VERSION_HEADER);
@@ -87,6 +88,7 @@ public class CommunityServerAPI {
 		else {
 			setServerProtoVersion("");
 			System.out.println("Header is null");
+
 		}
 	}
 
