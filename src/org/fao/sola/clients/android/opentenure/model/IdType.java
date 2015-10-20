@@ -252,7 +252,7 @@ public class IdType {
 			IdType idType = (IdType) iterator
 					.next();
 			
-			keyValueMap.put(idType.getType(),dnl.getLocalizedDisplayName(idType.getDisplayValue()));
+			keyValueMap.put(idType.getType().toLowerCase(),dnl.getLocalizedDisplayName(idType.getDisplayValue()));
 		}
 		return keyValueMap;
 	}

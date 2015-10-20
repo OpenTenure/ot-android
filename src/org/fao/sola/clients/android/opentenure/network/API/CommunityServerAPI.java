@@ -36,6 +36,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.CookieStore;
@@ -69,20 +70,27 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 public class CommunityServerAPI {
-	
+
 	public static String SERVER_PROTO_VERSION_HEADER = "ProtoVersion";
-	
+
 	private static String serverProtoVersion;
-	
-	public static String getServerProtoVersion(){
+
+	public static String getServerProtoVersion() {
 		return serverProtoVersion;
 	}
 
-	private static void setServerProtoVersion(HttpResponse serverResponse){
-		setServerProtoVersion(serverResponse.getFirstHeader(SERVER_PROTO_VERSION_HEADER).getValue());
+	private static void setServerProtoVersion(HttpResponse serverResponse) {
+		Header header = serverResponse
+				.getFirstHeader(SERVER_PROTO_VERSION_HEADER);
+		if (header != null)
+			setServerProtoVersion(header.getValue());
+		else {
+			setServerProtoVersion("");
+			System.out.println("Header is null");
+		}
 	}
 
-	private static void setServerProtoVersion(String serverProtoVersion){
+	private static void setServerProtoVersion(String serverProtoVersion) {
 		CommunityServerAPI.serverProtoVersion = serverProtoVersion;
 	}
 
@@ -149,7 +157,7 @@ public class CommunityServerAPI {
 			setServerProtoVersion(response);
 
 			switch (response.getStatusLine().getStatusCode()) {
-			
+
 			case 200:
 				OpenTenureApplication.setCoockieStore(CS);
 				Log.d("CommunityServerAPI", "Login status : 200");
@@ -774,21 +782,19 @@ public class CommunityServerAPI {
 			return null;
 		} catch (java.net.SocketTimeoutException stoe) {
 
-			Log.d("CommunityServerAPI",
-					"GET LAND USES NETWORK ERROR STOE" + stoe.getMessage());
+			Log.d("CommunityServerAPI", "GET LAND USES NETWORK ERROR STOE"
+					+ stoe.getMessage());
 			stoe.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}
-		catch (javax.net.ssl.SSLException ssle) {
+		} catch (javax.net.ssl.SSLException ssle) {
 
 			Log.d("CommunityServerAPI", "GET LAND USES NETWORK ERROR SSLE"
 					+ ssle.getMessage());
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		} 
-		catch (Exception ex) {
+		} catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET LAND USES ERROR " + ex.getMessage());
@@ -854,7 +860,7 @@ public class CommunityServerAPI {
 
 			}
 
-		}catch (java.net.SocketException se) {
+		} catch (java.net.SocketException se) {
 
 			Log.d("CommunityServerAPI",
 					"GET LANGUAGES NETWORK ERROR SE" + se.getMessage());
@@ -863,19 +869,19 @@ public class CommunityServerAPI {
 			return null;
 		} catch (java.net.SocketTimeoutException stoe) {
 
-			Log.d("CommunityServerAPI",
-					"GET LANGUAGES NETWORK ERROR STOE" + stoe.getMessage());
+			Log.d("CommunityServerAPI", "GET LANGUAGES NETWORK ERROR STOE"
+					+ stoe.getMessage());
 			stoe.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}catch (javax.net.ssl.SSLException ssle) {
+		} catch (javax.net.ssl.SSLException ssle) {
 
 			Log.d("CommunityServerAPI", "GET LANGUAGES NETWORK ERROR SSLE"
 					+ ssle.getMessage());
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}  catch (Exception ex) {
+		} catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
 					"GET LANGUAGES ERROR " + ex.getMessage());
@@ -941,7 +947,7 @@ public class CommunityServerAPI {
 
 			}
 
-		}  catch (java.net.SocketException se) {
+		} catch (java.net.SocketException se) {
 
 			Log.d("CommunityServerAPI", "GET ALL ID TYPES NETWORK ERROR SE"
 					+ se.getMessage());
@@ -955,14 +961,14 @@ public class CommunityServerAPI {
 			stoe.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}catch (javax.net.ssl.SSLException ssle) {
+		} catch (javax.net.ssl.SSLException ssle) {
 
 			Log.d("CommunityServerAPI", "GET ALL ID TYPES NETWORK ERROR SSLE"
 					+ ssle.getMessage());
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		} 
+		}
 
 		catch (Exception ex) {
 
@@ -1036,7 +1042,7 @@ public class CommunityServerAPI {
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
 
-		}catch (java.net.SocketException se) {
+		} catch (java.net.SocketException se) {
 
 			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR SE"
 					+ se.getMessage());
@@ -1050,7 +1056,7 @@ public class CommunityServerAPI {
 			stoe.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}catch (javax.net.ssl.SSLException ssle) {
+		} catch (javax.net.ssl.SSLException ssle) {
 
 			Log.d("CommunityServerAPI", "GET COMMUNITY AREA NETWORK ERROR SSLE"
 					+ ssle.getMessage());
@@ -1144,7 +1150,7 @@ public class CommunityServerAPI {
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
 		}
-		
+
 		catch (javax.net.ssl.SSLException ssle) {
 
 			Log.d("CommunityServerAPI", "GET ALL CLAIM NETWORK ERROR SSLE"
@@ -1152,8 +1158,8 @@ public class CommunityServerAPI {
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}	
-		
+		}
+
 		catch (Exception ex) {
 
 			Log.d("CommunityServerAPI",
@@ -1250,8 +1256,9 @@ public class CommunityServerAPI {
 			return null;
 		} catch (javax.net.ssl.SSLException ssle) {
 
-			Log.d("CommunityServerAPI", "GET ALL DOCUMENT TYPES NETWORK ERROR SSLE"
-					+ ssle.getMessage());
+			Log.d("CommunityServerAPI",
+					"GET ALL DOCUMENT TYPES NETWORK ERROR SSLE"
+							+ ssle.getMessage());
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
@@ -1328,7 +1335,7 @@ public class CommunityServerAPI {
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
 
-		}  catch (java.net.SocketException se) {
+		} catch (java.net.SocketException se) {
 
 			Log.d("CommunityServerAPI",
 					"GET PARCEL GEOMETRY REQUIRED NETWORK ERROR SE"
@@ -1344,14 +1351,15 @@ public class CommunityServerAPI {
 			stoe.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}catch (javax.net.ssl.SSLException ssle) {
+		} catch (javax.net.ssl.SSLException ssle) {
 
-			Log.d("CommunityServerAPI", "GET PARCEL GEOMETRY NETWORK ERROR SSLE"
-					+ ssle.getMessage());
+			Log.d("CommunityServerAPI",
+					"GET PARCEL GEOMETRY NETWORK ERROR SSLE"
+							+ ssle.getMessage());
 			ssle.printStackTrace();
 			OpenTenureApplication.getInstance().setNetworkError(true);
 			return null;
-		}  catch (Exception ex) {
+		} catch (Exception ex) {
 
 			Log.d("CommunityServerAPI", "GET PARCEL GEOMETRY REQUIRED ERROR "
 					+ ex.getMessage());
@@ -1427,7 +1435,6 @@ public class CommunityServerAPI {
 
 		} catch (UnknownHostException uhe) {
 
-			
 			uhe.printStackTrace();
 
 			SaveClaimResponse saveResponse = new SaveClaimResponse();
@@ -1603,7 +1610,7 @@ public class CommunityServerAPI {
 					.getStatusCode());
 
 		} catch (UnknownHostException uhe) {
-			
+
 			apiResponse = new ApiResponse();
 			apiResponse.setHttpStatusCode(100);
 			apiResponse.setMessage("uploadChunk error :" + uhe.getMessage());

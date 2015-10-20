@@ -226,7 +226,7 @@ public class LandUse {
 			org.fao.sola.clients.android.opentenure.model.LandUse landUse = (org.fao.sola.clients.android.opentenure.model.LandUse) iterator
 					.next();
 
-			keyValueMap.put(landUse.getType(),dnl.getLocalizedDisplayName(landUse.getDisplayValue()));
+			keyValueMap.put(landUse.getType().toLowerCase(),dnl.getLocalizedDisplayName(landUse.getDisplayValue()));
 
 		}
 		return keyValueMap;

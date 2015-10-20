@@ -69,8 +69,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.InputType;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -103,8 +101,7 @@ public class ClaimDetailsFragment extends Fragment {
 	private Map<String, String> valueKeyClaimTypesMap;
 	private boolean challengedJustLoaded = false;
 	private final Calendar localCalendar = Calendar.getInstance();
-	
-	
+
 	private static final int PERSON_RESULT = 100;
 
 	@Override
@@ -411,7 +408,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 	private void preload() {
 
-		// Code Types Spinner
+		// Claim Types Spinner
 		Spinner spinner = (Spinner) rootView
 				.findViewById(R.id.claimTypesSpinner);
 
@@ -456,16 +453,12 @@ public class ClaimDetailsFragment extends Fragment {
 		valueKeyMapLandUse = lu.getValueKeyMap(OpenTenureApplication
 				.getInstance().getLocalization());
 
-		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator
-				.hasNext();) {
-			String string = (String) iterator.next();
-		}
-
 		List<String> landUseslist = new ArrayList<String>();
 		keys = new TreeSet<String>(keyValueMapLandUse.keySet());
 		for (String key : keys) {
 			String value = keyValueMapLandUse.get(key);
 			landUseslist.add(value);
+
 			// do something
 		}
 
@@ -692,6 +685,7 @@ public class ClaimDetailsFragment extends Fragment {
 			((Spinner) rootView.findViewById(R.id.landUseSpinner))
 					.setSelection(new LandUse().getIndexByCodeType(claim
 							.getLandUse()));
+
 
 			((EditText) rootView.findViewById(R.id.claim_notes_input_field))
 					.setText(claim.getNotes());
@@ -1195,6 +1189,7 @@ public class ClaimDetailsFragment extends Fragment {
 							else if (!claim.getLandUse().equals(
 									valueKeyMapLandUse.get(landUseDispValue)))
 								changed = true;
+
 							else {
 
 								String notes = ((EditText) rootView
@@ -1217,6 +1212,7 @@ public class ClaimDetailsFragment extends Fragment {
 										if (startDate != null
 												&& !startDate.equals(""))
 											changed = true;
+
 									} else {
 
 										java.util.Date dob = null;

@@ -222,7 +222,7 @@ public class ClaimType {
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 			
-			keyValueMap.put(claimType.getType(),dnl.getLocalizedDisplayName(claimType.getDisplayValue()));
+			keyValueMap.put(claimType.getType().toLowerCase(),dnl.getLocalizedDisplayName(claimType.getDisplayValue()));
 		}
 		return keyValueMap;
 	}

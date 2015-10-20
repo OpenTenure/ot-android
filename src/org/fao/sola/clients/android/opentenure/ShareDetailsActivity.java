@@ -30,8 +30,8 @@ package org.fao.sola.clients.android.opentenure;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-
+import org.fao.sola.clients.android.opentenure.button.listener.SaveShareDetailsNegativeListener;
+import org.fao.sola.clients.android.opentenure.button.listener.SaveShareDetailsPositiveListener;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Owner;
@@ -43,6 +43,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,9 +82,16 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 	@Override
 	public void onResume() {
+		update();
 		super.onResume();
 		OpenTenureApplication.getInstance().getDatabase().open();
 	};
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		checkChanges();
+		return super.onKeyDown(keyCode, event);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -262,6 +270,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 			switch (requestCode) {
 			case SelectPersonActivity.SELECT_PERSON_ACTIVITY_RESULT:
+
 				String personId = data
 						.getStringExtra(PersonActivity.PERSON_ID_KEY);
 
@@ -294,11 +303,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 	protected void update() {
 
 		if (claimId != null) {
-
-			Claim claim = Claim.getClaim(claimId);
-
-			int i = 0;
-
 			ArrayAdapter<String> adapter = null;
 
 			adapter = new OwnersListAdapter(OpenTenureApplication.getContext(),
@@ -313,7 +317,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 		}
 	}
 
-	private int save() {
+	public int save() {
 
 		try {
 			Spinner spinner = (Spinner) findViewById(R.id.share_shares);
@@ -332,7 +336,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 
 				return 0;
 			}
-
 			share.setShares(value);
 			List<String> ownersId = new ArrayList<String>();
 
@@ -347,7 +350,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 					ownersId.add(owner.getPersonId());
 					owner.delete();
 				}
-
 			}
 
 			ListView ownerList = ((ListView) findViewById(R.id.owner_list));
@@ -383,6 +385,83 @@ public class ShareDetailsActivity extends FragmentActivity implements
 		}
 
 		return 0;
+	}
+
+	public boolean checkChanges() {
+
+		boolean changed = false;
+
+		Claim claim = Claim.getClaim(claimId);
+
+		if (claim != null) {
+
+			Spinner spinner = (Spinner) findViewById(R.id.share_shares);
+			int value = Integer.parseInt(spinner.getSelectedItem().toString());
+
+			if (share.getShares() != value) {
+				changed = true;
+			} else {
+
+				ListView ownerList = ((ListView) findViewById(R.id.owner_list));
+				List<Owner> owners = Owner.getOwners(shareId);
+
+				if (ownerList.getCount() != owners.size())
+					changed = true;
+
+				else {
+					List<String> idsCreated = new ArrayList<String>();
+					List<String> ownersId = new ArrayList<String>();
+
+					for (Iterator iterator = owners.iterator(); iterator
+							.hasNext();) {
+						Owner owner = (Owner) iterator.next();
+						ownersId.add(owner.getPersonId());
+					}
+
+					for (int i = 0; i <= ownerList.getLastVisiblePosition(); i++) {
+						idsCreated.add(ownerList.getItemAtPosition(i)
+								.toString());
+					}
+
+					// Here checks already present owners
+					for (Iterator iterator = ownersId.iterator(); iterator
+							.hasNext();) {
+						String id = (String) iterator.next();
+
+						if (!idsCreated.contains(id))
+							changed = true;
+						break;
+					}
+				}
+
+			}
+
+			if (changed) {
+
+				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
+						this);
+				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);
+				String dialogMessage = OpenTenureApplication.getContext()
+						.getString(R.string.message_save_changes);
+
+				saveChangesDialog.setMessage(dialogMessage);
+
+				saveChangesDialog.setPositiveButton(R.string.confirm,
+						new SaveShareDetailsPositiveListener(this));
+				saveChangesDialog.setNegativeButton(R.string.cancel,
+						new SaveShareDetailsNegativeListener(this));
+				saveChangesDialog.show();
+
+			}
+
+			else
+
+				return true;
+
+		}
+
+		return true;
+
 	}
 
 	@Override

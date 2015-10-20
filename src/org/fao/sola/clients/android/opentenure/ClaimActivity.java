@@ -94,8 +94,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	public void onDestroy() {
 		super.onDestroy();
 		OpenTenureApplication.getInstance().getDatabase().sync();
-
-		System.out.println("onDestroy");
 	};
 
 	@Override
@@ -105,15 +103,6 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 			final ClaimDetailsFragment fragment = (ClaimDetailsFragment) fragmentReferences
 					.get(0);
-
-			for (int i = 0; i < fragmentReferences.size(); i++) {
-
-				System.out.println("fragment " + fragmentReferences.get(i));
-			}
-
-			System.out.println("onKeyDown : fragment "
-					+ fragmentReferences.size());
-			System.out.println("onKeyDown : fragment " + fragment);
 
 			if (fragment != null) {
 				if (fragment.checkChanges()) {
@@ -129,15 +118,12 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 
 	@Override
 	public void onPause() {
-		System.out.println("onPause");
 		super.onPause();
 		OpenTenureApplication.getInstance().getDatabase().sync();
 	};
 
 	@Override
 	public void onResume() {
-		System.out.println("onResume()");
-
 		OpenTenureApplication.getInstance().getDatabase().open();
 		OpenTenure.setLocale(this);
 		super.onResume();
@@ -697,9 +683,9 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 	@Override
 	public void resetOriginalFormPayload() {
 		// TODO Auto-generated method stub
-		
+
 		originalFormPayload = editedFormPayload;
-		
+
 	}
 
 }

@@ -6,9 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_search">Search</string>
     <string name="action_new">New</string>
-
     <string name="action_import">Import</string>
-
     <string name="action_change_map_mode">Change map mode</string>
     <string name="action_add_from_gps">Add marker from GPS</string>
     <string name="action_add_boundary">Add boundary marker</string>

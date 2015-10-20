@@ -339,7 +339,7 @@ public class DocumentType {
 			DocumentType documentType = (DocumentType) iterator
 					.next();
 			
-			keyValueMap.put(documentType.getType(),dnl.getLocalizedDisplayName(documentType.getDisplayValue()));
+			keyValueMap.put(documentType.getType().toLowerCase(),dnl.getLocalizedDisplayName(documentType.getDisplayValue()));
 		}
 		return keyValueMap;
 	}
