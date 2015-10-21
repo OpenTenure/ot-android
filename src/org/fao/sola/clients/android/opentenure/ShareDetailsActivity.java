@@ -152,6 +152,10 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			@Override
 			public void onClick(View v) {
 				Claim claim = Claim.getClaim(claimId);
+				
+				
+				
+				
 				if (claim.getAvailableShares() >= 0) {
 
 					AlertDialog.Builder dialog = new AlertDialog.Builder(
@@ -324,7 +328,7 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			int value = Integer.parseInt(spinner.getSelectedItem().toString());
 
 			int delta = value - share.getShares();
-
+			
 			if (delta > 0
 					&& Claim.getClaim(claimId).getAvailableShares() < delta) {
 
@@ -437,7 +441,6 @@ public class ShareDetailsActivity extends FragmentActivity implements
 			}
 
 			if (changed) {
-
 				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 						this);
 				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);

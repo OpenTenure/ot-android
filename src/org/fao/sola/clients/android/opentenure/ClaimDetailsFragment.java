@@ -1164,7 +1164,7 @@ public class ClaimDetailsFragment extends Fragment {
 						changed = true;
 					else if (challengedClaim != null
 							&& claim.getChallengedClaim() == null)
-						changed = true;
+						changed = true; 
 					else if (challengedClaim != null
 							&& claim.getChallengedClaim() != null
 							&& !claim.getChallengedClaim().getClaimId()
@@ -1233,7 +1233,6 @@ public class ClaimDetailsFragment extends Fragment {
 													changed = true;
 
 												else {
-
 													changed = isFormChanged();
 												}
 
@@ -1259,7 +1258,7 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 			if (changed) {
-
+				
 				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 						this.getActivity());
 				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);
@@ -1327,6 +1326,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 			}
 			if (changed) {
+				
 				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 						this.getActivity());
 				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);

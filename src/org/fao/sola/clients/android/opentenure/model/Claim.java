@@ -37,6 +37,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -53,8 +54,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 public class Claim {
-	
-	
+
 	public enum Status {
 		unmoderated, moderated, challenged, created, uploading, updating, upload_incomplete, update_incomplete, upload_error, update_error, withdrawn, reviewed
 	};
@@ -95,7 +95,16 @@ public class Claim {
 	}
 
 	public int getAvailableShares() {
-		return availableShares;
+		// return availableShares;
+		int total = 0;
+		List<ShareProperty> list = this.getShares();
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			ShareProperty shareProperty = (ShareProperty) iterator.next();
+			total = total + shareProperty.getShares();
+		}
+		
+		return MAX_SHARES_PER_CLAIM - total;
+
 	}
 
 	public void setAvailableShares(int availableShares) {
@@ -112,8 +121,7 @@ public class Claim {
 				+ Arrays.toString(additionalInfo.toArray())
 				+ ", challengedClaim=" + challengedClaim + ", notes=" + notes
 				+ ", challengeExpiryDate=" + challengeExpiryDate
-				+ ", dateOfStart=" + dateOfStart
-				+ ", version=" + version
+				+ ", dateOfStart=" + dateOfStart + ", version=" + version
 				+ ", claimArea=" + claimArea
 				+ ", challengingClaims="
 				// + Arrays.toString(challengingClaims.toArray())
@@ -147,7 +155,7 @@ public class Claim {
 	}
 
 	public Person getPerson() {
-		if(personId != null && person == null){
+		if (personId != null && person == null) {
 			person = Person.getPerson(personId);
 		}
 		return person;
@@ -158,7 +166,7 @@ public class Claim {
 	}
 
 	public List<Vertex> getVertices() {
-		if(claimId != null && vertices == null){
+		if (claimId != null && vertices == null) {
 			vertices = Vertex.getVertices(claimId);
 		}
 		return vertices;
@@ -169,7 +177,7 @@ public class Claim {
 	}
 
 	public List<PropertyLocation> getPropertyLocations() {
-		if(claimId != null && propertyLocations == null){
+		if (claimId != null && propertyLocations == null) {
 			propertyLocations = PropertyLocation.getPropertyLocations(claimId);
 		}
 		return propertyLocations;
@@ -180,7 +188,7 @@ public class Claim {
 	}
 
 	public Claim getChallengedClaim() {
-		if(challengedClaimId != null && challengedClaim == null){
+		if (challengedClaimId != null && challengedClaim == null) {
 			challengedClaim = Claim.getClaim(challengedClaimId);
 		}
 		return challengedClaim;
@@ -199,7 +207,7 @@ public class Claim {
 	}
 
 	public List<Attachment> getAttachments() {
-		if(claimId != null && attachments == null){
+		if (claimId != null && attachments == null) {
 			attachments = Attachment.getAttachments(claimId);
 		}
 		return attachments;
@@ -210,7 +218,7 @@ public class Claim {
 	}
 
 	public List<ShareProperty> getShares() {
-		if(claimId != null && shares == null){
+		if (claimId != null && shares == null) {
 			shares = ShareProperty.getShares(claimId);
 		}
 		return shares;
@@ -295,7 +303,7 @@ public class Claim {
 	public void setRecorderName(String recorderName) {
 		this.recorderName = recorderName;
 	}
-	
+
 	public long getClaimArea() {
 		return claimArea;
 	}
@@ -334,7 +342,8 @@ public class Claim {
 			statement.setString(12, claim.getRecorderName());
 			statement.setString(13, claim.getVersion());
 			if (claim.getDynamicForm() != null) {
-				statement.setCharacterStream(14, new StringReader(claim.getDynamicForm().toJson()));
+				statement.setCharacterStream(14, new StringReader(claim
+						.getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(14, null);
@@ -390,7 +399,8 @@ public class Claim {
 			statement.setString(12, getRecorderName());
 			statement.setString(13, getVersion());
 			if (getDynamicForm() != null) {
-				statement.setCharacterStream(14, new StringReader(getDynamicForm().toJson()));
+				statement.setCharacterStream(14, new StringReader(
+						getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(14, null);
@@ -445,7 +455,8 @@ public class Claim {
 			statement.setString(11, claim.getRecorderName());
 			statement.setString(12, claim.getVersion());
 			if (claim.getDynamicForm() != null) {
-				statement.setCharacterStream(13, new StringReader(claim.getDynamicForm().toJson()));
+				statement.setCharacterStream(13, new StringReader(claim
+						.getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(13, null);
@@ -501,7 +512,8 @@ public class Claim {
 			statement.setString(11, getRecorderName());
 			statement.setString(12, getVersion());
 			if (getDynamicForm() != null) {
-				statement.setCharacterStream(13, new StringReader(getDynamicForm().toJson()));
+				statement.setCharacterStream(13, new StringReader(
+						getDynamicForm().toJson()));
 
 			} else {
 				statement.setCharacterStream(13, null);
@@ -560,9 +572,10 @@ public class Claim {
 				claim.setVersion(rs.getString(12));
 				claim.setClaimArea(rs.getInt(13));
 				Clob clob = rs.getClob(14);
-				if(clob != null){
-					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
-				}else{
+				if (clob != null) {
+					claim.setDynamicForm(FormPayload.fromJson(clob
+							.getSubString(1L, (int) clob.length())));
+				} else {
 					claim.setDynamicForm(new FormPayload());
 				}
 			}
@@ -620,9 +633,10 @@ public class Claim {
 				claim.setVersion(rs.getString(12));
 				claim.setClaimArea(rs.getInt(13));
 				Clob clob = rs.getClob(14);
-				if(clob != null){
-					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
-				}else{
+				if (clob != null) {
+					claim.setDynamicForm(FormPayload.fromJson(clob
+							.getSubString(1L, (int) clob.length())));
+				} else {
 					claim.setDynamicForm(new FormPayload());
 				}
 			}
@@ -669,17 +683,23 @@ public class Claim {
 				claim.setVersion(rs.getString(13));
 				claim.setClaimArea(rs.getInt(14));
 				Clob clob = rs.getClob(15);
-				if(clob != null){
-					claim.setDynamicForm(FormPayload.fromJson(clob.getSubString(1L, (int)clob.length())));
-				}else{
+				if (clob != null) {
+					claim.setDynamicForm(FormPayload.fromJson(clob
+							.getSubString(1L, (int) clob.length())));
+				} else {
 					claim.setDynamicForm(new FormPayload());
 				}
-				claim.setVertices(Vertex.getVertices(claimId, externalConnection));
+				claim.setVertices(Vertex.getVertices(claimId,
+						externalConnection));
 				claim.setPropertyLocations(PropertyLocation
 						.getPropertyLocations(claimId, externalConnection));
-				claim.setAttachments(Attachment.getAttachments(claimId, externalConnection));
-				claim.setShares(ShareProperty.getShares(claimId, externalConnection));
-				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
+				claim.setAttachments(Attachment.getAttachments(claimId,
+						externalConnection));
+				claim.setShares(ShareProperty.getShares(claimId,
+						externalConnection));
+				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No
+																			// longer
+																			// used
 				allClaims.add(claim);
 			}
 
@@ -723,7 +743,9 @@ public class Claim {
 				claim.setRecorderName(rs.getString(10));
 				claim.setVersion(rs.getString(11));
 				claim.setClaimArea(rs.getInt(12));
-				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No longer used
+				claim.setAdditionalInfo(new ArrayList<AdditionalInfo>()); // No
+																			// longer
+																			// used
 				allClaims.add(claim);
 			}
 
@@ -743,7 +765,8 @@ public class Claim {
 		return allClaims;
 	}
 
-	public static Map<String, Claim> getSimplifiedClaimsForDownload(Connection externalConnection) {
+	public static Map<String, Claim> getSimplifiedClaimsForDownload(
+			Connection externalConnection) {
 		HashMap<String, Claim> allClaims = new HashMap<String, Claim>();
 		PreparedStatement statement = null;
 		try {
@@ -775,32 +798,25 @@ public class Claim {
 		return allClaims;
 	}
 
-	public static List<Claim> getSimplifiedClaimsForMap(Connection externalConnection) {
+	public static List<Claim> getSimplifiedClaimsForMap(
+			Connection externalConnection) {
 		// Only loads what's needed to draw properties on the maps
 		List<Claim> allClaims = new ArrayList<Claim>();
 		PreparedStatement statement = null;
 		String lastClaimId = null;
 		try {
 
-			statement = externalConnection
-					.prepareStatement("SELECT "
-							+ "CLAIM.CLAIM_ID, "
-							+ "CLAIM.STATUS, "
-							+ "CLAIM.NAME, "
-							+ "CLAIM.TYPE, "
-							+ "PERSON.PERSON_ID, "
-							+ "PERSON.FIRST_NAME, "
-							+ "PERSON.LAST_NAME, "
-							+ "VERTEX.VERTEX_ID, "
-							+ "VERTEX.SEQUENCE_NUMBER, "
-							+ "VERTEX.GPS_LAT, "
-							+ "VERTEX.GPS_LON, "
-							+ "VERTEX.MAP_LAT, "
-							+ "VERTEX.MAP_LON "
-							+ "FROM CLAIM, PERSON, VERTEX "
-							+ "WHERE CLAIM.PERSON_ID=PERSON.PERSON_ID "
-							+ "AND CLAIM.CLAIM_ID=VERTEX.CLAIM_ID "
-							+ "ORDER BY CLAIM_ID, VERTEX.SEQUENCE_NUMBER");
+			statement = externalConnection.prepareStatement("SELECT "
+					+ "CLAIM.CLAIM_ID, " + "CLAIM.STATUS, " + "CLAIM.NAME, "
+					+ "CLAIM.TYPE, " + "PERSON.PERSON_ID, "
+					+ "PERSON.FIRST_NAME, " + "PERSON.LAST_NAME, "
+					+ "VERTEX.VERTEX_ID, " + "VERTEX.SEQUENCE_NUMBER, "
+					+ "VERTEX.GPS_LAT, " + "VERTEX.GPS_LON, "
+					+ "VERTEX.MAP_LAT, " + "VERTEX.MAP_LON "
+					+ "FROM CLAIM, PERSON, VERTEX "
+					+ "WHERE CLAIM.PERSON_ID=PERSON.PERSON_ID "
+					+ "AND CLAIM.CLAIM_ID=VERTEX.CLAIM_ID "
+					+ "ORDER BY CLAIM_ID, VERTEX.SEQUENCE_NUMBER");
 			ResultSet rs = statement.executeQuery();
 			List<Vertex> vertices = null;
 			Claim claim = null;
@@ -808,12 +824,14 @@ public class Claim {
 			int nVertices = 0;
 			while (rs.next()) {
 				String claimId = rs.getString(1);
-				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
-					// It's a new claim so we add the previous one, if any, to the list
-					if(claim != null){
-						if(vertices != null){
+				if (lastClaimId == null
+						|| !lastClaimId.equalsIgnoreCase(claimId)) {
+					// It's a new claim so we add the previous one, if any, to
+					// the list
+					if (claim != null) {
+						if (vertices != null) {
 							claim.setVertices(vertices);
-						}else{
+						} else {
 							claim.setVertices(new ArrayList<Vertex>());
 						}
 						allClaims.add(claim);
@@ -846,16 +864,17 @@ public class Claim {
 				nVertices++;
 				lastClaimId = claimId;
 			}
-			if(claim != null){
-				if(vertices != null){
+			if (claim != null) {
+				if (vertices != null) {
 					claim.setVertices(vertices);
-				}else{
+				} else {
 					claim.setVertices(new ArrayList<Vertex>());
 				}
 				allClaims.add(claim);
 				nClaims++;
 			}
-			Log.d(Claim.class.getName(), "Retrieved " + nVertices + " vertices for " + nClaims + " claims");
+			Log.d(Claim.class.getName(), "Retrieved " + nVertices
+					+ " vertices for " + nClaims + " claims");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -872,14 +891,16 @@ public class Claim {
 		return allClaims;
 	}
 
-	public static List<Claim> getSimplifiedClaimsForList(Connection externalConnection) {
+	public static List<Claim> getSimplifiedClaimsForList(
+			Connection externalConnection) {
 		// Only loads what's needed to fill the list of locally stored claims
 		List<Claim> allClaims = new ArrayList<Claim>();
 		PreparedStatement statement = null;
 		String lastClaimId = null;
 		try {
-			
-			// Join Claim, Person and Attachment to get everything we need at once
+
+			// Join Claim, Person and Attachment to get everything we need at
+			// once
 
 			statement = externalConnection
 					.prepareStatement("SELECT "
@@ -917,12 +938,14 @@ public class Claim {
 			int nAttachments = 0;
 			while (rs.next()) {
 				String claimId = rs.getString(1);
-				if(lastClaimId == null || !lastClaimId.equalsIgnoreCase(claimId)){
-					// It's a new claim so we add the previous one, if any, to the list
-					if(claim != null){
-						if(attachments != null){
+				if (lastClaimId == null
+						|| !lastClaimId.equalsIgnoreCase(claimId)) {
+					// It's a new claim so we add the previous one, if any, to
+					// the list
+					if (claim != null) {
+						if (attachments != null) {
 							claim.setAttachments(attachments);
-						}else{
+						} else {
 							claim.setAttachments(new ArrayList<Attachment>());
 						}
 						allClaims.add(claim);
@@ -945,7 +968,7 @@ public class Claim {
 					claim.setPerson(person);
 				}
 				String attachmentId = rs.getString(11);
-				if(attachmentId != null){
+				if (attachmentId != null) {
 					// It's a new attachment for the same claim
 					Attachment attachment = new Attachment();
 					attachment.setAttachmentId(attachmentId);
@@ -956,16 +979,17 @@ public class Claim {
 				}
 				lastClaimId = claimId;
 			}
-			if(claim != null){
-				if(attachments != null){
+			if (claim != null) {
+				if (attachments != null) {
 					claim.setAttachments(attachments);
-				}else{
+				} else {
 					claim.setAttachments(new ArrayList<Attachment>());
 				}
 				allClaims.add(claim);
 				nClaims++;
 			}
-			Log.d(Claim.class.getName(), "Retrieved " + nAttachments + " attachments for " + nClaims + " claims");
+			Log.d(Claim.class.getName(), "Retrieved " + nAttachments
+					+ " attachments for " + nClaims + " claims");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {
@@ -1030,7 +1054,6 @@ public class Claim {
 	public static int addOwner(String claimId, String personId, int shares) {
 		return Claim.getClaim(claimId).addOwner(personId, shares);
 	}
-
 
 	public int addOwner(String personId, int shares) {
 
@@ -1216,7 +1239,7 @@ public class Claim {
 
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
-			
+
 			ShareProperty.deleteShares(claimId, localConnection);
 			Vertex.deleteVertices(claimId, localConnection);
 			Attachment.deleteAttachments(claimId, localConnection);
@@ -1258,34 +1281,37 @@ public class Claim {
 		return claimName + ", " + context.getString(R.string.by) + ": "
 				+ getPerson().getFirstName() + " " + getPerson().getLastName();
 	}
-	
-	public static String getSlogan(String name, String firstName, String lastName, Context context) {
+
+	public static String getSlogan(String name, String firstName,
+			String lastName, Context context) {
 		String claimName = name.equalsIgnoreCase("") ? context
 				.getString(R.string.default_claim_name) : name;
 		return claimName + ", " + context.getString(R.string.by) + ": "
 				+ firstName + " " + lastName;
 	}
-	
+
 	public boolean isUploadable() {
-		
-		if(getChallengeExpiryDate() == null)
+
+		if (getChallengeExpiryDate() == null)
 			return true;
 
 		if (!(getStatus().equals(ClaimStatus._WITHDRAWN))
 				&& (JsonUtilities.remainingDays(getChallengeExpiryDate()) >= 1))
 			return true;
-		else return false;
+		else
+			return false;
 	}
 
 	public boolean isModifiable() {
-		
-		if(getChallengeExpiryDate() == null )
+
+		if (getChallengeExpiryDate() == null)
 			return true;
-		else return false;
+		else
+			return false;
 	}
-	
-	public int updateArea(long area){
-		
+
+	public int updateArea(long area) {
+
 		int result = 0;
 		Connection localConnection = null;
 		PreparedStatement statement = null;
@@ -1299,26 +1325,26 @@ public class Claim {
 			statement.setLong(1, area);
 			statement.setString(2, getClaimId());
 			result = statement.executeUpdate();
-		
-	} catch (SQLException e) {
-		e.printStackTrace();
-	} catch (Exception exception) {
-		exception.printStackTrace();
-	} finally {
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (SQLException e) {
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
 			}
 		}
-		if (localConnection != null) {
-			try {
-				localConnection.close();
-			} catch (SQLException e) {
-			}
-		}
-	}
-		
+
 		return result;
 	}
 
