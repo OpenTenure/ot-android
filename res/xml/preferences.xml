@@ -19,13 +19,13 @@
         android:key="tiles_provider"
         android:title="@string/tiles_provider" />
     <EditTextPreference
-        android:defaultValue="http://demo.opentenure.org/geoserver/opentenurea"
+        android:defaultValue="http://demo.flossola.org:8080/geoserver/sola/wms"
         android:dialogTitle="@string/geoserver_url_pref_dialog_title"
         android:key="geoserver_url_pref"
         android:summary="@string/geoserver_url_pref_summary"
         android:title="@string/geoserver_url_pref_title" />
     <EditTextPreference
-        android:defaultValue="opentenure:claims"
+        android:defaultValue="sola:nz_orthophoto"
         android:dialogTitle="@string/geoserver_layer_pref_dialog_title"
         android:key="geoserver_layer_pref"
         android:summary="@string/geoserver_layer_pref_summary"
