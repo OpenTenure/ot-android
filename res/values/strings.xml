@@ -239,7 +239,7 @@
     <string name="message_map_not_yet_draw">The map of the claim is not yet complete</string>
     <string name="message_available_shares">The sum of the shares is less than 100%</string>
     <string name="message_no_available_shares">Free some shares on this claim before modify the value of this share </string>
-    <string name="message_no_available_shares_adding_new">Free some shares on this claim before ading a new share </string>
+    <string name="message_no_available_shares_adding_new">Free some shares on this claim before adding a new share </string>
     <string name="message_share_saved">Share saved</string>
     <string name="message_share_not_saved">Error saving share </string>
 	<string name="message_already_owner">The selected person already shares this claim</string>
