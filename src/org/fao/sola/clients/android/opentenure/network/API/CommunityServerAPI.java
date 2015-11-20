@@ -86,9 +86,7 @@ public class CommunityServerAPI {
 		if (header != null)
 			setServerProtoVersion(header.getValue());
 		else {
-			setServerProtoVersion("");
-			System.out.println("Header is null");
-
+			Log.d(CommunityServerAPI.class.getName(), "Header is null");
 		}
 	}
 
