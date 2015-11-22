@@ -209,71 +209,73 @@ public class SectionElementFragment extends Fragment {
 		int i = 0;
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
 				OpenTenureApplication.getInstance().getLocalization());
+		List<FieldTemplate> fieldTemplateList = elementTemplate.getFieldTemplateList();
+		if(fieldTemplateList != null){
+			Collections.sort(fieldTemplateList);
 
-		Collections.sort(elementTemplate.getFieldTemplateList());
+			for (final FieldTemplate field : fieldTemplateList) {
+				FieldPayload fieldPayload = null;
+				if (elementPayload.getFieldPayloadList().size() > i) {
+					fieldPayload = elementPayload.getFieldPayloadList().get(i);
+				} else {
+					// For some reason the payload of this form has fewer fields
+					// than the template
+					// used to build it. This is probably due to editing the
+					// template without
+					// changing its id, so we build a dummy text field on the fly
+					// not to break
+					// the GUI
+					fieldPayload = new FieldPayload();
+					fieldPayload.setFieldType(FieldType.TEXT);
+					fieldPayload.setFieldValueType(FieldValueType.TEXT);
+				}
+				// Add label
+				TextView label = new TextView(getActivity());
+				label.setTextSize(20);
+				label.setPadding(0, 10, 0, 8);
+				label.setTextAppearance(getActivity(),
+						android.R.attr.textAppearanceMedium);
+				label.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+						LayoutParams.WRAP_CONTENT));
+				String labelText = dnl.getLocalizedDisplayName(field
+						.getDisplayName());
+				label.setText(Html.fromHtml(labelText));
+				ll.addView(label);
+				// Add input field
 
-		for (final FieldTemplate field : elementTemplate.getFieldTemplateList()) {
-			FieldPayload fieldPayload = null;
-			if (elementPayload.getFieldPayloadList().size() > i) {
-				fieldPayload = elementPayload.getFieldPayloadList().get(i);
-			} else {
-				// For some reason the payload of this form has fewer fields
-				// than the template
-				// used to build it. This is probably due to editing the
-				// template without
-				// changing its id, so we build a dummy text field on the fly
-				// not to break
-				// the GUI
-				fieldPayload = new FieldPayload();
-				fieldPayload.setFieldType(FieldType.TEXT);
-				fieldPayload.setFieldValueType(FieldValueType.TEXT);
+				switch (field.getFieldType()) {
+				case DATE:
+					ll.addView(FieldViewFactory.getViewForDateField(getActivity(),
+							dnl, field, fieldPayload, mode));
+					break;
+				case TIME:
+					ll.addView(FieldViewFactory.getViewForTimeField(getActivity(),
+							dnl, field, fieldPayload, mode));
+					break;
+				case SNAPSHOT:
+				case DOCUMENT:
+				case GEOMETRY:
+				case TEXT:
+					ll.addView(FieldViewFactory.getViewForTextField(getActivity(),
+							dnl, field, fieldPayload, mode));
+					break;
+				case DECIMAL:
+					ll.addView(FieldViewFactory.getViewForDecimalField(
+							getActivity(), dnl, field, fieldPayload, mode));
+					break;
+				case INTEGER:
+					ll.addView(FieldViewFactory.getViewForNumberField(
+							getActivity(), dnl, field, fieldPayload, mode));
+					break;
+				case BOOL:
+					ll.addView(FieldViewFactory.getViewForBooleanField(
+							getActivity(), dnl, field, fieldPayload, mode));
+					break;
+				default:
+					break;
+				}
+				i++;
 			}
-			// Add label
-			TextView label = new TextView(getActivity());
-			label.setTextSize(20);
-			label.setPadding(0, 10, 0, 8);
-			label.setTextAppearance(getActivity(),
-					android.R.attr.textAppearanceMedium);
-			label.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-					LayoutParams.WRAP_CONTENT));
-			String labelText = dnl.getLocalizedDisplayName(field
-					.getDisplayName());
-			label.setText(Html.fromHtml(labelText));
-			ll.addView(label);
-			// Add input field
-
-			switch (field.getFieldType()) {
-			case DATE:
-				ll.addView(FieldViewFactory.getViewForDateField(getActivity(),
-						dnl, field, fieldPayload, mode));
-				break;
-			case TIME:
-				ll.addView(FieldViewFactory.getViewForTimeField(getActivity(),
-						dnl, field, fieldPayload, mode));
-				break;
-			case SNAPSHOT:
-			case DOCUMENT:
-			case GEOMETRY:
-			case TEXT:
-				ll.addView(FieldViewFactory.getViewForTextField(getActivity(),
-						dnl, field, fieldPayload, mode));
-				break;
-			case DECIMAL:
-				ll.addView(FieldViewFactory.getViewForDecimalField(
-						getActivity(), dnl, field, fieldPayload, mode));
-				break;
-			case INTEGER:
-				ll.addView(FieldViewFactory.getViewForNumberField(
-						getActivity(), dnl, field, fieldPayload, mode));
-				break;
-			case BOOL:
-				ll.addView(FieldViewFactory.getViewForBooleanField(
-						getActivity(), dnl, field, fieldPayload, mode));
-				break;
-			default:
-				break;
-			}
-			i++;
 		}
 	}
 
