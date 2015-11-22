@@ -612,17 +612,17 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 			if (originalFormPayload != null) {
 				// There's a payload already attached to this claim
 				editedFormPayload = new FormPayload(originalFormPayload);
-				// Check if we are trying to edit the claim
-				if(mode.compareTo(Mode.MODE_RO)==0){
-					// Not editing, skip searching for a template
-					// and display the dynamic part as it is
+				// Try to retrieve its template
+				formTemplate = SurveyFormTemplate
+						.getFormTemplateByName(originalFormPayload
+								.getFormTemplateName());
+				if (formTemplate == null) {
+					// We don't have the original template for this payload
+					// let's try to rebuild it from the payload itself
 					formTemplate = new FormTemplate(originalFormPayload);
-				}else{
-					// Still editing, try to retrieve its template
-					formTemplate = SurveyFormTemplate
-							.getFormTemplateByName(originalFormPayload
-									.getFormTemplateName());
+
 				}
+
 			} else {
 				// A payload has not been created for this claim
 				// so we refer to the default template for the dynamic part
