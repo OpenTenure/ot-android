@@ -505,7 +505,7 @@ public class SurveyFormTemplate {
 		return FormTemplate.fromJson(value);
 	}
 
-	private static int saveFormTemplate(FormTemplate surveyFormTemplate){
+	public static int saveFormTemplate(FormTemplate surveyFormTemplate){
 		String name = null;
 		SurveyFormTemplate sft =  null;
 		if(surveyFormTemplate != null){
