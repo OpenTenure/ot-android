@@ -215,7 +215,7 @@ public class SectionElementFragment extends Fragment {
 
 			for (final FieldTemplate field : fieldTemplateList) {
 				FieldPayload fieldPayload = null;
-				if (elementPayload.getFieldPayloadList().size() > i) {
+				if (elementPayload.getFieldPayloadList() != null && elementPayload.getFieldPayloadList().size() > i) {
 					fieldPayload = elementPayload.getFieldPayloadList().get(i);
 				} else {
 					// For some reason the payload of this form has fewer fields

@@ -227,50 +227,65 @@ public class SectionFragment extends ListFragment {
 
 			List<SectionElementListTO> ownersListTOs = new ArrayList<SectionElementListTO>();
 
-			for(SectionElementPayload sectionElement : sectionPayload.getSectionElementPayloadList()){
-				
-				SectionElementListTO fglto = new SectionElementListTO();
-				fglto.setName(ownersListTOs.size() + "");
-				StringBuffer sb = new StringBuffer();
-				Iterator<FieldTemplate> iterator = sectionTemplate.getFieldTemplateList().iterator();
-				for(FieldPayload field:sectionElement.getFieldPayloadList()){
-					if(sb.length() != 0){
-						sb.append(",");
-					}
-					List<FieldConstraintOption> options = null;
-					if(iterator.hasNext()){
-						FieldTemplate template = iterator.next();
-						for(FieldConstraint constraint:template.getFieldConstraintList()){
-							if(constraint instanceof OptionConstraint){
-								options = ((OptionConstraint)constraint).getFieldConstraintOptionList(); 
+			List<SectionElementPayload> sectionElementPayloadList = sectionPayload.getSectionElementPayloadList();
+
+			if(sectionElementPayloadList != null){
+
+				for(SectionElementPayload sectionElement : sectionElementPayloadList){
+					
+					SectionElementListTO fglto = new SectionElementListTO();
+					fglto.setName(ownersListTOs.size() + "");
+					StringBuffer sb = new StringBuffer();
+					List<FieldPayload> fieldPayloadList = sectionElement.getFieldPayloadList();
+
+					if(fieldPayloadList != null){
+					
+						for(FieldPayload field:fieldPayloadList){
+							if(sb.length() != 0){
+								sb.append(",");
 							}
+							List<FieldConstraintOption> options = null;
+							List<FieldTemplate> fieldTemplateList = sectionTemplate.getFieldTemplateList();
+							if(fieldTemplateList != null){
+								Iterator<FieldTemplate> iterator = fieldTemplateList.iterator();
+								if(iterator.hasNext()){
+									FieldTemplate template = iterator.next();
+									List<FieldConstraint> fieldConstraintList = template.getFieldConstraintList();
+									if(fieldConstraintList != null){
+										for(FieldConstraint constraint:fieldConstraintList){
+											if(constraint instanceof OptionConstraint){
+												options = ((OptionConstraint)constraint).getFieldConstraintOptionList(); 
+											}
+										}
+									}
+								}
+							}
+							
+							String fieldPayload = null;
+
+							if(field.getStringPayload() != null)
+								fieldPayload = field.getStringPayload();
+							if(field.getBigDecimalPayload() != null)
+								fieldPayload = field.getBigDecimalPayload().toString();
+							if(field.getBooleanPayload() != null)
+								fieldPayload = field.getBooleanPayload().toString();
+							
+							if(options != null){
+								for(FieldConstraintOption option:options){
+									if(fieldPayload.equalsIgnoreCase(option.getName())){
+										fieldPayload = option.getDisplayName();
+									}
+								}
+							}
+
+							sb.append(fieldPayload);
 						}
 					}
-					
-					String fieldPayload = null;
-
-					if(field.getStringPayload() != null)
-						fieldPayload = field.getStringPayload();
-					if(field.getBigDecimalPayload() != null)
-						fieldPayload = field.getBigDecimalPayload().toString();
-					if(field.getBooleanPayload() != null)
-						fieldPayload = field.getBooleanPayload().toString();
-					
-					if(options != null){
-						for(FieldConstraintOption option:options){
-							if(fieldPayload.equalsIgnoreCase(option.getName())){
-								fieldPayload = option.getDisplayName();
-							}
-						}
-					}
-
-					sb.append(fieldPayload);
+					fglto.setSlogan(sb.toString());
+					fglto.setJson(sectionElement.toJson());
+					ownersListTOs.add(fglto);
 				}
-				fglto.setSlogan(sb.toString());
-				fglto.setJson(sectionElement.toJson());
-				ownersListTOs.add(fglto);
 			}
-
 			ArrayAdapter<SectionElementListTO> adapter = null;
 
 			adapter = new SectionElementListAdapter(this, rootView.getContext(), ownersListTOs, sectionPayload, sectionTemplate, mode);
