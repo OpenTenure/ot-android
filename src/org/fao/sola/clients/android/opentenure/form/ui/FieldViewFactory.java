@@ -259,7 +259,11 @@ public class FieldViewFactory {
 				android.R.color.white));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		if (payload.getBigDecimalPayload() != null) {
-			number.setText(payload.getBigDecimalPayload().toPlainString());
+			if(isInteger(payload.getBigDecimalPayload())){
+				number.setText(payload.getBigDecimalPayload().toBigInteger().toString());
+			}else{
+				number.setText(payload.getBigDecimalPayload().toPlainString());
+			}
 		}
 		if (mode == Mode.MODE_RO) {
 			number.setEnabled(false);
@@ -309,6 +313,10 @@ public class FieldViewFactory {
 		}
 		return number;
 	}
+	
+	private static boolean isInteger(BigDecimal bd) {
+		  return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+		}
 
 	public static View getViewForDecimalField(final Activity activity,
 			final DisplayNameLocalizer dnl,
@@ -325,7 +333,11 @@ public class FieldViewFactory {
 		number.setBackgroundColor(activity.getResources().getColor(
 				android.R.color.white));
 		if (payload.getBigDecimalPayload() != null) {
-			number.setText(payload.getBigDecimalPayload().toPlainString());
+			if(isInteger(payload.getBigDecimalPayload())){
+				number.setText(payload.getBigDecimalPayload().toBigInteger().toString());
+			}else{
+				number.setText(payload.getBigDecimalPayload().toPlainString());
+			}
 		}
 		if (mode == Mode.MODE_RO) {
 			number.setEnabled(false);
