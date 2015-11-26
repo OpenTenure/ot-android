@@ -39,6 +39,7 @@ import java.util.TreeSet;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.Attachment;
 import org.fao.sola.clients.android.opentenure.model.Claim;
+import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
 import org.fao.sola.clients.android.opentenure.model.MD5;
 
@@ -80,6 +81,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 	private String fileType;
 	private String mimeType;
 	private View rootView;
+	boolean onlyActive;
 
 	private ClaimDispatcher claimActivity;
 	private ModeDispatcher mainActivity;
@@ -189,9 +191,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 				DocumentType dt = new DocumentType();
 
 				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
-						.getInstance().getLocalization());
+						.getInstance().getLocalization(), onlyActive);
 				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
-						.getInstance().getLocalization());
+						.getInstance().getLocalization(), onlyActive);
 
 				final Spinner spinner = (Spinner) dialog
 						.findViewById(R.id.documentTypesSpinner);
@@ -314,9 +316,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 				DocumentType dt = new DocumentType();
 
 				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
-						.getInstance().getLocalization());
+						.getInstance().getLocalization(),onlyActive);
 				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
-						.getInstance().getLocalization());
+						.getInstance().getLocalization(),onlyActive);
 
 				List<String> list = new ArrayList<String>();
 				TreeSet<String> keys = new TreeSet<String>(
@@ -675,6 +677,15 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.claim_documents_list, container,
 				false);
+		
+		String claimId = claimActivity.getClaimId();
+		if (claimId != null) {
+			Claim claim = Claim.getClaim(claimId);
+				
+			onlyActive =  (!claim.getStatus().equals(ClaimStatus._MODERATED)
+						&& !claim.getStatus()
+								.equals(ClaimStatus._REJECTED) && !claim.getStatus().equals(ClaimStatus._REVIEWED));			
+			}
 
 		setRetainInstance(true);
 		setHasOptionsMenu(true);

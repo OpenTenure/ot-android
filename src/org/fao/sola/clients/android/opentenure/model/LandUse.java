@@ -48,11 +48,12 @@ public class LandUse {
 	String displayValue;
 	String description;
 	String status;
+	Boolean active;
 
 	@Override
 	public String toString() {
 		return "DocumentType [type=" + type + ", description=" + description
-				+ ", displayValue=" + displayValue + ", status=" + status + "]";
+				+ ", displayValue=" + displayValue + ", status=" + status + ", active=" + active + "]";
 	}
 
 	public String getType() {
@@ -69,6 +70,16 @@ public class LandUse {
 
 	public void setDisplayValue(String displayValue) {
 		this.displayValue = displayValue;
+	}
+	
+	
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	public String getDescription() {
@@ -97,7 +108,7 @@ public class LandUse {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE, ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
@@ -135,7 +146,7 @@ public class LandUse {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO LAND_USE(TYPE, DESCRIPTION, DISPLAY_VALUE, ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, use.getType());
 			statement.setString(2, use.getDescription());
@@ -163,6 +174,59 @@ public class LandUse {
 		return result;
 	}
 
+	public List<LandUse> getLandUsesActive() {
+
+		List<LandUse> uses = new ArrayList<LandUse>();
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM LAND_USE LU where ACTIVE = 'true'");
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				LandUse landUse = new LandUse();
+				landUse.setType(rs.getString(1));
+				landUse.setDescription(rs.getString(2));
+				landUse.setDisplayValue(rs.getString(3));
+
+				uses.add(landUse);
+
+			}
+			return uses;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return uses;
+
+	}
+	
 	public List<LandUse> getLandUses() {
 
 		List<LandUse> uses = new ArrayList<LandUse>();
@@ -174,7 +238,7 @@ public class LandUse {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM LAND_USE LU ");
+					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM LAND_USE LU");
 			rs = statement.executeQuery();
 
 			while (rs.next()) {
@@ -216,9 +280,15 @@ public class LandUse {
 
 	}
 
-	public Map<String,String> getKeyValueMap(String localization) {
+	public Map<String,String> getKeyValueMap(String localization, boolean onlyActive) {
+		
+		List<org.fao.sola.clients.android.opentenure.model.LandUse> list;
+		if(!onlyActive)
+			list = getLandUses();
+		else
+			list = getLandUsesActive();
 
-		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
+
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
@@ -232,9 +302,14 @@ public class LandUse {
 		return keyValueMap;
 	}
 	
-	public Map<String,String> getValueKeyMap(String localization) {
+	public Map<String,String> getValueKeyMap(String localization, boolean onlyActive) {
 
-		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
+		List<org.fao.sola.clients.android.opentenure.model.LandUse> list;
+		if(!onlyActive)
+			list = getLandUses();
+		else
+			list = getLandUsesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
@@ -248,9 +323,13 @@ public class LandUse {
 		return keyValueMap;
 	}
 
-	public int getIndexByCodeType(String code) {
+	public int getIndexByCodeType(String code, boolean onlyActive) {
 
-		List<org.fao.sola.clients.android.opentenure.model.LandUse> list = getLandUses();
+		List<org.fao.sola.clients.android.opentenure.model.LandUse> list;
+		if(!onlyActive)
+			list = getLandUses();
+		else
+			list = getLandUsesActive();
 
 		int i = 0;
 
@@ -369,7 +448,7 @@ public class LandUse {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE LAND_USE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
+					.prepareStatement("UPDATE LAND_USE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=?, ACTIVE='true' WHERE TYPE = ?");
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
@@ -377,6 +456,40 @@ public class LandUse {
 
 			result = statement.executeUpdate();
 			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static int setAllLandUseNoActive() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE LAND_USE LU SET ACTIVE='false' WHERE  LU.ACTIVE= 'true'");
+			
+
+			result = statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception exception) {

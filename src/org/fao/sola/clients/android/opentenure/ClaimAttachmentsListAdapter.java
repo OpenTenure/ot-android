@@ -71,7 +71,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 	private boolean readOnly;
 	private Map<String, String> keyValueDocTypes;
 	private Map<String, String> valueKeyDocTypes;
-
+	boolean onlyActive ;
+	
 	public ClaimAttachmentsListAdapter(Context context, List<String> slogans,
 			List<String> ids, String claimId, boolean readOnly) {
 		super(context, R.layout.claim_attachments_list_item, slogans);
@@ -82,7 +83,16 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		this.ids = ids;
 		this.claimId = claimId;
 		this.readOnly = readOnly;
-
+		
+		
+		if (claimId != null) {
+			Claim claim = Claim.getClaim(this.claimId);
+				
+			onlyActive =  (!claim.getStatus()
+								.equals(ClaimStatus._REVIEWED) &&  !claim.getStatus().equals(ClaimStatus._MODERATED) && !claim.getStatus().equals(ClaimStatus._REJECTED));
+			
+			}
+		else onlyActive = true;
 	}
 
 	@Override
@@ -90,6 +100,8 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 		AttachmentViewHolder vh;
 
 		String props[] = slogans.get(position).trim().split("-");
+		
+		
 
 		if (convertView == null) {
 			convertView = inflater.inflate(
@@ -108,9 +120,9 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			DocumentType dt = new DocumentType();
 			
 			keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
-					.getInstance().getLocalization());
+					.getInstance().getLocalization(),onlyActive);
 			valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
-					.getInstance().getLocalization());
+					.getInstance().getLocalization(),onlyActive);
 			
 			
 			final Spinner spinner = (Spinner) convertView
@@ -134,7 +146,7 @@ public class ClaimAttachmentsListAdapter extends ArrayAdapter<String> {
 			vh.attachmentType.setAdapter(dataAdapter);
 
 			vh.attachmentType.setSelection(dt.getIndexByCodeType(props[1]
-					.trim()));
+					.trim(),onlyActive));
 
 			// **********************
 

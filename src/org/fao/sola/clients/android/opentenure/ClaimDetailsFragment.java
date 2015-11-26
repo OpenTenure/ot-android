@@ -213,9 +213,9 @@ public class ClaimDetailsFragment extends Fragment {
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-		preload();
-
 		Claim claim = Claim.getClaim(claimActivity.getClaimId());
+		preload(claim);
+
 		load(claim);
 
 		ProgressBar bar = (ProgressBar) rootView
@@ -406,7 +406,17 @@ public class ClaimDetailsFragment extends Fragment {
 		return rootView;
 	}
 
-	private void preload() {
+	private void preload(Claim claim) {
+
+		boolean onlyActiveValues;
+		if (claim == null)
+			onlyActiveValues = true;
+		else
+			onlyActiveValues = (claim.getStatus()
+					.equals(ClaimStatus._MODERATED)
+					|| claim.getStatus().equals(ClaimStatus._REJECTED)
+					|| claim.getStatus().equals(ClaimStatus._REVIEWED) || claim
+					.getStatus().equals(ClaimStatus._REJECTED));
 
 		// Claim Types Spinner
 		Spinner spinner = (Spinner) rootView
@@ -415,9 +425,9 @@ public class ClaimDetailsFragment extends Fragment {
 		ClaimType ct = new ClaimType();
 
 		keyValueClaimTypesMap = ct.getKeyValueMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(), onlyActiveValues);
 		valueKeyClaimTypesMap = ct.getValueKeyMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(), onlyActiveValues);
 		// List<String> list = new
 		// ArrayList<String>(keyValueClaimTypesMap.keySet());
 
@@ -449,9 +459,9 @@ public class ClaimDetailsFragment extends Fragment {
 
 		LandUse lu = new LandUse();
 		keyValueMapLandUse = lu.getKeyValueMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(), onlyActiveValues);
 		valueKeyMapLandUse = lu.getValueKeyMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(), onlyActiveValues);
 
 		List<String> landUseslist = new ArrayList<String>();
 		keys = new TreeSet<String>(keyValueMapLandUse.keySet());
@@ -671,6 +681,14 @@ public class ClaimDetailsFragment extends Fragment {
 
 		if (claim != null) {
 
+			boolean onlyActiveValues = (!claim.getStatus().equals(
+					ClaimStatus._MODERATED)
+					&& claim.getStatus().equals(ClaimStatus._REJECTED)
+					&& !claim.getStatus().equals(ClaimStatus._REVIEWED)
+					&& !claim.getStatus().equals(ClaimStatus._UNMODERATED)
+					&& !claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR) && !claim
+					.getStatus().equals(ClaimStatus._UPLOAD_INCOMPLETE));
+
 			if (OpenTenureApplication.getInstance().getLocale().toString()
 					.startsWith("ar"))
 				((EditText) rootView.findViewById(R.id.claim_name_input_field))
@@ -679,13 +697,12 @@ public class ClaimDetailsFragment extends Fragment {
 			((EditText) rootView.findViewById(R.id.claim_name_input_field))
 					.setText(claim.getName());
 			((Spinner) rootView.findViewById(R.id.claimTypesSpinner))
-					.setSelection(new ClaimType().getIndexByCodeType(claim
-							.getType()));
+					.setSelection(new ClaimType().getIndexByCodeType(
+							claim.getType(), onlyActiveValues));
 
 			((Spinner) rootView.findViewById(R.id.landUseSpinner))
-					.setSelection(new LandUse().getIndexByCodeType(claim
-							.getLandUse()));
-
+					.setSelection(new LandUse().getIndexByCodeType(
+							claim.getLandUse(), onlyActiveValues));
 
 			((EditText) rootView.findViewById(R.id.claim_notes_input_field))
 					.setText(claim.getNotes());
@@ -1164,7 +1181,7 @@ public class ClaimDetailsFragment extends Fragment {
 						changed = true;
 					else if (challengedClaim != null
 							&& claim.getChallengedClaim() == null)
-						changed = true; 
+						changed = true;
 					else if (challengedClaim != null
 							&& claim.getChallengedClaim() != null
 							&& !claim.getChallengedClaim().getClaimId()
@@ -1258,7 +1275,7 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 
 			if (changed) {
-				
+
 				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 						this.getActivity());
 				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);
@@ -1326,7 +1343,7 @@ public class ClaimDetailsFragment extends Fragment {
 
 			}
 			if (changed) {
-				
+
 				AlertDialog.Builder saveChangesDialog = new AlertDialog.Builder(
 						this.getActivity());
 				saveChangesDialog.setTitle(R.string.title_save_claim_dialog);

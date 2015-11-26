@@ -51,6 +51,8 @@ public class UpdateLandUsesTask extends AsyncTask<String, Void, List<LandUse>> {
 	protected void onPostExecute(List<LandUse> types) {
 
 		if (types != null && (types.size() > 0)) {
+			
+			org.fao.sola.clients.android.opentenure.model.LandUse.setAllLandUseNoActive();
 
 			for (Iterator<LandUse> iterator = types.iterator(); iterator.hasNext();) {
 				LandUse use = (LandUse) iterator.next();

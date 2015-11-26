@@ -47,11 +47,12 @@ public class ClaimType {
 	String type;
 	String description;
 	String displayValue;
+	Boolean active;
 
 	@Override
 	public String toString() {
 		return "ClaimType [type=" + type + ", description=" + description
-				+ ", displayValue=" + displayValue + "]";
+				+ ", displayValue=" + displayValue + ", active=" + active + "]";
 	}
 
 	public String getDescription() {
@@ -60,6 +61,14 @@ public class ClaimType {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}	
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	public String getDisplayValue() {
@@ -88,7 +97,7 @@ public class ClaimType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM_TYPE(TYPE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM_TYPE(TYPE, DESCRIPTION, DISPLAY_VALUE,ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
@@ -126,7 +135,7 @@ public class ClaimType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO CLAIM_TYPE(TYPE, DESCRIPTION) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO CLAIM_TYPE(TYPE, DESCRIPTION, DISPLAY_VALUE,ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, claimType.getType());
 			statement.setString(2, claimType.getDescription());
@@ -155,6 +164,59 @@ public class ClaimType {
 
 	}
 
+	public List<ClaimType> getClaimTypesActive() {
+
+		List<ClaimType> types = new ArrayList<ClaimType>();
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT TYPE, DESCRIPTION, DISPLAY_VALUE FROM CLAIM_TYPE CT where ACTIVE = 'true'");
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				ClaimType claimType = new ClaimType();
+				claimType.setType(rs.getString(1));
+				claimType.setDescription(rs.getString(2));
+				claimType.setDisplayValue(rs.getString(3));
+
+				types.add(claimType);
+
+			}
+			return types;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return types;
+
+	}
+	
 	public List<ClaimType> getClaimTypes() {
 
 		List<ClaimType> types = new ArrayList<ClaimType>();
@@ -208,17 +270,20 @@ public class ClaimType {
 
 	}
 
-	public Map<String,String> getKeyValueMap(String localization) {
+	public Map<String,String> getKeyValueMap(String localization, boolean onlyActive) {
 
-		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
+		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list;
+		if(!onlyActive)
+			list = getClaimTypes();
+		else
+			list = getClaimTypesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
 		for (Iterator<org.fao.sola.clients.android.opentenure.model.ClaimType> iterator = list.iterator(); iterator.hasNext();) {
 			
-			
-			
-			
+					
 			org.fao.sola.clients.android.opentenure.model.ClaimType claimType = (org.fao.sola.clients.android.opentenure.model.ClaimType) iterator
 					.next();
 			
@@ -227,9 +292,14 @@ public class ClaimType {
 		return keyValueMap;
 	}
 	
-	public Map<String,String> getValueKeyMap(String localization) {
-
-		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
+	public Map<String,String> getValueKeyMap(String localization, boolean onlyActive) {
+		
+		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list;
+		if(!onlyActive)
+			list = getClaimTypes();
+		else
+			list = getClaimTypesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
@@ -244,9 +314,13 @@ public class ClaimType {
 	}
 	
 
-	public int getIndexByCodeType(String code) {
+	public int getIndexByCodeType(String code,boolean onlyActive) {
 
-		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list = getClaimTypes();
+		List<org.fao.sola.clients.android.opentenure.model.ClaimType> list;
+		if(!onlyActive)
+			list = getClaimTypes();
+		else
+			list = getClaimTypesActive();
 
 		int i = 0;
 
@@ -374,11 +448,45 @@ public class ClaimType {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE CLAIM_TYPE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE TYPE = ?");
+					.prepareStatement("UPDATE CLAIM_TYPE SET TYPE=?, DESCRIPTION=?, DISPLAY_VALUE=?, ACTIVE= 'true' WHERE TYPE = ?");
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
 			statement.setString(4, getType());
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
+	}
+	
+	public static int setAllClaimTypeNoActive() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE CLAIM_TYPE CT SET ACTIVE='false' WHERE  CT.ACTIVE= 'true'");
+			
 
 			result = statement.executeUpdate();
 		} catch (SQLException e) {

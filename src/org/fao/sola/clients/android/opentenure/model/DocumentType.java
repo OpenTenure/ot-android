@@ -47,11 +47,12 @@ public class DocumentType {
 	String type;
 	String description;
 	String displayValue;
+	Boolean active;
 
 	@Override
 	public String toString() {
 		return "DocumentType [code=" + type + ", description=" + description
-				+ ", displayValue=" + displayValue + "]";
+				+ ", displayValue=" + displayValue + ", active=" + active + "]";
 	}
 
 	public String getType() {
@@ -88,7 +89,7 @@ public class DocumentType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE,ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
@@ -126,7 +127,7 @@ public class DocumentType {
 
 			localConnection = db.getConnection();
 			statement = localConnection
-					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE) VALUES (?,?,?)");
+					.prepareStatement("INSERT INTO DOCUMENT_TYPE(CODE, DESCRIPTION, DISPLAY_VALUE,ACTIVE) VALUES (?,?,?,'true')");
 
 			statement.setString(1, docType.getType());
 			statement.setString(2, docType.getDescription());
@@ -207,7 +208,7 @@ public class DocumentType {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("UPDATE DOCUMENT_TYPE SET CODE=?, DESCRIPTION=?, DISPLAY_VALUE=? WHERE CODE = ?");
+					.prepareStatement("UPDATE DOCUMENT_TYPE SET CODE=?, DESCRIPTION=?, DISPLAY_VALUE=?, ACTIVE='true' WHERE CODE = ?");
 			statement.setString(1, getType());
 			statement.setString(2, getDescription());
 			statement.setString(3, getDisplayValue());
@@ -287,10 +288,70 @@ public class DocumentType {
 		return types;
 
 	}
+	
+	
+	public List<DocumentType> getDocumentTypesActive() {
 
-	public List<String> getDocumentTypesDisplayValues(String localization) {
+		List<DocumentType> types = new ArrayList<DocumentType>();
+		ResultSet rs = null;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
 
-		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
+		try {
+
+			localConnection = db.getConnection();
+			statement = localConnection
+					.prepareStatement("SELECT CODE, DESCRIPTION, DISPLAY_VALUE FROM DOCUMENT_TYPE DT where ACTIVE = 'true'");
+			rs = statement.executeQuery();
+
+			while (rs.next()) {
+				DocumentType documentType = new DocumentType();
+				documentType.setType(rs.getString(1));
+				documentType.setDescription(rs.getString(2));
+				documentType.setDisplayValue(rs.getString(3));
+
+				types.add(documentType);
+
+			}
+			return types;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return types;
+
+	}
+
+	public List<String> getDocumentTypesDisplayValues(String localization, boolean onlyActive) {
+
+		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list ;
+		
+		if(!onlyActive)
+			list = getDocumentTypes();
+		else
+			list = getDocumentTypesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
 				OpenTenureApplication.getInstance().getLocalization());
 		List<String> displayList = new ArrayList<String>();
@@ -306,9 +367,15 @@ public class DocumentType {
 		return displayList;
 	}
 
-	public int getIndexByCodeType(String code) {
+	public int getIndexByCodeType(String code, boolean onlyActive) {
 
-		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list = getDocumentTypes();
+		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list ;
+		
+		if(!onlyActive)
+			list = getDocumentTypes();
+		else
+			list = getDocumentTypesActive();
+		
 
 		int i = 0;
 
@@ -328,9 +395,15 @@ public class DocumentType {
 	}
 	
 	
-	public Map<String,String> getKeyValueMap(String localization) {
+	public Map<String,String> getKeyValueMap(String localization, boolean onlyActive) {
 
-		List<DocumentType> list = getDocumentTypes();
+		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list ;
+		
+		if(!onlyActive)
+			list = getDocumentTypes();
+		else
+			list = getDocumentTypesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
@@ -344,9 +417,15 @@ public class DocumentType {
 		return keyValueMap;
 	}
 	
-	public Map<String,String> getValueKeyMap(String localization) {
+	public Map<String,String> getValueKeyMap(String localization, boolean onlyActive) {
 
-		List<DocumentType> list = getDocumentTypes();
+		List<org.fao.sola.clients.android.opentenure.model.DocumentType> list ;
+		
+		if(!onlyActive)
+			list = getDocumentTypes();
+		else
+			list = getDocumentTypesActive();
+		
 		DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication.getInstance().getLocalization());
 		Map<String,String> keyValueMap = new HashMap<String,String>();
 
@@ -452,6 +531,40 @@ public class DocumentType {
 		}
 		return null;
 
+	}
+		
+	public static int setAllDocumentTypeNoActive() {
+		int result = 0;
+		Connection localConnection = null;
+		PreparedStatement statement = null;
+
+		try {
+			localConnection = OpenTenureApplication.getInstance().getDatabase()
+					.getConnection();
+			statement = localConnection
+					.prepareStatement("UPDATE DOCUMENT_TYPE DT SET ACTIVE='false' WHERE  DT.ACTIVE= 'true'");
+			
+
+			result = statement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		} finally {
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException e) {
+				}
+			}
+			if (localConnection != null) {
+				try {
+					localConnection.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		return result;
 	}
 
 }

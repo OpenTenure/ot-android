@@ -53,6 +53,8 @@ public class UpdateDocumentTypesTask extends
 	protected void onPostExecute(List<ClaimType> types) {
 
 		if (types != null && (types.size() > 0)) {
+			
+			org.fao.sola.clients.android.opentenure.model.DocumentType.setAllDocumentTypeNoActive();
 
 			for (Iterator<ClaimType> iterator = types.iterator(); iterator
 					.hasNext();) {
@@ -68,7 +70,6 @@ public class UpdateDocumentTypesTask extends
 					type.add();
 				else
 					type.updadateDocumentType();
-
 			}
 
 			OpenTenureApplication.getInstance().setCheckedDocTypes(true);

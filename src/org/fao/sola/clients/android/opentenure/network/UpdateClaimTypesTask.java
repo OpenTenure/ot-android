@@ -57,6 +57,7 @@ public class UpdateClaimTypesTask extends
 
 		if (types != null && (types.size() > 0)) {
 
+			org.fao.sola.clients.android.opentenure.model.ClaimType.setAllClaimTypeNoActive();
 			for (Iterator<ClaimType> iterator = types.iterator(); iterator
 					.hasNext();) {
 				ClaimType claimType = (ClaimType) iterator.next();
