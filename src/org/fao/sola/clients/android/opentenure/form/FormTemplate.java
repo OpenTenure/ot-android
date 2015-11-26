@@ -147,4 +147,20 @@ public class FormTemplate {
 		}
 		return null;
 	}
+
+	public static FormTemplate[] fromJsonArray(String json) {
+		ObjectMapper mapper = new ObjectMapper();
+		FormTemplate[] forms;
+		try {
+			forms = mapper.readValue(json, FormTemplate[].class);
+			return forms;
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

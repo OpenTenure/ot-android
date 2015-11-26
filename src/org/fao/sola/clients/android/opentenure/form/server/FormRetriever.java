@@ -51,9 +51,11 @@ import android.util.Log;
 
 public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 
-	private String formUrl;
+	private String oldDefaultFormTemplateUrl;
+	private String defaultFormTemplateUrl;
+	private String allFormTemplatesUrl;
 
-	private String getFormUrl(Context context) {
+	private String getFormUrl(Context context, String urlPattern) {
 		SharedPreferences OpenTenurePreferences = PreferenceManager
 				.getDefaultSharedPreferences(context);
 
@@ -65,7 +67,7 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 			// server url has been specified
 			// use the default one for the explicitly configured server
 			// or the default one
-			formUrl = String.format(CommunityServerAPIUtilities.HTTPS_GETFORM,
+			formUrl = String.format(urlPattern,
 					OpenTenurePreferences.getString(
 							OpenTenurePreferencesActivity.CS_URL_PREF,
 							OpenTenureApplication._DEFAULT_COMMUNITY_SERVER));
@@ -76,43 +78,139 @@ public class FormRetriever extends AsyncTask<Void, Integer, Integer> {
 	}
 
 	public FormRetriever(Context context) {
-		formUrl = getFormUrl(context);
+		oldDefaultFormTemplateUrl = getFormUrl(context, CommunityServerAPIUtilities.HTTPS_OLDDEFAULTFORM);
+		defaultFormTemplateUrl = getFormUrl(context, CommunityServerAPIUtilities.HTTPS_DEFAULTFORM);
+		allFormTemplatesUrl = getFormUrl(context, CommunityServerAPIUtilities.HTTPS_ALLFORMS);
 	}
 
 	protected void onPreExecute() {
 	}
+	
+	private int saveOldDefaultForm(){
 
-	protected Integer doInBackground(Void... params) {
-
-		InputStream is = null;
+		InputStream formStream = null;
 		int result = 0;
 
 		try {
 			Log.d(this.getClass().getName(),
-					"Getting dynamic survey form from: " + formUrl);
+					"Getting default dynamic survey form from: " + oldDefaultFormTemplateUrl);
 
-			URL url = new URL(formUrl);
-			HttpURLConnection c = (HttpURLConnection) url.openConnection();
-			c.connect();
-			is = c.getInputStream();
-			String body = getBody(is);
-			Log.d(this.getClass().getName(), "Got dynamic survey form: " + body);
+			URL formUrl = new URL(oldDefaultFormTemplateUrl);
+			HttpURLConnection formConnection = (HttpURLConnection) formUrl.openConnection();
+			formConnection.connect();
+			formStream = formConnection.getInputStream();
+			String formBody = getBody(formStream);
+			Log.d(this.getClass().getName(), "Got dynamic survey form: " + formBody);
 
-			if (body.trim().equals("{}"))
+			if (formBody.trim().equals("{}"))
 				return 100;
 
-			FormTemplate ft = FormTemplate.fromJson(body);
-			result = SurveyFormTemplate.saveDefaultFormTemplate(ft);
-			is.close();
+			FormTemplate form = FormTemplate.fromJson(formBody);
+			result = SurveyFormTemplate.saveDefaultFormTemplate(form);
+			formStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (is != null) {
+			if (formStream != null) {
 				try {
-					is.close();
+					formStream.close();
 				} catch (IOException ignore) {
 				}
 			}
+		}
+		return result;
+
+	}
+
+	private int saveDefaultForm(){
+
+		InputStream formStream = null;
+		int result = 0;
+
+		try {
+			Log.d(this.getClass().getName(),
+					"Getting default dynamic survey form from: " + defaultFormTemplateUrl);
+
+			URL formUrl = new URL(defaultFormTemplateUrl);
+			HttpURLConnection formConnection = (HttpURLConnection) formUrl.openConnection();
+			formConnection.connect();
+			formStream = formConnection.getInputStream();
+			String formBody = getBody(formStream);
+			Log.d(this.getClass().getName(), "Got dynamic survey form: " + formBody);
+
+			if (formBody.trim().equals("{}"))
+				return 100;
+
+			FormTemplate form = FormTemplate.fromJson(formBody);
+			result = SurveyFormTemplate.saveDefaultFormTemplate(form);
+			formStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (formStream != null) {
+				try {
+					formStream.close();
+				} catch (IOException ignore) {
+				}
+			}
+		}
+		return result;
+
+	}
+
+	private int saveAllForms(){
+		InputStream formsStream = null;
+		int result = 0;
+
+		try {
+			Log.d(this.getClass().getName(),
+					"Getting all dynamic survey forms from: " + allFormTemplatesUrl);
+
+			URL formsUrl = new URL(allFormTemplatesUrl);
+			HttpURLConnection formsConnection = (HttpURLConnection) formsUrl.openConnection();
+			formsConnection.connect();
+			formsStream = formsConnection.getInputStream();
+			String formsBody = getBody(formsStream);
+			Log.d(this.getClass().getName(), "Got all dynamic survey forms: " + formsBody);
+
+			if (formsBody.trim().equals("[]") || formsBody.trim().equals("[{}]"))
+				return 100;
+
+			FormTemplate[] forms = FormTemplate.fromJsonArray(formsBody);
+			
+			for(FormTemplate form : forms){
+				result = SurveyFormTemplate.saveFormTemplate(form);
+			}
+			formsStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (formsStream != null) {
+				try {
+					formsStream.close();
+				} catch (IOException ignore) {
+				}
+			}
+		}
+		return result;
+
+	}
+
+	protected Integer doInBackground(Void... params) {
+
+		int result = 0;
+		
+		// Try to get all forms
+		
+		result = saveAllForms();
+		if(result != 0 && result != 100){
+			// At least one form retrieved
+			result = saveDefaultForm();
+		}else if(result == 0){
+			// Maybe the server does not support the new
+			// 'all forms + default' API
+			// let's try the old 'get default only' one
+			result = saveOldDefaultForm();
 		}
 		return result;
 

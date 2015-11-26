@@ -45,18 +45,24 @@ public class SectionElementPayload {
 		this.id = se.getId();
 		this.sectionPayloadId = se.getSectionPayloadId();
 		this.fieldPayloadList = new ArrayList<FieldPayload>();
-		for(FieldPayload fieldPayload:se.getFieldPayloadList()){
-			this.fieldPayloadList.add(new FieldPayload(fieldPayload));
+		List<FieldPayload> fieldPayloadList = se.getFieldPayloadList();
+		if(fieldPayloadList != null){
+			for(FieldPayload fieldPayload:fieldPayloadList){
+				this.fieldPayloadList.add(new FieldPayload(fieldPayload));
+			}
 		}
 	}
 
 	public SectionElementPayload(SectionTemplate st) {
 		this.id = UUID.randomUUID().toString();
 		this.fieldPayloadList = new ArrayList<FieldPayload>();
-		for(FieldTemplate ft:st.getFieldTemplateList()){
-			FieldPayload newField = new FieldPayload(ft);
-			newField.setSectionElementPayloadId(id);
-			this.fieldPayloadList.add(newField);
+		List<FieldTemplate> fieldTemplateList = st.getFieldTemplateList();
+		if(fieldTemplateList != null){
+			for(FieldTemplate ft:fieldTemplateList){
+				FieldPayload newField = new FieldPayload(ft);
+				newField.setSectionElementPayloadId(id);
+				this.fieldPayloadList.add(newField);
+			}
 		}
 	}
 

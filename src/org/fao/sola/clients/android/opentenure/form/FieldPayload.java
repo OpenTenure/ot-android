@@ -160,6 +160,7 @@ public class FieldPayload {
 
 	public FieldPayload(FieldPayload field){
 		this.id = field.getId();
+		this.itemOrder = field.getItemOrder();
 		this.sectionElementPayloadId = field.getSectionElementPayloadId();
 		if(field.getName() != null){
 			this.name = field.getName();

@@ -84,7 +84,9 @@ public class CommunityServerAPIUtilities {
 	public static final String HTTPS_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 	public static final String HTTP_ADDCLAIMATTACHMENT = "%s/ws/%s/claim/addClaimAttachment?claimId=%s&attachmentId=%s";
 	
-	public static final String HTTPS_GETFORM = "%s/ws/claim/getDefaultFormTemplate";
+	public static final String HTTPS_OLDDEFAULTFORM = "%s/ws/claim/getDefaultFormTemplate";
+	public static final String HTTPS_DEFAULTFORM = "%s/ws/ref/getDefaultFormTemplate";
+	public static final String HTTPS_ALLFORMS = "%s/ws/ref/getFormTemplates";
 
 	public static String Slurp(final InputStream is, final int bufferSize) {
 		final char[] buffer = new char[bufferSize];

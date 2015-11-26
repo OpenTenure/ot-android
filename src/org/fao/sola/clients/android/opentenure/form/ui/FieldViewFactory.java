@@ -81,12 +81,15 @@ public class FieldViewFactory {
 		int selected = -1;
 
 		boolean isOptional = true;
+		List<FieldConstraint> fieldConstraintList = field.getFieldConstraintList();
 
-		for (FieldConstraint constraint : field.getFieldConstraintList()) {
-			if (constraint != null
-					&& FieldConstraintType.NOT_NULL == constraint
-							.getFieldConstraintType()) {
-				isOptional = false;
+		if(fieldConstraintList != null){
+			for (FieldConstraint constraint : fieldConstraintList) {
+				if (constraint != null
+						&& FieldConstraintType.NOT_NULL == constraint
+								.getFieldConstraintType()) {
+					isOptional = false;
+				}
 			}
 		}
 
@@ -167,12 +170,15 @@ public class FieldViewFactory {
 			final DisplayNameLocalizer dnl,
 			final FieldTemplate field,
 			final FieldPayload payload, Mode mode) {
-		for (FieldConstraint constraint : field.getFieldConstraintList()) {
-			if (constraint instanceof OptionConstraint) {
-				return getSpinner(activity, dnl,
-						((OptionConstraint) constraint)
-								.getFieldConstraintOptionList(), field,
-						payload, mode);
+		List<FieldConstraint> fieldConstraintList = field.getFieldConstraintList();
+		if(fieldConstraintList != null){
+			for (FieldConstraint constraint : fieldConstraintList) {
+				if (constraint instanceof OptionConstraint) {
+					return getSpinner(activity, dnl,
+							((OptionConstraint) constraint)
+									.getFieldConstraintOptionList(), field,
+							payload, mode);
+				}
 			}
 		}
 		final EditText text;
@@ -253,7 +259,11 @@ public class FieldViewFactory {
 				android.R.color.white));
 		number.setInputType(InputType.TYPE_CLASS_NUMBER);
 		if (payload.getBigDecimalPayload() != null) {
-			number.setText(payload.getBigDecimalPayload().toPlainString());
+			if(isInteger(payload.getBigDecimalPayload())){
+				number.setText(payload.getBigDecimalPayload().toBigInteger().toString());
+			}else{
+				number.setText(payload.getBigDecimalPayload().toPlainString());
+			}
 		}
 		if (mode == Mode.MODE_RO) {
 			number.setEnabled(false);
@@ -303,6 +313,10 @@ public class FieldViewFactory {
 		}
 		return number;
 	}
+	
+	private static boolean isInteger(BigDecimal bd) {
+		  return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+		}
 
 	public static View getViewForDecimalField(final Activity activity,
 			final DisplayNameLocalizer dnl,
@@ -319,7 +333,11 @@ public class FieldViewFactory {
 		number.setBackgroundColor(activity.getResources().getColor(
 				android.R.color.white));
 		if (payload.getBigDecimalPayload() != null) {
-			number.setText(payload.getBigDecimalPayload().toPlainString());
+			if(isInteger(payload.getBigDecimalPayload())){
+				number.setText(payload.getBigDecimalPayload().toBigInteger().toString());
+			}else{
+				number.setText(payload.getBigDecimalPayload().toPlainString());
+			}
 		}
 		if (mode == Mode.MODE_RO) {
 			number.setEnabled(false);
@@ -414,10 +432,13 @@ public class FieldViewFactory {
 			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
-		for (FieldConstraint constraint : field.getFieldConstraintList()) {
-			if (constraint instanceof DateTimeFormatConstraint
-					&& constraint.getFormat() != null) {
-				tmpFormat = constraint.getFormat();
+		List<FieldConstraint> fieldConstraintList = field.getFieldConstraintList();
+		if(fieldConstraintList != null){
+			for (FieldConstraint constraint : fieldConstraintList) {
+				if (constraint instanceof DateTimeFormatConstraint
+						&& constraint.getFormat() != null) {
+					tmpFormat = constraint.getFormat();
+				}
 			}
 		}
 
@@ -523,10 +544,13 @@ public class FieldViewFactory {
 			final DisplayNameLocalizer dnl,
 			final FieldTemplate field, final FieldPayload payload, Mode mode) {
 		String tmpFormat = null;
-		for (FieldConstraint constraint : field.getFieldConstraintList()) {
-			if (constraint instanceof DateTimeFormatConstraint
-					&& constraint.getFormat() != null) {
-				tmpFormat = constraint.getFormat();
+		List<FieldConstraint> fieldConstraintList = field.getFieldConstraintList();
+		if(fieldConstraintList != null){
+			for (FieldConstraint constraint : fieldConstraintList) {
+				if (constraint instanceof DateTimeFormatConstraint
+						&& constraint.getFormat() != null) {
+					tmpFormat = constraint.getFormat();
+				}
 			}
 		}
 

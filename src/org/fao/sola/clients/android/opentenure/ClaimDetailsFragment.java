@@ -1162,51 +1162,68 @@ public class ClaimDetailsFragment extends Fragment {
 			if (!claim.getName().equals(
 					((EditText) rootView
 							.findViewById(R.id.claim_name_input_field))
-							.getText().toString()))
+							.getText().toString())){
+				Log.d(this.getClass().getName(), "Claim name has changed");
 				changed = true;
+			}
 			else {
 
 				Person person = Person.getPerson(((TextView) rootView
 						.findViewById(R.id.claimant_id)).getText().toString());
 				if (!claim.getPerson().getPersonId()
-						.equals(person.getPersonId()))
+						.equals(person.getPersonId())){
+					Log.d(this.getClass().getName(), "Claimant has changed");
 					changed = true;
+				}
 				else {
 
 					Claim challengedClaim = Claim.getClaim(((TextView) rootView
 							.findViewById(R.id.challenge_to_claim_id))
 							.getText().toString());
 					if (challengedClaim == null
-							&& claim.getChallengedClaim() != null)
+							&& claim.getChallengedClaim() != null){
+						Log.d(this.getClass().getName(), "Challenged claim has changed");
 						changed = true;
+					}
 					else if (challengedClaim != null
-							&& claim.getChallengedClaim() == null)
-						changed = true;
+
+							&& claim.getChallengedClaim() == null){
+						Log.d(this.getClass().getName(), "Challenged claim has changed");
+						changed = true; 
+					}
+
 					else if (challengedClaim != null
 							&& claim.getChallengedClaim() != null
 							&& !claim.getChallengedClaim().getClaimId()
-									.equals(challengedClaim.getClaimId()))
+									.equals(challengedClaim.getClaimId())){
+						Log.d(this.getClass().getName(), "Challenged claim has changed");
 						changed = true;
+					}
 					else {
 						String claimType = (String) ((Spinner) rootView
 								.findViewById(R.id.claimTypesSpinner))
 								.getSelectedItem();
 
 						if (!claim.getType().equals(
-								valueKeyClaimTypesMap.get(claimType)))
+								valueKeyClaimTypesMap.get(claimType))){
+							Log.d(this.getClass().getName(), "Claim type has changed");
 							changed = true;
+						}
 						else {
 
 							String landUseDispValue = (String) ((Spinner) rootView
 									.findViewById(R.id.landUseSpinner))
 									.getSelectedItem();
 							if (claim.getLandUse() == null
-									&& valueKeyMapLandUse.get(landUseDispValue) != null)
+									&& valueKeyMapLandUse.get(landUseDispValue) != null){
+								Log.d(this.getClass().getName(), "Land use has changed");
 								changed = true;
+							}
 							else if (!claim.getLandUse().equals(
-									valueKeyMapLandUse.get(landUseDispValue)))
+									valueKeyMapLandUse.get(landUseDispValue))){
+								Log.d(this.getClass().getName(), "Land use has changed");
 								changed = true;
-
+							}
 							else {
 
 								String notes = ((EditText) rootView
@@ -1214,8 +1231,10 @@ public class ClaimDetailsFragment extends Fragment {
 										.getText().toString();
 
 								if (claim.getNotes() != null
-										&& !claim.getNotes().equals(notes))
+										&& !claim.getNotes().equals(notes)){
+									Log.d(this.getClass().getName(), "Claim notes have changed");
 									changed = true;
+								}
 								else {
 
 									String startDate = ((EditText) rootView
@@ -1227,8 +1246,10 @@ public class ClaimDetailsFragment extends Fragment {
 													.equals("")) {
 
 										if (startDate != null
-												&& !startDate.equals(""))
+												&& !startDate.equals("")){
+											Log.d(this.getClass().getName(), "Rights start date has changed");
 											changed = true;
+										}
 
 									} else {
 
@@ -1246,9 +1267,10 @@ public class ClaimDetailsFragment extends Fragment {
 														dob.getTime());
 
 												if (claim.getDateOfStart()
-														.compareTo(date) != 0)
+														.compareTo(date) != 0){
+													Log.d(this.getClass().getName(), "Rights start date has changed");
 													changed = true;
-
+												}
 												else {
 													changed = isFormChanged();
 												}
@@ -1297,31 +1319,38 @@ public class ClaimDetailsFragment extends Fragment {
 			String claimName = ((EditText) rootView
 					.findViewById(R.id.claim_name_input_field)).getText()
 					.toString();
-			if (claimName != null && !claimName.trim().equals(""))
+			if (claimName != null && !claimName.trim().equals("")){
+				Log.d(this.getClass().getName(), "Claim name has changed");
 				changed = true;
+			}
 			else {
 
 				String person = ((TextView) rootView
 						.findViewById(R.id.claimant_id)).getText().toString();
-				if (person != null && !person.trim().equals(""))
+				if (person != null && !person.trim().equals("")){
+					Log.d(this.getClass().getName(), "Claimant has changed");
 					changed = true;
+				}
 				else {
 
 					String challengedClaim = ((TextView) rootView
 							.findViewById(R.id.challenge_to_claim_id))
 							.getText().toString();
 					if (challengedClaim != null
-							&& !challengedClaim.trim().equals(""))
+							&& !challengedClaim.trim().equals("")){
+						Log.d(this.getClass().getName(), "Challenged claim has changed");
 						changed = true;
-
+					}
 					else {
 
 						String notes = ((EditText) rootView
 								.findViewById(R.id.claim_notes_input_field))
 								.getText().toString();
 
-						if (notes != null && !notes.trim().equals(""))
+						if (notes != null && !notes.trim().equals("")){
+							Log.d(this.getClass().getName(), "Claim notes have changed");
 							changed = true;
+						}
 						else {
 
 							String startDate = ((EditText) rootView
@@ -1329,8 +1358,10 @@ public class ClaimDetailsFragment extends Fragment {
 									.getText().toString();
 
 							if (startDate != null
-									&& !startDate.trim().equals(""))
+									&& !startDate.trim().equals("")){
+								Log.d(this.getClass().getName(), "Rights start date has changed");
 								changed = true;
+							}
 							else {
 								changed = isFormChanged();
 							}
@@ -1458,7 +1489,7 @@ public class ClaimDetailsFragment extends Fragment {
 				|| ((editedFormPayload == null) && (originalFormPayload != null))
 				|| !editedFormPayload.toJson().equalsIgnoreCase(
 						originalFormPayload.toJson())) {
-
+			Log.d(this.getClass().getName(), "Dynamic form has changed");
 			return true;
 		} else {
 			return false;

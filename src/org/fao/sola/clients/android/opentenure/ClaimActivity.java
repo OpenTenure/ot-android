@@ -496,7 +496,8 @@ public class ClaimActivity extends FragmentActivity implements ClaimDispatcher,
 				List<SectionTemplate> sectionTemplateList = formTemplate
 						.getSectionTemplateList();
 				if (sectionTemplateList == null
-						|| sectionTemplateList.size() <= 0) {
+						|| sectionTemplateList.size() <= 0
+						|| sectionTemplateList.size() <= sectionPosition) {
 					return new SectionElementFragment(
 							new SectionElementPayload(), new SectionTemplate(),
 							mode);
