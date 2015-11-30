@@ -685,6 +685,7 @@ public class FileSystemUtilities {
 		File dest = null;
 
 		try {
+			
 			dest = new File(getClaimantFolder(personId), personId + ".jpg");
 			dest.createNewFile();
 
@@ -942,20 +943,20 @@ public class FileSystemUtilities {
 
 	}
 
-	public static File reduce(File file) {
+	public static File reduceJpeg(File file) {
 
 		InputStream in = null;
 
 		/* Choosing the right reduction factor */
 		int percentage = 0;
-		if (file.length() < 2000000)
-			percentage = 50;
+		if (file.length() < 1000000)
+			percentage = 30;
 
-		if (file.length() >= 2000000 && file.length() < 3000000)
+		if (file.length() >= 1000000 && file.length() < 2000000)
 			percentage = 40;
 
-		if (file.length() >= 3000000)
-			percentage = 30;
+		if (file.length() >= 2000000)
+			percentage = 50;
 
 		try {
 			in = new FileInputStream(file);
@@ -972,12 +973,7 @@ public class FileSystemUtilities {
 							file = tmpFile;
 							tmpFile = tmp;
 						}
-
-						System.out.println("tmpFile : "
-								+ tmpFile.getAbsolutePath());
-						System.out.println("file : " + file.getAbsolutePath());
-
-						tmpFile.delete();
+						file.delete();
 
 					} else {
 						throw new Exception(

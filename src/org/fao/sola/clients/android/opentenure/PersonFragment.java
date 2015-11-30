@@ -39,7 +39,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.fao.sola.clients.android.opentenure.button.listener.ChangeTypeListener;
 import org.fao.sola.clients.android.opentenure.button.listener.ConfirmExit;
+import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.IdType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Person;
@@ -50,6 +52,9 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Camera;
+import android.hardware.Camera.Size;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -64,6 +69,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -79,10 +85,13 @@ public class PersonFragment extends Fragment {
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	private File personPictureFile;
 	private ImageView claimantImageView;
+	private Button changeButton;
 	private boolean allowSave = true;
 	private Map<String, String> keyValueMapIdTypes;
 	private Map<String, String> valueKeyMapIdTypes;
 	boolean isPerson = true;
+	boolean onlyActive = true;
+	
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -126,6 +135,13 @@ public class PersonFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+
+		if(personActivity.getPersonId() == null)
+			onlyActive = true;
+		else 
+			onlyActive = false;
+		
 
 		if ((personActivity.getEntityType() != null && personActivity
 				.getEntityType().equalsIgnoreCase("group"))
@@ -182,7 +198,10 @@ public class PersonFragment extends Fragment {
 					if (personPictureFile != null) {
 
 						Person.deleteAllBmp(personActivity.getPersonId());
-
+						
+						//*****************************************//						
+						
+						
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
 						intent.putExtra(MediaStore.EXTRA_OUTPUT,
@@ -199,6 +218,8 @@ public class PersonFragment extends Fragment {
 
 				}
 			});
+			
+			
 			if (personActivity.getPersonId() != null
 					&& Person.getPerson(personActivity.getPersonId())
 							.getPersonType().equalsIgnoreCase(Person._PHYSICAL)) {
@@ -259,8 +280,9 @@ public class PersonFragment extends Fragment {
 				@Override
 				public void onClick(View v) {
 					if (personPictureFile != null) {
-
+						
 						Person.deleteAllBmp(personActivity.getPersonId());
+						
 
 						Intent intent = new Intent(
 								MediaStore.ACTION_IMAGE_CAPTURE);
@@ -299,9 +321,9 @@ public class PersonFragment extends Fragment {
 
 		/* Mapping id type localization */
 		keyValueMapIdTypes = it.getKeyValueMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(),onlyActive);
 		valueKeyMapIdTypes = it.getValueKeyMap(OpenTenureApplication
-				.getInstance().getLocalization());
+				.getInstance().getLocalization(),onlyActive);
 
 		List<String> idTypelist = new ArrayList<String>();
 		keys = new TreeSet<String>(keyValueMapIdTypes.keySet());
@@ -336,7 +358,7 @@ public class PersonFragment extends Fragment {
 	}
 
 	private void load(String personId) {
-
+		
 		Person person = Person.getPerson(personId);
 		((EditText) rootView.findViewById(R.id.first_name_input_field))
 				.setText(person.getFirstName());
@@ -354,7 +376,7 @@ public class PersonFragment extends Fragment {
 				.setText(person.getContactPhoneNumber());
 		((Spinner) rootView.findViewById(R.id.id_type_spinner))
 				.setSelection(new IdType().getIndexByCodeType(person
-						.getIdType()));
+						.getIdType(),onlyActive));
 
 		if (person.getGender().equals("M")) {
 			((Spinner) rootView.findViewById(R.id.gender_spinner))
@@ -471,6 +493,18 @@ public class PersonFragment extends Fragment {
 
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
+				File copy = Person.getPersonPictureFile(personActivity.getPersonId());
+				if(copy.length() > 600000){
+					/* This to check that the claimant would not be too large*/					
+					
+					System.out.println("Reducing size...." +
+							"" + copy.length());
+					copy = FileSystemUtilities.reduceJpeg(copy);	
+				}
+				else
+					System.out.println("Attachment size : " + copy.length());
+				
+				
 				try {
 					claimantImageView.setImageBitmap(Person.getPersonPicture(
 							rootView.getContext(),
@@ -1173,7 +1207,7 @@ public class PersonFragment extends Fragment {
 		if (valueKeyMapIdTypes == null)
 			valueKeyMapIdTypes = new IdType()
 					.getValueKeyMap(OpenTenureApplication.getInstance()
-							.getLocalization());
+							.getLocalization(),onlyActive);
 
 		View rootView = null;
 

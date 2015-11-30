@@ -234,12 +234,11 @@ public class ClaimDocumentsFragment extends ListFragment {
 						
 						//*******
 						
-						if(copy.length() > 999999){
+						if(copy.length() > 800000){							
 							
-							System.out.println("Attachment size : " + copy.length());
-							System.out.println("Reducing size...." +
+							System.out.println("Reducing attachment size...." +
 									"" + copy.length());
-							copy = FileSystemUtilities.reduce(copy);	
+							copy = FileSystemUtilities.reduceJpeg(copy);	
 						}
 						else
 							System.out.println("Attachment size : " + copy.length());
