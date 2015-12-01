@@ -39,11 +39,10 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.fao.sola.clients.android.opentenure.button.listener.ChangeTypeListener;
+
 import org.fao.sola.clients.android.opentenure.button.listener.ConfirmExit;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.IdType;
-import org.fao.sola.clients.android.opentenure.model.LandUse;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
 import android.app.Activity;
@@ -52,8 +51,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Camera;
-import android.hardware.Camera.Size;
+
 
 import android.net.Uri;
 import android.os.Bundle;
