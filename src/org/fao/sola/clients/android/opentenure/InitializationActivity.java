@@ -28,6 +28,7 @@
 package org.fao.sola.clients.android.opentenure;
 
 import org.fao.sola.clients.android.opentenure.form.server.FormRetriever;
+import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Database;
 import org.fao.sola.clients.android.opentenure.model.Task;
@@ -240,6 +241,12 @@ public class InitializationActivity extends Activity {
 							.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			}
+			
+			int setted = Claim.resetClaimUploading();
+			
+			System.out.println("Claim cambiati in created : " + setted);
+			
+			
 			String serverProtoVersion = CommunityServerAPI.getServerProtoVersion();
 			String expectedProtoVersion = Configuration.getConfigurationValue(Configuration.PROTOVERSION_NAME);
 			Toast toast;

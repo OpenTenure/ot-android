@@ -136,7 +136,13 @@ public class JsonUtilities {
 				} else
 					tempClaim.setServerUrl(serverUrl);
 
-				tempClaim.setStatusCode(claim.getStatus());
+				if (claim.getStatus().equals(ClaimStatus._CREATED)
+						|| claim.getStatus().equals(ClaimStatus._UPLOAD_ERROR)
+						|| claim.getStatus().equals(
+								ClaimStatus._UPLOAD_INCOMPLETE))
+				tempClaim.setStatusCode(ClaimStatus._CREATED);
+				else
+					tempClaim.setStatusCode(claim.getStatus());
 				tempClaim.setLandUseCode(claim.getLandUse());
 				tempClaim.setNotes(claim.getNotes());
 				tempClaim.setClaimArea(claim.getClaimArea());

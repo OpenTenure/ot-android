@@ -279,6 +279,7 @@ public class UploadChunksTask extends
 							OpenTenureApplication.getContext().getResources()
 									.getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
+					vh.getSend().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
@@ -286,6 +287,7 @@ public class UploadChunksTask extends
 							OpenTenureApplication.getContext().getResources()
 									.getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
+					vh.getSend().setVisibility(View.VISIBLE);
 				}
 				
 				
@@ -446,6 +448,7 @@ public class UploadChunksTask extends
 							OpenTenureApplication.getContext().getResources()
 									.getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
+					vh.getSend().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(),claim.getStatus());
 					vh.getStatus().setText(
@@ -455,6 +458,7 @@ public class UploadChunksTask extends
 							OpenTenureApplication.getContext().getResources()
 									.getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
+					vh.getSend().setVisibility(View.VISIBLE);
 				}
 
 				if(vh.getBar() != null){
