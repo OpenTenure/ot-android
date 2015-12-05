@@ -46,6 +46,7 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -476,30 +477,64 @@ public class Vertex {
 			return null;
 		}
 		GeometryFactory gf = new GeometryFactory();
-		Coordinate[] coordinates = new Coordinate[vertices.size() + 1];
-		int i = 0;
-
-		for (Vertex vertex : vertices) {
-			coordinates[i] = new Coordinate(vertex.getMapPosition().longitude,
-					vertex.getMapPosition().latitude);
-			i++;
-		}
-		coordinates[i] = new Coordinate(
-				vertices.get(0).getMapPosition().longitude, vertices.get(0)
-						.getMapPosition().latitude);
-
-		Polygon polygon = gf.createPolygon(coordinates);
-		polygon.setSRID(Constants.SRID);
-
+		Coordinate[] coordinates;
 		StringWriter writer = new StringWriter();
 		WKTWriter wktWriter = new WKTWriter(2);
+		int i = 0;
+		
+		switch(vertices.size()){
+			case 1:
+				Point point = gf.createPoint(new Coordinate(
+						vertices.get(0).getMapPosition().longitude, vertices.get(0)
+						.getMapPosition().latitude));
+				point.setSRID(Constants.SRID);
 
-		try {
-			wktWriter.write(polygon, writer);
-		} catch (IOException e) {
+				try {
+					wktWriter.write(point, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
+			case 2:
+				coordinates = new Coordinate[vertices.size()];
+
+				for (Vertex vertex : vertices) {
+					coordinates[i] = new Coordinate(vertex.getMapPosition().longitude,
+							vertex.getMapPosition().latitude);
+					i++;
+				}
+				LineString linestring = gf.createLineString(coordinates);
+				linestring.setSRID(Constants.SRID);
+
+
+				try {
+					wktWriter.write(linestring, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
+			default:
+				coordinates = new Coordinate[vertices.size() + 1];
+
+				for (Vertex vertex : vertices) {
+					coordinates[i] = new Coordinate(vertex.getMapPosition().longitude,
+							vertex.getMapPosition().latitude);
+					i++;
+				}
+				coordinates[i] = new Coordinate(
+						vertices.get(0).getMapPosition().longitude, vertices.get(0)
+								.getMapPosition().latitude);
+
+				Polygon polygon = gf.createPolygon(coordinates);
+				polygon.setSRID(Constants.SRID);
+
+				try {
+					wktWriter.write(polygon, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
 		}
-
-		return writer.toString();
 	}
 
 	public static String gpsWKTFromVertices(List<Vertex> vertices) {
@@ -507,59 +542,104 @@ public class Vertex {
 			return null;
 		}
 		
-		GeometryFactory gf = new GeometryFactory();
-		Coordinate[] coordinates = new Coordinate[vertices.size() + 1];
-		int i = 0;
 		boolean noGPSData = true;
+		StringWriter writer = new StringWriter();
+		GeometryFactory gf = new GeometryFactory();
+		WKTWriter wktWriter = new WKTWriter(2);
+		
 
 		for (Vertex vertex : vertices) {
 			
-			coordinates[i] = new Coordinate();
-
 			if(INVALID_POSITION.equals(vertex.getGPSPosition())){
-				coordinates[i].x = vertex.getMapPosition().longitude;
-				coordinates[i].y = vertex.getMapPosition().latitude;
 			}else{
-				coordinates[i].x = vertex.getGPSPosition().longitude;
-				coordinates[i].y = vertex.getGPSPosition().latitude;
 				noGPSData = false;
 			}
-			
-			i++;
 		}
-		coordinates[i] = new Coordinate(
-				vertices.get(0).getGPSPosition().longitude, vertices.get(0)
-						.getGPSPosition().latitude);
 
-		StringWriter writer = new StringWriter();
-		
 		if (noGPSData) {			
 			
 			
-			Point point = gf.createPoint(coordinates[0]);
+			Point point = gf.createPoint(new Coordinate(
+					vertices.get(0).getMapPosition().longitude, vertices.get(0)
+					.getMapPosition().latitude));
 			point.setSRID(Constants.SRID);
 
-			WKTWriter wktWriter = new WKTWriter(2);
 
 			try {
 				wktWriter.write(point, writer);
 			} catch (IOException e) {
 			}
-
-		} else {
-
-			Polygon polygon = gf.createPolygon(coordinates);
-			polygon.setSRID(Constants.SRID);
-
-			WKTWriter wktWriter = new WKTWriter(2);
-
-			try {
-				wktWriter.write(polygon, writer);
-			} catch (IOException e) {
-			}
+			return writer.toString();
 		}
+		
+		Coordinate[] coordinates;
+		int i = 0;
+		
+		switch(vertices.size()){
+			case 1:
+				Point point;
+				
+				if(INVALID_POSITION.equals(vertices.get(0).getGPSPosition())){
+					point = gf.createPoint(new Coordinate(vertices.get(0).getMapPosition().longitude, vertices.get(0).getMapPosition().latitude));
+				}else{
+					point = gf.createPoint(new Coordinate(vertices.get(0).getGPSPosition().longitude, vertices.get(0).getGPSPosition().latitude));
+				}
+				point.setSRID(Constants.SRID);
 
-		return writer.toString();
+				try {
+					wktWriter.write(point, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
+			case 2:
+				coordinates = new Coordinate[vertices.size()];
+
+				for (Vertex vertex : vertices) {
+
+					if(INVALID_POSITION.equals(vertex.getGPSPosition())){
+						coordinates[i] = new Coordinate(vertex.getMapPosition().longitude, vertex.getMapPosition().latitude);
+					}else{
+						coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude, vertex.getGPSPosition().latitude);
+					}
+					i++;
+				}
+				LineString linestring = gf.createLineString(coordinates);
+				linestring.setSRID(Constants.SRID);
+
+				try {
+					wktWriter.write(linestring, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
+			default:
+				coordinates = new Coordinate[vertices.size() + 1];
+
+				for (Vertex vertex : vertices) {
+					if(INVALID_POSITION.equals(vertex.getGPSPosition())){
+						coordinates[i] = new Coordinate(vertex.getMapPosition().longitude, vertex.getMapPosition().latitude);
+					}else{
+						coordinates[i] = new Coordinate(vertex.getGPSPosition().longitude, vertex.getGPSPosition().latitude);
+					}
+					i++;
+				}
+				if(INVALID_POSITION.equals(vertices.get(0).getGPSPosition())){
+					coordinates[i] = new Coordinate(vertices.get(0).getMapPosition().longitude, vertices.get(0).getMapPosition().latitude);
+				}else{
+					coordinates[i] = new Coordinate(vertices.get(0).getGPSPosition().longitude, vertices.get(0).getGPSPosition().latitude);
+				}
+
+				Polygon polygon = gf.createPolygon(coordinates);
+				polygon.setSRID(Constants.SRID);
+
+				try {
+					wktWriter.write(polygon, writer);
+				} catch (IOException e) {
+				}
+
+				return writer.toString();
+		}
 	}
 
 	public static List<Vertex> verticesFromWKT(String mapWKT, String gpsWKT) {
