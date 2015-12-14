@@ -278,11 +278,12 @@ public class SectionTemplate implements Comparable<SectionTemplate>{
 	public FieldConstraint getFailedConstraint(String externalDisplayName, SectionElementPayload payload) {
 
 		Iterator<FieldPayload> payloadIterator = payload.getFieldPayloadList().iterator();
-
-		for(FieldTemplate fieldTemplate : fieldTemplateList){
-			FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(externalDisplayName, payloadIterator.next());
-			if(fieldConstraint != null){
-				return fieldConstraint;
+		if(payloadIterator != null && payloadIterator.hasNext()){
+			for(FieldTemplate fieldTemplate : fieldTemplateList){
+				FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(externalDisplayName, payloadIterator.next());
+				if(fieldConstraint != null){
+					return fieldConstraint;
+				}
 			}
 		}
 		return null;
