@@ -31,10 +31,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.form.constraint.IntegerRangeConstraint;
 import org.fao.sola.clients.android.opentenure.form.field.IntegerField;
 
@@ -233,7 +235,7 @@ public class SectionTemplate implements Comparable<SectionTemplate>{
 		}
 	}
 
-	public FieldConstraint getFailedConstraint(SectionPayload payload) {
+	public FieldConstraint getFailedConstraint(SectionPayload payload, DisplayNameLocalizer dnl) {
 		
 		List<SectionElementPayload> elements = payload.getSectionElementPayloadList();
 
@@ -263,7 +265,7 @@ public class SectionTemplate implements Comparable<SectionTemplate>{
 		}
 		int sectionElementIndex = 0;
 		for(SectionElementPayload element:elements){
-			FieldConstraint failedConstraint = getFailedConstraint(displayName + "/" + sectionElementIndex, element);
+			FieldConstraint failedConstraint = getFailedConstraint(dnl.getLocalizedDisplayName(displayName) + "/" + sectionElementIndex, element);
 			if(failedConstraint != null){
 				return failedConstraint;
 			}
@@ -275,17 +277,31 @@ public class SectionTemplate implements Comparable<SectionTemplate>{
 		fieldTemplateList.add(fieldTemplate);
 	}
 
-	public FieldConstraint getFailedConstraint(String externalDisplayName, SectionElementPayload payload) {
+	private FieldConstraint getFailedConstraint(String externalDisplayName, SectionElementPayload payload) {
+		Map<String,FieldTemplate> templateMap = new HashMap<String,FieldTemplate>();
 
-		Iterator<FieldPayload> payloadIterator = payload.getFieldPayloadList().iterator();
-		if(payloadIterator != null && payloadIterator.hasNext()){
-			for(FieldTemplate fieldTemplate : fieldTemplateList){
-				FieldConstraint fieldConstraint = fieldTemplate.getFailedConstraint(externalDisplayName, payloadIterator.next());
+		if(payload.getFieldPayloadList() == null || payload.getFieldPayloadList().size() <= 0){
+			return null;
+		}
+
+		if(fieldTemplateList != null && fieldTemplateList.size() > 0){
+			for(FieldTemplate ft:fieldTemplateList){
+				templateMap.put(ft.getName(),ft);
+			}
+		}else{
+			return null;
+		}
+		
+		for(FieldPayload fp:payload.getFieldPayloadList()){
+			FieldTemplate ft = templateMap.get(fp.getName());
+			if(ft != null){
+				FieldConstraint fieldConstraint = ft.getFailedConstraint(externalDisplayName, fp);
 				if(fieldConstraint != null){
 					return fieldConstraint;
 				}
 			}
 		}
+
 		return null;
 	}
 

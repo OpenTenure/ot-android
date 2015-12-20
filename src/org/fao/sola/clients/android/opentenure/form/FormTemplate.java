@@ -31,8 +31,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -110,13 +113,28 @@ public class FormTemplate {
 		sectionTemplateList.add(sectionTemplate);
 	}
 	
-	public FieldConstraint getFailedConstraint(FormPayload payload) {
-		Iterator<SectionPayload> iter = payload.getSectionPayloadList().iterator();
-		for(SectionTemplate pageTemplate:sectionTemplateList){
-			SectionPayload pagePayload = iter.next();
-			FieldConstraint failedConstraint = pageTemplate.getFailedConstraint(pagePayload);
-			if(failedConstraint != null){
-				return failedConstraint;
+	public FieldConstraint getFailedConstraint(FormPayload payload, DisplayNameLocalizer dnl) {
+		Map<String,SectionTemplate> templateMap = new HashMap<String,SectionTemplate>();
+
+		if(payload.getSectionPayloadList() == null || payload.getSectionPayloadList().size() <= 0){
+			return null;
+		}
+
+		if(sectionTemplateList != null && sectionTemplateList.size() > 0){
+			for(SectionTemplate st:sectionTemplateList){
+				templateMap.put(st.getName(),st);
+			}
+		}else{
+			return null;
+		}
+		
+		for(SectionPayload sp:payload.getSectionPayloadList()){
+			SectionTemplate st = templateMap.get(sp.getName());
+			if(st != null){
+				FieldConstraint fieldConstraint = st.getFailedConstraint(sp, dnl);
+				if(fieldConstraint != null){
+					return fieldConstraint;
+				}
 			}
 		}
 		return null;
