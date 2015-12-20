@@ -27,22 +27,13 @@
  */
 package org.fao.sola.clients.android.opentenure.form.ui;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
-import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
-import org.fao.sola.clients.android.opentenure.ClaimListener;
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.FormDispatcher;
-import org.fao.sola.clients.android.opentenure.ModeDispatcher;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
@@ -55,15 +46,12 @@ import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-import org.fao.sola.clients.android.opentenure.model.Person;
-import org.fao.sola.clients.android.opentenure.model.Vertex;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,9 +60,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,8 +68,6 @@ public class SectionElementFragment extends Fragment {
 
 	private static final String ELEMENT_PAYLOAD_KEY = "elementPayload";
 	private static final String ELEMENT_TEMPLATE_KEY = "elementTemplate";
-	private static final String SECTION_ELEMENT_PAYLOAD_KEY = null;
-	private static final String SECTION_ELEMENT_SAVED = "sectionSaved";
 	private View rootView;
 	private SectionElementPayload elementPayload;
 	private SectionTemplate elementTemplate;
@@ -298,8 +282,11 @@ public class SectionElementFragment extends Fragment {
 		FormPayload formPayload = formDispatcher.getEditedFormPayload();
 		FormTemplate formTemplate = formDispatcher.getFormTemplate();
 		FieldConstraint constraint = null;
-		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
-			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
+
+		if ((constraint = formTemplate.getFailedConstraint(formPayload, dnl)) != null) {
+			Toast.makeText(rootView.getContext(), dnl.getLocalizedDisplayName(constraint.displayErrorMsg()),
 					Toast.LENGTH_SHORT).show();
 			return false;
 		} else {

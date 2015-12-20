@@ -31,9 +31,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
 import org.fao.sola.clients.android.opentenure.ClaimDispatcher;
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.FormDispatcher;
+import org.fao.sola.clients.android.opentenure.ModeDispatcher.Mode;
+import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldConstraintOption;
@@ -46,8 +48,6 @@ import org.fao.sola.clients.android.opentenure.form.SectionPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
 import org.fao.sola.clients.android.opentenure.form.constraint.OptionConstraint;
 import org.fao.sola.clients.android.opentenure.model.Claim;
-
-import com.google.android.gms.actions.ReserveIntents;
 
 import android.app.Activity;
 import android.content.Context;
@@ -319,7 +319,9 @@ public class SectionFragment extends ListFragment {
 		FormPayload formPayload = formDispatcher.getEditedFormPayload();
 		FormTemplate formTemplate = formDispatcher.getFormTemplate();
 		FieldConstraint constraint = null;
-		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
+		if ((constraint = formTemplate.getFailedConstraint(formPayload,dnl)) != null) {
 			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
 					Toast.LENGTH_SHORT).show();
 			return false;

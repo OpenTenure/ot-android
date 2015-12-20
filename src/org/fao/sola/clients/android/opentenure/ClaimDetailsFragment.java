@@ -1471,8 +1471,11 @@ public class ClaimDetailsFragment extends Fragment {
 		FormPayload formPayload = formDispatcher.getEditedFormPayload();
 		FormTemplate formTemplate = formDispatcher.getFormTemplate();
 		FieldConstraint constraint = null;
-		if ((constraint = formTemplate.getFailedConstraint(formPayload)) != null) {
-			Toast.makeText(rootView.getContext(), constraint.displayErrorMsg(),
+		DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+				OpenTenureApplication.getInstance().getLocalization());
+
+		if ((constraint = formTemplate.getFailedConstraint(formPayload, dnl)) != null) {
+			Toast.makeText(rootView.getContext(), dnl.getLocalizedDisplayName(constraint.displayErrorMsg()),
 					Toast.LENGTH_SHORT).show();
 			return false;
 		} else {
