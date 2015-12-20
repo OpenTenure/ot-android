@@ -71,4 +71,15 @@
 		    android:shouldDisableView="false"/>
 	</PreferenceCategory>
     
+	<PreferenceCategory android:title="@string/advanced_settings" >
+		<SwitchPreference
+		    android:key="form_validation_pref"
+		    android:title="@string/form_validation"
+	        android:defaultValue="true"
+	        android:switchTextOff="@string/form_validation_off"
+	        android:switchTextOn="@string/form_validation_on"
+		    android:summaryOff="@string/change_to_enable_form_validation"
+		    android:summaryOn="@string/change_to_disable_form_validation" />
+			</PreferenceCategory>
+    
 </PreferenceScreen>

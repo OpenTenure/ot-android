@@ -338,6 +338,12 @@
     <string name="general">Generale</string>
     <string name="dynamic_form">Form dinamico</string>
     <string name="information">Informazioni</string>
+    <string name="advanced_settings">Impostazioni avanzate (non toccare se non sai cosa stai facendo)</string>
+    <string name="form_validation">Validazione dei campi dinamici all\'invio</string>
+    <string name="change_to_enable_form_validation">Cambia stato per abilitare la validazione dei campi dinamici</string>
+    <string name="change_to_disable_form_validation">Cambia stato per disabilitare la validazione dei campi dinamici</string>
+    <string name="form_validation_on">On</string>
+    <string name="form_validation_off">Off</string>
     <string name="shares_prompt">Seleziona le quote</string>
     <string name="null_label">Niente</string>
     <string name="tiles_provider_dialog_title">Scegli un tipo di provider di mappe offline</string>

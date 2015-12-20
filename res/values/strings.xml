@@ -388,6 +388,12 @@
     <string name="general">General</string>
     <string name="dynamic_form">Dynamic form</string>
     <string name="information">Information</string>
+    <string name="advanced_settings">Advanced settings (don\'t touch unless you know what you are doing)</string>
+    <string name="form_validation">Dynamic fields validation on submit</string>
+    <string name="change_to_enable_form_validation">Change to enable dynamic fields validation</string>
+    <string name="change_to_disable_form_validation">Change to disable dynamic fields validation</string>
+    <string name="form_validation_on">On</string>
+    <string name="form_validation_off">Off</string>
     <string name="hint_type_to_filter">Type some characters to filter the list</string>
     <string name="shares_prompt">Select shares</string>
     <string name="null_label">None</string>

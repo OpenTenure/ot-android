@@ -29,7 +29,9 @@ package org.fao.sola.clients.android.opentenure.button.listener;
 
 import java.util.List;
 
+import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
+import org.fao.sola.clients.android.opentenure.OpenTenurePreferencesActivity;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.ViewHolder;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
@@ -46,6 +48,8 @@ import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -155,19 +159,23 @@ public class SubmitClaimListener implements OnClickListener {
 					"gpsGeometry: " + Vertex.gpsWKTFromVertices(vertices));
 
 			FormPayload payload = claim.getDynamicForm();
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+			boolean enableFormValidation = preferences.getBoolean(OpenTenurePreferencesActivity.FORM_VALIDATION_PREF, true);
 
-			if (payload != null) {
+			if (payload != null && enableFormValidation) {
 
 				FormTemplate template = payload.getFormTemplate();
 
 				if (template != null) {
 
+					DisplayNameLocalizer dnl = new DisplayNameLocalizer(
+							OpenTenureApplication.getInstance().getLocalization());
 					FieldConstraint failedConstraint = template
-							.getFailedConstraint(payload);
+							.getFailedConstraint(payload, dnl);
 
 					if (failedConstraint != null) {
 						Toast toast = Toast.makeText(v.getContext(),
-								failedConstraint.getErrorMsg(),
+								dnl.getLocalizedDisplayName(failedConstraint.getErrorMsg()),
 								Toast.LENGTH_LONG);
 						toast.show();
 						return;
