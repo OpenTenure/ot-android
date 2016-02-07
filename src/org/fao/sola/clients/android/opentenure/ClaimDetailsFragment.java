@@ -428,22 +428,13 @@ public class ClaimDetailsFragment extends Fragment {
 				.getInstance().getLocalization(), onlyActiveValues);
 		valueKeyClaimTypesMap = ct.getValueKeyMap(OpenTenureApplication
 				.getInstance().getLocalization(), onlyActiveValues);
-		// List<String> list = new
-		// ArrayList<String>(keyValueClaimTypesMap.keySet());
-
 		List<String> list = new ArrayList<String>();
-		// java.util.Collections.sort(list);
 
 		SortedSet<String> keys = new TreeSet<String>(
 				keyValueClaimTypesMap.keySet());
 		for (String key : keys) {
 			String value = keyValueClaimTypesMap.get(key);
 			list.add(value);
-			// do something
-		}
-
-		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-			String string = (String) iterator.next();
 		}
 
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
@@ -922,10 +913,6 @@ public class ClaimDetailsFragment extends Fragment {
 				.findViewById(R.id.landUseSpinner)).getSelectedItem();
 		claim.setLandUse(valueKeyMapLandUse.get(landUseDispValue));
 
-		for (Iterator iterator = valueKeyMapLandUse.keySet().iterator(); iterator
-				.hasNext();) {
-			String string = (String) iterator.next();
-		}
 		String notes = ((EditText) rootView
 				.findViewById(R.id.claim_notes_input_field)).getText()
 				.toString();
@@ -1081,10 +1068,10 @@ public class ClaimDetailsFragment extends Fragment {
 			}
 			try {
 				PDFClaimExporter pdf = new PDFClaimExporter(
-						rootView.getContext(), claimActivity.getClaimId());
+						rootView.getContext(), claim, false);
 
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://" + pdf.getFileName()),
+				intent.setDataAndType(Uri.parse("file://" + pdf.getFilePath()),
 						"application/pdf");
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 

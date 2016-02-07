@@ -45,6 +45,7 @@ import org.fao.sola.clients.android.opentenure.model.Configuration;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
+import org.fao.sola.clients.android.opentenure.print.PDFClaimExporter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -134,6 +135,23 @@ public class SubmitClaimListener implements OnClickListener {
 			// Here the claimant picture is added as attachment just before to
 			// submit claim
 			person.addPersonPictureAsAttachment(claimId);
+
+			// Here the printed certificate is added as attachment just before to
+			// submit claim
+			
+			try {
+				PDFClaimExporter pdf = new PDFClaimExporter(
+						v.getContext(), claim, true);
+				pdf.addAsAttachment(v.getContext(), claimId);
+
+			} catch (Error e) {
+				Toast toast = Toast.makeText(v.getContext(),
+						R.string.message_not_supported_on_this_device,
+						Toast.LENGTH_SHORT);
+				toast.show();
+			}
+
+
 
 			/* Checking if the Geometry is mandatory for claim's submission */
 			List<Vertex> vertices = Vertex.getVertices(claimId);

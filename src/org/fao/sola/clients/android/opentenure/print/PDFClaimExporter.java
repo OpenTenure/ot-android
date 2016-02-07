@@ -33,21 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
 import org.fao.sola.clients.android.opentenure.OpenTenureApplication;
 import org.fao.sola.clients.android.opentenure.R;
 import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
-import org.fao.sola.clients.android.opentenure.form.FieldConstraint;
 import org.fao.sola.clients.android.opentenure.form.FieldPayload;
-import org.fao.sola.clients.android.opentenure.form.FieldTemplate;
-import org.fao.sola.clients.android.opentenure.form.FieldType;
-import org.fao.sola.clients.android.opentenure.form.FieldValueType;
 import org.fao.sola.clients.android.opentenure.form.FormPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionElementPayload;
 import org.fao.sola.clients.android.opentenure.form.SectionPayload;
-import org.fao.sola.clients.android.opentenure.form.SectionTemplate;
-import org.fao.sola.clients.android.opentenure.form.ui.FieldViewFactory;
 import org.fao.sola.clients.android.opentenure.maps.EditablePropertyBoundary;
 import org.fao.sola.clients.android.opentenure.model.AdjacenciesNotes;
 import org.fao.sola.clients.android.opentenure.model.Adjacency;
@@ -57,18 +52,16 @@ import org.fao.sola.clients.android.opentenure.model.ClaimType;
 import org.fao.sola.clients.android.opentenure.model.DocumentType;
 import org.fao.sola.clients.android.opentenure.model.IdType;
 import org.fao.sola.clients.android.opentenure.model.LandUse;
+import org.fao.sola.clients.android.opentenure.model.MD5;
 import org.fao.sola.clients.android.opentenure.model.Owner;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.ShareProperty;
-import org.h2.constant.SysProperties;
 
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
-import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
@@ -88,8 +81,11 @@ public class PDFClaimExporter {
 	public static final int DEFAULT_VERTICAL_SPACE = 5;
 	public static final int DEFAULT_HORIZONTAL_SPACE = 5;
 	public static final String FONT_SANS_SERIF = "sans-serif";
+	public static final String DEFAULT_CERTIFICATE_MIME_TYPE = "application/pdf";
+	public static final String DEFAULT_CERTIFICATE_DOCUMENT_TYPE = "claimForm";
 
 	static PdfDocument document;
+	private String filePath;
 	private String fileName;
 	private String mapFileName;
 	private int horizontalMargin = DEFAULT_HORIZONTAL_MARGIN;
@@ -108,27 +104,34 @@ public class PDFClaimExporter {
 	DisplayNameLocalizer dnl = new DisplayNameLocalizer(OpenTenureApplication
 			.getInstance().getLocalization());
 
-	public PDFClaimExporter(Context context, String claimId) {
+	public PDFClaimExporter(Context context, Claim claim, boolean asAttachment) {
 
 		try {
-			Claim claim = Claim.getClaim(claimId);
+			String baseDir = null;
+			
+			if(asAttachment){
+				baseDir = FileSystemUtilities.getAttachmentFolder(claim.getClaimId()).toString();
+			}else{
+				baseDir = FileSystemUtilities.getCertificatesFolder().toString();
+			}
 
-			if (claim.getClaimNumber() != null)
-				fileName = FileSystemUtilities.getCertificatesFolder()
-						+ File.separator + claim.getClaimNumber() + ".pdf";
-			else
-				fileName = FileSystemUtilities.getCertificatesFolder()
-						+ File.separator + claim.getName() + ".pdf";
+			if (claim.getClaimNumber() != null){
+				fileName = claim.getClaimNumber() + ".pdf";
+			}
+			else{
+				fileName = claim.getName() + ".pdf";
+			}
+			
+			filePath = baseDir + File.separator + fileName;
 
-			mapFileName = FileSystemUtilities.getAttachmentFolder(claimId)
+			mapFileName = FileSystemUtilities.getAttachmentFolder(claim.getClaimId())
 					+ File.separator
 					+ EditablePropertyBoundary.DEFAULT_MAP_FILE_NAME;
 			document = new PdfDocument();
 
-			addPage(document, context, claimId);
+			addPage(document, context, claim.getClaimId());
 
-			SimpleDateFormat sdf = new SimpleDateFormat();
-			sdf.applyPattern("dd/MM/yyyy HH:MM");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:MM", Locale.US);
 
 			/*------------------------------------------- HEADER -------------------------------------*/
 			if (!OpenTenureApplication.getInstance().getLocale().toString()
@@ -154,13 +157,9 @@ public class PDFClaimExporter {
 				moveX(45);
 				moveY(30);
 
-				Date date = new Date();
-
 				String dataStr = sdf.format(new Date());
 
 				int x = currentX;
-				int y = currentY;
-
 				setX(450);
 				writeText(context.getResources().getString(
 						R.string.generated_on)
@@ -182,7 +181,6 @@ public class PDFClaimExporter {
 				setX(40);
 				moveY(25);
 
-				Date date = new Date();
 				String dataStr = sdf.format(new Date());
 				writeText(dataStr);
 
@@ -616,9 +614,9 @@ public class PDFClaimExporter {
 
 			List<ShareProperty> shares = claim.getShares();
 			int i = 0;
-			for (Iterator iterator = shares.iterator(); iterator.hasNext();) {
+			for (Iterator<ShareProperty> iterator = shares.iterator(); iterator.hasNext();) {
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 
 				++i;
 				newLine();
@@ -641,11 +639,11 @@ public class PDFClaimExporter {
 									+ shareProperty.getShares() + " %", 16);
 					newLine();
 					List<Owner> owners = Owner.getOwners(shareProperty.getId());
-					for (Iterator iterator2 = owners.iterator(); iterator2
+					for (Iterator<Owner> iterator2 = owners.iterator(); iterator2
 							.hasNext();) {
 
 						if (isPageEnding())
-							addPage(document, context, claimId);
+							addPage(document, context, claim.getClaimId());
 
 						Owner owner = (Owner) iterator2.next();
 						Person person = Person.getPerson(owner.getPersonId());
@@ -759,11 +757,11 @@ public class PDFClaimExporter {
 					newLine();
 					setX(430);
 					List<Owner> owners = Owner.getOwners(shareProperty.getId());
-					for (Iterator iterator2 = owners.iterator(); iterator2
+					for (Iterator<Owner> iterator2 = owners.iterator(); iterator2
 							.hasNext();) {
 
 						if (isPageEnding())
-							addPage(document, context, claimId);
+							addPage(document, context, claim.getClaimId());
 
 						Owner owner = (Owner) iterator2.next();
 						Person person = Person.getPerson(owner.getPersonId());
@@ -876,7 +874,7 @@ public class PDFClaimExporter {
 					.startsWith("ar")) {
 				newLine();
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 				drawHorizontalLine();
 				newLine();
 				newLine();
@@ -893,7 +891,7 @@ public class PDFClaimExporter {
 				newLine();
 				List<Attachment> attachments = claim.getAttachments();
 
-				for (Iterator iterator = attachments.iterator(); iterator
+				for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
@@ -910,7 +908,7 @@ public class PDFClaimExporter {
 				newLine();
 
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 				drawHorizontalLine();
 				newLine();
 				newLine();
@@ -931,7 +929,7 @@ public class PDFClaimExporter {
 				setX(430);
 				List<Attachment> attachments = claim.getAttachments();
 
-				for (Iterator iterator = attachments.iterator(); iterator
+				for (Iterator<Attachment> iterator = attachments.iterator(); iterator
 						.hasNext();) {
 					Attachment attachment = (Attachment) iterator.next();
 
@@ -952,7 +950,7 @@ public class PDFClaimExporter {
 			newLine();
 			drawHorizontalLine();
 			if (isPageEnding())
-				addPage(document, context, claimId);
+				addPage(document, context, claim.getClaimId());
 			if (!OpenTenureApplication.getInstance().getLocale().toString()
 					.startsWith("ar")) {
 
@@ -967,7 +965,7 @@ public class PDFClaimExporter {
 				newLine();
 				writeText(claim.getNotes());
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 			} else {
 
 				newLine();
@@ -983,14 +981,14 @@ public class PDFClaimExporter {
 				setX(430);
 				writeText(claim.getNotes());
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 			}
 			/*------------------ PARCEL -------------------------------------*/
 			newLine();
 			drawHorizontalLine();
 
 			if (isPageEnding())
-				addPage(document, context, claimId);
+				addPage(document, context, claim.getClaimId());
 
 			if (!OpenTenureApplication.getInstance().getLocale().toString()
 					.startsWith("ar")) {
@@ -1088,7 +1086,7 @@ public class PDFClaimExporter {
 			newLine();
 
 			if (isPageEnding())
-				addPage(document, context, claimId);
+				addPage(document, context, claim.getClaimId());
 
 			if (!OpenTenureApplication.getInstance().getLocale().toString()
 					.startsWith("ar")) {
@@ -1096,11 +1094,11 @@ public class PDFClaimExporter {
 						context.getResources().getString(
 								R.string.adjacent_claims), 18);
 				newLine();
-				List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
+				List<Adjacency> adjList = Adjacency.getAdjacencies(claim.getClaimId());
 				for (Adjacency adj : adjList) {
 					Claim adjacentClaim;
 					String direction;
-					if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
+					if (adj.getSourceClaimId().equalsIgnoreCase(claim.getClaimId())) {
 						adjacentClaim = Claim.getClaim(adj.getDestClaimId());
 						direction = Adjacency.getCardinalDirection(context,
 								adj.getCardinalDirection());
@@ -1132,7 +1130,7 @@ public class PDFClaimExporter {
 				newLine();
 				drawHorizontalLine();
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 				newLine();
 				newLine();
 				newLine();
@@ -1184,11 +1182,11 @@ public class PDFClaimExporter {
 				newLine();
 				setX(430);
 
-				List<Adjacency> adjList = Adjacency.getAdjacencies(claimId);
+				List<Adjacency> adjList = Adjacency.getAdjacencies(claim.getClaimId());
 				for (Adjacency adj : adjList) {
 					Claim adjacentClaim;
 					String direction;
-					if (adj.getSourceClaimId().equalsIgnoreCase(claimId)) {
+					if (adj.getSourceClaimId().equalsIgnoreCase(claim.getClaimId())) {
 						adjacentClaim = Claim.getClaim(adj.getDestClaimId());
 						direction = Adjacency.getCardinalDirection(context,
 								adj.getCardinalDirection());
@@ -1222,7 +1220,7 @@ public class PDFClaimExporter {
 
 				drawHorizontalLine();
 				if (isPageEnding())
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 				newLine();
 				newLine();
 				newLine();
@@ -1282,11 +1280,11 @@ public class PDFClaimExporter {
 
 				List<SectionPayload> list = formPayload.getSectionPayloadList();
 
-				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				for (Iterator<SectionPayload> iterator = list.iterator(); iterator.hasNext();) {
 					SectionPayload sectionPayload = (SectionPayload) iterator
 							.next();
 
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 					newLine();
 					drawHorizontalLine();
 					newLine();
@@ -1308,7 +1306,7 @@ public class PDFClaimExporter {
 					List<SectionElementPayload> sePayload = sectionPayload
 							.getSectionElementPayloadList();
 
-					for (Iterator iterator2 = sePayload.iterator(); iterator2
+					for (Iterator<SectionElementPayload> iterator2 = sePayload.iterator(); iterator2
 							.hasNext();) {
 						SectionElementPayload sectionElementPayload = (SectionElementPayload) iterator2
 								.next();
@@ -1317,7 +1315,7 @@ public class PDFClaimExporter {
 
 						int x = horizontalMargin;
 
-						for (Iterator iterator3 = fieldPayloadList.iterator(); iterator3
+						for (Iterator<FieldPayload> iterator3 = fieldPayloadList.iterator(); iterator3
 								.hasNext();) {
 							FieldPayload fieldPayload = (FieldPayload) iterator3
 									.next();
@@ -1521,7 +1519,7 @@ public class PDFClaimExporter {
 						newLine();
 
 						if (isPageEnding())
-							addPage(document, context, claimId);
+							addPage(document, context, claim.getClaimId());
 
 						newLine();
 						newLine();
@@ -1534,11 +1532,11 @@ public class PDFClaimExporter {
 				FormPayload payLoad = claim.getDynamicForm();
 				List<SectionPayload> list = payLoad.getSectionPayloadList();
 
-				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				for (Iterator<SectionPayload> iterator = list.iterator(); iterator.hasNext();) {
 					SectionPayload sectionPayload = (SectionPayload) iterator
 							.next();
 
-					addPage(document, context, claimId);
+					addPage(document, context, claim.getClaimId());
 
 					newLine();
 					drawHorizontalLine();
@@ -1561,7 +1559,7 @@ public class PDFClaimExporter {
 					List<SectionElementPayload> fuffa = sectionPayload
 							.getSectionElementPayloadList();
 
-					for (Iterator iterator2 = fuffa.iterator(); iterator2
+					for (Iterator<SectionElementPayload> iterator2 = fuffa.iterator(); iterator2
 							.hasNext();) {
 						SectionElementPayload sectionElementPayload = (SectionElementPayload) iterator2
 								.next();
@@ -1570,7 +1568,7 @@ public class PDFClaimExporter {
 
 						int x = horizontalMargin;
 
-						for (Iterator iterator3 = pizzaq.iterator(); iterator3
+						for (Iterator<FieldPayload> iterator3 = pizzaq.iterator(); iterator3
 								.hasNext();) {
 							FieldPayload fieldPayload = (FieldPayload) iterator3
 									.next();
@@ -1773,7 +1771,7 @@ public class PDFClaimExporter {
 						newLine();
 
 						if (isPageEnding())
-							addPage(document, context, claimId);
+							addPage(document, context, claim.getClaimId());
 
 						newLine();
 						newLine();
@@ -1784,7 +1782,7 @@ public class PDFClaimExporter {
 
 			// ---------------------------------------------------------------------------------------------
 			// MAP screenshot section
-			addPage(document, context, claimId);
+			addPage(document, context, claim.getClaimId());
 			newLine();
 			drawBitmap(getMapPicture(mapFileName, 515));
 
@@ -1836,6 +1834,10 @@ public class PDFClaimExporter {
 
 	public String getFileName() {
 		return fileName;
+	}
+
+	public String getFilePath() {
+		return filePath;
 	}
 
 	private void setFont(String fontName, int style, int size) {
@@ -1947,7 +1949,7 @@ public class PDFClaimExporter {
 		return null;
 	}
 
-	public Bitmap getMapPicture(String fileName, int size) {
+	private Bitmap getMapPicture(String fileName, int size) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
@@ -1973,4 +1975,28 @@ public class PDFClaimExporter {
 		return Bitmap.createScaledBitmap(croppedBitmap, size, size, true);
 	}
 
+	public void addAsAttachment(Context context, String claimId){
+		try {
+			Claim claim = Claim.getClaim(claimId);
+			for (Attachment att : claim.getAttachments()) {
+				if (att.getFileName().equals(fileName)) {
+					att.delete();
+				}
+			}
+			Attachment att = new Attachment();
+			att.setClaimId(claimId);
+			att.setDescription(context.getResources().getString(
+					R.string.action_map));
+			att.setFileName(fileName);
+			att.setFileType(DEFAULT_CERTIFICATE_DOCUMENT_TYPE);						
+			att.setMimeType(DEFAULT_CERTIFICATE_MIME_TYPE);
+			att.setMD5Sum(MD5.calculateMD5(new File(filePath)));
+			att.setPath(filePath);
+			att.setSize(new File(filePath).length());
+			att.create();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
 }
