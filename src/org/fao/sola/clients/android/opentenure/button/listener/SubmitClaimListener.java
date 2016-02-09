@@ -42,6 +42,7 @@ import org.fao.sola.clients.android.opentenure.form.FormTemplate;
 import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.model.Configuration;
+import org.fao.sola.clients.android.opentenure.model.DocumentType;
 import org.fao.sola.clients.android.opentenure.model.Person;
 import org.fao.sola.clients.android.opentenure.model.Vertex;
 import org.fao.sola.clients.android.opentenure.network.SaveClaimTask;
@@ -132,26 +133,28 @@ public class SubmitClaimListener implements OnClickListener {
 				return;
 			}
 
+			boolean isDefaultCertificateDocumentTypeAvailable = false;
+			DocumentType dt = DocumentType.getDocumentType(PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE);
+			if(PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE.equalsIgnoreCase(dt.getType())){
+				isDefaultCertificateDocumentTypeAvailable = true;
+			}
+			if(isDefaultCertificateDocumentTypeAvailable){
+				// Here the printed certificate is added as attachment just before to
+				// submit claim
+				
+				try {
+					PDFClaimExporter pdf = new PDFClaimExporter(
+							v.getContext(), claim, true);
+					pdf.addAsAttachment(v.getContext(), claimId);
+
+				} catch (Error e) {
+					Log.w(this.getClass().getName(),"Exporting a PDF is not supported on this device");
+				}
+			}
+
 			// Here the claimant picture is added as attachment just before to
 			// submit claim
 			person.addPersonPictureAsAttachment(claimId);
-
-			// Here the printed certificate is added as attachment just before to
-			// submit claim
-			
-			try {
-				PDFClaimExporter pdf = new PDFClaimExporter(
-						v.getContext(), claim, true);
-				pdf.addAsAttachment(v.getContext(), claimId);
-
-			} catch (Error e) {
-				Toast toast = Toast.makeText(v.getContext(),
-						R.string.message_not_supported_on_this_device,
-						Toast.LENGTH_SHORT);
-				toast.show();
-			}
-
-
 
 			/* Checking if the Geometry is mandatory for claim's submission */
 			List<Vertex> vertices = Vertex.getVertices(claimId);

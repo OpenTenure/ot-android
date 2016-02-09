@@ -82,7 +82,7 @@ public class PDFClaimExporter {
 	public static final int DEFAULT_HORIZONTAL_SPACE = 5;
 	public static final String FONT_SANS_SERIF = "sans-serif";
 	public static final String DEFAULT_CERTIFICATE_MIME_TYPE = "application/pdf";
-	public static final String DEFAULT_CERTIFICATE_DOCUMENT_TYPE = "claimForm";
+	public static final String DEFAULT_CERTIFICATE_DOCUMENT_TYPE = "claimSummary";
 
 	static PdfDocument document;
 	private String filePath;
