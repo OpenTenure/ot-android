@@ -1985,8 +1985,7 @@ public class PDFClaimExporter {
 			}
 			Attachment att = new Attachment();
 			att.setClaimId(claimId);
-			att.setDescription(context.getResources().getString(
-					R.string.action_map));
+			att.setDescription(claim.getName());
 			att.setFileName(fileName);
 			att.setFileType(DEFAULT_CERTIFICATE_DOCUMENT_TYPE);						
 			att.setMimeType(DEFAULT_CERTIFICATE_MIME_TYPE);
