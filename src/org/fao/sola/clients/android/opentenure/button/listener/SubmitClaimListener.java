@@ -135,7 +135,7 @@ public class SubmitClaimListener implements OnClickListener {
 
 			boolean isDefaultCertificateDocumentTypeAvailable = false;
 			DocumentType dt = DocumentType.getDocumentType(PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE);
-			if(PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE.equalsIgnoreCase(dt.getType())){
+			if(dt!= null && PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE.equalsIgnoreCase(dt.getType())){
 				isDefaultCertificateDocumentTypeAvailable = true;
 			}
 			if(isDefaultCertificateDocumentTypeAvailable){
