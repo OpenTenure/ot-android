@@ -1824,7 +1824,7 @@ public class PDFClaimExporter {
 			if (currentPage != null) {
 				document.finishPage(currentPage);
 			}
-			document.writeTo(new FileOutputStream(fileName));
+			document.writeTo(new FileOutputStream(filePath));
 			document.close();
 
 		} catch (Exception e) {
