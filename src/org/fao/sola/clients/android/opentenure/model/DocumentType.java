@@ -75,6 +75,14 @@ public class DocumentType {
 		return displayValue;
 	}
 
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	public void setDisplayValue(String displayValue) {
 		this.displayValue = displayValue;
 	}
@@ -165,7 +173,7 @@ public class DocumentType {
 			localConnection = OpenTenureApplication.getInstance().getDatabase()
 					.getConnection();
 			statement = localConnection
-					.prepareStatement("SELECT CODE, DESCRIPTION, DISPLAY_VALUE FROM DOCUMENT_TYPE WHERE CODE=?");
+					.prepareStatement("SELECT CODE, DESCRIPTION, DISPLAY_VALUE, ACTIVE FROM DOCUMENT_TYPE WHERE CODE=?");
 			statement.setString(1, code);
 
 			result = statement.executeQuery();
@@ -175,6 +183,7 @@ public class DocumentType {
 				documentType.setType(result.getString(1));
 				documentType.setDescription(result.getString(2));
 				documentType.setDisplayValue(result.getString(3));
+				documentType.setActive(Boolean.getBoolean(result.getString(4)));
 
 				return documentType;
 			}
