@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.fao.sola.clients.android.opentenure.DisplayNameLocalizer;
@@ -183,7 +184,7 @@ public class DocumentType {
 				documentType.setType(result.getString(1));
 				documentType.setDescription(result.getString(2));
 				documentType.setDisplayValue(result.getString(3));
-				documentType.setActive(Boolean.getBoolean(result.getString(4)));
+				documentType.setActive(result.getBoolean(4));
 
 				return documentType;
 			}
@@ -421,7 +422,7 @@ public class DocumentType {
 			DocumentType documentType = (DocumentType) iterator
 					.next();
 			
-			keyValueMap.put(documentType.getType().toLowerCase(),dnl.getLocalizedDisplayName(documentType.getDisplayValue()));
+			keyValueMap.put(documentType.getType().toLowerCase(Locale.US),dnl.getLocalizedDisplayName(documentType.getDisplayValue()));
 		}
 		return keyValueMap;
 	}

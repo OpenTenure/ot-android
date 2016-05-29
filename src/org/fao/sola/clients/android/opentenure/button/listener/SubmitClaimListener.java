@@ -137,6 +137,13 @@ public class SubmitClaimListener implements OnClickListener {
 			DocumentType dt = DocumentType.getDocumentType(PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE);
 			if(dt!= null && PDFClaimExporter.DEFAULT_CERTIFICATE_DOCUMENT_TYPE.equalsIgnoreCase(dt.getType()) && dt.isActive()){
 				isDefaultCertificateDocumentTypeAvailable = true;
+				Log.d(this.getClass().getName(),"Automatic attachment of claim summary is enabled");
+			}else{
+				if(dt != null){
+					Log.i(this.getClass().getName(),"Automatic attachment of claim summary is disabled due to " + dt.toString());
+				}else{
+					Log.i(this.getClass().getName(),"Automatic attachment of claim summary is disabled");
+				}
 			}
 			if(isDefaultCertificateDocumentTypeAvailable){
 				// Here the printed certificate is added as attachment just before to
@@ -148,6 +155,10 @@ public class SubmitClaimListener implements OnClickListener {
 					pdf.addAsAttachment(v.getContext(), claimId);
 
 				} catch (Error e) {
+					Toast toast = Toast.makeText(v.getContext(),
+							R.string.message_not_supported_on_this_device,
+							Toast.LENGTH_SHORT);
+					toast.show();
 					Log.w(this.getClass().getName(),"Exporting a PDF is not supported on this device");
 				}
 			}

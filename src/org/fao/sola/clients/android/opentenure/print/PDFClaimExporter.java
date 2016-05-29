@@ -67,6 +67,7 @@ import android.graphics.Typeface;
 import android.graphics.pdf.PdfDocument;
 import android.graphics.pdf.PdfDocument.Page;
 import android.graphics.pdf.PdfDocument.PageInfo;
+import android.util.Log;
 
 @SuppressLint("NewApi")
 // Suppressions needed to allow compiling for API level 17
@@ -115,7 +116,7 @@ public class PDFClaimExporter {
 				baseDir = FileSystemUtilities.getCertificatesFolder().toString();
 			}
 
-			if (claim.getClaimNumber() != null){
+			if (claim.getClaimNumber() != null && !"".equalsIgnoreCase(claim.getClaimNumber())){
 				fileName = claim.getClaimNumber() + ".pdf";
 			}
 			else{
@@ -1829,6 +1830,7 @@ public class PDFClaimExporter {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			Log.e(this.getClass().getName(),"Error " + e.getMessage() + " writing claim summary to " + filePath);
 		}
 	}
 
