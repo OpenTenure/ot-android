@@ -57,6 +57,9 @@ public class OpenTenurePreferencesMigrator {
 		if(preferences.getBoolean(OpenTenure.khmer_language, false)){
 			language = OpenTenure.khmer_language;
 		}
+		if(preferences.getBoolean(OpenTenure.burmese_language, false)){
+			language = OpenTenure.burmese_language;
+		}
 		SharedPreferences.Editor editor = preferences.edit();
 		editor.putString(OpenTenure.language, language);
 		editor.commit();

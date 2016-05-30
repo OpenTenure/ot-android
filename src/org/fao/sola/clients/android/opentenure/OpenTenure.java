@@ -85,6 +85,7 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 	public static final String albanian_language = "albanian_language";
 	public static final String default_language = "default_language";
 	public static final String khmer_language = "khmer_language";
+	public static final String burmese_language = "burmese_language";
 	public static final String tiles_provider = "tiles_provider";
 	public static final String tms_tiles_provider = "tms_tiles_provider";
 	public static final String geoserver_tiles_provider = "geoserver_tiles_provider";
@@ -117,10 +118,13 @@ public class OpenTenure extends FragmentActivity implements ModeDispatcher,
 		
 		OpenTenureApplication.getInstance().setKhmer(language.equals(OpenTenure.khmer_language));
 		OpenTenureApplication.getInstance().setAlbanian(language.equals(OpenTenure.albanian_language));
+		OpenTenureApplication.getInstance().setBurmese(language.equals(OpenTenure.burmese_language));
 		if (OpenTenureApplication.getInstance().isKhmer()) {
 			setLocale(context, new Locale("km"));
 		} else if (OpenTenureApplication.getInstance().isAlbanian()) {
 			setLocale(context, new Locale("sq"));
+		} else if (OpenTenureApplication.getInstance().isBurmese()) {
+			setLocale(context, new Locale("my"));
 		}else{
 			setLocale(context, Locale.getDefault());
 		}

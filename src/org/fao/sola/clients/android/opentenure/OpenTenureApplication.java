@@ -76,11 +76,13 @@ public class OpenTenureApplication extends Application {
 	private static final String _KHMER_LOCALIZATION = "km-KH";
 	private static final String _ALBANIAN_LOCALIZATION = "sq-AL";
 	private static final String _ARABIC_LOCALIZATION = "ar-JO";
+	private static final String _BURMESE_LOCALIZATION = "my-MM";
 
 	private String localization;
 	private Locale locale;
 	private boolean khmer = false;
 	private boolean albanian = false;
+	private boolean burmese = false;
 	private static boolean loggedin;
 	private static String username;
 	private static Activity activity;
@@ -519,6 +521,14 @@ public class OpenTenureApplication extends Application {
 		this.albanian = albanian;
 	}
 
+	public boolean isBurmese() {
+		return burmese;
+	}
+
+	public void setBurmese(boolean burmese) {
+		this.burmese = burmese;
+	}
+
 	public void setLocalization(Locale locale) {
 
 		Resources.getSystem().getConfiguration().setLocale(locale);
@@ -530,6 +540,10 @@ public class OpenTenureApplication extends Application {
 		} else if (isAlbanian()) {
 
 			localization = OpenTenureApplication._ALBANIAN_LOCALIZATION;
+
+		} else if (isBurmese()) {
+
+			localization = OpenTenureApplication._BURMESE_LOCALIZATION;
 
 		} else if (locale.getLanguage().toLowerCase(locale).equals("ar")) {
 
