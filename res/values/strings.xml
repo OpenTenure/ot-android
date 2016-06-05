@@ -24,6 +24,7 @@
     <string name="action_export_log">Export log</string>
     <string name="khmer_language">Khmer</string>
     <string name="albanian_language">Albanian</string>
+    <string name="burmese_language">Myanmar</string>
     <string name="default_language">Default</string>
     <string name="tiles_provider">Tiles Provider</string>
     <string name="tms_tiles_provider">TMS Tiles Provider</string>

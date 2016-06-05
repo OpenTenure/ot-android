@@ -24,6 +24,7 @@
     <string name="action_export_log">လော့ဖိုင် ထုတ်ယူရန်</string>
     <string name="khmer_language">ခမာ</string>
     <string name="albanian_language">အယ်ဗေးနီးယန်း</string>
+    <string name="burmese_language">Myanmar</string>
     <string name="default_language">Default</string>
     <string name="tiles_provider">Tiles အင်တာနက် မြေပုံဝန်ဆောင်မှု</string>
     <string name="tms_tiles_provider">TMS Tiles အင်တာနက် မြေပုံဝန်ဆောင်မှု</string>
@@ -405,11 +406,13 @@
     <string-array name="language_keys">
         <item >ခမာ</item>
         <item >အယ်လ်ဗေးနီးယန်း</item>
+        <item >Myanmar</item>
         <item >Default</item>
         </string-array>
     <string-array name="language_values">
         <item >khmer_language</item>
         <item >albanian_language</item>
+        <item >burmese_language</item>
         <item >default_language</item>
         </string-array>
     <string-array name="tiles_provider_keys">
