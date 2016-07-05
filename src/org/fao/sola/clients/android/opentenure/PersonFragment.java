@@ -45,6 +45,8 @@ import org.fao.sola.clients.android.opentenure.filesystem.FileSystemUtilities;
 import org.fao.sola.clients.android.opentenure.model.IdType;
 import org.fao.sola.clients.android.opentenure.model.Person;
 
+import com.ipaulpro.afilechooser.utils.FileUtils;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -57,6 +59,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -491,16 +494,32 @@ public class PersonFragment extends Fragment {
 
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == Activity.RESULT_OK) {
-				File copy = Person.getPersonPictureFile(personActivity.getPersonId());
-				if(copy.length() > 600000){
-					/* This to check that the claimant would not be too large*/					
+				File original = Person.getPersonPictureFile(personActivity.getPersonId());
+				File copy = null;
+				Log.d(this.getClass().getName(), "Attachment size : " + original.length());
+				
+				if(original.length() > 800000){
+
+					copy = FileSystemUtilities.reduceJpeg(original);
+
+					if(copy != null){
+						
+						Log.d(this.getClass().getName(), "Reduced size to : " + copy.length());
+						original.delete();
 					
-					System.out.println("Reducing size...." +
-							"" + copy.length());
-					copy = FileSystemUtilities.reduceJpeg(copy);	
+						if(copy.renameTo(Person.getPersonPictureFile(personActivity.getPersonId()))){
+							Log.d(this.getClass().getName(), "Renamed : " + copy.getName() + " to "
+									+ Person.getPersonPictureFile(personActivity.getPersonId()).getName());
+						} else {
+							Log.e(this.getClass().getName(), "Can't rename : " + copy.getName() + " to "
+									+ Person.getPersonPictureFile(personActivity.getPersonId()).getName());
+						}
+					}else{
+						
+					}
+				}else{
+					copy = original;
 				}
-				else
-					System.out.println("Attachment size : " + copy.length());
 				
 				
 				try {

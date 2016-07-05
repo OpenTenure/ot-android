@@ -98,14 +98,12 @@ public class ClaimDocumentsFragment extends ListFragment {
 		try {
 			claimActivity = (ClaimDispatcher) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement ClaimDispatcher");
+			throw new ClassCastException(activity.toString() + " must implement ClaimDispatcher");
 		}
 		try {
 			mainActivity = (ModeDispatcher) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement ModeDispatcher");
+			throw new ClassCastException(activity.toString() + " must implement ModeDispatcher");
 		}
 	}
 
@@ -143,25 +141,22 @@ public class ClaimDocumentsFragment extends ListFragment {
 		// Environment.getExternalStorageState()
 		String fileName;
 
-		File mediaStorageDir = FileSystemUtilities
-				.getAttachmentFolder(claimActivity.getClaimId());
+		File mediaStorageDir = FileSystemUtilities.getAttachmentFolder(claimActivity.getClaimId());
 
 		// Create a file name
-		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
-				Locale.getDefault()).format(new Date());
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 		if (type == MEDIA_TYPE_IMAGE) {
-			fileName = mediaStorageDir.getPath() + File.separator + "IMG_"
-					+ timeStamp + ".jpg";
+			fileName = mediaStorageDir.getPath() + File.separator + "IMG_" + timeStamp + ".jpg";
 			fileType = "image";
 			mimeType = "image/jpeg";
 		} else if (type == MEDIA_TYPE_VIDEO) {
-			fileName = mediaStorageDir.getPath() + File.separator + "VID_"
-					+ timeStamp + ".mp4";
+			fileName = mediaStorageDir.getPath() + File.separator + "VID_" + timeStamp + ".mp4";
 			fileType = "video";
 			mimeType = "video/mp4";
 		} else {
 			return null;
 		}
+		Log.d(this.getClass().getName(), "File name is: " + fileName);
 
 		return new File(fileName);
 	}
@@ -171,9 +166,8 @@ public class ClaimDocumentsFragment extends ListFragment {
 		switch (requestCode) {
 		case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
 			if (resultCode == Activity.RESULT_OK) {
-				Log.d(this.getClass().getName(),
-						"Captured image: "
-								+ FileUtils.getPath(rootView.getContext(), uri));
+				final String filePath = FileUtils.getPath(rootView.getContext(), uri);
+				Log.d(this.getClass().getName(), "Captured image: " + filePath);
 
 				// custom dialog
 				final Dialog dialog = new Dialog(rootView.getContext());
@@ -181,8 +175,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				dialog.setTitle(R.string.new_file);
 
 				// Attachment Description
-				final EditText fileDescription = (EditText) dialog
-						.findViewById(R.id.fileDocumentDescription);
+				final EditText fileDescription = (EditText) dialog.findViewById(R.id.fileDocumentDescription);
 				fileDescription.setHint(R.string.add_description);
 
 				// Code Types Spinner
@@ -190,17 +183,13 @@ public class ClaimDocumentsFragment extends ListFragment {
 				/* Mapping id type localization */
 				DocumentType dt = new DocumentType();
 
-				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
-						.getInstance().getLocalization(), onlyActive);
-				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
-						.getInstance().getLocalization(), onlyActive);
+				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization(), onlyActive);
+				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization(), onlyActive);
 
-				final Spinner spinner = (Spinner) dialog
-						.findViewById(R.id.documentTypesSpinner);
+				final Spinner spinner = (Spinner) dialog.findViewById(R.id.documentTypesSpinner);
 
 				List<String> list = new ArrayList<String>();
-				TreeSet<String> keys = new TreeSet<String>(
-						keyValueDocTypes.keySet());
+				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
 				for (String key : keys) {
 					String value = keyValueDocTypes.get(key);
 					list.add(value);
@@ -210,8 +199,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 				// List<String> list =
 				// dt.getDocumentTypesDisplayValues(OpenTenureApplication.getInstance().getLocalization());
 
-				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
-						OpenTenureApplication.getContext(),
+				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(OpenTenureApplication.getContext(),
 						android.R.layout.simple_spinner_item, list) {
 				};
 				dataAdapter.setDropDownViewResource(R.layout.document_spinner);
@@ -220,8 +208,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				// Confirm Button
 
-				final Button confirmButton = (Button) dialog
-						.findViewById(R.id.fileDocumentConfirm);
+				final Button confirmButton = (Button) dialog.findViewById(R.id.fileDocumentConfirm);
 				confirmButton.setText(R.string.confirm);
 
 				confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -229,34 +216,43 @@ public class ClaimDocumentsFragment extends ListFragment {
 					@Override
 					public void onClick(View v) {
 
-						File copy = FileUtils.getFile(rootView.getContext(),
-								uri);
-						
-						//*******
-						
-						if(copy.length() > 800000){							
-							
-							System.out.println("Reducing attachment size...." +
-									"" + copy.length());
-							copy = FileSystemUtilities.reduceJpeg(copy);	
+						File original = new File(filePath);
+						File copy = null;
+						Log.d(this.getClass().getName(), "Attachment size : " + original.length());
+
+						if (original.length() > 800000) {
+
+							copy = FileSystemUtilities.reduceJpeg(original);
+
+							if (copy != null) {
+
+								Log.d(this.getClass().getName(), "Reduced size to : " + copy.length());
+								original.delete();
+								
+								if (copy.renameTo(new File(filePath))) {
+									Log.d(this.getClass().getName(), "Renamed : " + copy.getName() + " to "
+											+ filePath);
+								} else {
+									Log.e(this.getClass().getName(), "Can't rename : " + copy.getName() + " to "
+											+ filePath);
+								}
+							}
+						} else {
+							copy = original;
 						}
-						else
-							System.out.println("Attachment size : " + copy.length());
-						
-						
-						//*********
+
+						// Recreate the file object to take into account that the file has been renamed
+						File att = new File(filePath);
 
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
-						attachment.setDescription(fileDescription.getText()
-								.toString());
-						attachment.setFileName(copy.getName());
-						attachment.setFileType((valueKeyDocTypes
-								.get((String) spinner.getSelectedItem())));
+						attachment.setDescription(fileDescription.getText().toString());
+						attachment.setFileName(att.getName());
+						attachment.setFileType((valueKeyDocTypes.get((String) spinner.getSelectedItem())));
 						attachment.setMimeType(mimeType);
-						attachment.setMD5Sum(MD5.calculateMD5(copy));
-						attachment.setPath(copy.getAbsolutePath());
-						attachment.setSize(copy.length());
+						attachment.setMD5Sum(MD5.calculateMD5(att));
+						attachment.setPath(att.getAbsolutePath());
+						attachment.setSize(att.length());
 
 						attachment.create();
 						update();
@@ -268,8 +264,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				// Cancel Button
 
-				final Button cancelButton = (Button) dialog
-						.findViewById(R.id.fileDocumentConfirmCancel);
+				final Button cancelButton = (Button) dialog.findViewById(R.id.fileDocumentConfirmCancel);
 				cancelButton.setText(R.string.cancel);
 
 				cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -277,6 +272,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 					@Override
 					public void onClick(View v) {
 
+						new File(filePath).delete();
 						dialog.dismiss();
 					}
 				});
@@ -291,9 +287,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 				uri = data.getData();
 
-				Log.d(this.getClass().getName(),
-						"Selected file: "
-								+ FileUtils.getPath(rootView.getContext(), uri));
+				Log.d(this.getClass().getName(), "Selected file: " + FileUtils.getPath(rootView.getContext(), uri));
 
 				fileType = "document";
 				mimeType = FileUtils.getMimeType(rootView.getContext(), uri);
@@ -304,40 +298,33 @@ public class ClaimDocumentsFragment extends ListFragment {
 				dialog.setTitle(R.string.new_file);
 
 				// Attachment Description
-				final EditText fileDescription = (EditText) dialog
-						.findViewById(R.id.fileDocumentDescription);
+				final EditText fileDescription = (EditText) dialog.findViewById(R.id.fileDocumentDescription);
 				fileDescription.setHint(R.string.add_description);
 
 				// Code Types Spinner
-				final Spinner spinner = (Spinner) dialog
-						.findViewById(R.id.documentTypesSpinner);
+				final Spinner spinner = (Spinner) dialog.findViewById(R.id.documentTypesSpinner);
 
 				DocumentType dt = new DocumentType();
 
-				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication
-						.getInstance().getLocalization(),onlyActive);
-				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication
-						.getInstance().getLocalization(),onlyActive);
+				keyValueDocTypes = dt.getKeyValueMap(OpenTenureApplication.getInstance().getLocalization(), onlyActive);
+				valueKeyDocTypes = dt.getValueKeyMap(OpenTenureApplication.getInstance().getLocalization(), onlyActive);
 
 				List<String> list = new ArrayList<String>();
-				TreeSet<String> keys = new TreeSet<String>(
-						keyValueDocTypes.keySet());
+				TreeSet<String> keys = new TreeSet<String>(keyValueDocTypes.keySet());
 				for (String key : keys) {
 					String value = keyValueDocTypes.get(key);
 					list.add(value);
 					// do something
 				}
 
-				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(
-						OpenTenureApplication.getContext(),
+				ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(OpenTenureApplication.getContext(),
 						android.R.layout.simple_spinner_item, list) {
 				};
 				dataAdapter.setDropDownViewResource(R.layout.document_spinner);
 
 				spinner.setAdapter(dataAdapter);
 
-				final Button confirmButton = (Button) dialog
-						.findViewById(R.id.fileDocumentConfirm);
+				final Button confirmButton = (Button) dialog.findViewById(R.id.fileDocumentConfirm);
 				confirmButton.setText(R.string.confirm);
 
 				confirmButton.setOnClickListener(new View.OnClickListener() {
@@ -345,18 +332,15 @@ public class ClaimDocumentsFragment extends ListFragment {
 					@Override
 					public void onClick(View v) {
 
-						File copy = FileSystemUtilities.copyFileInAttachFolder(
-								claimActivity.getClaimId(),
+						File copy = FileSystemUtilities.copyFileInAttachFolder(claimActivity.getClaimId(),
 								FileUtils.getFile(rootView.getContext(), uri));
 
 						Attachment attachment = new Attachment();
 						attachment.setClaimId(claimActivity.getClaimId());
-						attachment.setDescription(fileDescription.getText()
-								.toString());
+						attachment.setDescription(fileDescription.getText().toString());
 						attachment.setFileName(copy.getName());
 
-						attachment.setFileType(valueKeyDocTypes
-								.get((String) spinner.getSelectedItem()));
+						attachment.setFileType(valueKeyDocTypes.get((String) spinner.getSelectedItem()));
 						attachment.setMimeType(mimeType);
 						attachment.setMD5Sum(MD5.calculateMD5(copy));
 						attachment.setPath(copy.getAbsolutePath());
@@ -370,8 +354,7 @@ public class ClaimDocumentsFragment extends ListFragment {
 					}
 				});
 
-				final Button cancelButton = (Button) dialog
-						.findViewById(R.id.fileDocumentConfirmCancel);
+				final Button cancelButton = (Button) dialog.findViewById(R.id.fileDocumentConfirmCancel);
 				cancelButton.setText(R.string.cancel);
 
 				cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -399,16 +382,14 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 		case R.id.action_new_picture:
 			if (claimActivity.getClaimId() == null) {
-				toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_create_before_edit,
-								Toast.LENGTH_SHORT);
+				toast = Toast.makeText(rootView.getContext(), R.string.message_create_before_edit, Toast.LENGTH_SHORT);
 				toast.show();
 				return true;
 			}
 			intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 			uri = Uri.fromFile(getOutputMediaFile(MEDIA_TYPE_IMAGE));
+			Log.d(this.getClass().getName(), "Passing " + uri + " to MediaStore intent");
 			intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 
 			// start the image capture Intent
@@ -416,23 +397,17 @@ public class ClaimDocumentsFragment extends ListFragment {
 			return true;
 		case R.id.action_new_attachment:
 			if (claimActivity.getClaimId() == null) {
-				toast = Toast
-						.makeText(rootView.getContext(),
-								R.string.message_create_before_edit,
-								Toast.LENGTH_SHORT);
+				toast = Toast.makeText(rootView.getContext(), R.string.message_create_before_edit, Toast.LENGTH_SHORT);
 				toast.show();
 				return true;
 			}
 			Intent getContentIntent = FileUtils.createGetContentIntent();
 
-			intent = Intent.createChooser(getContentIntent, getResources()
-					.getString(R.string.choose_file));
+			intent = Intent.createChooser(getContentIntent, getResources().getString(R.string.choose_file));
 			try {
 				startActivityForResult(intent, REQUEST_CHOOSER);
 			} catch (Exception e) {
-				Log.d(this.getClass().getName(),
-						"Unable to start file chooser intent due to "
-								+ e.getMessage());
+				Log.d(this.getClass().getName(), "Unable to start file chooser intent due to " + e.getMessage());
 			}
 			return true;
 
@@ -444,19 +419,17 @@ public class ClaimDocumentsFragment extends ListFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.claim_documents_list, container,
-				false);
-		
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		rootView = inflater.inflate(R.layout.claim_documents_list, container, false);
+
 		String claimId = claimActivity.getClaimId();
 		if (claimId != null) {
 			Claim claim = Claim.getClaim(claimId);
-				
-			onlyActive =  (!claim.getStatus().equals(ClaimStatus._MODERATED)
-						&& !claim.getStatus()
-								.equals(ClaimStatus._REJECTED) && !claim.getStatus().equals(ClaimStatus._REVIEWED));			
-			}
+
+			onlyActive = (!claim.getStatus().equals(ClaimStatus._MODERATED)
+					&& !claim.getStatus().equals(ClaimStatus._REJECTED)
+					&& !claim.getStatus().equals(ClaimStatus._REVIEWED));
+		}
 
 		setRetainInstance(true);
 		setHasOptionsMenu(true);
@@ -489,44 +462,34 @@ public class ClaimDocumentsFragment extends ListFragment {
 		 * 
 		 * */
 
-		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id))
-				.getText().toString();
+		String attachmentId = ((TextView) v.findViewById(R.id.attachment_id)).getText().toString();
 		Attachment att = Attachment.getAttachment(attachmentId);
 
 		if (att != null && att.getPath() != null && !att.getPath().equals("")) {
 
 			try {
 				Intent intent = new Intent(Intent.ACTION_VIEW);
-				intent.setDataAndType(Uri.parse("file://" + att.getPath()),
-						att.getMimeType());
+				intent.setDataAndType(Uri.parse("file://" + att.getPath()), att.getMimeType());
 				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 			} catch (ActivityNotFoundException e) {
 
-				Log.d(this.getClass().getName(),
-						"No Activity Found Exception to handle :"
-								+ att.getFileName());
+				Log.d(this.getClass().getName(), "No Activity Found Exception to handle :" + att.getFileName());
 
-				Toast.makeText(
-						OpenTenureApplication.getContext(),
-						OpenTenureApplication.getContext().getResources()
-								.getString(R.string.message_no_application)
-								+ " " + att.getFileName(), Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(OpenTenureApplication.getContext(),
+						OpenTenureApplication.getContext().getResources().getString(R.string.message_no_application)
+								+ " " + att.getFileName(),
+						Toast.LENGTH_LONG).show();
 
 				e.getMessage();
 			}
 
 			catch (Throwable t) {
 
-				Log.d(this.getClass().getName(),
-						"Error opening :" + att.getFileName());
+				Log.d(this.getClass().getName(), "Error opening :" + att.getFileName());
 
-				Toast.makeText(
-						OpenTenureApplication.getContext(),
-						OpenTenureApplication.getContext().getResources()
-								.getString(R.string.message_error_opening_file),
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(OpenTenureApplication.getContext(), OpenTenureApplication.getContext().getResources()
+						.getString(R.string.message_error_opening_file), Toast.LENGTH_LONG).show();
 			}
 
 		}
@@ -545,12 +508,10 @@ public class ClaimDocumentsFragment extends ListFragment {
 			Claim claim = Claim.getClaim(claimId);
 			attachments = claim.getAttachments();
 			for (Attachment attachment : attachments) {
-				if (!attachment.getAttachmentId().equals(
-						claim.getPerson().getPersonId()))
+				if (!attachment.getAttachmentId().equals(claim.getPerson().getPersonId()))
 
 				{
-					String slogan = attachment.getDescription() + " - "
-							+ (attachment.getFileType()) + " - "
+					String slogan = attachment.getDescription() + " - " + (attachment.getFileType()) + " - "
 							+ attachment.getMimeType();
 					slogans.add(slogan);
 					ids.add(attachment.getAttachmentId());
@@ -562,11 +523,9 @@ public class ClaimDocumentsFragment extends ListFragment {
 
 		ArrayAdapter<String> adapter = null;
 		if (mainActivity.getMode().compareTo(ModeDispatcher.Mode.MODE_RO) == 0) {
-			adapter = new ClaimAttachmentsListAdapter(rootView.getContext(),
-					slogans, ids, claimId, true);
+			adapter = new ClaimAttachmentsListAdapter(rootView.getContext(), slogans, ids, claimId, true);
 		} else {
-			adapter = new ClaimAttachmentsListAdapter(rootView.getContext(),
-					slogans, ids, claimId, false);
+			adapter = new ClaimAttachmentsListAdapter(rootView.getContext(), slogans, ids, claimId, false);
 		}
 		setListAdapter(adapter);
 		adapter.notifyDataSetChanged();

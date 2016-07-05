@@ -30,10 +30,7 @@ package org.fao.sola.clients.android.opentenure.network;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -67,8 +64,7 @@ import android.widget.TextView;
  * attachment are correctly transferred .
  */
 
-public class UploadChunksTask extends
-		AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
+public class UploadChunksTask extends AsyncTask<Object, ViewHolderResponse, ViewHolderResponse> {
 
 	@Override
 	protected ViewHolderResponse doInBackground(Object... params) {
@@ -81,13 +77,11 @@ public class UploadChunksTask extends
 
 		try {
 
-			Attachment attachment = Attachment
-					.getAttachment((String) params[0]);
+			Attachment attachment = Attachment.getAttachment((String) params[0]);
 
 			File toTransfer = new File(attachment.getPath());
 
 			FileInputStream fis = new FileInputStream(toTransfer);
-			MessageDigest digest = MessageDigest.getInstance("MD5");
 			upResponse.setAttachmentId((String) params[0]);
 
 			dis = new DataInputStream(fis);
@@ -116,20 +110,15 @@ public class UploadChunksTask extends
 
 					startPosition = startPosition + rsz;
 
-					Gson gson = new GsonBuilder()
-							.setPrettyPrinting()
-							.serializeNulls()
-							.setFieldNamingPolicy(
-									FieldNamingPolicy.UPPER_CAMEL_CASE)
-							.create();
+					Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
+							.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 					String json = gson.toJson(payload);
 
 					/***
 					 * Calling the server.....
-					 * ***/
+					 ***/
 
-					ApiResponse res = CommunityServerAPI.uploadChunk(json,
-							chunk);
+					ApiResponse res = CommunityServerAPI.uploadChunk(json, chunk);
 
 					if (res.getHttpStatusCode() == 200) {
 
@@ -149,7 +138,8 @@ public class UploadChunksTask extends
 
 					if (res.getHttpStatusCode() == 105) {
 						success = false;
-						break;}
+						break;
+					}
 
 				} else
 					break;
@@ -157,24 +147,15 @@ public class UploadChunksTask extends
 
 			upResponse.setSuccess(success);
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			try {
-				dis.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (dis != null) {
+				try {
+					dis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -199,18 +180,15 @@ public class UploadChunksTask extends
 		ViewHolderResponse vhr = holders[0];
 		UploadChunksResponse res = (UploadChunksResponse) vhr.getRes();
 		Attachment att = Attachment.getAttachment(res.getAttachmentId());
-		ProgressBar bar = ((AttachmentViewHolder) vhr.getVh())
-				.getBarAttachment();
-		TextView status = ((AttachmentViewHolder) vhr.getVh())
-				.getAttachmentStatus();
+		ProgressBar bar = ((AttachmentViewHolder) vhr.getVh()).getBarAttachment();
+		TextView status = ((AttachmentViewHolder) vhr.getVh()).getAttachmentStatus();
 
 		float factor = (float) att.getUploadedBytes() / att.getSize();
 		int progress = (int) (factor * 100);
 
 		if (status != null) {
 			status.setText(att.getStatus() + ": " + progress + " %");
-			status.setTextColor(OpenTenureApplication.getContext()
-					.getResources().getColor(R.color.status_created));
+			status.setTextColor(OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 		}
 		if (bar != null) {
 			bar.setProgress(progress);
@@ -227,7 +205,7 @@ public class UploadChunksTask extends
 		AttachmentViewHolder vh = (AttachmentViewHolder) vhr.getVh();
 		Claim claim = null;
 
-		if (res.getSuccess()) {
+		if (res != null && res.getSuccess() != null && res.getSuccess()) {
 
 			/*
 			 * All the Chunk of the claim are uploaded . Call SaveAttachment to
@@ -235,8 +213,7 @@ public class UploadChunksTask extends
 			 */
 
 			SaveAttachmentTask sat = new SaveAttachmentTask();
-			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					res.getAttachmentId(), vhr.getVh());
+			sat.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, res.getAttachmentId(), vhr.getVh());
 
 		} else {
 
@@ -245,7 +222,7 @@ public class UploadChunksTask extends
 
 			switch (res.getHttpStatusCode()) {
 			case 100:
-				
+
 				/*
 				 * 
 				 * UnknowHostException
@@ -257,11 +234,11 @@ public class UploadChunksTask extends
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				
+
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 					claim.update();
-				} else if(claim.getStatus().equals(ClaimStatus._UPDATING)){
+				} else if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 					claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 					claim.update();
 				}
@@ -276,23 +253,20 @@ public class UploadChunksTask extends
 					vh.getAttachmentStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getAttachmentStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 					vh.getSend().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
 					vh.getSend().setVisibility(View.VISIBLE);
 				}
-				
-				
-				if(vh.getBar() != null){
-					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(),claim.getStatus());
+
+				if (vh.getBar() != null) {
+					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
 					vh.getBar().setProgress(progress);
 				}
 				// vh.getIconLocal().setVisibility(View.VISIBLE);
@@ -301,18 +275,18 @@ public class UploadChunksTask extends
 				break;
 
 			case 105:
-				
+
 				att = Attachment.getAttachment(res.getAttachmentId());
 
 				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				
+
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-				} else if(claim.getStatus().equals(ClaimStatus._UPDATING)){
+				} else if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 					claim.setStatus(ClaimStatus._UPDATE_ERROR);
 					claim.update();
 				}
@@ -321,15 +295,13 @@ public class UploadChunksTask extends
 					vh.getAttachmentStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getAttachmentStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
 				}
 
@@ -339,18 +311,18 @@ public class UploadChunksTask extends
 				break;
 
 			case 400:
-				
+
 				att = Attachment.getAttachment(res.getAttachmentId());
 
 				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				
+
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-				} else if(claim.getStatus().equals(ClaimStatus._UPDATING)){
+				} else if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 					claim.setStatus(ClaimStatus._UPDATE_ERROR);
 					claim.update();
 				}
@@ -358,15 +330,13 @@ public class UploadChunksTask extends
 					vh.getAttachmentStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getAttachmentStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
 				}
 
@@ -376,19 +346,18 @@ public class UploadChunksTask extends
 				break;
 
 			case 404:
-				
-				
+
 				att = Attachment.getAttachment(res.getAttachmentId());
 
 				att.setStatus(AttachmentStatus._UPLOAD_ERROR);
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				
+
 				if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 					claim.setStatus(ClaimStatus._UPLOAD_ERROR);
 					claim.update();
-				} else if(claim.getStatus().equals(ClaimStatus._UPDATING)){
+				} else if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 					claim.setStatus(ClaimStatus._UPDATE_ERROR);
 					claim.update();
 				}
@@ -396,15 +365,13 @@ public class UploadChunksTask extends
 					vh.getAttachmentStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getAttachmentStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
 					vh.getStatus().setText(
 							OpenTenureApplication.getContext().getResources().getString(R.string.upload_error));
 					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
 				}
 
@@ -414,19 +381,19 @@ public class UploadChunksTask extends
 				break;
 
 			default:
-				
+
 				att = Attachment.getAttachment(res.getAttachmentId());
 
 				att.setStatus(AttachmentStatus._UPLOAD_INCOMPLETE);
 				att.update();
 
 				claim = Claim.getClaim(att.getClaimId());
-				
+
 				if (claim.getStatus().equals(ClaimStatus._UPDATING)) {
 
 					claim.setStatus(ClaimStatus._UPDATE_INCOMPLETE);
 					claim.update();
-				} else if(claim.getStatus().equals(ClaimStatus._UPLOADING)){
+				} else if (claim.getStatus().equals(ClaimStatus._UPLOADING)) {
 
 					claim.setStatus(ClaimStatus._UPLOAD_INCOMPLETE);
 					claim.update();
@@ -435,34 +402,32 @@ public class UploadChunksTask extends
 				factor = (float) att.getUploadedBytes() / att.getSize();
 				progress = (int) (factor * 100);
 
-				if (vh.getBarAttachment() != null){
+				if (vh.getBarAttachment() != null) {
 					vh.getBarAttachment().setProgress(progress);
 					vh.getBarAttachment().setVisibility(View.VISIBLE);
 				}
-				
+
 				if (vh.getAttachmentStatus() != null) {
 					vh.getAttachmentStatus().setText(
-							OpenTenureApplication.getContext().getResources().getString(R.string.upload_incomplete) + ": " + progress
-									+ " %");
+							OpenTenureApplication.getContext().getResources().getString(R.string.upload_incomplete)
+									+ ": " + progress + " %");
 					vh.getAttachmentStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getAttachmentStatus().setVisibility(View.VISIBLE);
 					vh.getSend().setVisibility(View.VISIBLE);
 				} else if (vh.getStatus() != null) {
-					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(),claim.getStatus());
+					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
 					vh.getStatus().setText(
-							OpenTenureApplication.getContext().getResources().getString(R.string.upload_incomplete) + ": " + progress
-									+ " %");
+							OpenTenureApplication.getContext().getResources().getString(R.string.upload_incomplete)
+									+ ": " + progress + " %");
 					vh.getStatus().setTextColor(
-							OpenTenureApplication.getContext().getResources()
-									.getColor(R.color.status_created));
+							OpenTenureApplication.getContext().getResources().getColor(R.color.status_created));
 					vh.getStatus().setVisibility(View.VISIBLE);
 					vh.getSend().setVisibility(View.VISIBLE);
 				}
 
-				if(vh.getBar() != null){
-					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(),claim.getStatus());
+				if (vh.getBar() != null) {
+					progress = FileSystemUtilities.getUploadProgress(claim.getClaimId(), claim.getStatus());
 					vh.getBar().setProgress(progress);
 				}
 				// vh.getIconLocal().setVisibility(View.VISIBLE);

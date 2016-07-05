@@ -28,20 +28,13 @@
 package org.fao.sola.clients.android.opentenure.filesystem;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -52,17 +45,16 @@ import org.fao.sola.clients.android.opentenure.model.Claim;
 import org.fao.sola.clients.android.opentenure.model.ClaimStatus;
 import org.fao.sola.clients.android.opentenure.network.API.CommunityServerAPIUtilities;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class FileSystemUtilities {
 
@@ -76,7 +68,6 @@ public class FileSystemUtilities {
 	private static String _IMPORT = "Import";
 	private static String _EXPORT = "Export";
 	private static String _MULTIPAGE = "multipage";
-	private static String _MULTIPAGE_TMP = "multipageTmp.txt";
 	public static String _CSV_FIELD_SEPARATOR = ",";
 	public static String _CSV_REC_TERMINATOR = "\n";
 
@@ -85,7 +76,7 @@ public class FileSystemUtilities {
 	 * Create the folder that contains all the claims under the application file
 	 * system
 	 * 
-	 * */
+	 */
 
 	public static boolean createClaimsFolder() {
 
@@ -95,8 +86,7 @@ public class FileSystemUtilities {
 				Context context = OpenTenureApplication.getContext();
 				File appFolder = context.getExternalFilesDir(null);
 				new File(appFolder, _CLAIMS_FOLDER).mkdir();
-				File claimsFolder = new File(appFolder.getAbsoluteFile()
-						+ File.separator + _CLAIMS_FOLDER);
+				File claimsFolder = new File(appFolder.getAbsoluteFile() + File.separator + _CLAIMS_FOLDER);
 
 				if (claimsFolder.exists() && claimsFolder.isDirectory())
 					return true;
@@ -117,14 +107,13 @@ public class FileSystemUtilities {
 	 * Create the OpenTenure folder under the the public file system Here will
 	 * be exported the compressed claim
 	 * 
-	 * **/
+	 **/
 
 	public static boolean createOpenTenureFolder() {
 
 		if (isExternalStorageWritable()) {
 
-			File path = Environment
-					.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+			File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 			File ot = new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
 
 			if (ot.mkdir() && ot.isDirectory()) {
@@ -145,7 +134,7 @@ public class FileSystemUtilities {
 	 * Create the Certificates folder under the the public file system Here will
 	 * be exported the compressed claim
 	 * 
-	 * **/
+	 **/
 
 	public static boolean createCertificatesFolder() {
 
@@ -171,7 +160,7 @@ public class FileSystemUtilities {
 	 * Create the Import folder under the the Open Tenure file system. Here will
 	 * be unzipped the zipped claim
 	 * 
-	 * **/
+	 **/
 
 	public static boolean createImportFolder() {
 
@@ -197,7 +186,7 @@ public class FileSystemUtilities {
 	 * Create the Export folder under the Open Tenure file system. Here will be
 	 * stored the zipped claims
 	 * 
-	 * **/
+	 **/
 
 	public static boolean createExportFolder() {
 
@@ -226,8 +215,7 @@ public class FileSystemUtilities {
 				Context context = OpenTenureApplication.getContext();
 				File appFolder = context.getExternalFilesDir(null);
 				new File(appFolder, _CLAIMANTS_FOLDER).mkdir();
-				File claimantsFolder = new File(appFolder.getAbsoluteFile()
-						+ File.separator + _CLAIMANTS_FOLDER);
+				File claimantsFolder = new File(appFolder.getAbsoluteFile() + File.separator + _CLAIMANTS_FOLDER);
 
 				if (claimantsFolder.exists() && claimantsFolder.isDirectory())
 					return true;
@@ -258,12 +246,10 @@ public class FileSystemUtilities {
 
 			new File(claimFolder, _ATTACHMENT_FOLDER).mkdir();
 
-			Log.d("FileSystemUtilities", "Claim File System created "
-					+ claimFolder.getAbsolutePath());
+			Log.d("FileSystemUtilities", "Claim File System created " + claimFolder.getAbsolutePath());
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities",
-					"Error creating the file system of the claim!!!");
+			Log.d("FileSystemUtilities", "Error creating the file system of the claim!!!");
 			return false;
 		}
 
@@ -276,14 +262,11 @@ public class FileSystemUtilities {
 			new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId).mkdir();
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities",
-					"Error creating the file system of the claim: "
-							+ e.getMessage());
+			Log.d("FileSystemUtilities", "Error creating the file system of the claim: " + e.getMessage());
 			return false;
 		}
 
-		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId)
-				.exists();
+		return new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId).exists();
 	}
 
 	public static void deleteFolder(File file) throws IOException {
@@ -294,8 +277,7 @@ public class FileSystemUtilities {
 			if (file.list().length == 0) {
 
 				file.delete();
-				Log.d("FileSystemUtilities",
-						"Directory is deleted : " + file.getAbsolutePath());
+				Log.d("FileSystemUtilities", "Directory is deleted : " + file.getAbsolutePath());
 
 			} else {
 
@@ -313,16 +295,14 @@ public class FileSystemUtilities {
 				// check the directory again, if empty then delete it
 				if (file.list().length == 0) {
 					file.delete();
-					Log.d("FileSystemUtilities", "Directory is deleted : "
-							+ file.getAbsolutePath());
+					Log.d("FileSystemUtilities", "Directory is deleted : " + file.getAbsolutePath());
 				}
 			}
 
 		} else {
 			// if file, then delete it
 			file.delete();
-			Log.d("FileSystemUtilities",
-					"File is deleted : " + file.getAbsolutePath());
+			Log.d("FileSystemUtilities", "File is deleted : " + file.getAbsolutePath());
 		}
 	}
 
@@ -333,8 +313,7 @@ public class FileSystemUtilities {
 			// directory is empty, then delete it
 			if (folder.list().length == 0) {
 
-				Log.d("FileSystemUtilities",
-						"Folder is empty : " + folder.getAbsolutePath());
+				Log.d("FileSystemUtilities", "Folder is empty : " + folder.getAbsolutePath());
 
 			} else {
 
@@ -351,35 +330,28 @@ public class FileSystemUtilities {
 
 				// check the directory again, if empty then delete it
 				if (folder.list().length == 0) {
-					Log.d("FileSystemUtilities",
-							"Folder is empty : " + folder.getAbsolutePath());
+					Log.d("FileSystemUtilities", "Folder is empty : " + folder.getAbsolutePath());
 				}
 			}
 
 		} else {
 			// if file, then delete it
 
-			Log.d("FileSystemUtilities",
-					"is not a folder : " + folder.getAbsolutePath());
+			Log.d("FileSystemUtilities", "is not a folder : " + folder.getAbsolutePath());
 		}
 	}
 
 	public static void deleteCompressedClaim(String claimID) throws IOException {
 
-		File oldZip = new File(FileSystemUtilities.getOpentenureFolder()
-				.getAbsolutePath()
-				+ File.separator
-				+ "Claim_"
-				+ claimID
-				+ ".zip");
+		File oldZip = new File(FileSystemUtilities.getOpentenureFolder().getAbsolutePath() + File.separator + "Claim_"
+				+ claimID + ".zip");
 		deleteFolder(oldZip);
 	}
 
 	public static boolean removeClaimantFolder(String personId) {
 
 		try {
-			deleteFolder(new File(getClaimantsFolder(), _CLAIMANT_PREFIX
-					+ personId));
+			deleteFolder(new File(getClaimantsFolder(), _CLAIMANT_PREFIX + personId));
 		} catch (Exception e) {
 			return false;
 		}
@@ -427,13 +399,11 @@ public class FileSystemUtilities {
 		File multiFolder = null;
 		try {
 			new File(getAttachmentFolder(claimID), _MULTIPAGE).mkdir();
-			multiFolder = new File(getAttachmentFolder(claimID)
-					+ File.separator + _MULTIPAGE);
+			multiFolder = new File(getAttachmentFolder(claimID) + File.separator + _MULTIPAGE);
 
 		} catch (Exception e) {
 			// TODO: handle exception
-			Log.e("org.fao.sola.clients.android.opentenure.filesystem",
-					e.getMessage());
+			Log.e("org.fao.sola.clients.android.opentenure.filesystem", e.getMessage());
 		}
 
 		if (multiFolder.exists() && multiFolder.isDirectory()) {
@@ -443,11 +413,10 @@ public class FileSystemUtilities {
 			return false;
 
 		}
-	}	
+	}
 
 	public static File getOpentenureFolder() {
-		File path = Environment
-				.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 		return new File(path.getParentFile(), _OPEN_TENURE_FOLDER);
 	}
 
@@ -495,7 +464,7 @@ public class FileSystemUtilities {
 		File dest = null;
 
 		try {
-			
+
 			dest = new File(getClaimantFolder(personId), personId + ".jpg");
 			dest.createNewFile();
 
@@ -538,8 +507,7 @@ public class FileSystemUtilities {
 			Log.d("FileSystemUtilities", dest.getAbsolutePath());
 			byte[] buffer = new byte[1024];
 
-			FileInputStream reader = new FileInputStream(
-					source.getAbsoluteFile());
+			FileInputStream reader = new FileInputStream(source.getAbsoluteFile());
 			FileOutputStream writer = new FileOutputStream(dest);
 
 			BufferedInputStream br = new BufferedInputStream(reader);
@@ -565,13 +533,11 @@ public class FileSystemUtilities {
 		try {
 
 			File folder = getClaimFolder(claimId);
-			FileInputStream fis = new FileInputStream(folder + File.separator
-					+ "claim.json");
+			FileInputStream fis = new FileInputStream(folder + File.separator + "claim.json");
 			return CommunityServerAPIUtilities.Slurp(fis, 100);
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities",
-					"Error reading claim.json :" + e.getMessage());
+			Log.d("FileSystemUtilities", "Error reading claim.json :" + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -607,13 +573,11 @@ public class FileSystemUtilities {
 			attachment.setFileExtension(extension);
 
 			Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls()
-					.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-					.create();
+					.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE).create();
 			return gson.toJson(attachment);
 
 		} catch (Exception e) {
-			Log.d("FileSystemUtilities",
-					"Error reading creating Attachment json :" + e.getMessage());
+			Log.d("FileSystemUtilities", "Error reading creating Attachment json :" + e.getMessage());
 			e.printStackTrace();
 			return null;
 		}
@@ -638,8 +602,8 @@ public class FileSystemUtilities {
 			return original;
 		else if (original.equals("mpeg") || original.equals("avi"))
 			return "standardDocument";
-		else if (original.equals("doc") || original.equals("docx")
-				|| original.equals("xlsb") || original.equals("xlsb"))
+		else if (original.equals("doc") || original.equals("docx") || original.equals("xlsb")
+				|| original.equals("xlsb"))
 			return "standardDocument";
 
 		return "standardDocument";
@@ -691,20 +655,20 @@ public class FileSystemUtilities {
 
 		return true;
 	}
-	
-	
+
 	/**
 	 * Replace special characters in a string with '-'
 	 * 
-	 * @param original String
+	 * @param original
+	 *            String
 	 * @return
 	 */
-	public static String cleanBySpecial(String original){
-		 char[] reservedChars = {'?',':','\\',':','\'','*','|','/','<','>'};
-		 
-		 for (int i = 0; i < reservedChars.length; i++) {			
-			 original = original.replace(reservedChars[i], '-');
-			}
+	public static String cleanBySpecial(String original) {
+		char[] reservedChars = { '?', ':', '\\', ':', '\'', '*', '|', '/', '<', '>' };
+
+		for (int i = 0; i < reservedChars.length; i++) {
+			original = original.replace(reservedChars[i], '-');
+		}
 		return original;
 	}
 
@@ -723,19 +687,15 @@ public class FileSystemUtilities {
 			File json = new File(claimfolder, "claim.json");
 			totalSize = totalSize + json.length();
 
-			if (status.equals(ClaimStatus._UPLOADING)
-					|| status.equals(ClaimStatus._UPLOAD_INCOMPLETE)
-					|| status.equals(ClaimStatus._UPDATING)
-					|| status.equals(ClaimStatus._UPDATE_INCOMPLETE))
+			if (status.equals(ClaimStatus._UPLOADING) || status.equals(ClaimStatus._UPLOAD_INCOMPLETE)
+					|| status.equals(ClaimStatus._UPDATING) || status.equals(ClaimStatus._UPDATE_INCOMPLETE))
 				uploadedSize = uploadedSize + json.length();
 
-			for (Iterator<Attachment> iterator = attachments.iterator(); iterator
-					.hasNext();) {
+			for (Iterator<Attachment> iterator = attachments.iterator(); iterator.hasNext();) {
 				Attachment attachment = (Attachment) iterator.next();
 				totalSize = totalSize + attachment.getSize();
 
-				if (!attachment.getStatus().equals(
-						AttachmentStatus._UPLOAD_ERROR)) {
+				if (!attachment.getStatus().equals(AttachmentStatus._UPLOAD_ERROR)) {
 
 					uploadedSize = uploadedSize + attachment.getUploadedBytes();
 
@@ -756,69 +716,55 @@ public class FileSystemUtilities {
 	public static File reduceJpeg(File file) {
 
 		InputStream in = null;
+		OutputStream out = null;
+		File dir = file.getParentFile();
+		String cmpFileName = file.getName().replace(".jpg", "_cmp.jpg");
 
-		/* Choosing the right reduction factor */
-		int percentage = 0;
+		/* 100 = max quality, 0 = max compression */
+
+		int quality = 0;
+
 		if (file.length() < 1000000)
-			percentage = 30;
+			quality = 80;
 
 		if (file.length() >= 1000000 && file.length() < 2000000)
-			percentage = 40;
+			quality = 60;
 
 		if (file.length() >= 2000000)
-			percentage = 50;
+			quality = 40;
 
 		try {
+			Log.d(FileSystemUtilities.class.getName(), "Compressing " + file.getName() + " to " + cmpFileName+ " with " + quality + " quality hint");
 			in = new FileInputStream(file);
 
 			Bitmap bitmap = BitmapFactory.decodeStream(in);
-			File tmpFile = new File(file.getParentFile(), file.getName()
-					.substring(0, file.getName().indexOf(".j")) + "2.jpg");
-			try {
-				OutputStream out = new FileOutputStream(tmpFile);
-				try {
-					if (bitmap.compress(CompressFormat.JPEG, percentage, out)) {
-						{
-							File tmp = file;
-							file = tmpFile;
-							tmpFile = tmp;
-						}
-						file.delete();
+			File cmpFile = new File(dir, cmpFileName);
+			out = new FileOutputStream(cmpFile);
+			if (bitmap.compress(CompressFormat.JPEG, quality, out)) {
+				out.flush();
+				out.close();
+				in.close();
+				return cmpFile;
 
-					} else {
-						throw new Exception(
-								"Failed to save the image as a JPEG");
-					}
-				} finally {
-					out.close();
-				}
-			} catch (Throwable t) {
-
-				System.out.println(" error" + t.getMessage());
-				tmpFile.delete();
-				try {
-					throw t;
-				} catch (Throwable e) {
-
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			} else {
+				throw new Exception("Failed to save the image as a JPEG");
 			}
-		} catch (Exception ex) {
-
-			System.out.println("Exception reducing file "
-					+ ex.getLocalizedMessage());
-
+		} catch (Exception e) {
+			Log.e(FileSystemUtilities.class.getName(), "Failed to compress image :" + e.getMessage());
+			e.printStackTrace();
 		} finally {
 			try {
-				in.close();
+				if (out != null) {
+					out.close();
+				}
+				if (in != null) {
+					in.close();
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				Log.e(FileSystemUtilities.class.getName(), "Failed to release streams :" + e.getMessage());
 				e.printStackTrace();
 			}
 		}
-		return file;
-
+		return null;
 	}
-
 }
